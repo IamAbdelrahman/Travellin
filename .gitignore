@@ -1,0 +1,121 @@
+# Visual Studio workspace files
+.vs/
+
+# User-specific files
+*.user
+*.suo
+*.csproj.user
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio cache/output
+*.Cache
+*.ilk
+*.meta
+*.pch
+*.pdb
+*.pgc
+*.pgd
+*.rsp
+*.tmp
+*.tlog
+ipch/
+obj/
+idb/
+so/
+lib/
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+
+# Visual Studio Coverage
+*.coverage
+*.coveragexml
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NUnit
+*.VisualState.xml
+TestResult.xml
+
+# VSTest
+*.vstestresults
+
+# DNX
+project.lock.json
+artifacts/
+
+# ASP.NET Scaffolding
+_ScaffoldTemp/
+
+# Backup & report files from converting to or from Visual Studio for Mac
+*.aps
+*.apsession
+*.backup
+*.bindinfo.cache
+*.cache
+*.containerdata.cache
+*.dep
+*.intellisense
+*.movedtoosourcecontrol
+*.pbxuser
+*.perspective.v3
+*.sqlsettings
+*.userosscache
+*.vcxproj.vs
+
+# Logs and databases
+*.log
+*.sqlite3
+logs/
+
+# NuGet Packages
+packages/
+
+# NuGet Cache
+.nuget/packages/
+
+# Solution-Level Files
+*.sln.docstates
+
+# Temporary Files
+[Tt]humbs.db
+*.tmp
+*.temp
+*.bak
+
+# appsettings files
+!appsettings.json
+appsettings.Development.json
+appsettings.*.json
+
+# Ignore coverage output
+coverage/
+
+# VS Code Workspace Settings
+.vscode/
+
+# JetBrains Rider
+.idea/
+
+# Local NuGet packages
+*.nupkg
+
+# Logs
+*.log
+logs/
+
+# System files
+Thumbs.db
+.DS_Store
