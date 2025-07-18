@@ -1,6 +1,8 @@
-﻿namespace Travellin.Travellin.Core.Interfaces
+﻿using Travellin.Travellin.Core.Entities;
+
+namespace Travellin.Travellin.Core.Interfaces
 {
-    public interface ICountryRepository
+    public interface ICountryRepository : IRepository<Country>
     {
     }
 }
