@@ -21,11 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Travellin.Api\Controllers\" />
     <Folder Include="Travellin.Api\Filters\" />
     <Folder Include="Travellin.Api\Helpers\" />
-    <Folder Include="Travellin.Core\Dtos\" />
-    <Folder Include="Travellin.Core\Interfaces\" />
     <Folder Include="Travellin.Core\Mappings\" />
     <Folder Include="Travellin.Core\Shared\" />
     <Folder Include="Travellin.Infrastructure\Shared\" />
