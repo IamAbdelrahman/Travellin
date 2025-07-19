@@ -1,4 +1,5 @@
-﻿using Travellin.Travellin.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Travellin.Travellin.Core.Entities;
 using Travellin.Travellin.Core.Interfaces;
 using Travellin.Travellin.Infrastructure.Data;
 
@@ -13,30 +14,35 @@ namespace Travellin.Travellin.Infrastructure.Repositories
             this.db = db;
         }
 
+
         //GetALL
-        public List<HostVerification> GetAll()
+        public async Task<List<HostVerification>> GetAllAsync()
         {
-            return db.HostVerifications.ToList();
+            return await db.HostVerifications.ToListAsync();
         }
 
         //GetByID
-        public HostVerification GetByID(int id)
+        public async Task<HostVerification> GetByIDAsync(int id)
         {
-            return db.HostVerifications.Find(id);
+            return await db.HostVerifications.FindAsync(id);
         }
 
         //Add
-        public void Add(HostVerification entity)
+        public async Task AddAsync(HostVerification entity)
         {
-            db.Add(entity);
+            await db.HostVerifications.AddAsync(entity);
         }
 
         //Delete
         public void Delete(int id)
         {
-            HostVerification hostVerification = GetByID(id);
-            db.HostVerifications.Remove(hostVerification);
+            var hostVerification = db.HostVerifications.Find(id);
+            if (hostVerification != null)
+            {
+                db.HostVerifications.Remove(hostVerification);
+            }
         }
+
 
         //Update
         public void Update(HostVerification entity)
@@ -45,9 +51,9 @@ namespace Travellin.Travellin.Infrastructure.Repositories
         }
 
         //Save
-        public void Save()
+        public async Task SaveAsync()
         {
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
     }
 }
