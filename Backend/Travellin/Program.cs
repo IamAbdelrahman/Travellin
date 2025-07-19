@@ -1,7 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Travellin.Travellin.Core.Interfaces;
 using Travellin.Travellin.Infrastructure.Data;
+<<<<<<< HEAD
 using Travellin.Travellin.Infrastructure.Shared;
+=======
+using Travellin.Api.Filters;
+using Travellin.Api.Helpers;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+>>>>>>> main
 
 namespace Travellin
 {
@@ -15,6 +22,23 @@ namespace Travellin
             builder.Services.AddDbContext<AirbnbDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("CFG")));
             builder.Services.AddControllers();
+
+            // Add controllers with global filters
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<ExceptionFilter>();
+            });
+
+            
+            builder.Services.AddScoped<AuthorizeHostFilter>();
+            builder.Services.AddScoped<ExceptionFilter>();
+
+            // Configure API behavior options for consistent error responses
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
+
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

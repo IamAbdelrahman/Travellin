@@ -5,31 +5,45 @@ namespace Travellin.Travellin.Core.Interfaces
     /// The IUnitOfWork interface will define the contract 
     /// for managing database transactions and repository access
     /// </summary>
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
-        // Repository properties for entity access
-        IUserRepository Users { get; }
-        IPropertyRepository Properties { get; }
-        IPropertyTypeRepository PropertyTypes { get; }
-        IPropertyImageRepository PropertyImages { get; }
-        ICoHostAssignmentRepository CoHostAssignments { get; }
-        IViolationRepository Violations { get; }
-        IConversationRepository Conversations { get; }
-        IMessageRepository Messages { get; }
-        IBookingRepository Bookings { get; }
-        IBookingGuestRepository BookingGuests { get; }
-        IPaymentRepository Payments { get; }
-        IReviewRepository Reviews { get; }
-        INotificationRepository Notifications { get; }
+        // Declare properties for each specific repository interface
         IAdminRepository Admins { get; }
-        IReportRepository Reports { get; }
+        IAmenityCategoryRepository AmenityCategories { get; }
+        IAmenityRepository Amenities { get; }
+        IBookingGuestRepository BookingGuests { get; }
+        IBookingRepository Bookings { get; }
+        ICancellationPolicyRepository CancellationPolicies { get; }
+        ICoHostAssignmentRepository CoHostAssignments { get; }
+        IConversationRepository Conversations { get; }
+        ICountryRepository Countries { get; }
+        IFavouriteRepository Favourites { get; }
+        IHostVerificationRepository HostVerifications { get; }
+        // IIdentityFactory IdentityFactory { get; } // Consider if this belongs here or as a separate service
+        ILocationRepository Locations { get; }
+        IMessageRepository Messages { get; }
+        INotificationRepository Notifications { get; }
+        IPaymentRepository Payments { get; }
         IPromotionRepository Promotions { get; }
-        IUserUsedPromotionRepository UserUsedPromotions { get; }
         IPropertyAmenityRepository PropertyAmenities { get; }
         IPropertyAvailabilityRepository PropertyAvailabilities { get; }
         IPropertyFeeRepository PropertyFees { get; }
+        IPropertyImageRepository PropertyImages { get; }
+        IPropertyRepository Properties { get; }
+        IPropertyTypeRepository PropertyTypes { get; }
+        IRegionRepository Regions { get; }
+        IReportRepository Reports { get; }
+        IReviewRepository Reviews { get; }
+        // IServiceFactory ServiceFactory { get; } // Consider if this belongs here or as a separate service
+        IUserRepository Users { get; }
+        IUserUsedPromotionRepository UserUsedPromotions { get; }
+        IViolationRepository Violations { get; }
 
-        // Save changes method
-        Task SaveChangesAsync();
+        /// <summary>
+        /// Saves all changes made in this unit of work to the database.
+        /// </summary>
+        /// <returns>The number of state entries written to the database.</returns>
+        int Complete();
+        Task<int> CompleteAsync();
     }
 }
