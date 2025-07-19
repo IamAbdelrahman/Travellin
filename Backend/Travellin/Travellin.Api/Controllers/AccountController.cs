@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Travellin.Travellin.Core.Interfaces;
+using Travellin.Travellin.Core.Dtos;
+using Travellin.Travellin.Core.Entities;
 namespace Travellin.Travellin.Api.Controllers
 {
     [Route("api/[controller]")]

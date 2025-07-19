@@ -1,6 +1,8 @@
 
 using Microsoft.EntityFrameworkCore;
+using Travellin.Travellin.Core.Interfaces;
 using Travellin.Travellin.Infrastructure.Data;
+using Travellin.Travellin.Infrastructure.Shared;
 
 namespace Travellin
 {
@@ -12,11 +14,11 @@ namespace Travellin
 
             // Add services to the container.
             builder.Services.AddDbContext<AirbnbDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("CFG")));
+            options.UseSqlServer(builder.Configuration.GetConnectionString("CFG")));
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
