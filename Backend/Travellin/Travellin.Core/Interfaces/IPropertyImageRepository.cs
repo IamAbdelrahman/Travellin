@@ -1,6 +1,8 @@
-﻿namespace Travellin.Travellin.Core.Interfaces
+﻿using Travellin.Travellin.Core.Entities;
+
+namespace Travellin.Travellin.Core.Interfaces
 {
-    public interface IPropertyImageRepository
+    public interface IPropertyImageRepository : IRepository<PropertyImage>
     {
     }
 }
