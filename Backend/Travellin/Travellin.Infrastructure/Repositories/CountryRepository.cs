@@ -1,4 +1,5 @@
-﻿using Travellin.Travellin.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Travellin.Travellin.Core.Entities;
 using Travellin.Travellin.Core.Interfaces;
 using Travellin.Travellin.Infrastructure.Data;
 
@@ -14,29 +15,33 @@ namespace Travellin.Travellin.Infrastructure.Repositories
         }
 
         //GetALL
-        public List<Country> GetAll()
+        public async Task<List<Country>> GetAllAsync()
         {
-            return db.Countries.ToList();
+            return await db.Countries.ToListAsync();
         }
 
         //GetByID
-        public Country GetByID(int id)
+        public async Task<Country> GetByIDAsync(int id)
         {
-            return db.Countries.Find(id);
+            return await db.Countries.FindAsync(id);
         }
 
         //Add
-        public void Add(Country entity)
+        public async Task AddAsync(Country entity)
         {
-            db.Add(entity);
+            await db.Countries.AddAsync(entity);
         }
 
         //Delete
         public void Delete(int id)
         {
-            Country country = GetByID(id);
-            db.Countries.Remove(country);
+            var country = db.Countries.Find(id);
+            if (country != null)
+            {
+                db.Countries.Remove(country);
+            }
         }
+
 
         //Update
         public void Update(Country entity)
@@ -45,9 +50,9 @@ namespace Travellin.Travellin.Infrastructure.Repositories
         }
 
         //Save
-        public void Save()
+        public async Task SaveAsync()
         {
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
     }
 }

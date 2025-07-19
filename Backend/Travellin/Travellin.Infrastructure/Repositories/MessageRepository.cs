@@ -1,4 +1,5 @@
-﻿using Travellin.Travellin.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Travellin.Travellin.Core.Entities;
 using Travellin.Travellin.Core.Interfaces;
 using Travellin.Travellin.Infrastructure.Data;
 
@@ -14,29 +15,33 @@ namespace Travellin.Travellin.Infrastructure.Repositories
         }
 
         //GetALL
-        public List<Message> GetAll()
+        public async Task<List<Message>> GetAllAsync()
         {
-            return db.Messages.ToList();
+            return await db.Messages.ToListAsync();
         }
 
         //GetByID
-        public Message GetByID(int id)
+        public async Task<Message> GetByIDAsync(int id)
         {
-            return db.Messages.Find(id);
+            return await db.Messages.FindAsync(id);
         }
 
         //Add
-        public void Add(Message entity)
+        public async Task AddAsync(Message entity)
         {
-            db.Add(entity);
+            await db.Messages.AddAsync(entity);
         }
 
         //Delete
         public void Delete(int id)
         {
-            Message message = GetByID(id);
-            db.Messages.Remove(message);
+            var message = db.Messages.Find(id);
+            if (message != null)
+            {
+                db.Messages.Remove(message);
+            }
         }
+
 
         //Update
         public void Update(Message entity)
@@ -45,9 +50,9 @@ namespace Travellin.Travellin.Infrastructure.Repositories
         }
 
         //Save
-        public void Save()
+        public async Task SaveAsync()
         {
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
     }
 }
