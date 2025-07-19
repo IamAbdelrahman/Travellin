@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using Travellin.Travellin.Core.Interfaces;
 using Travellin.Travellin.Infrastructure.Data;
@@ -29,8 +28,10 @@ namespace Travellin
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            // Add middleware for global error handling (alternative to the filter)
+            app.UseMiddleware<ExceptionHandlerMiddleware>(); // You would need to implement this
 
+            app.UseAuthorization();
 
             app.MapControllers();
 

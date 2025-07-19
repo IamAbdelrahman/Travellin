@@ -1,4 +1,5 @@
-﻿using Travellin.Travellin.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Travellin.Travellin.Core.Entities;
 using Travellin.Travellin.Core.Interfaces;
 using Travellin.Travellin.Infrastructure.Data;
 
@@ -14,29 +15,33 @@ namespace Travellin.Travellin.Infrastructure.Repositories
         }
 
         //GetALL
-        public List<AmenityCategory> GetAll()
+        public async Task<List<AmenityCategory>> GetAllAsync()
         {
-            return db.AmenityCategories.ToList();
+            return await db.AmenityCategories.ToListAsync();
         }
 
         //GetByID
-        public AmenityCategory GetByID(int id)
+        public async Task<AmenityCategory> GetByIDAsync(int id)
         {
-            return db.AmenityCategories.Find(id);
+            return await db.AmenityCategories.FindAsync(id);
         }
 
         //Add
-        public void Add(AmenityCategory entity)
+        public async Task AddAsync(AmenityCategory entity)
         {
-            db.Add(entity);
+            await db.AmenityCategories.AddAsync(entity);
         }
 
         //Delete
         public void Delete(int id)
         {
-            AmenityCategory category = GetByID(id);
-            db.AmenityCategories.Remove(category);
+            var amenityCategory = db.AmenityCategories.Find(id);
+            if (amenityCategory != null)
+            {
+                db.AmenityCategories.Remove(amenityCategory);
+            }
         }
+
 
         //Update
         public void Update(AmenityCategory entity)
@@ -45,11 +50,10 @@ namespace Travellin.Travellin.Infrastructure.Repositories
         }
 
         //Save
-        public void Save()
+        public async Task SaveAsync()
         {
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
 
-        
     }
 }

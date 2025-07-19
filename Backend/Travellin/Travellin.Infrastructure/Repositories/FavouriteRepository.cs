@@ -1,9 +1,11 @@
-﻿using Travellin.Travellin.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Travellin.Travellin.Core.Entities;
+using Travellin.Travellin.Core.Interfaces;
 using Travellin.Travellin.Infrastructure.Data;
 
 namespace Travellin.Travellin.Infrastructure.Repositories
 {
-    public class FavouriteRepository
+    public class FavouriteRepository :IFavouriteRepository
     {
         private readonly AirbnbDbContext db;
 
@@ -13,29 +15,33 @@ namespace Travellin.Travellin.Infrastructure.Repositories
         }
 
         //GetALL
-        public List<Favourite> GetAll()
+        public async Task<List<Favourite>> GetAllAsync()
         {
-            return db.Favourites.ToList();
+            return await db.Favourites.ToListAsync();
         }
 
         //GetByID
-        public Favourite GetByID(int id)
+        public async Task<Favourite> GetByIDAsync(int id)
         {
-            return db.Favourites.Find(id);
+            return await db.Favourites.FindAsync(id);
         }
 
         //Add
-        public void Add(Favourite entity)
+        public async Task AddAsync(Favourite entity)
         {
-            db.Add(entity);
+            await db.Favourites.AddAsync(entity);
         }
 
         //Delete
         public void Delete(int id)
         {
-            Favourite favourite = GetByID(id);
-            db.Favourites.Remove(favourite);
+            var favourite = db.Favourites.Find(id);
+            if (favourite != null)
+            {
+                db.Favourites.Remove(favourite);
+            }
         }
+
 
         //Update
         public void Update(Favourite entity)
@@ -44,9 +50,9 @@ namespace Travellin.Travellin.Infrastructure.Repositories
         }
 
         //Save
-        public void Save()
+        public async Task SaveAsync()
         {
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
     }
 }

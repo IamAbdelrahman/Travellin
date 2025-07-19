@@ -1,4 +1,5 @@
-﻿using Travellin.Travellin.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Travellin.Travellin.Core.Entities;
 using Travellin.Travellin.Core.Interfaces;
 using Travellin.Travellin.Infrastructure.Data;
 
@@ -14,29 +15,33 @@ namespace Travellin.Travellin.Infrastructure.Repositories
         }
 
         //GetALL
-        public List<CancellationPolicy> GetAll()
+        public async Task<List<CancellationPolicy>> GetAllAsync()
         {
-            return db.CancellationPolicies.ToList();
+            return await db.CancellationPolicies.ToListAsync();
         }
 
         //GetByID
-        public CancellationPolicy GetByID(int id)
+        public async Task<CancellationPolicy> GetByIDAsync(int id)
         {
-            return db.CancellationPolicies.Find(id);
+            return await db.CancellationPolicies.FindAsync(id);
         }
 
         //Add
-        public void Add(CancellationPolicy entity)
+        public async Task AddAsync(CancellationPolicy entity)
         {
-            db.Add(entity);
+            await db.CancellationPolicies.AddAsync(entity);
         }
 
         //Delete
         public void Delete(int id)
         {
-            CancellationPolicy cancellationPolicy = GetByID(id);
-            db.CancellationPolicies.Remove(cancellationPolicy);
+            var cancel = db.CancellationPolicies.Find(id);
+            if (cancel != null)
+            {
+                db.CancellationPolicies.Remove(cancel);
+            }
         }
+
 
         //Update
         public void Update(CancellationPolicy entity)
@@ -45,9 +50,9 @@ namespace Travellin.Travellin.Infrastructure.Repositories
         }
 
         //Save
-        public void Save()
+        public async Task SaveAsync()
         {
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
     }
 }
