@@ -1,6 +1,0 @@
-@Travellin_HostAddress = http://localhost:5052
-
-GET {{Travellin_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

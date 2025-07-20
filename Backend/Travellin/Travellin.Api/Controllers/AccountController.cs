@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Travellin.Travellin.Core.Interfaces;
-namespace Travellin.Travellin.Api.Controllers
+using Microsoft.EntityFrameworkCore;
+using Travellin.Api.Utils;
+using Travellin.Core.Dtos.Accounts;
+using Travellin.Core.Entities;
+using Travellin.Core.Interfaces;
+using System.Net.Mail;
+
+namespace Travellin.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AccountsController : ControllerBase
+    public class AccountsController : BaseController
     {
         private readonly IIdentityFactory _identityFactory;
         private readonly IServiceFactory _serviceFactory;
