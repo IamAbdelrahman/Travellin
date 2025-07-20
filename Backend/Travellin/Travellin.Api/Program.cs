@@ -1,5 +1,4 @@
 using AspNetCoreRateLimit;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Travellin.Api.Filters;
 using Travellin.Api.Utils;
@@ -65,12 +64,9 @@ namespace Travellin.Api
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
-                app.UseSwagger();
-                //app.UseSwagger(c =>
-                //{
-                //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                //});
+                app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "v1"));
             }
+
 
             app.UseHttpsRedirection();
 
