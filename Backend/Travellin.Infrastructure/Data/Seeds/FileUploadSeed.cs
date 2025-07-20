@@ -1,0 +1,95 @@
+﻿using Travellin.Core.Entities;
+
+namespace Travellin.Infrastructure.Data.Seeds
+{
+    static class FileUploadSeed
+    {
+        public static List<FileUpload> Data => new()
+        {
+            new FileUpload { Id = "b455bb0a-69a3-4024-b5fa-5a49323e58fd", Path = "images/egy1.avif" },
+            new FileUpload { Id = "dc16e3d2-16ed-4ff5-b9c2-27a1e8b5ccbe", Path = "images/egy2.avif" },
+            new FileUpload { Id = "4b0f81f1-9bc0-45c6-988e-1a4fd270b3e0", Path = "images/egy3.avif" },
+            new FileUpload { Id = "2ac68b52-e7b6-4bb7-9f8e-49aa7f2b2b6c", Path = "images/italy1.webp" },
+            new FileUpload { Id = "69c6c01e-65b3-4cf7-bbc7-2e94272b658a", Path = "images/italy2.avif" },
+            new FileUpload { Id = "95cde2b1-305e-4c13-9293-8c4c8f7c8b9f", Path = "images/italy3.avif" },
+            new FileUpload { Id = "7a18064f-b6cb-4d58-a51b-0e8a74eac7a4", Path = "images/makkah1.avif" },
+            new FileUpload { Id = "4dfe3d56-2d34-4a6b-9cb5-f7a5a2dd8c28", Path = "images/makkah2.avif" },
+            new FileUpload { Id = "6c54a231-b88f-409f-b5d5-170180930186", Path = "images/makkah3.avif" },
+            new FileUpload { Id = "26d418bb-0f90-4f3c-b339-7dd5c31b5e99", Path = "images/california1.jpeg" },
+            new FileUpload { Id = "a4c0d40d-e90e-4b14-8a2a-5ac0212be9b1", Path = "images/california2.jpeg" },
+            new FileUpload { Id = "89f65612-5023-489e-9604-2f01074abf0c", Path = "images/california3.avif" },
+            new FileUpload { Id = "b21f8f4f-6d95-4f60-81b4-56d2ef017a08", Path = "images/brazil1.avif" },
+            new FileUpload { Id = "e34a2808-38df-4e47-8c3e-d6e3f2712f11", Path = "images/brazil2.avif" },
+            new FileUpload { Id = "5b742ed2-28d9-4e3b-8125-6e9c4587a0d3", Path = "images/brazil3.avif" },
+            new FileUpload { Id = "2cf95d6d-63ae-4b97-8101-c6c5e8227b6d", Path = "images/barcelona1.avif" },
+            new FileUpload { Id = "ce9e31d6-6553-4214-8b94-fb9c8f3065ed", Path = "images/barcelona2.avif" },
+            new FileUpload { Id = "5e2e82a1-4893-4a63-9375-d73f7a09d7c5", Path = "images/barcelona3.avif" },
+            new FileUpload { Id = "7d861c0c-011d-4b2a-8ce5-f5b1f0b81d01", Path = "images/jordan1.avif" },
+            new FileUpload { Id = "fbc177de-bf4c-4b75-a1f6-884d05ce6c9f", Path = "images/jordan2.avif" },
+            new FileUpload { Id = "51d1e109-dccf-45fd-9f15-bbd3c0b7fcd5", Path = "images/jordan3.avif" },
+            new FileUpload { Id = "6c79893d-f97f-4fc6-b0c3-4ebfcab3f85f", Path = "images/france1.avif" },
+            new FileUpload { Id = "98a76538-918f-4e60-9c01-b364e0e1891f", Path = "images/france2.avif" },
+            new FileUpload { Id = "f3885b77-0f9e-4ec3-9b3e-cbc194a07d7f", Path = "images/france3.avif" },
+            new FileUpload { Id = "da2afaf9-b1df-4daf-bb44-3d6a79be4a17", Path = "images/portugal1.avif" },
+            new FileUpload { Id = "1cc7082f-8324-4888-b903-9d8ed2ffd144", Path = "images/portugal2.avif" },
+            new FileUpload { Id = "11010e1b-3c99-4d25-a176-9b826b19ec88", Path = "images/portugal3.avif" },
+            new FileUpload { Id = "a6d2fafb-6490-4f6f-a4c7-f42fdde98bf2", Path = "images/soul1.avif" },
+            new FileUpload { Id = "7ae244c8-42a8-422c-9be6-b809c1b427f6", Path = "images/soul2.avif" },
+            new FileUpload { Id = "ab39dc17-5108-425b-8350-1995323ba1a1", Path = "images/soul3.avif" },
+            new FileUpload { Id = "55a42f5d-4934-41df-8077-4ea9654c8d4f", Path = "images/saf1.avif" },
+            new FileUpload { Id = "b01df5ef-3951-4e4c-80c5-00e10029a682", Path = "images/saf2.avif" },
+            new FileUpload { Id = "68b3f994-ed3d-461e-89b2-13ebe89d53b6", Path = "images/saf3.avif" },
+            new FileUpload { Id = "0184da01-3f04-431a-821b-863db48eee6b", Path = "images/maadi1.avif" },
+            new FileUpload { Id = "87668883-00e2-4d99-9dea-b612fb1f09fb", Path = "images/maadi2.avif" },
+            new FileUpload { Id = "aca8279a-04bd-4277-8370-1338beb17581", Path = "images/maadi3.avif" },
+            new FileUpload { Id = "1d0aa7e5-30b6-42f6-aa21-11fed6d12c9a", Path = "images/canada1.avif" },
+            new FileUpload { Id = "160b2604-8211-42b5-9f78-4360d5a71ee9", Path = "images/canada2.avif" },
+            new FileUpload { Id = "9f90c24f-0a95-46a3-a2e2-a0688c460a23", Path = "images/canada3.avif" },
+            new FileUpload { Id = "84d8e12a-4754-4825-b0fc-2b43981f6ba0", Path = "images/vg1.avif" },
+            new FileUpload { Id = "e0f27e50-9e45-489b-90d6-f62211f67f12", Path = "images/vg2.avif" },
+            new FileUpload { Id = "caf5622f-99a6-4927-a913-48d66437de5d", Path = "images/vg3.avif" },
+            new FileUpload { Id = "e3d6bbae-2087-4269-b6ca-784e3301cce0", Path = "images/tun1.avif" },
+            new FileUpload { Id = "aac5407d-a994-4c3e-a1ff-b7646d79162a", Path = "images/tun2webp.webp" },
+            new FileUpload { Id = "a05afc7a-9127-4a33-839c-908e1f47a4ae", Path = "images/tun3.avif" },
+            new FileUpload { Id = "90cd8c79-cc01-4edf-85b8-9931cd3fc772", Path = "images/Belg1.avif" },
+            new FileUpload { Id = "3588517b-0a71-4d29-ad8c-906a8e545d00", Path = "images/Belg2.avif" },
+            new FileUpload { Id = "da734851-2db8-4541-a788-b675b7560eec", Path = "images/Belg3.avif" },
+            new FileUpload { Id = "9ea371c2-fefe-423f-953c-c744a33d5fb9", Path = "images/Arg1.avif" },
+            new FileUpload { Id = "4c376b94-d74f-4472-b1a5-4c3d51df56d8", Path = "images/Arg2.jpg" },
+            new FileUpload { Id = "e56c967f-ee64-4e53-b0e6-1b1342baf2da", Path = "images/Arg3.jpg" },
+            new FileUpload { Id = "9b0d97e4-6dad-4e5b-893c-38aaff4a50e2", Path = "images/Nig1.avif" },
+            new FileUpload { Id = "9201fad7-d63f-4dbf-84f1-adb25c451e9e", Path = "images/Nig2.avif" },
+            new FileUpload { Id = "303c12b0-baca-42d4-824e-d84b940d317a", Path = "images/Nig3.avif" },
+            new FileUpload { Id = "0f18b242-e627-45eb-a22d-516722b7c78c", Path = "images/Vit1.avif" },
+            new FileUpload { Id = "a2529147-026b-4b8b-a811-cb18989a8129", Path = "images/Vit2.avif" },
+            new FileUpload { Id = "301f7e01-cc25-48ed-90aa-fafe16fce3b5", Path = "images/Vit3.avif" },
+            new FileUpload { Id = "08f3b524-1ff0-4d1f-a4f9-a50c0d6ee717", Path = "images/Dub1.avif" },
+            new FileUpload { Id = "1389e44f-240f-4eed-bde3-93623d7c41d1", Path = "images/Dub2.avif" },
+            new FileUpload { Id = "ff840d01-6eab-45fb-a911-674725a89003", Path = "images/Dub3.avif" },
+            new FileUpload { Id = "f3db201e-fddd-4278-9beb-96863dde2f0f", Path = "images/Morc1.webp" },
+            new FileUpload { Id = "82da2e46-5e65-4ad8-97e9-ad10fdd63171", Path = "images/Mroc2.avif" },
+            new FileUpload { Id = "e4a28523-f13c-431a-8af5-2ebd307f1a85", Path = "images/Mroc3.avif" },
+            new FileUpload { Id = "6f572d60-4465-40a4-8b63-7bb2eb876cbd", Path = "images/Colm1.avif" },
+            new FileUpload { Id = "5c8fa3e9-2590-44d4-8e36-ee7f3c526b37", Path = "images/Colm2.avif" },
+            new FileUpload { Id = "3777d149-0028-4ea1-ba62-db41d33939f5", Path = "images/Colm3.avif" },
+            new FileUpload { Id = "1fb978f8-fb49-4f38-8acb-345be5c86bc7", Path = "images/indon1.jpeg" },
+            new FileUpload { Id = "ba47797b-da79-47a0-8014-48e5422f0500", Path = "images/indon2.jpeg" },
+            new FileUpload { Id = "e019ead5-3b99-4f78-a84b-23b34ba27e26", Path = "images/indon3.jpeg" },
+            new FileUpload { Id = "f4b528d3-1204-4ccc-af05-2a39346d7ace", Path = "images/Rom1.avif" },
+            new FileUpload { Id = "a73860df-b173-4d4d-b834-124f19d93a20e", Path = "images/Rom2.avif" },
+            new FileUpload { Id = "3cb5e765-921f-4e0e-97be-b6d1e4c762cf", Path = "images/Rom3.avif" },
+            new FileUpload { Id = "ec263c4f-fcc3-4d72-805e-d0b116e2cdd7", Path = "images/Turk1.avif" },
+            new FileUpload { Id = "2f50cb6f-8aeb-4428-8279-7c3a11d18232", Path = "images/Turk2.avif" },
+            new FileUpload { Id = "fbb7ade9-39b8-4b3b-abb5-b38fc1f70471", Path = "images/Turk3.avif" },
+            //userPhotos
+            new FileUpload { Id = "c3d1f440-7e0e-4f38-8b5d-34ea8d12e801", Path = "images/admin.jpg" },
+            new FileUpload { Id = "98b7dcb6-7c53-4216-9f7a-259f40371fd4", Path = "images/host.jpg" },
+            new FileUpload { Id = "4ae9e354-5eac-4f3a-a4b3-7c84c5b31d89", Path = "images/guest.jpg" }
+
+
+
+
+
+        };
+    }
+}

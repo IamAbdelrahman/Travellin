@@ -20,12 +20,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Travellin.Api\Filters\" />
-    <Folder Include="Travellin.Api\Helpers\" />
-    <Folder Include="Travellin.Core\Shared\" />
-    <Folder Include="Travellin.Infrastructure\Services\" />
-    <Folder Include="Travellin.Infrastructure\Repositories\" />
-  </ItemGroup>
-
 </Project>

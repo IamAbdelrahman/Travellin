@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36127.28 d17.14
+VisualStudioVersion = 17.14.36127.28
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Travellin", "Travellin.csproj", "{A4BE4F12-8DC6-4526-A3C8-6F1263442F1A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Travellin.Infrastructure", "..\Travellin.Infrastructure\Travellin.Infrastructure.csproj", "{6BD1ED8C-3FF4-4307-BA12-EAB3E0896106}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Travellin.Core", "..\Travellin.Core\Travellin.Core.csproj", "{90A1C7E7-6D99-4603-B636-DB1A86C3C865}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Travellin.Api", "Travellin.Api\Travellin.Api.csproj", "{5659E83B-655F-43D9-9726-940BB1E6A4FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A4BE4F12-8DC6-4526-A3C8-6F1263442F1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4BE4F12-8DC6-4526-A3C8-6F1263442F1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4BE4F12-8DC6-4526-A3C8-6F1263442F1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4BE4F12-8DC6-4526-A3C8-6F1263442F1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BD1ED8C-3FF4-4307-BA12-EAB3E0896106}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BD1ED8C-3FF4-4307-BA12-EAB3E0896106}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BD1ED8C-3FF4-4307-BA12-EAB3E0896106}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BD1ED8C-3FF4-4307-BA12-EAB3E0896106}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90A1C7E7-6D99-4603-B636-DB1A86C3C865}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90A1C7E7-6D99-4603-B636-DB1A86C3C865}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90A1C7E7-6D99-4603-B636-DB1A86C3C865}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90A1C7E7-6D99-4603-B636-DB1A86C3C865}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5659E83B-655F-43D9-9726-940BB1E6A4FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5659E83B-655F-43D9-9726-940BB1E6A4FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5659E83B-655F-43D9-9726-940BB1E6A4FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5659E83B-655F-43D9-9726-940BB1E6A4FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
