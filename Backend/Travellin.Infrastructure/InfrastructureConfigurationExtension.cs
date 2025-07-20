@@ -11,8 +11,7 @@ using Travellin.Infrastructure.Services;
 using Travellin.Infrastructure.Shared;
 using Stripe;
 using System.Text;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Builder;
+
 
 namespace Travellin.Infrastructure
 {
@@ -25,10 +24,6 @@ namespace Travellin.Infrastructure
             services.AddDbContext<TravellinDbContext>(options
                     => options.UseSqlServer(configuration.GetConnectionString("CFG")));
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-            }); ;
             services.AddIdentity<AppUser, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = true;
