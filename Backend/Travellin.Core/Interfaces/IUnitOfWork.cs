@@ -27,5 +27,6 @@
         public IPaymentRepository PaymentRepository { get; }
         public IReviewRepository ReviewRepository { get; }
         public Task SaveChangesAsync();
+        public void SaveChanges();
     }
 }

@@ -79,7 +79,7 @@ namespace Travellin.Core.Mappings
             };
         }
 
-        public static void ToEntity (this Property propertyEntity, PropertyUpdateDto dto)
+        public static async void ToEntity (this Property propertyEntity, PropertyUpdateDto dto)
         {
             propertyEntity.Latitude = dto.Latitude ?? propertyEntity.Latitude;
             propertyEntity.Title = dto.Title ?? propertyEntity.Title;

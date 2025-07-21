@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-admin-page',
   imports: [],
-  templateUrl: './admin-page.html',
-  styleUrl: './admin-page.css'
+  templateUrl: './user-page.html',
+  styleUrl: './user-page.css'
 })
 export class AdminPage {
 

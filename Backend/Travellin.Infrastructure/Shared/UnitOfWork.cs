@@ -67,5 +67,9 @@ namespace Travellin.Infrastructure.Shared
         {
             await _dbContext.SaveChangesAsync();
         }
+        public void SaveChanges()
+        {
+            _dbContext.SaveChanges();
+        }
     }
 }

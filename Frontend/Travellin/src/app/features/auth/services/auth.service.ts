@@ -1,42 +1,25 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'api/auth';
-  private tokenKey = 'auth_token';
+  constructor() {}
 
-  constructor(private http: HttpClient) {}
-
-  register(registerData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, registerData);
+  public setAuthData(userId: string, userName: string, accessToken: string) {
+    localStorage.setItem('userId', userId);
+    localStorage.setItem('userName', userName);
+    localStorage.setItem('accessToken', accessToken);
   }
 
-  login(loginData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, loginData).pipe(
-      tap((response: any) => {
-        localStorage.setItem(this.tokenKey, response.token);
-      })
-    );
+  public unsetAuthData() {
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('accessToken');
   }
 
-  forgotPassword(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/forgot-password`, { email });
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
-  }
-
-  isLoggedIn(): boolean {
-    return !!this.getToken();
-  }
-
-  logout(): void {
-    localStorage.removeItem(this.tokenKey);
+  public isAuthenticated(): boolean {
+    let authToken = localStorage.getItem('accessToken');
+    return Boolean(authToken);
   }
 }

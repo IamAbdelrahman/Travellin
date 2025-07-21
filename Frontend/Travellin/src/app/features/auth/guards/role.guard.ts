@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
-
+import { TokenStorageService } from '../../../core/services/token-storage.service';
 @Injectable({
   providedIn: 'root'
 })
 export class RoleGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router, private jwtHelper: JwtHelperService) {}
+  constructor(private tokenStorage: TokenStorageService, private router: Router, private jwtHelper: JwtHelperService) {}
 
   canActivate(route: any): boolean {
-    const token = this.authService.getToken();
+    const token = this.tokenStorage.getToken();
     if (token && !this.jwtHelper.isTokenExpired(token)) {
       const decodedToken = this.jwtHelper.decodeToken(token);
       const userRole = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
