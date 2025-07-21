@@ -1,6 +1,7 @@
 ﻿using Travellin.Core.Dtos.Properties;
 using Travellin.Core.Dtos.PropertySpaceItemTypes;
 using Travellin.Core.Dtos.PropertySpaceTypes;
+using Travellin.Core.Dtos.UserProfilesDto;
 using Travellin.Core.Entities;
 
 namespace Travellin.Core.Mappings
@@ -78,6 +79,20 @@ namespace Travellin.Core.Mappings
             };
         }
 
+        public static void ToEntity (this Property propertyEntity, PropertyUpdateDto dto)
+        {
+            propertyEntity.Latitude = dto.Latitude ?? propertyEntity.Latitude;
+            propertyEntity.Title = dto.Title ?? propertyEntity.Title;
+            propertyEntity.Description = dto.Description ?? propertyEntity.Description;
+            propertyEntity.PropertyTypeId = dto.PropertyTypeId ?? propertyEntity.PropertyTypeId;
+            propertyEntity.PricePerNight = dto.PricePerNight ?? propertyEntity.PricePerNight;
+            propertyEntity.Longitude = dto.Longitude ?? propertyEntity.Longitude;
+            propertyEntity.LocationId = dto.LocationId ?? propertyEntity.LocationId;
+            propertyEntity.SafteyInfo = dto.SafteyInfo ?? propertyEntity.SafteyInfo;
+            propertyEntity.HouseRules = dto.HouseRules ?? propertyEntity.HouseRules;
+            propertyEntity.CancellationPolicy = dto.CancellationPolicy ?? propertyEntity.CancellationPolicy;
+            propertyEntity.IsActive = dto.IsActive ?? propertyEntity.IsActive;
+        }
         private static (decimal averageRating, int reviewCount) CalculateRatingStats(Property property)
         {
             var reviews = property.Bookings?

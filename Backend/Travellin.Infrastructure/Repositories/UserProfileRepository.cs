@@ -40,7 +40,7 @@ namespace Travellin.Infrastructure.Repositories
                 .ThenInclude(u => u.Roles)
                 .Include(u => u.Photo)
                 .Where(u => u.UserId == userId)
-                .Select(u => u.ToDto());
+                .Select(u => u.ToDto()); 
 
             var user = await query.FirstOrDefaultAsync();
 

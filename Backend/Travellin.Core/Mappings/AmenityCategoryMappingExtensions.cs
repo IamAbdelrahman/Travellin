@@ -5,7 +5,7 @@ namespace Travellin.Core.Mappings
 {
     public static class AmenityCategoryMappingExtensions
     {
-        public static AmenityCategoryDto ToDo(this AmenityCategory amenityCategory)
+        public static AmenityCategoryDto ToDto(this AmenityCategory amenityCategory)
         {
             return new AmenityCategoryDto
             {

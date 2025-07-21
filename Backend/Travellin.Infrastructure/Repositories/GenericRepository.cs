@@ -47,6 +47,10 @@ namespace Travellin.Infrastructure.Repositories
             return await _dbContext.Set<TEntity>().FindAsync(id);
         }
 
+        public virtual TEntity GetById(TKey id)
+        {
+            return _dbContext.Set<TEntity>().Find(id) ?? throw new Exception("NUll");
+        }
         public virtual async Task<TEntity?> GetByIdAsync(TKey id, params Expression<Func<TEntity, object>>[] includes)
         {
             var query = _dbContext.Set<TEntity>().AsQueryable();
