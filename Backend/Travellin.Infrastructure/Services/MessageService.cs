@@ -103,4 +103,25 @@ public class MessageService : IMessageService
         }
         await _unitOfWork.SaveChangesAsync();
     }
+
+    public async Task<bool> UserIsInConversationAsync(int conversationId, string currentUserId)
+    {
+        var conversation = await _conversationRepo.GetByIdAsync(conversationId);
+
+        if (conversation == null)
+            return false;
+
+        return conversation.User1Id == currentUserId || conversation.User2Id == currentUserId;
+    }
+
+    public async Task<bool> CanUserMarkMessageAsRead(int messageId, string currentUserId)
+    {
+        var message = await _messageRepo.GetByIdAsync(messageId);
+
+        if (message == null)
+            return false;
+
+        return message.ReceiverId == currentUserId;
+    }
+
 }

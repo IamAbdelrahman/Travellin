@@ -16,6 +16,8 @@ namespace Travellin.Core.Interfaces
         Task<bool> DeleteConversationAsync(int conversationId);
         Task<List<InboxDto>> GetInboxPreviewAsync(string userId);
         Task<List<ConversationSearchResultDto>> SearchConversationsAsync(string userId, string query);
+        Task<bool> UserIsInConversationAsync(int conversationId, string userId);
+
     }
 
 }

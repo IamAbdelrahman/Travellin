@@ -1,16 +1,24 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Travellin.Core.Dtos.Conversation;
 using Travellin.Core.Dtos.Message;
+using Travellin.Core.Entities;
 using Travellin.Core.Interfaces;
 
 namespace Travellin.Travellin.Api.Controllers;
-
+[Authorize]
 [ApiController]
-[Route("api/conversations")]
+[Route("api/v1/[controller]")]
+[Tags("Conversation")]
+
 public class ConversationsController : ControllerBase
 {
     private readonly IConversationService _conversationService;
+    private string GetCurrentUserId() =>
+        User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+
 
     public ConversationsController(IConversationService conversationService)
     {
@@ -25,6 +33,11 @@ public class ConversationsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> StartConversation([FromBody] StartConversationDto dto)
     {
+        var currentUserId = GetCurrentUserId();
+
+        if (dto.User1Id != currentUserId && dto.User2Id != currentUserId)
+            return Forbid();
+
         var conversation = await _conversationService.CreateOrGetConversationAsync(dto.User1Id, dto.User2Id);
 
         var result = new ConversationDto
@@ -54,7 +67,9 @@ public class ConversationsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserConversations(string userId)
     {
-        var conversations = await _conversationService.GetUserConversationsAsync(userId);
+        var currentUserId = GetCurrentUserId();
+
+        var conversations = await _conversationService.GetUserConversationsAsync(currentUserId);
 
         if (!conversations.Any())
             return NotFound();
@@ -86,6 +101,10 @@ public class ConversationsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetConversationById(int id)
     {
+        var currentUserId = GetCurrentUserId();
+        if (!await _conversationService.UserIsInConversationAsync(id, currentUserId))
+            return Forbid();
+
         var conversation = await _conversationService.GetConversationByIdAsync(id);
         if (conversation == null) return NotFound();
 
@@ -126,7 +145,9 @@ public class ConversationsController : ControllerBase
     [EndpointSummary("Get inbox preview for user")]
     public async Task<IActionResult> GetInboxPreview(string userId)
     {
-        var result = await _conversationService.GetInboxPreviewAsync(userId);
+
+        var currentUserId = GetCurrentUserId();
+        var result = await _conversationService.GetInboxPreviewAsync(currentUserId);
         return Ok(result);
     }
 
@@ -135,7 +156,9 @@ public class ConversationsController : ControllerBase
     [EndpointSummary("Search conversations by participant name or message content")]
     public async Task<IActionResult> Search([FromQuery] string userId, [FromQuery] string query)
     {
-        var results = await _conversationService.SearchConversationsAsync(userId, query);
+
+        var currentUserId = GetCurrentUserId();
+        var results = await _conversationService.SearchConversationsAsync(currentUserId, query);
         return Ok(results);
     }
 }

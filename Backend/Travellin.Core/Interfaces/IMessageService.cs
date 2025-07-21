@@ -15,6 +15,8 @@ namespace Travellin.Core.Interfaces
         Task MarkMessageAsReadAsync(int messageId);
         Task<int> GetUnreadCountAsync(string userId);
         Task MarkMessagesAsReadAsync(int conversationId, string userId);
+        Task<bool> UserIsInConversationAsync(int conversationId, string currentUserId);
+        Task<bool> CanUserMarkMessageAsRead(int id, string currentUserId);
     }
 
 }

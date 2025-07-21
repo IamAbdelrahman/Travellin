@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -96,6 +97,14 @@ namespace Travellin.Infrastructure.Services
             }
 
             return results;
+        }
+        public async Task<bool> UserIsInConversationAsync(int conversationId, string userId)
+        {
+            var conversation = await _conversationRepo.GetByIdAsync(conversationId);
+            if (conversation == null)
+                return false;
+
+            return conversation.User1Id == userId || conversation.User2Id == userId;
         }
     }
 }
