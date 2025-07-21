@@ -9,6 +9,8 @@ using System.Net.Mail;
 
 namespace Travellin.Api.Controllers
 {
+    [Route("api/v1/[controller]")]
+    [ApiController]
     public class AccountsController : BaseController
     {
         private readonly IIdentityFactory _identityFactory;

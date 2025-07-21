@@ -7,7 +7,9 @@ using Travellin.Core.Mappings;
 using Travellin.Travellin.Core.Shared;
 using Travellin.Infrastructure.Data;
 using Travellin.Travellin.Core.Enums;
-
+using Travellin.Core.Dtos;
+using Stripe.Identity;
+using Travellin.Core.Mappings;
 namespace Travellin.Infrastructure.Repositories
 {
     class PropertyRepository : GenericRepository<Property, string>, IPropertyRepository
@@ -220,5 +222,10 @@ namespace Travellin.Infrastructure.Repositories
 
             return property;
         }
+        public void FromUpdateDtoToEntity(Property entity, PropertyUpdateDto dto)
+        {
+            PropertyMappingExtensions.ToEntity(entity, dto);
+        }
+  
     }
 }
