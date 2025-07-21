@@ -16,6 +16,8 @@ namespace Travellin.Infrastructure.Shared
         private IFileUploadManagementService _fileUploadManagementService;
         private IBookingManagementService _bookingManagementService;
         private ICheckoutManagementService _checkoutManagementService;
+        private IConversationService? _conversationService;
+        private IMessageService? _messageService;
 
         public ServiceFactory(IServiceProvider provider, IConfiguration config)
         {
@@ -33,5 +35,16 @@ namespace Travellin.Infrastructure.Shared
                 _provider.GetRequiredService<IUnitOfWork>(),
                 _provider.GetRequiredService<ILogger<StripeCheckoutService>>(),
                 _config);
+        public IConversationService ConversationService =>
+    _conversationService ??= new ConversationService(
+        _provider.GetRequiredService<IConversationRepository>(),
+        _provider.GetRequiredService<IUnitOfWork>());
+
+        public IMessageService MessageService =>
+            _messageService ??= new MessageService(
+                _provider.GetRequiredService<IMessageRepository>(),
+                _provider.GetRequiredService<IConversationRepository>(),
+                _provider.GetRequiredService<IUnitOfWork>());
+
     }
 }

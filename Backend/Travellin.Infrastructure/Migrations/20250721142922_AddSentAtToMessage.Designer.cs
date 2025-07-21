@@ -12,8 +12,8 @@ using Travellin.Infrastructure.Data;
 namespace Travellin.Infrastructure.Migrations
 {
     [DbContext(typeof(TravellinDbContext))]
-    [Migration("20250720060443_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250721142922_AddSentAtToMessage")]
+    partial class AddSentAtToMessage
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1167,23 +1167,19 @@ namespace Travellin.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("User1Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("User1Id1")
+                    b.Property<string>("User1Id")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("User2Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("User2Id1")
+                    b.Property<string>("User2Id")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("User1Id1");
+                    b.HasIndex("User1Id");
 
-                    b.HasIndex("User2Id1");
+                    b.HasIndex("User2Id");
 
                     b.ToTable("Conversations");
                 });
@@ -3434,37 +3430,33 @@ namespace Travellin.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("ConversationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("ConversationId1")
+                    b.Property<int>("ConversationId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("ReceiverId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ReceiverId1")
+                    b.Property<string>("ReceiverId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("SenderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("SenderId1")
+                    b.Property<string>("SenderId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("TranslatedContent")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ConversationId1");
+                    b.HasIndex("ConversationId");
 
-                    b.HasIndex("ReceiverId1");
+                    b.HasIndex("ReceiverId");
 
-                    b.HasIndex("SenderId1");
+                    b.HasIndex("SenderId");
 
                     b.ToTable("Messages");
                 });
@@ -7315,11 +7307,15 @@ namespace Travellin.Infrastructure.Migrations
                 {
                     b.HasOne("Travellin.Core.Entities.AppUser", "User1")
                         .WithMany()
-                        .HasForeignKey("User1Id1");
+                        .HasForeignKey("User1Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Travellin.Core.Entities.AppUser", "User2")
                         .WithMany()
-                        .HasForeignKey("User2Id1");
+                        .HasForeignKey("User2Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User1");
 
@@ -7405,17 +7401,21 @@ namespace Travellin.Infrastructure.Migrations
                 {
                     b.HasOne("Travellin.Core.Entities.Conversation", "Conversation")
                         .WithMany("Messages")
-                        .HasForeignKey("ConversationId1")
+                        .HasForeignKey("ConversationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Travellin.Core.Entities.AppUser", "Receiver")
                         .WithMany()
-                        .HasForeignKey("ReceiverId1");
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Travellin.Core.Entities.AppUser", "Sender")
                         .WithMany()
-                        .HasForeignKey("SenderId1");
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Conversation");
 

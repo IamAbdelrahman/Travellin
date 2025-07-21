@@ -3,14 +3,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
+using Stripe;
+using System.Text;
 using Travellin.Core.Entities;
 using Travellin.Core.Interfaces;
 using Travellin.Infrastructure.Data;
+using Travellin.Infrastructure.Repositories;
 using Travellin.Infrastructure.Services;
 using Travellin.Infrastructure.Shared;
-using Stripe;
-using System.Text;
 
 
 namespace Travellin.Infrastructure
@@ -80,7 +82,11 @@ namespace Travellin.Infrastructure
             services.AddScoped<IIdentityFactory, IdentityFactory>();
             services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<IServiceFactory, ServiceFactory>();
-
+            //Messaging Services
+            services.AddScoped<IConversationService, ConversationService>();
+            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IConversationRepository, ConversationRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
             return services;
         }
     }

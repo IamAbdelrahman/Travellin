@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace Travellin.Infrastructure.Repositories
 {
-    class GenericRepository<TEntity, TKey> : BaseRepository, IGenericRepository<TEntity, TKey> where TEntity : BaseEntity<TKey>
+    public class GenericRepository<TEntity, TKey> : BaseRepository, IGenericRepository<TEntity, TKey> where TEntity : BaseEntity<TKey>
     {
         public GenericRepository(TravellinDbContext dbContext) : base(dbContext)
         { }
@@ -110,6 +110,10 @@ namespace Travellin.Infrastructure.Repositories
             }
 
             return query;
+        }
+        public async Task AddAsync(TEntity entity)
+        {
+            await _dbContext.Set<TEntity>().AddAsync(entity);
         }
     }
 }
