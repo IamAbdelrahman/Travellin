@@ -1,0 +1,21 @@
+.review-summary {
+  background: rgba(76, 183, 183, 0.1);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.publish-btn {
+  background: var(--primary);
+  color: white;
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  margin-top: 20px;
+}

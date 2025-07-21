@@ -1,0 +1,21 @@
+<div class="progress-container">
+  <!-- Progress bar -->
+  <div class="progress-bar">
+    <div class="progress-fill" [style.width.%]="progressPercentage"></div>
+  </div>
+
+  <!-- Progress text -->
+  <div class="progress-text">{{ getProgressText() }}</div>
+
+  <!-- Step indicators -->
+  <div class="step-indicators">
+    <div *ngFor="let step of steps; let i = index"
+         [class.active]="i === currentStepIndex"
+         [class.completed]="i < currentStepIndex"
+         (click)="navigateToStep(i)">
+      {{ step.id }}. {{ step.title }}
+    </div>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
