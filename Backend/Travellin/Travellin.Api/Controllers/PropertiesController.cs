@@ -22,6 +22,7 @@ namespace Travellin.Travellin.Api.Controllers
 
         public IActionResult UpdateProperty([FromBody]PropertyUpdateDto dto, string id)
         {
+            //var property = await _unitOfWork.PropertyRepository.GetByIdAsync(id);
             var property = _unitOfWork.PropertyRepository.GetById(id);
             if (property == null)
             {
@@ -30,13 +31,15 @@ namespace Travellin.Travellin.Api.Controllers
             _unitOfWork.PropertyRepository.FromUpdateDtoToEntity(property, dto);
             _unitOfWork.PropertyRepository.Update(property);
             _unitOfWork.SaveChangesAsync();
+            //_unitOfWork.SaveChanges();
             return Ok(property);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById([FromRoute] string id)
+        public IActionResult GetById([FromRoute] string id)
         {
-            var result = await _unitOfWork.PropertyRepository.GetByIdAsync(id);
+            //var result = await _unitOfWork.PropertyRepository.GetByIdAsync(id);
+            var result = _unitOfWork.PropertyRepository.GetById(id);
             if (result is null) return NotFound();
             return Ok(result);
         }

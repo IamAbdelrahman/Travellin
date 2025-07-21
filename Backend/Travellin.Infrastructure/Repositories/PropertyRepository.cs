@@ -10,6 +10,7 @@ using Travellin.Travellin.Core.Enums;
 using Travellin.Core.Dtos;
 using Stripe.Identity;
 using Travellin.Core.Mappings;
+using System.Threading.Tasks;
 namespace Travellin.Infrastructure.Repositories
 {
     class PropertyRepository : GenericRepository<Property, string>, IPropertyRepository
@@ -222,10 +223,15 @@ namespace Travellin.Infrastructure.Repositories
 
             return property;
         }
-        public void FromUpdateDtoToEntity(Property entity, PropertyUpdateDto dto)
+        public async void FromUpdateDtoToEntity(Property entity, PropertyUpdateDto dto)
         {
             PropertyMappingExtensions.ToEntity(entity, dto);
         }
-  
+
+        public override Property GetById(string id)
+        {
+            return _dbContext.Properties.Find(id) ?? throw new Exception("Not found");
+        }
+
     }
 }
