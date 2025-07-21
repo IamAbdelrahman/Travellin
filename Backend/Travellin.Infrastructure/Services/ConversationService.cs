@@ -106,5 +106,6 @@ namespace Travellin.Infrastructure.Services
 
             return conversation.User1Id == userId || conversation.User2Id == userId;
         }
+
     }
 }
