@@ -72,5 +72,23 @@ namespace Travellin.Api.Controllers
             await _messageService.MarkMessageAsReadAsync(id);
             return NoContent();
         }
+
+        [HttpGet("unread/count")]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [EndpointSummary("Get total unread message count for a user")]
+        public async Task<IActionResult> GetUnreadCount([FromQuery] string userId)
+        {
+            var count = await _messageService.GetUnreadCountAsync(userId);
+            return Ok(new { unreadCount = count });
+        }
+
+        [HttpPut("mark-read/{conversationId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [EndpointSummary("Mark all messages in a conversation as read")]
+        public async Task<IActionResult> MarkAllMessagesAsRead(int conversationId, [FromQuery] string userId)
+        {
+            await _messageService.MarkMessagesAsReadAsync(conversationId, userId);
+            return NoContent();
+        }
     }
 }

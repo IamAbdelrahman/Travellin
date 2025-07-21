@@ -120,4 +120,22 @@ public class ConversationsController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("inbox/{userId}")]
+    [ProducesResponseType(typeof(List<InboxDto>), StatusCodes.Status200OK)]
+    [EndpointSummary("Get inbox preview for user")]
+    public async Task<IActionResult> GetInboxPreview(string userId)
+    {
+        var result = await _conversationService.GetInboxPreviewAsync(userId);
+        return Ok(result);
+    }
+
+    [HttpGet("search")]
+    [ProducesResponseType(typeof(List<ConversationSearchResultDto>), StatusCodes.Status200OK)]
+    [EndpointSummary("Search conversations by participant name or message content")]
+    public async Task<IActionResult> Search([FromQuery] string userId, [FromQuery] string query)
+    {
+        var results = await _conversationService.SearchConversationsAsync(userId, query);
+        return Ok(results);
+    }
 }

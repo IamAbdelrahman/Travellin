@@ -35,7 +35,13 @@ namespace Travellin.Infrastructure.Repositories
                 .Include(c => c.Messages)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
-
+        public async Task<List<Conversation>> GetInboxPreviewAsync(string userId)
+        {
+            return await _dbContext.Conversations
+                .Where(c => c.User1Id == userId || c.User2Id == userId)
+                .Include(c => c.Messages.OrderByDescending(m => m.SentAt).Take(1))
+                .ToListAsync();
+        }
     }
 
 }

@@ -13,6 +13,8 @@ namespace Travellin.Core.Interfaces
         Task MarkAsReadAsync(int messageId);
         Task<Message?> GetMessageWithDetailsAsync(int messageId);
         Task AddAsync(Message message);
+        Task<int> CountUnreadMessagesAsync(string userId);
+        Task<List<Message>> GetUnreadMessagesByConversationAndUserAsync(int conversationId, string userId);
     }
 
 }

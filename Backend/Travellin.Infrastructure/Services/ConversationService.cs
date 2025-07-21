@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Travellin.Core.Dtos.Conversation;
 using Travellin.Core.Entities;
 using Travellin.Core.Interfaces;
 
@@ -59,6 +60,42 @@ namespace Travellin.Infrastructure.Services
             await _unitOfWork.SaveChangesAsync();
             return true;
         }
-    }
 
+        public async Task<List<InboxDto>> GetInboxPreviewAsync(string userId)
+        {
+            var conversations = await _conversationRepo.GetInboxPreviewAsync(userId);
+            return conversations.Select(c => new InboxDto
+            {
+                ConversationId = c.Id,
+                Participant = c.User1Id == userId ? c.User2Id : c.User1Id,
+                LastMessage = c.Messages.FirstOrDefault()?.Content,
+                SentAt = c.Messages.FirstOrDefault()?.SentAt ?? DateTime.MinValue,
+                IsUnread = c.Messages.FirstOrDefault()?.ReceiverId == userId && !(c.Messages.FirstOrDefault()?.IsRead ?? true)
+            }).ToList();
+        }
+
+        public async Task<List<ConversationSearchResultDto>> SearchConversationsAsync(string userId, string query)
+        {
+            var conversations = await _conversationRepo.GetUserConversationsAsync(userId);
+            var results = new List<ConversationSearchResultDto>();
+
+            foreach (var convo in conversations)
+            {
+                var participant = convo.User1Id == userId ? convo.User2Id : convo.User1Id;
+                var matchMessage = convo.Messages.FirstOrDefault(m => m.Content.Contains(query, StringComparison.OrdinalIgnoreCase));
+
+                if (participant.Contains(query, StringComparison.OrdinalIgnoreCase) || matchMessage != null)
+                {
+                    results.Add(new ConversationSearchResultDto
+                    {
+                        ConversationId = convo.Id,
+                        Participant = participant,
+                        MatchedMessage = matchMessage?.Content
+                    });
+                }
+            }
+
+            return results;
+        }
+    }
 }

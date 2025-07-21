@@ -88,4 +88,19 @@ public class MessageService : IMessageService
         await _messageRepo.MarkAsReadAsync(messageId);
         await _unitOfWork.SaveChangesAsync();
     }
+
+    public async Task<int> GetUnreadCountAsync(string userId)
+    {
+        return await _messageRepo.CountUnreadMessagesAsync(userId);
+    }
+
+    public async Task MarkMessagesAsReadAsync(int conversationId, string userId)
+    {
+        var messages = await _messageRepo.GetUnreadMessagesByConversationAndUserAsync(conversationId, userId);
+        foreach (var message in messages)
+        {
+            message.IsRead = true;
+        }
+        await _unitOfWork.SaveChangesAsync();
+    }
 }

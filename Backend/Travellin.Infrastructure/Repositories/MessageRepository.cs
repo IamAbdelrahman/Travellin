@@ -42,5 +42,15 @@ public class MessageRepository : GenericRepository<Message, int>, IMessageReposi
     {
         await _dbContext.Messages.AddAsync(message);
     }
+    public async Task<int> CountUnreadMessagesAsync(string userId)
+    {
+        return await _dbContext.Messages.CountAsync(m => m.ReceiverId == userId && !m.IsRead);
+    }
 
+    public async Task<List<Message>> GetUnreadMessagesByConversationAndUserAsync(int conversationId, string userId)
+    {
+        return await _dbContext.Messages
+            .Where(m => m.ConversationId == conversationId && m.ReceiverId == userId && !m.IsRead)
+            .ToListAsync();
+    }
 }
