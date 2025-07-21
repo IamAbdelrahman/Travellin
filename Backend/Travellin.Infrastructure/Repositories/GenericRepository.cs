@@ -5,6 +5,7 @@ using Travellin.Core.Interfaces;
 using Travellin.Travellin.Core.Shared;
 using Travellin.Infrastructure.Data;
 using System.Linq.Expressions;
+using Microsoft.Graph.Models;
 
 namespace Travellin.Infrastructure.Repositories
 {
@@ -17,11 +18,16 @@ namespace Travellin.Infrastructure.Repositories
         {
             _dbContext.Add(entity);
         }
+        public virtual void Update(TEntity entity)
+        {
+            _dbContext.Update(entity);
+        }
 
-        public virtual void Delete(TEntity entity)
+        public void Delete(TEntity entity)
         {
             _dbContext.Remove(entity);
         }
+
 
         public virtual async Task DeleteAsync(TKey id)
         {
@@ -63,9 +69,12 @@ namespace Travellin.Infrastructure.Repositories
             return await query.FirstOrDefaultAsync(e => e.Id.Equals(id));
         }
 
-        public virtual void Update(TEntity entity)
+
+
+
+        public virtual async Task<List<TEntity>> GetAll()
         {
-            _dbContext.Update(entity);
+            return await _dbContext.Set<TEntity>().ToListAsync();
         }
 
         private async Task<PaginatedResult<TEntity>> GetPaginatedResultAsync(GetAllQueryDto queryDto, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy, params Expression<Func<TEntity, object>>[]? includes)
@@ -111,5 +120,49 @@ namespace Travellin.Infrastructure.Repositories
 
             return query;
         }
+
+        public async Task DeleteAsync(string propertyId)
+        {
+            using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            try
+            {
+                // First, delete all related PropertyAvailabilities
+                var propertyAvailabilities = await _dbContext.PropertyAvailabilities
+                    .Where(pa => pa.PropertyId == propertyId)
+                    .ToListAsync();
+
+                if (propertyAvailabilities.Any())
+                {
+                    _dbContext.PropertyAvailabilities.RemoveRange(propertyAvailabilities);
+                }
+
+                // Then delete any other related records (bookings, reviews, etc.)
+                var bookings = await _dbContext.Bookings
+                    .Where(b => b.PropertyId == propertyId)
+                    .ToListAsync();
+
+                if (bookings.Any())
+                {
+                    _dbContext.Bookings.RemoveRange(bookings);
+                }
+
+                // Finally, delete the property
+                var property = await _dbContext.Properties.FindAsync(propertyId);
+                if (property != null)
+                {
+                    _dbContext.Properties.Remove(property);
+                }
+
+                await _dbContext.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
+
     }
 }
