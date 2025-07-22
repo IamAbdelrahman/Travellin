@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Travellin.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Test : Migration
+    public partial class InitiateDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -263,8 +263,8 @@ namespace Travellin.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    User1Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    User2Id = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    User1Id = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    User2Id = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -274,13 +274,13 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.User1Id,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Conversations_AspNetUsers_User2Id",
                         column: x => x.User2Id,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -289,20 +289,20 @@ namespace Travellin.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsRead = table.Column<bool>(type: "bit", nullable: false),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Notifications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Notifications_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Notifications_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -330,25 +330,25 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.ApprovedBy,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_HostUpgradeRequests_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_HostUpgradeRequests_FileUploads_BackPhotoId",
                         column: x => x.BackPhotoId,
                         principalTable: "FileUploads",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_HostUpgradeRequests_FileUploads_FrontPhotoId",
                         column: x => x.FrontPhotoId,
                         principalTable: "FileUploads",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -398,11 +398,12 @@ namespace Travellin.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ConversationId = table.Column<int>(type: "int", nullable: false),
-                    SenderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ReceiverId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TranslatedContent = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsRead = table.Column<bool>(type: "bit", nullable: false)
+                    SenderId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    ReceiverId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    TranslatedContent = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
                 {
@@ -412,19 +413,19 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.ReceiverId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Messages_AspNetUsers_SenderId",
                         column: x => x.SenderId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Messages_Conversations_ConversationId",
                         column: x => x.ConversationId,
                         principalTable: "Conversations",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -546,13 +547,13 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Bookings_Properties_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Properties",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -570,13 +571,13 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_FavoriteProperties_Properties_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Properties",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -784,7 +785,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.GuestTypeId,
                         principalTable: "GuestTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -809,7 +810,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.BookingId,
                         principalTable: "Bookings",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -1134,6 +1135,11 @@ namespace Travellin.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Conversations",
+                columns: new[] { "Id", "User1Id", "User2Id" },
+                values: new object[] { 1, "3dacdb51-fee9-4479-904c-cafe7dca22a7", "4dacdb51-fee9-4479-904c-cafe7dca22a8" });
+
+            migrationBuilder.InsertData(
                 table: "Countries",
                 columns: new[] { "Id", "Name", "RegionId" },
                 values: new object[,]
@@ -1384,6 +1390,15 @@ namespace Travellin.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Notifications",
+                columns: new[] { "Id", "Content", "Name", "UserId" },
+                values: new object[,]
+                {
+                    { 1, "You have a new message from user2@example.com", "NewMessage", "3dacdb51-fee9-4479-904c-cafe7dca22a7" },
+                    { 2, "Your booking for Cozy Apartment is confirmed", "BookingConfirmation", "4dacdb51-fee9-4479-904c-cafe7dca22a8" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "PropertySpaceItemTypes",
                 columns: new[] { "Id", "Name", "PropertySpaceTypeId" },
                 values: new object[,]
@@ -1468,6 +1483,15 @@ namespace Travellin.Infrastructure.Migrations
                     { 23, 101, "Kabupaten Gianyar, Indonesia" },
                     { 24, 106, "Rome, Italy" },
                     { 25, 224, "Bodrum, Turkey" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Messages",
+                columns: new[] { "Id", "Content", "ConversationId", "ReceiverId", "SenderId", "SentAt", "TranslatedContent" },
+                values: new object[,]
+                {
+                    { 1, "Hello, is the property available?", 1, "3dacdb51-fee9-4479-904c-cafe7dca22a7", "4dacdb51-fee9-4479-904c-cafe7dca22a8", new DateTime(2025, 5, 16, 17, 30, 0, 0, DateTimeKind.Local), null },
+                    { 2, "Yes, it’s available next week!", 1, "4dacdb51-fee9-4479-904c-cafe7dca22a8", "3dacdb51-fee9-4479-904c-cafe7dca22a7", new DateTime(2025, 3, 16, 16, 30, 0, 0, DateTimeKind.Local), null }
                 });
 
             migrationBuilder.InsertData(
@@ -2159,9 +2183,14 @@ namespace Travellin.Infrastructure.Migrations
                 column: "SenderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Notifications_UserId1",
+                name: "IX_Messages_SentAt",
+                table: "Messages",
+                column: "SentAt");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_UserId",
                 table: "Notifications",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_BookingId",

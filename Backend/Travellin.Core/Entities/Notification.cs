@@ -11,7 +11,7 @@ namespace Travellin.Core.Entities
 {
     public class Notification: BaseEntity<int>
     {
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
         public string Name { get; set; } = NotificationType.NewMessage.ToString(); // e.g., "BookingConfirmation", "NewMessage"
 
