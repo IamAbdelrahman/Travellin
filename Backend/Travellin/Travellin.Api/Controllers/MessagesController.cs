@@ -59,6 +59,7 @@ namespace Travellin.Api.Controllers
         /// Retrieve all messages in a given conversation by its ID.
         /// </summary>
         /// <param name="conversationId">The ID of the conversation</param>
+        [AllowAnonymous]
         [HttpGet("conversation/{conversationId}")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(List<MessageDto>), StatusCodes.Status200OK)]
