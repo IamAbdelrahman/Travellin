@@ -1,16 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Travellin.Core.Dtos.Message;
 using Travellin.Core.Entities;
 using Travellin.Core.Interfaces;
 
 namespace Travellin.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/[controller]")]
     [Tags("Messages")]
     public class MessagesController : ControllerBase
     {
         private readonly IMessageService _messageService;
+        private string GetCurrentUserId() =>
+    User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
 
         public MessagesController(IMessageService messageService)
         {
@@ -32,9 +37,15 @@ namespace Travellin.Api.Controllers
         [EndpointSummary("Send a new message between users")]
         public async Task<IActionResult> SendMessage([FromBody] CreateMessageDto dto)
         {
+            var currentUserId = GetCurrentUserId();
+
+            // Force sender to be the current user
+            if (dto.SenderId != currentUserId)
+                return Forbid();
+
             var message = new Message
             {
-                SenderId = dto.SenderId,
+                SenderId = currentUserId,
                 ReceiverId = dto.ReceiverId,
                 Content = dto.Content,
                 IsRead = false,
@@ -55,6 +66,11 @@ namespace Travellin.Api.Controllers
         [EndpointSummary("Get all messages in a conversation")]
         public async Task<IActionResult> GetMessagesByConversationId(int conversationId)
         {
+            var currentUserId = GetCurrentUserId();
+
+            if (!await _messageService.UserIsInConversationAsync(conversationId, currentUserId))
+                return Forbid();
+
             var messages = await _messageService.GetMessagesByConversationIdAsync(conversationId);
             return Ok(messages);
         }
@@ -69,7 +85,36 @@ namespace Travellin.Api.Controllers
         [EndpointSummary("Mark a message as read")]
         public async Task<IActionResult> MarkAsRead(int id)
         {
+            var currentUserId = GetCurrentUserId();
+
+            if (!await _messageService.CanUserMarkMessageAsRead(id, currentUserId))
+                return Forbid();
+
             await _messageService.MarkMessageAsReadAsync(id);
+            return NoContent();
+        }
+
+        [HttpGet("unread/count")]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [EndpointSummary("Get total unread message count for a user")]
+        public async Task<IActionResult> GetUnreadCount()
+        {
+            var currentUserId = GetCurrentUserId();
+            var count = await _messageService.GetUnreadCountAsync(currentUserId);
+            return Ok(new { unreadCount = count });
+        }
+
+        [HttpPut("mark-read/{conversationId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [EndpointSummary("Mark all messages in a conversation as read")]
+        public async Task<IActionResult> MarkAllMessagesAsRead(int conversationId)
+        {
+            var currentUserId = GetCurrentUserId();
+
+            if (!await _messageService.UserIsInConversationAsync(conversationId, currentUserId))
+                return Forbid();
+
+            await _messageService.MarkMessagesAsReadAsync(conversationId, currentUserId);
             return NoContent();
         }
     }

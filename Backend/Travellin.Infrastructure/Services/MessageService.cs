@@ -88,4 +88,40 @@ public class MessageService : IMessageService
         await _messageRepo.MarkAsReadAsync(messageId);
         await _unitOfWork.SaveChangesAsync();
     }
+
+    public async Task<int> GetUnreadCountAsync(string userId)
+    {
+        return await _messageRepo.CountUnreadMessagesAsync(userId);
+    }
+
+    public async Task MarkMessagesAsReadAsync(int conversationId, string userId)
+    {
+        var messages = await _messageRepo.GetUnreadMessagesByConversationAndUserAsync(conversationId, userId);
+        foreach (var message in messages)
+        {
+            message.IsRead = true;
+        }
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<bool> UserIsInConversationAsync(int conversationId, string currentUserId)
+    {
+        var conversation = await _conversationRepo.GetByIdAsync(conversationId);
+
+        if (conversation == null)
+            return false;
+
+        return conversation.User1Id == currentUserId || conversation.User2Id == currentUserId;
+    }
+
+    public async Task<bool> CanUserMarkMessageAsRead(int messageId, string currentUserId)
+    {
+        var message = await _messageRepo.GetByIdAsync(messageId);
+
+        if (message == null)
+            return false;
+
+        return message.ReceiverId == currentUserId;
+    }
+
 }
