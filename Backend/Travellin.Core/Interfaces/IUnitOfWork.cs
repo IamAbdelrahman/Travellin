@@ -26,6 +26,9 @@
         public IPropertyPhotoRepository PropertyPhotoRepository { get; }
         public IPaymentRepository PaymentRepository { get; }
         public IReviewRepository ReviewRepository { get; }
+        IConversationRepository ConversationRepository { get; }
+        IMessageRepository MessageRepository { get; }
+
         public Task SaveChangesAsync();
         public void SaveChanges();
     }

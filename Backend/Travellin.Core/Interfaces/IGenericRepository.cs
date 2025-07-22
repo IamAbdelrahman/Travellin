@@ -16,5 +16,8 @@ namespace Travellin.Core.Interfaces
         public void Create(TEntity entity);
         public void Update(TEntity entity);
         public void Delete(TEntity entity);
+        public Task DeleteAsync(TKey id);
+        Task AddAsync(TEntity entity);
+
     }
 }

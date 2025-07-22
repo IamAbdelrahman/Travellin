@@ -3,7 +3,7 @@ using Travellin.Infrastructure.Data;
 
 namespace Travellin.Infrastructure.Repositories
 {
-    class BaseRepository : IBaseRepository
+    public class BaseRepository : IBaseRepository
     {
         protected readonly TravellinDbContext _dbContext;
 

@@ -6,5 +6,8 @@
         public IFileUploadManagementService FileUploadManagementService { get; }
         public IBookingManagementService BookingManagementService { get; }
         public ICheckoutManagementService CheckoutManagementService { get; }
+        IConversationService ConversationService { get; }
+        IMessageService MessageService { get; }
+
     }
 }

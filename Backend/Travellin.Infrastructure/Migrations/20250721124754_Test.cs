@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Travellin.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Test : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -263,24 +263,24 @@ namespace Travellin.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    User1Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    User2Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    User1Id1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    User2Id1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    User1Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    User2Id = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Conversations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Conversations_AspNetUsers_User1Id1",
-                        column: x => x.User1Id1,
+                        name: "FK_Conversations_AspNetUsers_User1Id",
+                        column: x => x.User1Id,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_Conversations_AspNetUsers_User2Id1",
-                        column: x => x.User2Id1,
+                        name: "FK_Conversations_AspNetUsers_User2Id",
+                        column: x => x.User2Id,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -330,25 +330,25 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.ApprovedBy,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_HostUpgradeRequests_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_HostUpgradeRequests_FileUploads_BackPhotoId",
                         column: x => x.BackPhotoId,
                         principalTable: "FileUploads",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_HostUpgradeRequests_FileUploads_FrontPhotoId",
                         column: x => x.FrontPhotoId,
                         principalTable: "FileUploads",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -397,32 +397,31 @@ namespace Travellin.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ConversationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SenderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ReceiverId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ConversationId = table.Column<int>(type: "int", nullable: false),
+                    SenderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ReceiverId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TranslatedContent = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsRead = table.Column<bool>(type: "bit", nullable: false),
-                    ConversationId1 = table.Column<int>(type: "int", nullable: false),
-                    SenderId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ReceiverId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    IsRead = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Messages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Messages_AspNetUsers_ReceiverId1",
-                        column: x => x.ReceiverId1,
+                        name: "FK_Messages_AspNetUsers_ReceiverId",
+                        column: x => x.ReceiverId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_Messages_AspNetUsers_SenderId1",
-                        column: x => x.SenderId1,
+                        name: "FK_Messages_AspNetUsers_SenderId",
+                        column: x => x.SenderId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_Messages_Conversations_ConversationId1",
-                        column: x => x.ConversationId1,
+                        name: "FK_Messages_Conversations_ConversationId",
+                        column: x => x.ConversationId,
                         principalTable: "Conversations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
@@ -547,13 +546,13 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Bookings_Properties_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Properties",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -571,13 +570,13 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_FavoriteProperties_Properties_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Properties",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -785,7 +784,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.GuestTypeId,
                         principalTable: "GuestTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -810,7 +809,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.BookingId,
                         principalTable: "Bookings",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -2093,14 +2092,14 @@ namespace Travellin.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Conversations_User1Id1",
+                name: "IX_Conversations_User1Id",
                 table: "Conversations",
-                column: "User1Id1");
+                column: "User1Id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Conversations_User2Id1",
+                name: "IX_Conversations_User2Id",
                 table: "Conversations",
-                column: "User2Id1");
+                column: "User2Id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Countries_RegionId",
@@ -2145,19 +2144,19 @@ namespace Travellin.Infrastructure.Migrations
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_ConversationId1",
+                name: "IX_Messages_ConversationId",
                 table: "Messages",
-                column: "ConversationId1");
+                column: "ConversationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_ReceiverId1",
+                name: "IX_Messages_ReceiverId",
                 table: "Messages",
-                column: "ReceiverId1");
+                column: "ReceiverId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_SenderId1",
+                name: "IX_Messages_SenderId",
                 table: "Messages",
-                column: "SenderId1");
+                column: "SenderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_UserId1",
