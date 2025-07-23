@@ -1,15 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Graph.Models;
+using Stripe.Identity;
+using System.Threading.Tasks;
+using Travellin.Core.Dtos;
 using Travellin.Core.Dtos.Accounts;
 using Travellin.Core.Dtos.Properties;
 using Travellin.Core.Entities;
 using Travellin.Core.Interfaces;
 using Travellin.Core.Mappings;
-using Travellin.Travellin.Core.Shared;
+using Travellin.Core.Mappings;
 using Travellin.Infrastructure.Data;
 using Travellin.Travellin.Core.Enums;
-using Travellin.Core.Dtos;
-using Stripe.Identity;
-using Travellin.Core.Mappings;
+using Travellin.Travellin.Core.Shared;
 namespace Travellin.Infrastructure.Repositories
 {
     class PropertyRepository : GenericRepository<Property, string>, IPropertyRepository
@@ -222,10 +225,68 @@ namespace Travellin.Infrastructure.Repositories
 
             return property;
         }
-        public void FromUpdateDtoToEntity(Property entity, PropertyUpdateDto dto)
+        public async void FromUpdateDtoToEntity(Property entity, PropertyUpdateDto dto)
         {
             PropertyMappingExtensions.ToEntity(entity, dto);
         }
-  
+
+        public override Property GetById(string id)
+        {
+            return _dbContext.Properties.Find(id) ?? throw new Exception("Not found");
+        }
+        ////public async Task DeleteAsync(Property entity)
+        ////{
+        ////    _dbContext.Properties.Remove(entity);
+        ////     await Task.CompletedTask;
+
+        //}
+        public override async Task<List<Property>> GetAll()
+        {
+            return await _dbContext.Properties.ToListAsync();
+        }
+
+        public void FromCreateEntityToDto(PropertyCreateDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task DeleteAsync(Property property)
+        {
+            var photos = _dbContext.PropertyPhotos.Where(p => p.PropertyId == property.Id);
+            _dbContext.PropertyPhotos.RemoveRange(photos);
+
+            var guests = _dbContext.PropertyGuests.Where(p => p.PropertyId == property.Id);
+            _dbContext.PropertyGuests.RemoveRange(guests);
+
+            var fees = _dbContext.PropertyFees.Where(p => p.PropertyId == property.Id);
+            _dbContext.PropertyFees.RemoveRange(fees);
+
+            var availabilities = _dbContext.PropertyAvailabilities.Where(p => p.PropertyId == property.Id);
+            _dbContext.PropertyAvailabilities.RemoveRange(availabilities);
+
+            var bookings = _dbContext.Bookings.Where(b => b.PropertyId == property.Id);
+            _dbContext.Bookings.RemoveRange(bookings);
+
+            var propertySpaces = _dbContext.PropertySpaces
+                .Where(p => p.PropertyId == property.Id)
+                .ToList();
+
+            var spaceIds = propertySpaces.Select(s => s.Id).ToList();
+
+            var spaceItems = _dbContext.PropertySpaceItems
+                .Where(i => spaceIds.Contains(i.PropertySpaceId));
+            _dbContext.PropertySpaceItems.RemoveRange(spaceItems);
+
+            _dbContext.PropertySpaces.RemoveRange(propertySpaces);
+
+            var amenities = _dbContext.PropertyAmenities.Where(p => p.PropertyId == property.Id);
+            _dbContext.PropertyAmenities.RemoveRange(amenities);
+
+            _dbContext.Properties.Remove(property);
+
+            await Task.CompletedTask;
+        }
     }
+        
+    
 }

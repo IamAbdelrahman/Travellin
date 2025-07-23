@@ -10,5 +10,6 @@ namespace Travellin.Core.Interfaces
         public Task<List<PropertyAvailability>> GetAllAsync(Expression<Func<PropertyAvailability, bool>> filter);
         public Task<PaginatedResult<PropertyAvailabilityDto>> GetByPropertyIdAsync(string propertyId, PropertyAvailabilityQueryParamsDto queryDto);
         public void Delete(PropertyAvailability propertyAvailability);
+        Task DeleteAsync(int id);
     }
 }

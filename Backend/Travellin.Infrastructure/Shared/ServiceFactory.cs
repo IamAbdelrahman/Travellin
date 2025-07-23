@@ -15,8 +15,9 @@ namespace Travellin.Infrastructure.Shared
         private IAuthTokenService _authTokenService;
         private IFileUploadManagementService _fileUploadManagementService;
         private IBookingManagementService _bookingManagementService;
-        private IPropertyFilterExtractorService _propertyFilterExtractorService;
         private ICheckoutManagementService _checkoutManagementService;
+        private IConversationService? _conversationService;
+        private IMessageService? _messageService;
 
         public ServiceFactory(IServiceProvider provider, IConfiguration config)
         {
@@ -28,13 +29,22 @@ namespace Travellin.Infrastructure.Shared
         public IFileUploadManagementService FileUploadManagementService => _fileUploadManagementService ??= new FileUploadManagementService(_provider.GetRequiredService<IUnitOfWork>(), _provider.GetRequiredService<IFileStorageService>());
         public IBookingManagementService BookingManagementService =>
             _bookingManagementService ??= new BookingManagementService(_provider.GetRequiredService<IUnitOfWork>());
-  
-
         public ICheckoutManagementService CheckoutManagementService =>
             _checkoutManagementService ??= new StripeCheckoutService(
                 _provider.GetRequiredService<StripeClient>(),
                 _provider.GetRequiredService<IUnitOfWork>(),
                 _provider.GetRequiredService<ILogger<StripeCheckoutService>>(),
                 _config);
+        public IConversationService ConversationService =>
+    _conversationService ??= new ConversationService(
+        _provider.GetRequiredService<IConversationRepository>(),
+        _provider.GetRequiredService<IUnitOfWork>());
+
+        public IMessageService MessageService =>
+            _messageService ??= new MessageService(
+                _provider.GetRequiredService<IMessageRepository>(),
+                _provider.GetRequiredService<IConversationRepository>(),
+                _provider.GetRequiredService<IUnitOfWork>());
+
     }
 }

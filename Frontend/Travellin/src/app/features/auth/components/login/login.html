@@ -1,1 +1,98 @@
-<p>login works!</p>
+<!-- <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-100" novalidate>
+
+  <div class="form-floating mb-3 position-relative">
+    <input type="email" class="form-control" id="email" formControlName="email" placeholder="Email" required />
+    <label>Email</label>
+    <div class="text-danger" *ngIf="
+                loginForm.get('email')?.invalid &&
+                loginForm.get('email')?.touched
+              ">
+      <small *ngIf="loginForm.get('email')?.errors?.['required']">
+        Email is required.
+      </small>
+      <small *ngIf="loginForm.get('email')?.errors?.['email']">
+        Invalid email format. Correct format: name &#64; example.com
+      </small>
+    </div>
+  </div>
+
+
+  <div class="form-floating mb-4">
+    <input [type]="showPassword ? 'text' : 'password'" class="form-control pe-5" id="password"
+      formControlName="password" placeholder="Password" required />
+    <label>Password</label>
+
+    <button type="button" class="btn position-absolute end-0 top-50 translate-middle-y me-3 p-0 border-0 bg-transparent"
+      (click)="togglePasswordVisibility()" tabindex="-1">
+      <lucide-icon [img]="showPassword ? icons.eyeOff : icons.eye" size="20" class="text-muted">
+      </lucide-icon>
+    </button>
+
+    <div class="text-danger mt-1" *ngIf="
+                loginForm.get('password')?.invalid &&
+                loginForm.get('password')?.touched
+              ">
+      <small *ngIf="loginForm.get('password')?.errors?.['required']">
+        Password is required.
+      </small>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <input type="submit" class="btn btn-primary text-white w-100 fw-semibold" value="Login" />
+
+  <div class="d-flex justify-content-between mt-3 flex-wrap gap-2">
+    <a routerLink="/register" class="text-decoration-none">
+      Don't have an account? <span id="reg">Register</span>
+    </a>
+    <a href="#" class="text-decoration-none">Forgot Password?</a>
+  </div>
+</form> -->
+
+<div class="login-modal-overlay">
+  <div class="login-modal">
+    <div class="modal-header">
+      <button class="close-btn" (click)="closeLogin()">X</button>
+      <h3>Welcome back, Lidiya</h3>
+    </div>
+    <div class="modal-body">
+      <div class="profile-pic">
+        <img [src]="profilePic" alt="Profile Picture">
+      </div>
+      <p class="email-display">lidyarefero.design</p>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" formControlName="email" placeholder="Enter your email"
+            [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error-message">
+            Please enter a valid email.
+          </div>
+        </div>
+
+        <div class="form-group password-group">
+          <label for="password">Password</label>
+          <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
+            placeholder="Password"
+            [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          <button type="button" class="show-hide-btn" (click)="togglePasswordVisibility()">
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+          <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
+            Password is required.
+          </div>
+        </div>
+
+        <button type="submit" class="login-btn" [disabled]="loginForm.invalid">Log in</button>
+      </form>
+
+      <a href="#" class="forgot-password">Forgot password?</a>
+      <div class="separator"></div>
+      <a href="#" class="another-account">Not you? Use another account</a>
+    </div>
+  </div>
+</div>

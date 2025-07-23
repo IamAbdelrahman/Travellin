@@ -6,6 +6,6 @@ import { Component } from '@angular/core';
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css'
 })
-export class MainLayout {
+export class MainLayoutComponent {
 
 }

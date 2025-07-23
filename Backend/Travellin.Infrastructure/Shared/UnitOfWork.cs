@@ -31,6 +31,8 @@ namespace Travellin.Infrastructure.Shared
         private IPropertyPhotoRepository? _propertyPhotoRepository;
         private IPaymentRepository? _paymentRepository;
         private IReviewRepository? _reviewRepository;
+        private IConversationRepository? _conversationRepository;
+        private IMessageRepository? _messageRepository;
 
         public UnitOfWork(TravellinDbContext dbContext)
         {
@@ -62,10 +64,16 @@ namespace Travellin.Infrastructure.Shared
         public IPaymentRepository PaymentRepository =>
             _paymentRepository ??= new PaymentRepository(_dbContext);
         public IReviewRepository ReviewRepository => _reviewRepository ??= new ReviewRepository(_dbContext);
+        public IConversationRepository ConversationRepository => _conversationRepository ??= new ConversationRepository(_dbContext);
+        public IMessageRepository MessageRepository => _messageRepository ??= new MessageRepository(_dbContext);
 
         public async Task SaveChangesAsync()
         {
             await _dbContext.SaveChangesAsync();
+        }
+        public void SaveChanges()
+        {
+            _dbContext.SaveChanges();
         }
     }
 }
