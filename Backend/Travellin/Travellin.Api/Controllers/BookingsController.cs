@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph.IdentityGovernance.AccessReviews.Definitions.FilterByCurrentUserWithOn;
+using System.Security.Claims;
 using Travellin.Core.Dtos.Bookings;
 using Travellin.Core.Entities;
 using Travellin.Core.Interfaces;
@@ -15,6 +16,8 @@ namespace Travellin.Travellin.Api.Controllers
     {
         public IServiceFactory ServiceFactory { get; }
         public IIdentityFactory IdentityFactory { get; }
+        private string GetCurrentUserId() =>
+         User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
 
         public BookingsController(IServiceFactory serviceFactory,IIdentityFactory identityFactory)
         {
@@ -26,7 +29,7 @@ namespace Travellin.Travellin.Api.Controllers
         [HttpPost("Reserve")]
         public async Task<IActionResult> CreateBookingAsync([FromBody] CreateBookingDto createBookingDto)
         {
-            var userId = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+            var userId = GetCurrentUserId();
             if (userId == null)
                 return Unauthorized();
 
@@ -46,8 +49,7 @@ namespace Travellin.Travellin.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> CancelBookingAsync(string id)
         {
-            var userId = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
-
+            var userId = GetCurrentUserId();
             var isAdmin = User.IsInRole("Admin");
 
             if (userId == null)
