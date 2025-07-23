@@ -15,13 +15,11 @@ namespace Travellin.Infrastructure.Services
             _unitOfWork = unitOfWork;
         }
 
+        //////////////////////////////////Create Booking////////////////////////////////////
         public async Task<Booking> CreateBookingAsync(string userId, CreateBookingDto dto)
         {
-            var property = await _unitOfWork.PropertyRepository.GetByIdAsync(
-                dto.PropertyId,
-                x => x.PropertyFees,
-                x => x.PropertyAvailabilities,
-                x => x.PropertyGuests);
+            //Fetch Property user select
+            var property = await _unitOfWork.PropertyRepository.GetByIdAsync(dto.PropertyId);
 
             if (property is null)
                 throw new NotFoundException($"Property with id [{dto.PropertyId}] not found");
@@ -30,14 +28,22 @@ namespace Travellin.Infrastructure.Services
             // Validate guest counts against property limits
             ValidateGuestCounts(property, dto.Guests);
 
+            //Check Poroperty is available for the selected dates
             var isAvailable = IsPropertyAvailable(property, dto.CheckIn, dto.Checkout);
             if (!isAvailable)
             {
                 throw new ConflictException("Property is not available for the selected dates");
             }
 
+            //If yes and user reserve those nights mark as unavailable
+            //Update:those nights block them as they are booked now so any coming guest cannot book them
             await UpdateAvailabilityRecordsAsync(property, dto.CheckIn, dto.Checkout);
 
+            //Calculate total fees
+            var nights = (dto.Checkout - dto.CheckIn).Days;
+            var totalFees = property.PricePerNight * nights;
+
+            //Create booking
             var booking = new Booking
             {
                 PropertyId = dto.PropertyId,
@@ -45,8 +51,10 @@ namespace Travellin.Infrastructure.Services
                 CheckIn = dto.CheckIn,
                 CheckOut = dto.Checkout,
                 PricePerNight = property.PricePerNight,
-                TotalFees = CalcTotalFees(property),
+                TotalFees = totalFees,
                 Status = BookingStatus.Pending,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
                 BookingGuests = dto.Guests.Select(g => new BookingGuest
                 {
                     GuestTypeId = g.GuestTypeId,
@@ -60,6 +68,7 @@ namespace Travellin.Infrastructure.Services
             return booking;
         }
 
+        //Cncel Booking
         public async Task CancelBookingAsync(string bookingId, string userId, bool isAdmin)
         {
             var booking = await _unitOfWork.BookingRepository.GetByIdAsync(bookingId, x => x.Property);
@@ -92,7 +101,7 @@ namespace Travellin.Infrastructure.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-
+        //////////////////////////////////Validate Guest Counts////////////////////////////////////
         private void ValidateGuestCounts(Property property, List<CreateBookingGuestDto> guests)
         {
             if (property.PropertyGuests == null || !property.PropertyGuests.Any())
@@ -111,7 +120,7 @@ namespace Travellin.Infrastructure.Services
                 if (guestDto.GuestCount > propertyGuest.GuestCount)
                 {
                     throw new ConflictException(
-                        $"Maximum {propertyGuest.GuestCount} guests of type {propertyGuest.GuestType?.Name} allowed, but {guestDto.GuestCount} requested");
+                        $"Maximum {propertyGuest.GuestCount} guests of type {propertyGuest.GuestType?.Name} allowed, but {guestDto.GuestCount} exceeded");
                 }
             }
         }
@@ -146,20 +155,21 @@ namespace Travellin.Infrastructure.Services
             return currentCoverage >= checkOut;
         }
 
-        private decimal CalcTotalFees(Property property)
-        {
-            if (property is null || property.PropertyFees is null) return 0;
-            return property.PropertyFees.Sum(x => x.Amount);
-        }
-
+        //////////////////////////////////Update Dates////////////////////////////////////
         private async Task UpdateAvailabilityRecordsAsync(Property property, DateTime checkIn, DateTime checkOut)
         {
-            // Get all AVAILABLE availability records that overlap with the booking dates
+            //Here assume guest choose property 
+            //Property may be available during multiple date periods.
+            //We need to find all availability records that overlap with the booking dates
+            //Available 1-->11 and books 5-->10 (Available)
+            //Anoother Guest books 4-->8 (Unavailable) but 1-->5 is available and 10 -->11 is available (overlaps)
             var overlappingAvailabilities = property.PropertyAvailabilities
                 .Where(a => a.StartDate <= checkOut && a.EndDate >= checkIn && a.IsAvailable)
                 .OrderBy(a => a.StartDate)
                 .ToList();
 
+            //Anoother Guest books 4-->8 (Unavailable) but 1-->5 is available and 10 -->11 is available (overlaps)
+            //Loop through each overlapping availability
             foreach (var availability in overlappingAvailabilities)
             {
                 // Case 1: Availability record is completely within the booking period
@@ -224,7 +234,7 @@ namespace Travellin.Infrastructure.Services
             }
         }
 
-
+        //Restore
         private async Task RestoreAvailabilityAsync(Property property, DateTime checkIn, DateTime checkOut)
         {
             // Get all UNAVAILABLE availability records that overlap with the booking dates
