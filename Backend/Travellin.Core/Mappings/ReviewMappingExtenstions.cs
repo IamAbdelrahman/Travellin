@@ -19,7 +19,7 @@ namespace Travellin.Core.Mappings
                 Value = entity.Value,
                 CreatedAt = entity.CreatedAt,
                 UpdatedAt = entity.UpdatedAt,
-                Reviewr = entity.Booking?.User == null ? null : new Reviewr
+                Reviewer = entity.Booking?.User == null ? null : new Reviewer
                 {
                     Id = entity.Booking.User.Id,
                     FirstName = entity.Booking.User?.UserProfile?.FirstName,

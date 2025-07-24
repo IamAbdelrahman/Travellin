@@ -10,7 +10,7 @@ namespace Travellin.Core.Interfaces
         public Task<PaginatedResult<TEntity>> GetAllAsync(GetAllQueryDto queryDto, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy);
         public Task<PaginatedResult<TEntity>> GetAllAsync(GetAllQueryDto queryDto, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy, params Expression<Func<TEntity, object>>[] includes);
         public Task<TEntity?> GetByIdAsync(TKey id);
-        public  TEntity GetById(TKey id);
+        public TEntity GetById(TKey id);
         public Task<List<TEntity>> GetAll();
         public Task<TEntity?> GetByIdAsync(TKey id, params Expression<Func<TEntity, object>>[] includes);
         public void Create(TEntity entity);

@@ -6,8 +6,11 @@ using Travellin.Api.Filters;
 using Travellin.Api.Utils;
 using Travellin.Core.Interfaces;
 using Travellin.Core.Mappings;
+using Travellin.Core.Repositories;
+using Travellin.Core.Services;
 using Travellin.Infrastructure;
 using Travellin.Infrastructure.Services;
+using Travellin.Infrastructure.Repositories;
 
 namespace Travellin.Api
 {
@@ -19,6 +22,10 @@ namespace Travellin.Api
 
             // Add services to the container.
             builder.Services.ConfigureInfrastructure(builder.Configuration);
+
+            // Register Review Services
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
 
             builder.Services.AddControllers(options =>
             {
