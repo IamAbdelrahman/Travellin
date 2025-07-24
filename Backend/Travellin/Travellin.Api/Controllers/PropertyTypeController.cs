@@ -24,8 +24,8 @@ namespace Travellin.Api.Controllers
            
             var resultDto = new PaginatedResult<PropertyTypeDto>
             {
-                Items = result.Items.Select(x => _unitOfWork.PropertyTypeRepository.FromEntityToDto(x)).ToList(),
-                MetaData = result.MetaData
+                //Items = result.Items.Select(x => _unitOfWork.PropertyTypeRepository.FromEntityToDto(x)).ToList(),
+                //MetaData = result.MetaData
             };
 
             return Ok(resultDto);
