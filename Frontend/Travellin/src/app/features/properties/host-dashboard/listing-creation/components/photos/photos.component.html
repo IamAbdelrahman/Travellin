@@ -1,0 +1,21 @@
+<div class="photos-step">
+  <h2>Add photos of your apartment</h2>
+  <p>You'll need 5 photos to get started.</p>
+
+  <div class="upload-container" appDragDrop (filesDropped)="onFilesDropped($event)">
+    <input type="file" #fileInput multiple accept="image/*"
+           (change)="onFilesSelected($event)">
+
+    <div class="upload-prompt">
+      <button type="button" (click)="fileInput.click()">Upload photos</button>
+      <p>or drag and drop</p>
+    </div>
+
+    <div class="preview-grid">
+      <div *ngFor="let photo of photos; let i = index" class="photo-preview">
+        <img [src]="photo.url">
+        <button type="button" (click)="removePhoto(i)">×</button>
+      </div>
+    </div>
+  </div>
+</div>
