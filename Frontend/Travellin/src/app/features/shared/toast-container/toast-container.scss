@@ -1,0 +1,44 @@
+$success: #28a745;
+$danger: #dc3545;
+$warning: #fd7e14;
+$info: #17a2b8;
+
+.toast-success {
+  background-color: $success;
+  border-left: 4px solid darken($success, 10%);
+}
+
+.toast-danger {
+  background-color: $danger;
+  border-left: 4px solid darken($danger, 10%);
+}
+
+.toast-warning {
+  background-color: $warning;
+  border-left: 4px solid darken($warning, 10%);
+}
+
+.toast-info {
+  background-color: $info;
+  border-left: 4px solid darken($info, 10%);
+}
+
+.toast {
+  animation: fadeIn 0.3s ease-out;
+  border: none;
+  opacity: 95%;
+}
+.btn-close {
+  opacity: 1;
+  background: none;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
