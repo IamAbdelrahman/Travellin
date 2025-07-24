@@ -1,0 +1,11 @@
+lucide-icon {
+  color: var(--bs-primary);
+}
+
+a {
+  color: var(--bs-white);
+}
+
+a:hover {
+  color: var(--bs-primary);
+}
