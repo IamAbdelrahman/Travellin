@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Stripe;
 using System.Text;
@@ -14,9 +15,14 @@ using Travellin.Infrastructure.Repositories;
 using Travellin.Infrastructure.Services;
 using Travellin.Infrastructure.Shared;
 
-
 namespace Travellin.Infrastructure
 {
+    // POCO for binding Stripe settings from configuration
+    public class StripeOptions
+    {
+        public string SecretApiKey { get; set; }
+    }
+
     public static class InfrastructureConfigurationExtension
     {
         public static IServiceCollection ConfigureInfrastructure(this IServiceCollection services, IConfiguration configuration)
@@ -61,7 +67,6 @@ namespace Travellin.Infrastructure
                     {
                         ctx.Request.Cookies.TryGetValue("access_token", out var accessToken);
 
-
                         if (!string.IsNullOrEmpty(accessToken))
                         {
                             ctx.Token = accessToken;
@@ -74,9 +79,13 @@ namespace Travellin.Infrastructure
             // OpenAI configuration
             services.AddHttpClient();
 
-
-            // Stripe Configurations
-            services.AddSingleton<StripeClient>(new StripeClient(configuration["Stripe:SecretApiKey"]));
+                // Configure StripeOptions binding and register a singleton StripeClient
+                services.Configure<StripeOptions>(configuration.GetSection("Stripe"));
+                services.AddSingleton<StripeClient>(sp =>
+                {
+                    var stripeOptions = sp.GetRequiredService<IOptions<StripeOptions>>().Value;
+                    return new StripeClient(stripeOptions.SecretApiKey);
+                });
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IIdentityFactory, IdentityFactory>();
