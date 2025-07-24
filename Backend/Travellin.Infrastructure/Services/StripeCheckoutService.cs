@@ -9,7 +9,7 @@ using Stripe.Checkout;
 
 namespace Travellin.Infrastructure.Services
 {
-    class StripeCheckoutService : ICheckoutManagementService
+    public class StripeCheckoutService : ICheckoutManagementService
     {
         private readonly StripeClient _stripeClient;
         private IUnitOfWork _unitOfWork;
