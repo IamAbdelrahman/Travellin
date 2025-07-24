@@ -62,7 +62,7 @@ namespace Travellin.Infrastructure.Repositories
             };
         }
 
-        public async Task<BookingDto> GetBookingDetailsByIdAsync(string bookingId)
+        public async Task<BookingDto> GetBookingDetailsAsync(string bookingId)
         {
             var query = _dbContext.Bookings
                .Include(x => x.BookingGuests)
