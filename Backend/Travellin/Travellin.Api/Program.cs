@@ -1,11 +1,13 @@
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Stripe;
 using Travellin.Api.Filters;
 using Travellin.Api.Utils;
 using Travellin.Core.Interfaces;
 using Travellin.Core.Mappings;
 using Travellin.Infrastructure;
+using Travellin.Infrastructure.Services;
 
 namespace Travellin.Api
 {
@@ -14,37 +16,10 @@ namespace Travellin.Api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddSwaggerGen(c =>
-            {
-                c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-                {
-                    Name = "Authorization",
-                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
-                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-                    Description = "Enter 'Bearer' [space] and then your valid token.\n\nExample: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
-                });
-
-
-                c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-                {
-                    {
-                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-                        {
-                            Reference = new Microsoft.OpenApi.Models.OpenApiReference
-                            {
-                                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
-            });
 
             // Add services to the container.
             builder.Services.ConfigureInfrastructure(builder.Configuration);
+
             builder.Services.AddControllers(options =>
             {
                 options.Filters.Add<ErrorHandlingFilter>();
@@ -57,7 +32,8 @@ namespace Travellin.Api
 
             // Configure Ratelimiting
             builder.Services.ConfigureRateLimiting(builder.Configuration);
-
+            builder.Services.Configure<StripeOptions>(builder.Configuration.GetSection("Stripe"));
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretApiKey"];
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
@@ -88,16 +64,15 @@ namespace Travellin.Api
 
             var app = builder.Build();
 
+
             app.UseIpRateLimiting();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
-                app.UseSwagger();
                 app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "v1"));
             }
-
 
             app.UseHttpsRedirection();
 
