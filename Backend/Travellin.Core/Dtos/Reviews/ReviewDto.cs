@@ -1,6 +1,6 @@
 ﻿namespace Travellin.Core.Dtos.Reviews
 {
-    public class Reviewr
+    public class Reviewer
     {
         public string Id { get; set; }
         public string FirstName { get; set; }
@@ -19,7 +19,7 @@
         public decimal Value { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public Reviewr Reviewr { get; set; }
+        public Reviewer Reviewer { get; set; }
         public decimal Avg => (Cleanliness + Accuracy + CheckIn + Communication + Location + Value) / 6;
     }
 }
