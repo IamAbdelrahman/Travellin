@@ -27,21 +27,47 @@ namespace Travellin.Core.Mappings
                 IsDeleted = entity.IsDeleted
             };
         }
-                public static async void ToEntity (this Property propertyEntity, PropertyUpdateDto dto)
+
+        public static Property ToEntity(this PropertyDto dto)
         {
-            propertyEntity.Latitude = dto.Latitude ?? propertyEntity.Latitude;
-            propertyEntity.Title = dto.Title ?? propertyEntity.Title;
-            propertyEntity.Description = dto.Description ?? propertyEntity.Description;
-            propertyEntity.PropertyTypeId = dto.PropertyTypeId ?? propertyEntity.PropertyTypeId;
-            propertyEntity.PricePerNight = dto.PricePerNight ?? propertyEntity.PricePerNight;
-            propertyEntity.Longitude = dto.Longitude ?? propertyEntity.Longitude;
-            propertyEntity.LocationId = dto.LocationId ?? propertyEntity.LocationId;
-            propertyEntity.SafteyInfo = dto.SafteyInfo ?? propertyEntity.SafteyInfo;
-            propertyEntity.HouseRules = dto.HouseRules ?? propertyEntity.HouseRules;
-            propertyEntity.CancellationPolicy = dto.CancellationPolicy ?? propertyEntity.CancellationPolicy;
-            propertyEntity.IsActive = dto.IsActive ?? propertyEntity.IsActive;
+            return new Property
+            {
+                Id = dto.Id,
+                Title = dto.Title,
+                OwnerId = dto.OwnerId,
+                PropertyTypeId = dto.PropertyTypeId,
+                LocationId = dto.LocationId,
+                PricePerNight = dto.PricePerNight,
+                Latitude = dto.Latitude,
+                Longitude = dto.Longitude,
+                SafteyInfo = dto.SafteyInfo,
+                HouseRules = dto.HouseRules,
+                CancellationPolicy = dto.CancellationPolicy,
+                IsActive = dto.IsActive,
+                IsDeleted = dto.IsDeleted
+            };
+        }
+        public static Property ToEntity(this PropertyCreateDto dto, string userId)
+        {
+            return new Property
+            {
+                Title = dto.Title,
+                Description = dto.Description,
+                OwnerId = userId,
+                PropertyTypeId = dto.PropertyTypeId,
+                LocationId = dto.LocationId,
+                PricePerNight = dto.PricePerNight,
+                Latitude = dto.Latitude,
+                Longitude = dto.Longitude,
+                SafteyInfo = dto.SafteyInfo,
+                HouseRules = dto.HouseRules,
+                CancellationPolicy = dto.CancellationPolicy,
+                IsActive = false,
+                IsDeleted = false
+            };
         }
 
+        
         public static PropertyListItemDto ToPropertyListItemDto(this Property property)
         {
             var (averageRating, reviewCount) = CalculateRatingStats(property);
@@ -152,6 +178,20 @@ namespace Travellin.Core.Mappings
         private static int MapMaxGuestCount(Property property)
         {
             return property?.PropertyGuests.Sum(x => x.GuestCount) ?? 0;
+        }
+        public static void MapUpdateFromDto(this Property property, PropertyUpdateDto dto)
+        {
+            property.Title = dto.Title ?? property.Title;
+            property.Description = dto.Description ?? property.Description;
+            property.PropertyTypeId = dto.PropertyTypeId ?? property.PropertyTypeId;
+            property.LocationId = dto.LocationId ?? property.LocationId;
+            property.PricePerNight = dto.PricePerNight ?? property.PricePerNight;
+            property.Latitude = dto.Latitude ?? property.Latitude;
+            property.Longitude = dto.Longitude ?? property.Longitude;
+            property.SafteyInfo = dto.SafteyInfo ?? property.SafteyInfo;
+            property.HouseRules = dto.HouseRules ?? property.HouseRules;
+            property.CancellationPolicy = dto.CancellationPolicy ?? property.CancellationPolicy;
+            property.IsActive = dto.IsActive.HasValue ? dto.IsActive.Value : property.IsActive;
         }
     }
 }

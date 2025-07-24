@@ -8,6 +8,6 @@
         public ICheckoutManagementService CheckoutManagementService { get; }
         IConversationService ConversationService { get; }
         IMessageService MessageService { get; }
-
+        public IPropertyFilterExtractorService PropertyFilterExtractorService { get; }
     }
 }
