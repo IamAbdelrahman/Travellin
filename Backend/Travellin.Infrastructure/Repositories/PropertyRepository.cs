@@ -225,29 +225,14 @@ namespace Travellin.Infrastructure.Repositories
 
             return property;
         }
-        public async void FromUpdateDtoToEntity(Property entity, PropertyUpdateDto dto)
-        {
-            PropertyMappingExtensions.ToEntity(entity, dto);
-        }
 
         public override Property GetById(string id)
         {
             return _dbContext.Properties.Find(id) ?? throw new Exception("Not found");
         }
-        ////public async Task DeleteAsync(Property entity)
-        ////{
-        ////    _dbContext.Properties.Remove(entity);
-        ////     await Task.CompletedTask;
-
-        //}
         public override async Task<List<Property>> GetAll()
         {
             return await _dbContext.Properties.ToListAsync();
-        }
-
-        public void FromCreateEntityToDto(PropertyCreateDto dto)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task DeleteAsync(Property property)
