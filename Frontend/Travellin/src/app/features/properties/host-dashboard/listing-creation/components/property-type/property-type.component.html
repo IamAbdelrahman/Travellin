@@ -1,0 +1,12 @@
+<div class="property-type-step">
+  <h2>Which of these best describes your place?</h2>
+
+  <div class="property-grid">
+    <div *ngFor="let type of propertyTypes"
+         class="property-card"
+         [class.selected]="selectedType === type"
+         (click)="selectType(type)">
+      {{ type }}
+    </div>
+  </div>
+</div>
