@@ -1,0 +1,112 @@
+
+<div *ngIf="loading" class="d-flex justify-content-center my-5">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<div *ngIf="error" class="alert alert-danger text-center my-5">
+  Error loading property details. Please try again later.
+</div>
+
+
+
+
+<div *ngIf="!loading && !error">
+  <div class="d-flex flex-wrap justify-content-between">
+    <h1>{{ property?.title }}</h1>
+    <!-- favorite button  -->
+    <div class="favorite-button-container">
+      <app-favorite-button
+        [isFavorite]="isFavorite"
+        (toggle)="onFavoriteToggle($event)"
+        [size]="24"></app-favorite-button>
+    </div>
+  </div>
+  <!-- Image Gallery -->
+  <ng-container *ngIf="!loading">
+    <div *ngIf="!error">
+      <!-- Main Gallery -->
+      <div class="gallery">
+        <button
+          (click)="prevImage()"
+          class="carousel-control--next"
+          [class.disabled]="activeImageIndex === 0">
+          ❯
+        </button>
+
+        <div class="image-container">
+          <img
+            [src]="
+              property.photos[activeImageIndex].photoUrl ||
+              'assets/default-image.jpg'
+            "
+            [alt]="property.title + ' image ' + (activeImageIndex + 1)"
+            class="main-image"
+            (error)="
+              property.photos[activeImageIndex].photoUrl =
+                'assets/default-image.jpg'
+            " />
+        </div>
+
+        <button
+          (click)="nextImage()"
+          class="carousel-control--prev"
+          [class.disabled]="activeImageIndex === propertyImages.length - 1">
+          ❮
+        </button>
+
+        <!-- Image Counter -->
+        <div class="image-counter" *ngIf="propertyImages.length > 1">
+          {{ activeImageIndex + 1 }} / {{ propertyImages.length }}
+        </div>
+
+        <!-- Fullscreen Toggle -->
+        <button
+          class="fullscreen-btn btn btn-dark"
+          (click)="toggleFullscreen()">
+          <i class="fas fa-expand"></i>
+        </button>
+      </div>
+
+      <!-- Thumbnail Strip -->
+      <div class="thumbnail-strip" *ngIf="property.photos.length > 1">
+        <div
+          *ngFor="let img of property.photos; let i = index"
+          [class.active-thumb]="i === activeImageIndex"
+          (click)="activeImageIndex = i"
+          class="thumbnail-item">
+          <img
+            [src]="img.photoUrl || 'assets/default-image.jpg'"
+            [alt]="'Thumbnail ' + (i + 1) + ' for ' + property.title"
+            class="thumbnail-image"
+            (error)="img.photoUrl = 'assets/default-image.jpg'" />
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="row">
+    <div class="col-12 col-md-7">
+      <app-property-header [property]="property"></app-property-header>
+      <app-rating-header [property]="property"></app-rating-header>
+      <app-property-availability
+        [property]="property"></app-property-availability>
+      <app-property-host [property]="property"></app-property-host>
+      <app-property-highlights [property]="property"></app-property-highlights>
+      <app-sleeping-arrangement
+        [property]="property"></app-sleeping-arrangement>
+
+      <app-property-aminities
+        [propertyId]="propertyId"></app-property-aminities>
+      <app-things-to-know [property]="property"></app-things-to-know>
+    </div>
+    <div class="col-12 col-md-5 mb-3 sticky-top" style="top: 100px;">
+      <app-booking-card [property]="property"></app-booking-card>
+    </div>
+  </div>
+
+  <app-property-description [property]="property"></app-property-description>
+
+  <app-property-map [property]="property"></app-property-map>
+</div>

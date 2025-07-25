@@ -22,9 +22,11 @@
               }
             ],
             "styles": [
-              "src/styles.css", 
+              "./node_modules/leaflet/dist/leaflet.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-                "src/styles.css"
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+ 
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"

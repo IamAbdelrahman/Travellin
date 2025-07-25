@@ -1,0 +1,560 @@
+/* Base Styles */
+.profile-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Circular', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.profile-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.profile-header h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #222;
+}
+
+.description {
+  color: #717171;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: #F18B7F;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Alerts */
+.alert {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+}
+
+.alert .icon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+.alert.error {
+  background-color: #ffeeee;
+  color: #d93900;
+}
+
+.alert.success {
+  background-color: #f0fff0;
+  color: #008a05;
+}
+
+/* Photo Upload */
+.photo-upload {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.photo-upload-label {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+}
+
+.photo-upload-label input {
+  display: none;
+}
+
+.photo-wrapper {
+  width: 7.5rem;
+  height: 7.5rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid #ebebeb;
+  position: relative;
+}
+
+.profile-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.photo-overlay svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.photo-overlay span {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.photo-upload-label:hover .photo-overlay {
+  opacity: 1;
+}
+
+/* Form Layout */
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #222;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select,
+.phone-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ebebeb;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.phone-input:focus {
+  outline: none;
+  border-color: #000;
+}
+
+.form-group textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.form-group input[readonly] {
+  background-color: #f7f7f7;
+  cursor: not-allowed;
+}
+
+.field-note {
+  font-size: 0.75rem;
+  color: #717171;
+  margin-top: 0.25rem;
+}
+
+.char-counter {
+  text-align: right;
+  font-size: 0.75rem;
+  color: #717171;
+}
+
+/* Error States */
+.form-group.invalid input,
+.form-group.invalid textarea,
+.form-group.invalid .phone-input {
+  border-color: #d93900;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #d93900;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.error-message svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+}
+
+/* Buttons */
+.form-actions,
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn.primary {
+  background-color: #F18B7F;
+  color: white;
+  border: none;
+}
+
+.btn.primary:hover {
+  background-color: #E04A50;
+}
+
+.btn.primary:disabled {
+  background-color: #dddddd;
+  cursor: not-allowed;
+}
+
+.btn.secondary {
+  background-color: white;
+  color: #222;
+  border: 1px solid #dddddd;
+}
+
+.btn.secondary:hover {
+  border-color: #bbbbbb;
+}
+
+.loading-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.loading-text::after {
+  content: "";
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+}
+
+/* Password Strength */
+.password-strength {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.strength-rule {
+  color: #717171;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.strength-rule.valid {
+  color: #008a05;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  padding: 1rem;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 28rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.modal-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #717171;
+  padding: 0 0.5rem;
+}
+
+/* Phone Input Styling */
+:host ::ng-deep .iti {
+  width: 100%;
+  border-left: none;
+}
+
+:host ::ng-deep .iti__selected-flag {
+  padding: 0.75rem;
+  border-radius: 0.5rem 0 0 0.5rem;
+  /* border-left: none ; */
+}
+
+:host ::ng-deep .iti__country-list {
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+  margin-top: 0.5rem;
+  border-left: none;
+}
+
+:host ::ng-deep .iti__country {
+  padding: 0.5rem 0.75rem;
+  border-left: none;
+}
+
+:host ::ng-deep .ng-invalid.ng-touched .iti__tel-input {
+  border-color: red;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 640px) {
+  .profile-container {
+    padding: 1.5rem 1rem;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-actions,
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+  }
+  
+  .password-strength {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+/* phone number & country */
+
+
+/* Phone Input Container */
+.phone-input-container {
+  margin-bottom: 1.5rem;
+  position: relative;
+  width: 100%;
+}
+
+/* Label Styling */
+.phone-input-container label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Input Wrapper */
+.phone-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Input Field Styling */
+.custom-phone-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 4.5rem; /* Extra left padding for flag */
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  transition: all 0.15s ease;
+  background-color: white;
+  border-left: none;
+}
+
+.custom-phone-input:hover {
+  border-color: #9ca3af;
+}
+
+.custom-phone-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+/* Country Dropdown Styling */
+:host ::ng-deep .iti {
+  width: 100%;
+}
+
+:host ::ng-deep .iti__selected-flag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  padding: 0 0.75rem;
+  background-color: #f9fafb;
+  border-right: 1px solid #d1d5db;
+  border-radius: 0.375rem 0 0 0.375rem;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .iti__selected-flag:hover {
+  background-color: #f3f4f6;
+}
+
+:host ::ng-deep .iti__flag {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+}
+
+:host ::ng-deep .iti__selected-dial-code {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+:host ::ng-deep .iti__arrow {
+  border-top: 0.25rem solid #6b7280;
+  border-left: 0.25rem solid transparent;
+  border-right: 0.25rem solid transparent;
+  margin-left: 0.5rem;
+}
+
+/* Dropdown Menu */
+:host ::ng-deep .iti__country-list {
+  width: 100%;
+  max-height: 15rem;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+}
+
+:host ::ng-deep .iti__country {
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .iti__country:hover {
+  background-color: #f9fafb;
+}
+
+:host ::ng-deep .iti__country-name {
+  margin-right: 0.5rem;
+}
+
+:host ::ng-deep .iti__dial-code {
+  color: #6b7280;
+}
+
+/* Help Text */
+.form-help-text {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  line-height: 1rem;
+}
+
+/* Error Message */
+.error-message {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #dc2626;
+}
+
+.error-message svg {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Error State */
+:host ::ng-deep .ng-invalid.ng-touched .iti__tel-input {
+  border-color: #dc2626;
+}
+
+:host ::ng-deep .ng-invalid.ng-touched .iti__selected-flag {
+  border-color: #dc2626;
+}
+

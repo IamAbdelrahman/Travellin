@@ -1,0 +1,97 @@
+<div class="airbnb-profile-header">
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <span>Loading profile...</span>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (isErrored && !isLoading) {
+    <div class="error-container">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="error-icon"
+        viewBox="0 0 20 20"
+        fill="currentColor">
+        <path
+          fill-rule="evenodd"
+          d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+          clip-rule="evenodd" />
+      </svg>
+      <span class="error-message">{{ errorMessage }}</span>
+    </div>
+  }
+
+  <!-- Profile Content -->
+  @if (!isLoading && !isErrored && user) {
+    <div class="flex items-start gap-4">
+      <!-- Profile Avatar -->
+      <div
+        class="w-14 h-14 rounded-full bg-gray-100 overflow-hidden border border-gray-200 centered-container">
+        @if (user?.photo?.photoUrl) {
+          <img
+            [src]="user.photo.photoUrl"
+            alt="Profile"
+            class="w-full h-full object-cover" />
+        } @else {
+          <span class="text-xl font-medium text-airbnb-red">
+            {{ profileInitial }}
+          </span>
+        }
+      </div>
+
+      <!-- Profile Info -->
+      <div class="flex-1">
+        <h1 class="text-[22px] font-semibold text-gray-900 leading-tight">
+          {{ user.firstName || 'Guest' }}
+          @if (user.lastName) {
+            {{ user.lastName }}
+          }
+        </h1>
+
+        <!-- Guest Badge -->
+        <div
+          class="inline-flex items-center gap-1 mt-3 px-3 py-1 bg-gray-100 rounded-full">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-user">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          <span class="text-xs font-medium">
+            {{
+              isInRole('Admin') ? 'Admin' : isInRole('Host') ? 'Host' : 'Guest'
+            }}
+          </span>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Unauthenticated/Guest State -->
+  @if (!isLoading && !isErrored && !user) {
+    <div class="guest-container">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="guest-icon"
+        viewBox="0 0 20 20"
+        fill="currentColor">
+        <path
+          fill-rule="evenodd"
+          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+          clip-rule="evenodd" />
+      </svg>
+      <span class="guest-message">Guest User</span>
+    </div>
+  }
+</div>

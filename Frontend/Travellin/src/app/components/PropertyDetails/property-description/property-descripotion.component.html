@@ -1,0 +1,29 @@
+<div class="description-section">
+    <!-- Main Description -->
+    <div class="description-content" [class.collapsed]="isCollapsed">
+      <p>{{ property.description }}</p>
+      
+      <!-- Guest Access Section -->
+      <div class="guest-access" >
+        <h3>Guest access</h3>
+        <p>{{ getGuestAccessText() }}</p>
+      </div>
+    </div>
+  
+    <!-- Show More/Less Toggle -->
+    <button class="show-more-btn" (click)="toggleCollapse()">
+      {{ isCollapsed ? 'Show more' : 'Show less' }}
+      <span class="chevron">{{ isCollapsed ? '⌄' : '⌃' }}</span>
+    </button>
+  
+    <!-- Popup Modal -->
+    <div class="modal" *ngIf="showModal" (click)="closeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h2>About this space</h2>
+        <p>{{ property.description }}</p>
+        <h3>Guest access</h3>
+        <p>{{ getFullGuestAccessText() }}</p>
+        <button class="close-btn" (click)="closeModal()">✕</button>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,124 @@
+.ratings-header {
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
+  padding: 24px 0;
+  border-bottom: 1px solid #ebebeb;
+  margin-bottom: 24px;
+  max-width: 1120px;
+  margin: 0 auto 24px;
+
+  .rating-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+
+    .rating-value {
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .stars {
+      display: flex;
+      gap: 2px;
+      font-size: 20px;
+      line-height: 1;
+
+      .star {
+        &.filled {
+          color: #f18b7f;
+        }
+        &.half {
+          position: relative;
+          color: #dddddd;
+
+          &::before {
+            content: '★';
+            position: absolute;
+            left: 0;
+            width: 50%;
+            overflow: hidden;
+            color: #f18b7f;
+          }
+        }
+        &.empty {
+          color: #dddddd;
+        }
+      }
+    }
+  }
+
+  .highlight-text {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #222222;
+  }
+
+  .favorite-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 16px;
+    color: #222222;
+    background-color: #f7f7f7;
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin-top: 8px;
+  }
+  
+  .fav-icon{
+   color: #ef7768
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 1120px) {
+  .ratings-header {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ratings-header {
+    padding: 20px 16px;
+    margin-bottom: 16px;
+
+    .ratings-count {
+      font-size: 15px;
+    }
+
+    .rating-display {
+      .rating-value {
+        font-size: 20px;
+      }
+      .stars {
+        font-size: 18px;
+      }
+    }
+
+    .highlight-text {
+      font-size: 16px;
+    }
+
+    .favorite-badge {
+      font-size: 15px;
+      padding: 5px 8px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .ratings-header {
+    .rating-display {
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .highlight-text {
+      font-size: 15px;
+    }
+  }
+}

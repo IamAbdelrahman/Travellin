@@ -1,0 +1,31 @@
+.highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  padding: 24px 0;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.highlight-card {
+  display: flex;
+  gap: 16px;
+}
+
+.highlight-icon {
+  font-size: 24px;
+  color: #ef7768;
+  margin-top: 2px;
+}
+
+.highlight-text h3 {
+  margin: 0 0 4px 0;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.highlight-text p {
+  margin: 0;
+  color: #717171;
+  font-size: 14px;
+  line-height: 1.4;
+}

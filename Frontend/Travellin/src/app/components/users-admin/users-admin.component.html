@@ -1,0 +1,91 @@
+<!-- <div class="container mt-4">
+    <h2 class="mb-3">Users</h2>
+  
+    <table class="table table-bordered table-striped">
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Photo</th>
+          <th>User Name</th>
+          <th>Full Name</th>
+          <th>Email</th>
+          <th>Phone Number</th>
+          <th>Roles</th>
+        </tr>
+      </thead>
+  
+      <tbody>
+        <tr *ngFor="let user of users; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>
+            <img
+              *ngIf="user.photo?.photoUrl"
+              [src]="user.photo.photoUrl"
+              alt="User Photo"
+              width="50"
+              height="50"
+              class="rounded-circle"
+            />
+            <span *ngIf="!user.photo?.photoUrl">No Photo</span>
+          </td>
+          <td>{{ user.userName }}</td>
+          <td>{{ user.firstName }} {{ user.lastName }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.phoneNumber }}</td>
+          <td>
+            <span *ngFor="let role of user.roles; let last = last">
+              {{ role }}<span *ngIf="!last">, </span>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+   -->
+   <div class="container mt-5">
+    <h2 class="mb-4 text-center fw-bold">Users List</h2>
+  
+    <div class="table-responsive shadow-sm rounded-4 overflow-hidden">
+      <table class="table align-middle table-hover mb-0">
+        <thead class=" table-dark tableHeader">
+          <tr class="text-center">
+            <th>#</th>
+            <th>Photo</th>
+            <th>User Name</th>
+            <!-- <th>Full Name</th> -->
+            <th>Email</th>
+            <!-- <th>Phone Number</th> -->
+            <th>Roles</th>
+          </tr>
+        </thead>
+  
+        <tbody class="table-light">
+          <tr *ngFor="let user of users; let i = index" class="text-center">
+            <td class="fw-semibold">{{ i + 1 }}</td>
+            <td>
+              <img
+                *ngIf="user.photo?.photoUrl"
+                [src]="user.photo.photoUrl"
+                alt="User Photo"
+                width="50"
+                height="50"
+                class="rounded-circle border border-2 border-secondary"
+                style="object-fit: cover;"
+              />
+              <span *ngIf="!user.photo?.photoUrl" class="text-muted">No Photo</span>
+            </td>
+            <td>{{ user.userName }}</td>
+            <!-- <td>{{ user.firstName }} {{ user.lastName }}</td> -->
+            <td>{{ user.email }}</td>
+            <!-- <td>{{ user.phoneNumber }}</td> -->
+            <td>
+              <span *ngFor="let role of user.roles; let last = last">
+                <span class="badge bg-primary me-1">{{ role }}</span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  

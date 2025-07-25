@@ -1,0 +1,433 @@
+<div
+  class="container-fluid search-bars-container fixed-top p-5 transition-all"
+  [class.minimized]="scrollY > 50"
+  tabindex="0"
+  (focus)="onFocus()"
+  (blur)="onBlur()">
+  <!-- Search Mode Toggle -->
+  <div class="d-flex justify-content-center mb-3" [class.d-none]="scrollY > 50">
+    <div class="btn-group" role="group">
+      <button
+        type="button"
+        class="btn btn-outline-primary"
+        (click)="setSearchMode('simple')"
+        [class.active]="searchMode === 'simple'">
+        Simple Search
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-primary"
+        (click)="setSearchMode('advanced')"
+        [class.active]="searchMode === 'advanced'">
+        Advanced Search
+      </button>
+    </div>
+  </div>
+
+  <!-- AI Search Bar (Simple Mode) -->
+  <div *ngIf="searchMode === 'simple'" class="container-fluid w-75">
+    <div class="text-center mb-3" [class.d-none]="scrollY > 50">
+      <h3>How can we help you find your perfect stay?</h3>
+      <p class="text-muted">
+        Describe what you're looking for in natural language
+      </p>
+    </div>
+
+    <div class="ai-search-container w-100">
+      <div
+        class="ai-search-bar d-flex align-items-center p-1 rounded-pill shadow bg-white transition-all"
+        [style.min-height]="scrollY > 50 ? '50px' : '60px'">
+        <div class="flex-grow-1 position-relative">
+          <input
+            type="text"
+            class="form-control border-0 bg-transparent py-1 ps-3 pe-2 w-100 transition-all"
+            [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'"
+            placeholder="Example: 'Beachfront villa with pool for family of 4 in Bali next month'"
+            (keyup.enter)="SmartSearch()"
+            [(ngModel)]="stringAiSearch" />
+        </div>
+        <button
+          class="btn btn-primary ms-2 rounded-pill d-flex align-items-center fw-semibold justify-content-center px-4 flex-shrink-0 transition-all"
+          [style.height]="scrollY > 50 ? '40px' : '48px'"
+          (click)="SmartSearch()">
+          <fa-icon [icon]="icons['search']" class="me-2"></fa-icon>
+          <span [class.d-none]="scrollY > 50">Find Stays</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advanced Search -->
+  <div *ngIf="searchMode === 'advanced'" class="container-fluid Advanced">
+    <div class="d-flex justify-content-center">
+      <div
+        class="search-bar d-flex flex-wrap justify-content-between align-items-center p-3 rounded-pill shadow bg-white w-100 transition-all"
+        [class.p-2]="scrollY > 50"
+        style="max-width: 1000px">
+        <!-- Location -->
+        <div class="px-3 border-end flex-grow-1 search-section">
+          <label
+            class="form-label mb-0 text-muted small transition-all"
+            [class.d-none]="scrollY > 50"
+            >Where</label
+          >
+          <div class="position-relative w-100">
+            <input
+              type="text"
+              class="form-control border-0 p-0 bg-transparent transition-all"
+              [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'"
+              placeholder="Search destination"
+              [(ngModel)]="LocationName" />
+          </div>
+        </div>
+
+        <!-- Check in -->
+        <div class="px-3 border-end search-section disapear">
+          <label
+            class="form-label mb-1 text-muted small transition-all"
+            [class.d-none]="scrollY > 50"
+            >Check in</label
+          >
+          <input
+            type="date"
+            class="form-control border-0 p-0 bg-transparent transition-all"
+            [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'"
+            [(ngModel)]="checkInDate" />
+        </div>
+
+        <!-- Check out -->
+        <div class="px-3 border-end search-section disapear">
+          <label
+            class="form-label mb-1 text-muted small transition-all"
+            [class.d-none]="scrollY > 50"
+            >Check out</label
+          >
+          <input
+            type="date"
+            class="form-control border-0 p-0 bg-transparent transition-all"
+            [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'"
+            [(ngModel)]="checkOutDate" />
+        </div>
+
+        <!-- Guests -->
+        <div class="position-relative px-3 flex-grow-1 search-section disapear">
+          <div class="d-flex align-items-center justify-between w-100 h-100">
+            <button
+              type="button"
+              class="btn p-0 border-0 bg-transparent text-start w-100"
+              (click)="toggleGuestMenu()">
+              <label
+                class="form-label mb-0 text-muted small transition-all"
+                [class.d-none]="scrollY > 50"></label>
+              <h6
+                class="mb-0 fw-semibold transition-all"
+                [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'">
+                <input
+                  type="text"
+                  class="form-control border-0 p-0 bg-transparent transition-all"
+                  [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'"
+                  placeholder="Guest Numbers"
+                  [(ngModel)]="guestsCount" />
+              </h6>
+            </button>
+
+            <!-- Search button -->
+            <button
+              type="button"
+              class="btn btn-primary rounded-pill ms-2 d-flex align-items-center justify-content-center px-4 fw-semibold transition-all"
+              [style.height]="scrollY > 50 ? '40px' : '48px'"
+              (click)="searchProperties()">
+              <fa-icon [icon]="icons['search']" class="me-2"></fa-icon>
+              <span [class.d-none]="scrollY > 50">Search</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Property Type Bar and Filters - Hidden when scrolled -->
+    <div [class.d-none]="scrollY > 50">
+      <div
+        class="property-type-bar d-flex overflow-auto gap-3 py-3 px-4 justify-content-center">
+        <div
+          *ngFor="let type of propertyTypes"
+          class="d-flex flex-column align-items-center cursor-pointer px-3 py-2 rounded border"
+          [class.bg-primary]="selectedPropertyType === type.id"
+          [class.text-white]="selectedPropertyType === type.id"
+          (click)="selectPropertyType(type.id)">
+          <fa-icon
+            [icon]="icons[type.icon]"
+            [class.text-primary]="selectedPropertyType !== type.id"></fa-icon>
+          <span class="fw-semibold small mt-1">{{ type.name }}</span>
+        </div>
+      </div>
+
+      <!-- Additional Filters Button -->
+      <div class="text-center mt-3">
+        <button class="btn btn-outline-primary" (click)="toggleFilters()">
+          <fa-icon [icon]="icons['sliders']" class="me-2"></fa-icon>
+          {{ showFilters ? 'Hide Filters' : 'More Filters' }}
+        </button>
+      </div>
+
+      <!-- Additional Filters Panel -->
+      <div
+        *ngIf="showFilters"
+        class="filters-panel mt-3 w-75 p-4 border rounded bg-light m-auto">
+        <div class="row justify-content-center">
+          <div class="col-md-4 d-flex">
+            <div class="container pe-5">
+              <h6>Price Range</h6>
+
+              <div class="container d-flex gap-2">
+                <span> min</span>
+                <input
+                  type="range"
+                  class="form-range"
+                  min="0"
+                  max="1000"
+                  step="10"
+                  [(ngModel)]="minPrice" 
+                  (ngModelChange)="onFilterChange()"/>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span>$0</span>
+                <span>$1000</span>
+              </div>
+              <div class="container d-flex gap-2">
+                <span>max</span>
+                <input
+                  type="range"
+                  class="form-range"
+                  min="0"
+                  max="1000"
+                  step="10"
+                  [(ngModel)]="maxPrice" 
+                  (ngModelChange)="onFilterChange()"/>
+              </div>
+
+              <div class="d-flex justify-content-between">
+                <span>$0</span>
+                <span>$1000</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <h6>Property Rating</h6>
+            <div *ngFor="let rating of [4, 3, 2, 1]" class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="rating"
+                [id]="'rating-' + rating"
+                [(ngModel)]="selectedRating"
+                [value]="rating" 
+                (ngModelChange)="onFilterChange()"/>
+              <label class="form-check-label" [for]="'rating-' + rating">
+                <span
+                  class="text-secondary"
+                  *ngFor="let star of [1, 2, 3, 4, 5]">
+                  <fa-icon
+                    [icon]="
+                      star <= rating ? icons['star'] : icons['star-half-alt']
+                    "
+                    [class.text-primary]="star <= rating"></fa-icon>
+                </span>
+                {{ rating }}+ Stars
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End of filters -->
+    </div>
+  </div>
+</div>
+
+<div
+  class="container"
+  id="cards"
+  [ngStyle]="{ 'margin-top': getMarginTop() + 'px' }">
+  <!-- Loading Spinner -->
+  @if (isLoadingProperties) {
+    <div
+      class="d-flex justify-content-center align-items-center"
+      style="height: 300px">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  } @else {
+    <div
+      class="container py-6"
+      id="cards"
+      [ngStyle]="{ 'margin-top': getMarginTop() + 'px' }">
+      <div
+        class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 gx-4 gy-5">
+        <div class="col" *ngFor="let prop of property">
+          <div
+            class="card h-100 border-0 rounded-2 overflow-hidden position-relative bg-transparent"
+            style="
+              transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+            ">
+            <button
+              class="btn p-0 position-absolute top-0 end-0 me-2 mt-2 favorite-btn bg-transparent border-0 z-2"
+              [class.active]="isFavorite(prop.id)"
+              [class.active]="isFavorite(prop.id)"
+              (click)="toggleFavorite($event, prop.id)">
+              <lucide-icon [name]="icon.heart"></lucide-icon>
+            </button>
+            <div
+              [id]="'carousel-' + prop.id"
+              class="carousel slide"
+              style="height: 250px; overflow: hidden"
+              data-bs-ride="carousel">
+              <div class="carousel-inner h-100">
+                <div
+                  *ngFor="let photo of prop.photos.slice(0, 3); let i = index"
+                  class="carousel-item h-100"
+                  [class.active]="i === 0">
+                  <img
+                    [src]="photo.photoUrl"
+                    class="d-block w-100 h-100 object-fit-cover"
+                    [alt]="'Property ' + prop.id + ' photo ' + (i + 1)" />
+                </div>
+              </div>
+
+              <!-- Add the Three Dots (carousel indicators) Below the Images -->
+              <ol class="carousel-indicators">
+                <li
+                  data-bs-target="'#carousel-' + prop.id"
+                  data-bs-slide-to="0"
+                  class="active"></li>
+                <li
+                  data-bs-target="'#carousel-' + prop.id"
+                  data-bs-slide-to="1"></li>
+                <li
+                  data-bs-target="'#carousel-' + prop.id"
+                  data-bs-slide-to="2"></li>
+              </ol>
+
+              <!-- Arrows -->
+              <button
+                class="carousel-control-prev"
+                type="button"
+                [attr.data-bs-target]="'#carousel-' + prop.id"
+                data-bs-slide="prev"
+                style="opacity: 0; transition: opacity 0.3s">
+                <span
+                  class="carousel-control-prev-icon"
+                  aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button
+                class="carousel-control-next"
+                type="button"
+                [attr.data-bs-target]="'#carousel-' + prop.id"
+                data-bs-slide="next"
+                style="opacity: 0; transition: opacity 0.3s">
+                <span
+                  class="carousel-control-next-icon"
+                  aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+
+            <!-- Card Body -->
+            <div
+              class="card-body d-flex flex-column justify-content-between p-3">
+              <!-- Title and Info -->
+              <div class="mb-2">
+                <h6
+                  class="card-title fw-semibold mb-2 text-truncate"
+                  [routerLink]="['/property', prop.id]"
+                  style="cursor: pointer">
+                  {{ prop.title }}
+                </h6>
+                <div class="d-flex align-items-center mt-1">
+                  <!-- Rating number -->
+                  <span class="me-1">
+                    {{ prop.averageRating | number: '1.1-1' }}
+                  </span>
+
+                  <!-- Star icon -->
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide-star">
+                    <path
+                      d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
+                  </svg>
+                </div>
+                <p
+                  class="card-text text-muted small mb-0"
+                  style="line-height: 1.4">
+                  {{ prop.distanceFromMe }} km away <br />
+
+                  {{ prop.location.name }}
+                </p>
+              </div>
+
+              <!-- Price -->
+              <div class="d-flex align-items-end mb-4">
+                <span class="fw-semibold h5"
+                  >${{ prop.pricePerNight | number }}</span
+                >
+                <span class="h6 text-muted ms-1"> per night</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <!-- Pagination -->
+    @if (totalItems > itemsPerPage && !isLoadingProperties) {
+      <div class="pagination-container d-flex justify-content-center mt-4">
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+            <!-- Previous Button -->
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <button
+                class="page-link"
+                (click)="onPageChange(currentPage - 1)"
+                [disabled]="currentPage === 1"
+                aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </button>
+            </li>
+
+            <!-- Page Numbers -->
+            @for (page of getPages(); track page) {
+              <li class="page-item" [class.active]="page === currentPage">
+                <button class="page-link" (click)="onPageChange(page)">
+                  {{ page }}
+                </button>
+              </li>
+            }
+
+            <!-- Next Button -->
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <button
+                class="page-link"
+                (click)="onPageChange(currentPage + 1)"
+                [disabled]="currentPage === totalPages"
+                aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    }
+  }
+</div>

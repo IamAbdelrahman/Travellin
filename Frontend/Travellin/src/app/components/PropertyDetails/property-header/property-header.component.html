@@ -1,0 +1,28 @@
+<!-- property-header.component.html -->
+ 
+<div class="property-header" *ngIf="property">
+    <h1 class="property-title">{{ property?.title }}</h1>
+    
+    <div class="property-meta">
+      
+      <div class="location">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>{{ property?.location?.name }}</span>
+      </div>
+      
+      <div class="property-type" >
+        {{ property.propertyType?.name }}
+        {{ property.maxGuestCount }} guest{{ property.maxGuestCount !== 1 ? 's' : '' }} · 
+
+        <span *ngFor="let space of property.spaceSummaries; let last = last">
+          {{ space.count }} {{ space.spaceType.name.toLowerCase() }}{{ space.count !== 1 ? 's' : '' }}
+          <span *ngIf="!last"> · </span>
+        </span>
+        <div *ngFor="let item of property.spaceItemSummaries">
+          {{ item.quantity }} {{ item.itemType.name.toLowerCase() }}{{ item.quantity !== 1 ? 's' : '' }}
+        </div>
+
+      </div>
+
+    </div>
+  </div>

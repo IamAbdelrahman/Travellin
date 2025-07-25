@@ -1,0 +1,26 @@
+.favorite-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.favorite-button:hover {
+  color: var(--bs-primary);
+  scale: 1.3;
+}
+
+.favorite-button ::ng-deep .filled svg {
+  fill: var(--bs-primary);
+}
+
+.favorite-button ::ng-deep .outline svg {
+  fill: transparent;
+  stroke: currentColor;
+  stroke-width: 2px;
+}

@@ -1,0 +1,27 @@
+/* Custom styles to complement Bootstrap */
+:host {
+  --airbnb-red: #ef7768;
+}
+
+.bg-danger {
+  background-color: var(--airbnb-red) !important;
+}
+
+.btn-danger {
+  background-color: var(--airbnb-red) !important;
+  border-color: var(--airbnb-red) !important;
+}
+
+.btn-danger:hover {
+  background-color: #e06a5a !important;
+  border-color: #e06a5a !important;
+}
+
+.object-fit-cover {
+  object-fit: cover;
+}
+
+lucide-icon {
+  vertical-align: middle;
+}
+
