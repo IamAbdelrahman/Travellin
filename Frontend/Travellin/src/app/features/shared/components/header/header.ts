@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { StickyNavDirective } from '../../../../helpers/sticky-nav.directive';
+import { StickyNavDirective } from '../../directives/sticky-nav.directive';
 import { AuthService } from  '../../../auth/services/auth.service';
 import { AccountService } from '../../../auth/services/account.service';
 import {

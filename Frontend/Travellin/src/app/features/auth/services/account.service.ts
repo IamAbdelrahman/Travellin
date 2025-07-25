@@ -2,7 +2,7 @@ import { ILoginReq } from './../models/ilogin-req.model';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
-import { ApiConstant } from '../../../helpers/api-constant.helper';
+import { ApiConstant } from '../../shared/models/api-constant.helper';
 import { IRegisterReq } from '../models/iregister-req.model';
 import { IChangePassword  } from '../models/ichange-password.model';
 

@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { Listing } from '../models/listing'; // Assuming you have a Listing model defined
 @Injectable({ providedIn: 'root' })
 export class ListingCreationService {
   private listingSubject = new BehaviorSubject<Partial<Listing>>({});

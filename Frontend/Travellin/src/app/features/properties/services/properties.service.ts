@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Property } from '../models/property.model';
-import {ApiConstant} from '../../../helpers/api-constant.helper';
+import {ApiConstant} from '../../shared/models/api-constant.helper';
 
 @Injectable({
     providedIn: 'root'

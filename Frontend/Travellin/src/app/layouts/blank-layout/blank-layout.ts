@@ -6,6 +6,6 @@ import { Component } from '@angular/core';
   templateUrl: './blank-layout.html',
   styleUrl: './blank-layout.css'
 })
-export class BlankLayout {
+export class BlankLayoutComponent {
 
 }

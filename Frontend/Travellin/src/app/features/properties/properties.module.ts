@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
-const routes: Routes = [{ path: 'host', loadChildren: () => import('./host-dashboard/host-dashboard-module').then(m => m.HostDashboardModule) }
+const routes: Routes = [{ path: 'host', loadChildren: () => import('../host/pages/host-dashboard/host-dashboard-module').then(m => m.HostDashboardModule) }
 ];
 
 @NgModule({
@@ -12,7 +12,7 @@ const routes: Routes = [{ path: 'host', loadChildren: () => import('./host-dashb
     RouterModule.forChild([
       {
         path: 'host/listings/new',
-        loadChildren: () => import('./host-dashboard/listing-creation/listing-creation-module')
+        loadChildren: () => import('../listing-creation/listing-creation-module')
                           .then(m => m.ListingCreationRoutingModule) //possible error ???
       }
     ])
