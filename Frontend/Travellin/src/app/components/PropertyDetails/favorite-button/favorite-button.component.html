@@ -1,0 +1,22 @@
+<button 
+  (click)="onClick($event)"
+  class="favorite-button"
+  [attr.aria-label]="isFavorite ? 'Remove from favorites' : 'Add to favorites'"
+  
+>
+  @if (isFavorite) {
+    <lucide-icon 
+      [name]="icon.heart" 
+      [size]="size" 
+      [color]="filledColor"
+      class="filled my-icon"
+    ></lucide-icon>
+  } @else {
+    <lucide-icon 
+      [name]="icon.heart" 
+      [size]="size" 
+      [color]="color"
+      class="outline my-icon"
+    ></lucide-icon>
+  }
+</button>

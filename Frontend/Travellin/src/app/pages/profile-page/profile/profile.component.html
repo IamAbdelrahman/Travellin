@@ -1,0 +1,14 @@
+<router-outlet></router-outlet>
+<div class="d-flex flex-column">
+  <div class="d-flex flex-row">
+    <a
+      [routerLink]="['/bookingHistory']"
+      class="btn btn-primary fw-semibold ms-auto text-light"
+      >Booking History</a
+    >
+  </div>
+  <div class="max-w-4xl mx-auto p-4">
+    <app-profile-header></app-profile-header>
+    <app-profile-prompt></app-profile-prompt>
+  </div>
+</div>

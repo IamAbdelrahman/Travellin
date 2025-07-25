@@ -1,0 +1,65 @@
+<div class="things-to-know">
+    <h2>Things to know</h2>
+  
+    <div class="grid">
+      <!-- House Rules -->
+      <div class="card" (click)="openModal('House Rules', parseRules(property?.houseRules))">
+        <div class="icon">
+          <lucide-icon [name]="icons.clock"></lucide-icon>
+        </div>
+        <div>
+          <h3>House rules</h3>
+          <div *ngFor="let rule of parseRules(property?.houseRules || '')">
+            <p>{{ rule }}</p>
+          </div>
+          <button class="show-more">
+            Show more <lucide-icon [name]="icons.chevronDown" size="16"></lucide-icon>
+          </button>
+        </div>
+      </div>
+  
+      <!-- Safety -->
+      <div class="card" (click)="openModal('Safety & Property', filterTruthy([property?.safteyInfo]))">
+        <div class="icon">
+          <lucide-icon [name]="icons.shield"></lucide-icon>
+        </div>
+        <div>
+          <h3>Safety & property</h3>
+          <p>Exterior security cameras</p>
+          <p>Smoke alarm</p>
+          <button class="show-more">
+            Show more <lucide-icon [name]="icons.chevronDown" size="16"></lucide-icon>
+          </button>
+        </div>
+      </div>
+  
+     
+      <div class="card" (click)="openModal('Cancellation Policy', [
+        property.cancellationPolicy || 'This reservation is non-refundable.'
+      ])">
+        <div class="icon">
+          <lucide-icon [name]="icons.calendar"></lucide-icon>
+        </div>
+        <div>
+          <h3>Cancellation policy</h3>
+          <p>{{ property?.cancellationPolicy || 'Non-refundable' }}</p>
+          <button class="show-more">
+            Show more <lucide-icon [name]="icons.chevronDown" size="16"></lucide-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Modal -->
+    <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <button class="close-btn" (click)="closeModal()">
+          <lucide-icon [name]="icons.chevronUp"></lucide-icon>
+        </button>
+        <h2>{{ modalContent.title }}</h2>
+        <ul>
+          <li *ngFor="let item of modalContent.items">{{ item }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>

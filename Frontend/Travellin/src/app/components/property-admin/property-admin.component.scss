@@ -1,0 +1,44 @@
+.icon-hover-scale {
+    transition: all 0.2s ease;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .icon-hover-scale:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .icon-hover-scale:active {
+    transform: scale(0.95);
+  }
+  .activeBtn{
+    position: absolute;
+    top: 380px;
+    left: 225px;
+  }
+  /* Add to your component's CSS file */
+#cards .card {
+  transition: transform 0.2s;
+}
+
+#cards .card:hover {
+  transform: translateY(-5px);
+}
+
+.object-fit-cover {
+  object-fit: cover;
+}
+
+/* Button positions */
+.dltBtn, .pinBtn, .activeBtn {
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+.dltBtn:hover, .pinBtn:hover, .activeBtn:hover {
+  opacity: 1;
+}

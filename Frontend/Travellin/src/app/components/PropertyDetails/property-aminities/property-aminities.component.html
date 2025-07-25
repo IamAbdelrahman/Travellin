@@ -1,0 +1,73 @@
+<div class="amenities-section">
+    <div class="amenityTitle_icon">
+      <div>
+        <lucide-icon [name]="icons['sparkles']" class="title-icon"></lucide-icon>
+      </div>
+      <div>
+        <h2 class="section-title">What this place offers</h2>
+      </div>
+    </div>
+    
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Loading amenities...</p>
+    </div>
+    
+    <!-- Error State -->
+    <div *ngIf="error && !isLoading" class="error-state">
+        <p>Couldn't load amenities. <button (click)="loadAmenitiesData()">Try again</button></p>
+    </div>
+
+    <!-- Loaded State -->
+    <div *ngIf="!isLoading && !error">
+        <!-- Preview Grid (Top 6 amenities) -->
+        <div *ngIf="!showAll" class="amenities-preview">
+            <div class="amenities-grid">
+                <div class="amenity-item" *ngFor="let amenity of getTopAmenities()">
+                    <lucide-icon *ngIf="icons[amenity.icon]" [name]="icons[amenity.icon]" size="18"></lucide-icon>
+                    <span class="amenity-name">{{ amenity.name }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full List (when showAll is true) -->
+        <div *ngIf="showAll" class="amenities-full-list">
+            <div *ngFor="let group of getGroupedAmenities()" class="amenity-group">
+                <h3 class="category-title">{{ group.categoryName }}</h3>
+                <div class="amenities-grid">
+                    <div *ngFor="let amenity of group.amenities" class="amenity-item">
+                        <lucide-icon *ngIf="icons[amenity.icon]" [name]="icons[amenity.icon]" size="18"></lucide-icon>
+                        <span class="amenity-name">{{ amenity.name }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="show-all-btn" (click)="openModal()">
+          Show all {{ amenities.length }} amenities
+        </button>
+    </div>
+
+    <!-- Popup Modal -->
+    <div class="amenities-modal" *ngIf="isModalOpen" (click)="closeModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>What this place offers</h2>
+                <button class="close-btn" (click)="closeModal()">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <div *ngFor="let group of getGroupedAmenities()" class="amenity-group">
+                    <h3 class="category-title">{{ group.categoryName }}</h3>
+                    <div class="amenities-grid">
+                        <div *ngFor="let amenity of group.amenities" class="amenity-item">
+                            <lucide-icon *ngIf="icons[amenity.icon]" [name]="icons[amenity.icon]" size="18"></lucide-icon>
+                            <span class="amenity-name">{{ amenity.name }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

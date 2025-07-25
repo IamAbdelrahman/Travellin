@@ -1,0 +1,13 @@
+$primary: #ef7768;
+$secondary: #7c7c7c;
+$dark: #222222;
+:root {
+    --bs-primary: #ef7768;
+    --bs-secondary: #7c7c7c;
+    --bs-dark: #222222;
+  }
+  
+.tableHeader{
+  background-color: var(--bs-dark);
+}
+@import "bootstrap";

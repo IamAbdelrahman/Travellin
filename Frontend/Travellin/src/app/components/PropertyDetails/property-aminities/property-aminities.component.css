@@ -1,0 +1,121 @@
+/* Base Styles */
+.amenities-section {
+  padding: 24px 0;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.amenities-section h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+
+.amenity-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+
+.amenity-item lucide-icon {
+  color: #ef7768; /* Your brand color */
+  flex-shrink: 0;
+}
+
+/* Show All Button */
+.show-all-btn {
+  background: none;
+  border: none;
+  color: #222;
+  font-weight: 600;
+  text-decoration: underline;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+/* Modal Styles */
+.amenities-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: flex;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.modal-content {
+  background: white;
+  width: 100%;
+  max-width: 800px;
+  max-height: 80vh;
+  margin: auto;
+  border-radius: 12px;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.modal-header h2 {
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px;
+}
+
+/* Amenities Grid in Modal */
+.amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 32px;
+}
+
+.amenity-category h3 {
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.amenity-category ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.amenity-category li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.loading-state {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}
+
+.amenityTitle_icon {
+  display: flex;
+  gap: 16px;
+}
+.title-icon {
+  color: #ef7768;
+  width: 24px;
+  height: 24px;
+}

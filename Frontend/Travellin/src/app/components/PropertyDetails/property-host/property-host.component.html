@@ -1,0 +1,58 @@
+<div class="container py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="p-4 border rounded-3 shadow-sm">
+        <h2 class="h4 mb-4 fw-bold">About your host</h2>
+        
+        <div class="d-flex align-items-start gap-3 mb-4 ">
+          <img *ngIf="property?.owner?.photo?.id"
+               [src]="property?.owner?.photo?.photoUrl"
+               [alt]="hostName"
+               class="rounded-circle object-fit-cover border border-3 border-white shadow-sm"
+               width="80"
+               height="80">
+          
+          <div class="flex-grow-1">
+            <h3 class="h5 mb-2 fw-bold">{{ hostName }}</h3>
+            
+            <div class="d-flex flex-column gap-2 mb-2">
+
+              <div class="mb-0 text-secondary d-flex gap-2">
+                <div>
+                  <lucide-icon [name]="icons.star" size="18" class="text-primary"></lucide-icon>
+                </div>
+                <div>
+                  {{ property.averageRating || 'No' }} reviews ({{ property.reviewCount || 0 }})
+                </div>
+                
+                
+              </div>
+              <div class="mb-0 text-secondary d-flex gap-2 ">
+                <div>
+                  <lucide-icon [name]="icons.check" size="18"  class="text-primary"></lucide-icon>
+                </div>
+                <div>
+                  {{ responseRate }}% response rate
+                </div>
+              </div>
+            </div>
+            
+            <span *ngIf="isSuperhost" class="badge rounded-pill bg-danger d-inline-flex align-items-center gap-2 mt-2">
+              <span>
+                <lucide-icon [name]="icons.verified" size="16"  class="text-primary" ></lucide-icon>
+              </span>
+              <span>
+                Superhost
+              </span>
+            </span>
+          </div>
+        </div>
+        
+        <button class="btn btn-danger d-flex align-items-center gap-2 px-4 py-2 fw-semibold">
+          <lucide-icon [name]="icons.mail" size="18"></lucide-icon>
+          Contact Host
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

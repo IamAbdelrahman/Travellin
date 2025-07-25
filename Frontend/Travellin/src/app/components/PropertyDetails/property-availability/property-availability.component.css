@@ -1,0 +1,58 @@
+
+:host ::ng-deep .fc .fc-button {
+  background-color: #ef7768 !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 4px !important;
+  font-weight: 500 !important;
+  padding: 6px 12px !important;
+  text-transform: capitalize !important;
+}
+
+:host ::ng-deep .fc .fc-button:hover {
+  background-color: #e06a5a !important;
+}
+
+:host ::ng-deep .fc .fc-button-active {
+  background-color: #ef7768 !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .fc-today-button {
+  background-color: #008489 !important;
+}
+
+:host ::ng-deep .fc-today-button:hover {
+  background-color: #006c70 !important;
+}
+
+:host ::ng-deep .fc-daygrid-day-number {
+  color: #484848 !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+}
+
+:host ::ng-deep .fc .fc-daygrid-day.fc-day-today {
+  background-color: rgba(255, 90, 95, 0.1) !important;
+}
+
+:host ::ng-deep .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+  color: #ef7768 !important;
+  font-weight: bold !important;
+}
+
+:host ::ng-deep .fc .fc-col-header-cell {
+  background-color: white !important;
+}
+
+:host ::ng-deep .fc .fc-col-header-cell .fc-scrollgrid-sync-inner {
+  padding: 10px 0 !important;
+}
+
+:host ::ng-deep .fc .fc-col-header-cell-cushion {
+  color: #484848 !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  text-decoration: none !important;
+}

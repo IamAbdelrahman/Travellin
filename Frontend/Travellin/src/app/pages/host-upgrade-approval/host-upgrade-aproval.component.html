@@ -1,0 +1,312 @@
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Host Upgrade Requests</h1>
+
+
+    <div class="admin-container">
+      <h1 class="page-title">Host Upgrade Requests</h1>
+      
+      <div class="card">
+        <!-- Filters -->
+        <div class="filters-container">
+          <div class="filter-group">
+            <label class="filter-label">Status</label>
+            <select [(ngModel)]="statusFilter" (change)="loadRequests()" class="filter-select">
+              <option value="">All</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          
+          <!-- <div class="filter-group">
+            <label class="filter-label">Document Type</label>
+            <select [(ngModel)]="documentTypeFilter" (change)="loadRequests()" class="filter-select">
+              <option value="">All</option>
+              <option *ngFor="let type of documentTypes" [value]="type">{{type}}</option>
+            </select>
+          </div> -->
+        </div>
+        
+        <!-- Requests Table -->
+        <div class="table-container">
+          <table class="requests-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Document</th>
+                <th>Status</th>
+                <th>Submitted</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let request of requests">
+                <td>
+                  <div class="user-cell">
+                    <!-- <div class="user-avatar">
+                      {{request.firstName}}{{request.lastName}}
+                    </div> -->
+                    <div class="user-details">
+                      <!-- <div class="user-name">{{request.firstName}} {{request.lastName}}</div> -->
+                      <div class="user-id">ID: {{request.documentNumber}}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="document-type">{{request.documentType}}</div>
+                  <!-- <div class="document-expiry">Expires: {{request.expiryDate | date}}</div> -->
+                </td>
+                <td>
+                  <span [class]="'status-badge status-' + request.status|lowercase">
+                    {{request.status}}
+                  </span>
+                </td>
+                <td class="submission-date">
+                  {{request.createdAt | date:'medium'}}
+                </td>
+                <td class="actions-cell">
+                  <button (click)="openDetailsModal(request)" class="btn-view">View</button>
+                  <button *ngIf="request.status.toLowerCase() === 'pending'" 
+                          (click)="approveRequest(request.id)" 
+                          class="btn-approve">
+                    Approve
+                  </button>
+                  <button *ngIf="request.status.toLowerCase() === 'pending'" 
+                          (click)="openRejectModal(request)" 
+                          class="btn-reject">
+                    Reject
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="pagination-container">
+          <div class="pagination-mobile">
+            <button (click)="previousPage()" [disabled]="currentPage === 1" class="pagination-btn">
+              Previous
+            </button>
+            <button (click)="nextPage()" [disabled]="currentPage * pageSize >= totalItems" class="pagination-btn">
+              Next
+            </button>
+          </div>
+          <div class="pagination-desktop">
+            <div class="pagination-info">
+              Showing <span class="highlight">{{showingFrom}}</span>
+              to <span class="highlight">{{showingTo}}</span>
+              of <span class="highlight">{{totalItems}}</span> results
+            </div>
+            <div class="pagination-controls">
+              <button (click)="previousPage()" [disabled]="currentPage === 1" class="pagination-nav">
+                &lt;
+              </button>
+              <button *ngFor="let page of getPageNumbers()" (click)="goToPage(page)"
+                      [class.active]="currentPage === page"
+                      class="pagination-page">
+                {{page}}
+              </button>
+              <button (click)="nextPage()" [disabled]="currentPage * pageSize >= totalItems" class="pagination-nav">
+                &gt;
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <!-- Request Details Modal -->
+  <div *ngIf="selectedRequest" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>Host Upgrade Request Details</h3>
+        <button (click)="closeModal()" class="close-button">
+          &times;
+        </button>
+      </div>
+      
+      <div class="modal-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <!-- User Info -->
+          <div class="info-group">
+            <h4>User Information</h4>
+            <div class="info-item">
+              <span class="info-label">Full Name:</span>
+              <span class="info-value">{{selectedRequest.firstName}} {{selectedRequest.lastName}}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">User ID:</span>
+              <span class="info-value">{{selectedRequest.userId}}</span>
+            </div>
+          </div>
+          
+          <!-- Document Info -->
+          <div class="info-group">
+            <h4>Document Information</h4>
+            <div class="info-item">
+              <span class="info-label">Type:</span>
+              <span class="info-value">{{selectedRequest.documentType}}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Number:</span>
+              <span class="info-value">{{selectedRequest.documentNumber}}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Expiry:</span>
+              <span class="info-value">{{selectedRequest.expiryDate | date}}</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Document Photos Section -->
+        <div class="document-photos">
+          <h4>Document Verification</h4>
+          <div class="photo-grid">
+            <div class="photo-container">
+              <h5>Front Side</h5>
+              <div class="photo-wrapper">
+                <img [src]="selectedRequest.frontPhoto.photoUrl" 
+                     (click)="openImageModal(selectedRequest.frontPhoto.photoUrl)"
+                     class="document-photo">
+                <button (click)="openImageModal(selectedRequest.frontPhoto.photoUrl)"
+                        class="zoom-button">
+                  🔍 Zoom
+                </button>
+              </div>
+            </div>
+            
+            <div class="photo-container">
+              <h5>Back Side</h5>
+              <div class="photo-wrapper">
+                <img *ngIf="selectedRequest.backPhoto" 
+                     [src]="selectedRequest.backPhoto.photoUrl"
+                     (click)="openImageModal(selectedRequest.backPhoto.photoUrl)"
+                     class="document-photo">
+                <img *ngIf="!selectedRequest.backPhoto" 
+                     src="assets/images/no-image-available.jpg"
+                     class="document-photo no-photo">
+                <button *ngIf="selectedRequest.backPhoto"
+                        (click)="openImageModal(selectedRequest.backPhoto.photoUrl)"
+                        class="zoom-button">
+                  🔍 Zoom
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-actions">
+        <button *ngIf="selectedRequest.status.toLowerCase() === 'pending'" 
+                (click)="approveRequest(selectedRequest.id)"
+                class="action-button approve-button">
+          Approve 
+        </button>
+        <button *ngIf="selectedRequest.status.toLowerCase() === 'pending'"
+                (click)="openRejectModal(selectedRequest)"
+                class="action-button reject-button">
+          Reject 
+        </button>
+        <button (click)="closeModal()"
+                class="action-button cancel-button">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Enhanced Image Modal -->
+  <div *ngIf="enlargedImage" class="image-modal-overlay">
+    <div class="image-modal-container">
+      <div class="image-modal-header">
+        <h3>Document Photo</h3>
+        <button (click)="closeImageModal()" class="close-button">
+          &times;
+        </button>
+      </div>
+      <div class="image-modal-content">
+        <img [src]="enlargedImage" class="enlarged-image">
+      </div>
+      <div class="image-modal-actions">
+        <button (click)="closeImageModal()"
+                class="action-button cancel-button">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- Reject Modal -->
+ 
+<!-- Reject Modal -->
+<div *ngIf="showRejectModal" class="reject-modal-overlay">
+  <div class="reject-modal-container">
+    <!-- Modal Header -->
+    <div class="reject-modal-header">
+      <h2 class="reject-modal-title">
+        <svg class="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+        </svg>
+        Reject Host Verification
+      </h2>
+      <button (click)="closeRejectModal()" class="reject-modal-close">
+        &times;
+      </button>
+    </div>
+    
+    <!-- Modal Body -->
+    <div class="reject-modal-body">
+      <div class="flex items-center mb-4">
+        <div class="user-avatar">
+          {{requestToReject?.firstName?.charAt(0)}}{{requestToReject?.lastName?.charAt(0)}}
+        </div>
+        <div>
+          <p class="font-medium">{{requestToReject?.firstName}} {{requestToReject?.lastName}}</p>
+          <p class="text-sm text-gray-500">ID: {{requestToReject?.documentNumber}}</p>
+        </div>
+      </div>
+      
+      <label class="block text-sm font-medium text-gray-700 mb-2">
+        Reason for rejection
+      </label>
+      <textarea [(ngModel)]="rejectionReason" 
+      class="reject-textarea"
+      placeholder="Please provide specific reasons for rejection..."
+      minlength="10"
+      required></textarea>
+
+      <div *ngIf="rejectionReason && rejectionReason.length < 10" class="text-red-500 text-sm mt-1">
+               Please provide at least 10 characters
+      </div>
+    
+    <!-- Modal Footer -->
+    <div class="reject-modal-footer">
+      <button (click)="closeRejectModal()" class="reject-modal-button cancel">
+        Cancel
+      </button>
+      <button (click)="rejectRequest()" 
+              [disabled]="!rejectionReason"
+              class="reject-modal-button confirm">
+        Confirm Rejection
+      </button>
+    </div>
+  </div>
+</div>
+
+  
+  <!-- Image Modal -->
+  <!-- <div *ngIf="enlargedImage" class="fixed inset-0 z-50 overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+        <div class="absolute inset-0 bg-black opacity-75" (click)="closeImageModal()"></div>
+      </div>
+      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+      <div class="inline-block align-bottom rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl">
+        <img [src]="enlargedImage" alt="Enlarged document" class="max-w-full max-h-screen">
+      </div>
+    </div>
+  </div> -->

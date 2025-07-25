@@ -1,0 +1,325 @@
+<!-- Trip Header -->
+<div class="summary-header">
+  <h2 class="summary-title">Your Booking Details</h2>
+  <div class="summary-divider"></div>
+</div>
+<div class="booking-page">
+  <div class=".left-content">
+    <!--date container-->
+    <div class="date-container">
+      <div class="date-section">
+        <h6>Dates</h6>
+        <button class="edit-button" (click)="openOverlay('date')">Edit</button>
+      </div>
+      <div class="date-values">
+        <span>
+          <!-- Displayed Dates -->
+          <p class="text-sm text-gray-600 mt-1">
+            {{ bookings[0]?.checkIn || 'Add date' }} →
+            {{ bookings[0]?.checkOut || 'Add date' }}
+          </p>
+        </span>
+      </div>
+      <!--date overlay-->
+      <div
+        class="overlay"
+        *ngIf="overlayType === 'date'"
+        (click)="closeOverlay()">
+        <div class="popup-content" (click)="$event.stopPropagation()">
+          <div class="popup-header">
+            <h2>Edit Booking Dates</h2>
+            <button class="close-btn" (click)="closeOverlay()">&times;</button>
+          </div>
+
+          <form class="date-form">
+            <div class="form-group">
+              <label for="checkIn">Check-In Date</label>
+              <div class="date-input-container">
+                <input
+                  type="date"
+                  id="checkIn"
+                  [(ngModel)]="checkInDate"
+                  name="checkIn" />
+                <i class="calendar-icon">📅</i>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="checkOut">Check-Out Date</label>
+              <div class="date-input-container">
+                <input
+                  type="date"
+                  id="checkOut"
+                  [(ngModel)]="checkOutDate"
+                  name="checkOut" />
+                <i class="calendar-icon">📅</i>
+              </div>
+            </div>
+            <div class="buttons">
+              <button type="button" class="save-btn" (click)="saveChanges()">
+                Confirm Dates
+              </button>
+              <button type="button" class="cancel-btn" (click)="closeOverlay()">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- </div> -->
+
+      <!--guests div-->
+      <!-- <div class="date-container"> -->
+      <div class="date-section">
+        <h6>Guests</h6>
+        <button class="edit-button" (click)="openOverlay('guest')">Edit</button>
+      </div>
+      <div class="date-values">
+        <!--display guests-->
+        <span class="text-sm text-gray-600 mt-1">
+          {{ firstGuestCount || 'Add guest' }} guests
+        </span>
+      </div>
+    </div>
+
+    <!--guest overlay-->
+    <div
+      class="overlay"
+      *ngIf="overlayType === 'guest'"
+      (click)="closeOverlay()">
+      <div class="popup-content" (click)="$event.stopPropagation()">
+        <div class="popup-header">
+          <h2>Guest Selection</h2>
+          <button class="close-btn" (click)="closeOverlay()">&times;</button>
+        </div>
+
+        <form class="guest-form">
+          <!-- Adults -->
+          <div class="guest-type">
+            <div class="guest-info">
+              <label>Adults</label>
+              <small>Age 13+</small>
+            </div>
+            <div class="controls">
+              <button
+                type="button"
+                class="control-btn"
+                (click)="decrement('adults')"
+                [disabled]="adults <= 1">
+                −
+              </button>
+              <span class="count">{{ adults }}</span>
+              <button
+                type="button"
+                class="control-btn"
+                (click)="increment('adults')">
+                +
+              </button>
+            </div>
+          </div>
+
+          <!-- Children -->
+          <div class="guest-type">
+            <div class="guest-info">
+              <label>Children</label>
+              <small>Ages 2-12</small>
+            </div>
+            <div class="controls">
+              <button
+                type="button"
+                class="control-btn"
+                (click)="decrement('children')"
+                [disabled]="children <= 0">
+                −
+              </button>
+              <span class="count">{{ children }}</span>
+              <button
+                type="button"
+                class="control-btn"
+                (click)="increment('children')">
+                +
+              </button>
+            </div>
+          </div>
+
+          <!-- Infants -->
+          <div class="guest-type">
+            <div class="guest-info">
+              <label>Infants</label>
+              <small>Under 2</small>
+            </div>
+            <div class="controls">
+              <button
+                type="button"
+                class="control-btn"
+                (click)="decrement('infants')"
+                [disabled]="infants <= 0">
+                −
+              </button>
+              <span class="count">{{ infants }}</span>
+              <button
+                type="button"
+                class="control-btn"
+                (click)="increment('infants')">
+                +
+              </button>
+            </div>
+          </div>
+
+          <!-- Pets -->
+          <div class="guest-type">
+            <div class="guest-info">
+              <label>Pets</label>
+              <small *ngIf="pets > 0"
+                >Bringing {{ pets }} {{ pets === 1 ? 'pet' : 'pets' }}</small
+              >
+            </div>
+            <div class="controls">
+              <button
+                type="button"
+                class="control-btn"
+                (click)="decrement('pets')"
+                [disabled]="pets <= 0">
+                −
+              </button>
+              <span class="count">{{ pets }}</span>
+              <button
+                type="button"
+                class="control-btn"
+                (click)="increment('pets')">
+                +
+              </button>
+            </div>
+          </div>
+
+          <div class="total-guests">
+            <strong>Total:</strong> {{ adults + children }} guests
+            {{
+              infants > 0
+                ? ', ' + infants + ' infant' + (infants > 1 ? 's' : '')
+                : ''
+            }}
+          </div>
+
+          <div class="buttons">
+            <button type="button" class="save-btn" (click)="saveChanges()">
+              Confirm Guests
+            </button>
+            <button type="button" class="cancel-btn" (click)="closeOverlay()">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!--cancellation policy-->
+    <div class="ground-rules">
+      <h4>Cancellation Policy</h4>
+      <p *ngIf="propertyDetails">{{ propertyDetails?.cancellationPolicy }}</p>
+    </div>
+
+    <!--ground rules-->
+    <div class="ground-rules">
+      <h4>Ground Rules</h4>
+      <p>
+        We ask every guest to remember a few simple things about what makes a
+        great guest.
+      </p>
+      <ul>
+        <li>
+          {{ propertyDetails?.houseRules || 'No specific rules provided' }}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!--right side-->
+  <div>
+    <div *ngIf="hasBookingWithPhotos" class="property-card">
+      <div class="property-image-container">
+        <img
+          [src]="firstBookingPhotoUrl"
+          alt="Luxury Property"
+          class="property-image" />
+        <!-- <div class="property-badge">Premium</div> -->
+      </div>
+
+      <div class="property-details">
+        <h2 class="property-title">{{ bookings[0]?.property?.title }}</h2>
+        <p class="property-location">
+          <svg class="location-icon" viewBox="0 0 24 24" width="16" height="16">
+            <path
+              fill="currentColor"
+              d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+          </svg>
+          {{ bookings[0]?.property?.location?.name }}
+        </p>
+
+        <div class="property-rating">
+          <div class="stars">
+            <svg class="star" viewBox="0 0 24 24" width="16" height="16">
+              <path
+                fill="currentColor"
+                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </svg>
+            <span>{{ bookings[0]?.property?.averageRating }}</span>
+          </div>
+          <span class="reviews"
+            >({{ bookings[0]?.property?.reviewCount }} reviews)</span
+          >
+        </div>
+        <div class="price-summary">
+          <div class="price-row">
+            <span
+              >${{ bookings[0]?.property?.pricePerNight
+              }}<small
+                >×
+                {{
+                  calculateNumberOfNights(
+                    bookings[0]?.checkIn,
+                    bookings[0]?.checkOut
+                  )
+                }}
+                nights</small
+              ></span
+            >
+            <span
+              >${{
+                calculateTotalPrice(bookings[0]?.checkIn, bookings[0]?.checkOut)
+              }}</span
+            >
+          </div>
+          <div class="price-row">
+            <span>Service fee</span>
+            <span>${{ bookings[0]?.totalFees }}</span>
+          </div>
+          <div class="divider"></div>
+          <div class="price-row total">
+            <span>Total Price</span>
+            <span
+              >${{
+                calculateTotal(bookings[0]?.checkIn, bookings[0]?.checkOut)
+              }}</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    @if (bookings[0].status.toLowerCase() === 'pending') {
+      <button
+        type="button"
+        class="confirm-btn"
+        (click)="onCheckOut()"
+        [disabled]="isCheckingOut">
+        <span
+          *ngIf="isCheckingOut"
+          class="spinner-border spinner-border-sm me-2"
+          role="status"
+          aria-hidden="true"></span>
+        <span *ngIf="isCheckingOut">Processing...</span>
+        <span *ngIf="!isCheckingOut">Confirm & Pay</span>
+      </button>
+    }
+  </div>
+</div>
