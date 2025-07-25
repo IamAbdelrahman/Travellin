@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
-
+import { jwtDecode } from 'jwt-decode';
+interface JwtPayload {
+  sub?: string;
+  nameid?: string;
+  unique_name?: string;
+  [key: string]: any;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -25,5 +31,30 @@ export class TokenStorageService {
 
   public clear(): void {
     localStorage.clear();
+  }
+  // Add this method for chat service compatibility
+  public getAccessToken(): string | null {
+    return this.getToken();
+  }
+
+  // Add this method to extract user ID from JWT token
+  public getUserId(): string | null {
+    const token = this.getToken();
+    if (!token) {
+      return null;
+    }
+
+    try {
+      const decoded: JwtPayload = jwtDecode(token);
+      // Try different claim names that might contain the user ID
+      return decoded.nameid || decoded.sub || decoded.unique_name || null;
+    } catch (error) {
+      console.error('Error decoding JWT token:', error);
+      return null;
+    }
+  }
+  public isTokenValid(): boolean {
+    const token = this.getToken();
+    return token !== null && token !== '';
   }
 }
