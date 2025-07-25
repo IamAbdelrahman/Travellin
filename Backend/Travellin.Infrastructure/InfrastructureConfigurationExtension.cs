@@ -92,10 +92,6 @@ namespace Travellin.Infrastructure
             services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<IServiceFactory, ServiceFactory>();
             //Messaging Services
-            services.AddScoped<IConversationService, ConversationService>();
-            services.AddScoped<IMessageService, MessageService>();
-            services.AddScoped<IConversationRepository, ConversationRepository>();
-            services.AddScoped<IMessageRepository, MessageRepository>();
             return services;
         }
     }
