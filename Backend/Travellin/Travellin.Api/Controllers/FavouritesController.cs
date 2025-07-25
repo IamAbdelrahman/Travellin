@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Travellin.Api.Controllers;
 using Travellin.Core.Dtos;
 using Travellin.Core.Dtos.FavoriteProperties;
-
 using Travellin.Core.Interfaces;
 using Travellin.Travellin.Core.Shared;
 namespace Travellin.Travellin.Api.Controllers
