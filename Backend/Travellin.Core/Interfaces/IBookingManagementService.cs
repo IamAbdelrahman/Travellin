@@ -7,5 +7,7 @@ namespace Travellin.Core.Interfaces
     {
         public Task<Booking> CreateBookingAsync(string userId, CreateBookingDto dto);
         public Task CancelBookingAsync(string bookingId, string userId, bool isAdmin);
+        public Task AcceptBookingAsync(string bookingId);
+        public Task DeclineBookingAsync(string bookingId);
     }
 }
