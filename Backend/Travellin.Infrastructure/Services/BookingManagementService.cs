@@ -25,7 +25,7 @@ namespace Travellin.Infrastructure.Services
                 throw new NotFoundException($"Property with id [{dto.PropertyId}] not found");
 
 
-            // Validate guest counts against property limits
+            // Validate guest counts 
             ValidateGuestCounts(property, dto.Guests);
 
             //Check Poroperty is available for the selected dates
@@ -124,35 +124,38 @@ namespace Travellin.Infrastructure.Services
                 }
             }
         }
-
+        /////////////////////////////////////Check Property Availability////////////////////////////////////
         private bool IsPropertyAvailable(Property property, DateTime checkIn, DateTime checkOut)
         {
-            var overlappingAvailabilities = property.PropertyAvailabilities
+            var CheckAvailable = property.PropertyAvailabilities
                 .Where(a => a.IsAvailable &&
                            a.StartDate < checkOut &&
                            a.EndDate > checkIn)
                 .OrderBy(a => a.StartDate)
                 .ToList();
 
-            if (!overlappingAvailabilities.Any())
+
+            // 2. If no available periods exist at all — not available
+            if (!CheckAvailable.Any())
                 return false;
 
-            // Check for contiguous coverage
+            // 3. Check that the availability windows fully cover the desired range without gaps
             DateTime currentCoverage = checkIn;
 
-            foreach (var availability in overlappingAvailabilities)
+            foreach (var availability in CheckAvailable)
             {
                 if (availability.StartDate > currentCoverage)
-                    return false; // Gap found
+                    return false; // ⛔ Gap found — property not available for full duration
 
                 if (availability.EndDate > currentCoverage)
                     currentCoverage = availability.EndDate;
 
                 if (currentCoverage >= checkOut)
-                    return true;
+                    return true; // ✅ Full coverage confirmed
             }
 
-            return currentCoverage >= checkOut;
+            return currentCoverage >= checkOut; // Check final coverage in case last range reaches end
+
         }
 
         //////////////////////////////////Update Dates////////////////////////////////////
@@ -304,6 +307,33 @@ namespace Travellin.Infrastructure.Services
                     _unitOfWork.PropertyAvailabilityRepository.Update(availability);
                 }
             }
+
         }
+        public async Task AcceptBookingAsync(string bookingId)
+        {
+            var booking = await _unitOfWork.BookingRepository.GetByIdAsync(bookingId);
+            if (booking == null)
+                throw new NotFoundException($"Booking {bookingId} not found.");
+
+            if (booking.Status != BookingStatus.Pending)
+                throw new ConflictException("Only pending bookings can be accepted.");
+
+            booking.Status = BookingStatus.Confirmed;
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task DeclineBookingAsync(string bookingId)
+        {
+            var booking = await _unitOfWork.BookingRepository.GetByIdAsync(bookingId);
+            if (booking == null)
+                throw new NotFoundException($"Booking {bookingId} not found.");
+
+            if (booking.Status != BookingStatus.Pending)
+                throw new ConflictException("Only pending bookings can be declined.");
+
+            booking.Status = BookingStatus.Declined;
+            await _unitOfWork.SaveChangesAsync();
+        }
+
     }
 }
