@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthComponent } from '../auth/pages/auth-page/auth-page';
 import { LoginComponentForm } from '../auth/components/login/login'
-import { RegisterComponent } from './components/register/register';
+import { RegisterComponentForm } from './components/register/register';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
@@ -17,7 +17,7 @@ const routes: Routes = [
     component: AuthComponent,
     children: [
       { path: 'login', component: LoginComponentForm },
-      { path: 'register', component: RegisterComponent },
+      { path: 'register', component: RegisterComponentForm },
       { path: 'forgot-password', component: ForgotPasswordComponent },
     ]
   }

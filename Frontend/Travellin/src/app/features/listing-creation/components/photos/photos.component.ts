@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DragDropDirective } from '../../shared/directives/drag-drop';
-
+import { DragDropDirective } from '../../../shared/directives/drag-drop.directive';
 @Component({
   selector: 'app-photos',
   standalone: true,

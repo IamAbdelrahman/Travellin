@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import {
   EmailValidator,
   FormBuilder,
@@ -60,9 +60,10 @@ export class LoginComponentForm {
     this.showPassword = !this.showPassword;
   }
 
+  @Output() close = new EventEmitter<void>();
+
   closeLogin() {
-    // @Output() close = new EventEmitter<void>();
-    // this.close.emit();
+    this.close.emit();
   }
 
   onSubmit(): void {
@@ -110,5 +111,13 @@ export class LoginComponentForm {
     this.errorMessage = message;
     this.loginForm.get('password')?.reset();
     this.isLoggingIn = false;
+  }
+
+  goToRegister(): void {
+    this.router.navigate(['/register']);
+  }
+
+  goToChangePassword(): void {
+    this.router.navigate(['/change-password']);
   }
 }

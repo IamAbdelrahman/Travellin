@@ -6,7 +6,7 @@ import { HostDashboard } from './host-dashboard';
 
 const routes: Routes = [
   { path: '', component: HostDashboard },
-  { path: 'new', loadChildren: () => import('./listing-creation/listing-creation-module').then(m => m.ListingCreationModule) }
+  { path: 'new', loadChildren: () => import('../../../listing-creation/listing-creation-module').then(m => m.ListingCreationRoutingModule) }
 ];
 
 @NgModule({
