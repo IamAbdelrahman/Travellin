@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Travellin.Core.Dtos.Reviews;
 using Travellin.Core.Entities;
 using Travellin.Core.Interfaces;
+using Travellin.Core.Services;
 
 namespace Travellin.Travellin.Api.Controllers
 {
