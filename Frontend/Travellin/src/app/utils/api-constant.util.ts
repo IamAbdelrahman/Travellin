@@ -1,5 +1,6 @@
+import {environment} from '../../environments/environment';
 export class ApiConstant {
-  private static domainUrl = 'https:localhost:44348'; // Replace with your domain URL
+  private static domainUrl = environment.apiUrl; // Replace with your domain URL
   public static baseUrl = `${ApiConstant.domainUrl}/api/v1`;
 
   public static AccountsApi = {
