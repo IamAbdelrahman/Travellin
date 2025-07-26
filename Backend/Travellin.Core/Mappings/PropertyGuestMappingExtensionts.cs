@@ -14,5 +14,17 @@ namespace Travellin.Core.Mappings
                 GuestCount = propertyGuest.GuestCount
             };
         }
+
+        public static PropertyGuest ToEntity(this PropertyGuestCreateDto dto)
+        {
+            return new PropertyGuest
+            {
+                PropertyId = dto.PropertyId,
+                GuestTypeId = dto.GuestTypeId,
+                GuestCount = dto.GuestCount
+            };
+        }
     }
 }
+
+

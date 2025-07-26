@@ -18,7 +18,7 @@ namespace Travellin.Core.Mappings
             return new PropertyAmenity
             {
                 PropertyId = dto.PropertyId,
-                AmenityId = dto.Amenity?.Id ?? 0
+                AmenityId = dto.AmenityId
 
             };
         }
