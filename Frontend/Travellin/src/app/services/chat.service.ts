@@ -16,13 +16,17 @@ import {
   ConversationSearchResultDto
 } from '../models/chat/conversation.model';
 import { ChatState } from '../models/chat/chat-state.model';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
   private readonly baseUrl = `${environment.apiUrl}/api/v1`;
   private hubConnection: signalR.HubConnection | null = null;
-  
+  private reconnectAttempts = 0;
+  private maxReconnectAttempts = 5;
+  private reconnectDelay = 2000;
+
   // State management
   private chatStateSubject = new BehaviorSubject<ChatState>({
     currentUserId: '',
@@ -37,6 +41,10 @@ export class ChatService {
   public messageReceived$ = new Subject<MessageDto>();
   public messageSent$ = new Subject<MessageDto>();
   public conversationStarted$ = new Subject<ConversationDto>();
+  public messageMarkedAsRead$ = new Subject<number>();
+  public conversationMarkedAsRead$ = new Subject<number>();
+  public joinedConversation$ = new Subject<number>();
+  public leftConversation$ = new Subject<number>();
   public errorReceived$ = new Subject<string>();
   public connectionStatus$ = new Subject<boolean>();
 
@@ -48,7 +56,7 @@ export class ChatService {
     this.updateCurrentUserId();
   }
 
-  private updateCurrentUserId(): void {
+  public updateCurrentUserId(): void {
     const currentState = this.chatStateSubject.value;
     const userId = this.tokenStorage.getUserId();
     this.chatStateSubject.next({
@@ -77,23 +85,41 @@ export class ChatService {
     }
 
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${environment.apiUrl}/chathub`, {
-        accessTokenFactory: () => token
+      .withUrl(`${environment.apiUrl}/hubs/chat`, {
+        accessTokenFactory: () => token,
+        transport: signalR.HttpTransportType.WebSockets
       })
-      .withAutomaticReconnect()
+      .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
+      .configureLogging(signalR.LogLevel.Information)
       .build();
 
-    // Set up event handlers
     this.setupSignalRHandlers();
 
     try {
       await this.hubConnection.start();
       this.updateConnectionStatus(true);
+      this.reconnectAttempts = 0;
       console.log('SignalR Connected');
     } catch (err) {
       console.error('Error while starting connection: ', err);
       this.updateConnectionStatus(false);
+      this.handleConnectionError();
       throw err;
+    }
+  }
+
+  private handleConnectionError(): void {
+    if (this.reconnectAttempts < this.maxReconnectAttempts) {
+      this.reconnectAttempts++;
+      setTimeout(() => {
+        console.log(`Attempting to reconnect... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+        this.startConnection().catch(err => {
+          console.error('Reconnection failed:', err);
+        });
+      }, this.reconnectDelay * this.reconnectAttempts);
+    } else {
+      console.error('Max reconnection attempts reached');
+      this.errorReceived$.next('Connection failed. Please refresh the page.');
     }
   }
 
@@ -101,6 +127,7 @@ export class ChatService {
     if (this.hubConnection) {
       await this.hubConnection.stop();
       this.updateConnectionStatus(false);
+      this.reconnectAttempts = 0;
       console.log('SignalR Disconnected');
     }
   }
@@ -108,43 +135,66 @@ export class ChatService {
   private setupSignalRHandlers(): void {
     if (!this.hubConnection) return;
 
-    // Handle incoming messages
     this.hubConnection.on('ReceiveMessage', (message: MessageDto) => {
       this.messageReceived$.next(message);
       this.addMessageToState(message);
       this.updateUnreadCount();
     });
 
-    // Handle message sent confirmation
     this.hubConnection.on('MessageSent', (message: MessageDto) => {
       this.messageSent$.next(message);
       this.addMessageToState(message);
     });
 
-    // Handle new conversation started
     this.hubConnection.on('NewConversationStarted', (conversation: ConversationDto) => {
       this.conversationStarted$.next(conversation);
       this.addConversationToState(conversation);
     });
 
-    // Handle errors
+    this.hubConnection.on('MessageMarkedAsRead', (messageId: number) => {
+      this.messageMarkedAsRead$.next(messageId);
+      this.updateMessageReadStatus(messageId, true);
+    });
+
+    this.hubConnection.on('ConversationMarkedAsRead', (conversationId: number) => {
+      this.conversationMarkedAsRead$.next(conversationId);
+      this.updateConversationReadStatus(conversationId);
+    });
+
+    this.hubConnection.on('JoinedConversation', (conversationId: number) => {
+      this.joinedConversation$.next(conversationId);
+    });
+
+    this.hubConnection.on('LeftConversation', (conversationId: number) => {
+      this.leftConversation$.next(conversationId);
+    });
+
     this.hubConnection.on('ReceiveError', (error: string) => {
       this.errorReceived$.next(error);
     });
 
-    // Handle connection state changes
-    this.hubConnection.onclose(() => {
+    this.hubConnection.onclose((error) => {
+      console.log('SignalR connection closed:', error);
       this.updateConnectionStatus(false);
+      if (error) {
+        this.handleConnectionError();
+      }
     });
 
-    this.hubConnection.onreconnected(() => {
+    this.hubConnection.onreconnected((connectionId) => {
+      console.log('SignalR reconnected:', connectionId);
       this.updateConnectionStatus(true);
+      this.reconnectAttempts = 0;
+    });
+
+    this.hubConnection.onreconnecting((error) => {
+      console.log('SignalR reconnecting:', error);
+      this.updateConnectionStatus(false);
     });
   }
 
-  // SignalR Methods
   public async sendMessageViaHub(createMessageDto: CreateMessageDto): Promise<void> {
-    if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
+    if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
       await this.hubConnection.invoke('SendMessage', createMessageDto);
     } else {
       throw new Error('SignalR connection not established');
@@ -152,8 +202,40 @@ export class ChatService {
   }
 
   public async startConversationViaHub(startConversationDto: StartConversationDto): Promise<void> {
-    if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
+    if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
       await this.hubConnection.invoke('StartConversation', startConversationDto);
+    } else {
+      throw new Error('SignalR connection not established');
+    }
+  }
+
+  public async markMessageAsReadViaHub(messageId: number): Promise<void> {
+    if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
+      await this.hubConnection.invoke('MarkMessageAsRead', messageId);
+    } else {
+      throw new Error('SignalR connection not established');
+    }
+  }
+
+  public async markConversationAsReadViaHub(conversationId: number): Promise<void> {
+    if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
+      await this.hubConnection.invoke('MarkConversationAsRead', conversationId);
+    } else {
+      throw new Error('SignalR connection not established');
+    }
+  }
+
+  public async joinConversationViaHub(conversationId: number): Promise<void> {
+    if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
+      await this.hubConnection.invoke('JoinConversation', conversationId);
+    } else {
+      throw new Error('SignalR connection not established');
+    }
+  }
+
+  public async leaveConversationViaHub(conversationId: number): Promise<void> {
+    if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
+      await this.hubConnection.invoke('LeaveConversation', conversationId);
     } else {
       throw new Error('SignalR connection not established');
     }
@@ -173,7 +255,9 @@ export class ChatService {
   }
 
   public getUserConversations(userId: string): Observable<ConversationDto[]> {
-    return this.http.get<ConversationDto[]>(`${this.baseUrl}/conversations/by-user/${userId}`, {
+    const url = `${this.baseUrl}/conversations/by-user/${userId}`;
+    console.log('Calling getUserConversations:', url);
+    return this.http.get<ConversationDto[]>(url, {
       headers: this.getHttpHeaders()
     });
   }
@@ -209,7 +293,9 @@ export class ChatService {
   }
 
   public getInboxPreview(userId: string): Observable<InboxDto[]> {
-    return this.http.get<InboxDto[]>(`${this.baseUrl}/conversations/inbox/${userId}`, {
+    const url = `${this.baseUrl}/conversations/inbox/${userId}`;
+    console.log('Calling getInboxPreview:', url);
+    return this.http.get<InboxDto[]>(url, {
       headers: this.getHttpHeaders()
     });
   }
@@ -240,12 +326,12 @@ export class ChatService {
   private addMessageToState(message: MessageDto): void {
     const currentState = this.chatStateSubject.value;
     const conversations = [...currentState.conversations];
-    
+
     const conversationIndex = conversations.findIndex(c => c.id === message.conversationId);
     if (conversationIndex !== -1) {
       const conversation = { ...conversations[conversationIndex] };
       const messageExists = conversation.messages.some(m => m.id === message.id);
-      
+
       if (!messageExists) {
         conversation.messages = [...conversation.messages, message];
         conversations[conversationIndex] = conversation;
@@ -261,7 +347,7 @@ export class ChatService {
   private addConversationToState(conversation: ConversationDto): void {
     const currentState = this.chatStateSubject.value;
     const existingIndex = currentState.conversations.findIndex(c => c.id === conversation.id);
-    
+
     let conversations: ConversationDto[];
     if (existingIndex !== -1) {
       conversations = [...currentState.conversations];
@@ -269,6 +355,42 @@ export class ChatService {
     } else {
       conversations = [...currentState.conversations, conversation];
     }
+
+    this.chatStateSubject.next({
+      ...currentState,
+      conversations
+    });
+  }
+
+  private updateMessageReadStatus(messageId: number, isRead: boolean): void {
+    const currentState = this.chatStateSubject.value;
+    const conversations = currentState.conversations.map(conversation => ({
+      ...conversation,
+      messages: conversation.messages.map(message => 
+        message.id === messageId ? { ...message, isRead } : message
+      )
+    }));
+
+    this.chatStateSubject.next({
+      ...currentState,
+      conversations
+    });
+  }
+
+  private updateConversationReadStatus(conversationId: number): void {
+    const currentState = this.chatStateSubject.value;
+    const conversations = currentState.conversations.map(conversation => {
+      if (conversation.id === conversationId) {
+        return {
+          ...conversation,
+          messages: conversation.messages.map(message => ({
+            ...message,
+            isRead: message.receiverId === currentState.currentUserId ? true : message.isRead
+          }))
+        };
+      }
+      return conversation;
+    });
 
     this.chatStateSubject.next({
       ...currentState,
@@ -286,10 +408,15 @@ export class ChatService {
 
   public loadUserConversations(): void {
     const currentUserId = this.chatStateSubject.value.currentUserId;
-    if (!currentUserId) return;
+    console.log('Loading conversations for user:', currentUserId);
+    if (!currentUserId) {
+      console.error('No current user ID available');
+      return;
+    }
 
     this.getUserConversations(currentUserId).subscribe({
       next: (conversations) => {
+        console.log('Received conversations:', conversations);
         const currentState = this.chatStateSubject.value;
         this.chatStateSubject.next({
           ...currentState,
@@ -298,16 +425,22 @@ export class ChatService {
       },
       error: (error) => {
         console.error('Error loading conversations:', error);
+        this.errorReceived$.next('Failed to load conversations');
       }
     });
   }
 
   public loadInboxPreview(): void {
     const currentUserId = this.chatStateSubject.value.currentUserId;
-    if (!currentUserId) return;
+    console.log('Loading inbox for user:', currentUserId);
+    if (!currentUserId) {
+      console.error('No current user ID available');
+      return;
+    }
 
     this.getInboxPreview(currentUserId).subscribe({
       next: (inbox) => {
+        console.log('Received inbox:', inbox);
         const currentState = this.chatStateSubject.value;
         this.chatStateSubject.next({
           ...currentState,
@@ -316,6 +449,7 @@ export class ChatService {
       },
       error: (error) => {
         console.error('Error loading inbox:', error);
+        this.errorReceived$.next('Failed to load inbox');
       }
     });
   }
@@ -346,5 +480,9 @@ export class ChatService {
 
   public getActiveConversation(): ConversationDto | undefined {
     return this.chatStateSubject.value.activeConversation;
+  }
+
+  public getConnectionState(): signalR.HubConnectionState | null {
+    return this.hubConnection?.state || null;
   }
 }

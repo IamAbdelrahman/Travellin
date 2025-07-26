@@ -69,7 +69,13 @@ public class ConversationsController : ControllerBase
     {
         var currentUserId = GetCurrentUserId();
 
-        var conversations = await _conversationService.GetUserConversationsAsync(currentUserId);
+        // Ensure users can only access their own conversations (unless they're admin)
+        if (userId != currentUserId)
+        {
+            return Forbid();
+        }
+
+        var conversations = await _conversationService.GetUserConversationsAsync(userId);
 
         if (!conversations.Any())
             return NotFound();
@@ -145,9 +151,15 @@ public class ConversationsController : ControllerBase
     [EndpointSummary("Get inbox preview for user")]
     public async Task<IActionResult> GetInboxPreview(string userId)
     {
-
         var currentUserId = GetCurrentUserId();
-        var result = await _conversationService.GetInboxPreviewAsync(currentUserId);
+        
+        // Ensure users can only access their own inbox (unless they're admin)
+        if (userId != currentUserId)
+        {
+            return Forbid();
+        }
+        
+        var result = await _conversationService.GetInboxPreviewAsync(userId);
         return Ok(result);
     }
 

@@ -86,14 +86,16 @@ namespace Travellin.Infrastructure
                     var stripeOptions = sp.GetRequiredService<IOptions<StripeOptions>>().Value;
                     return new StripeClient(stripeOptions.SecretApiKey);
                 });
-
+            services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IConversationRepository, ConversationRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IIdentityFactory, IdentityFactory>();
             services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<IServiceFactory, ServiceFactory>();
             services.AddScoped<IAuthTokenService, AuthTokenService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
-
+            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IConversationService, ConversationService>();
             //Messaging Services
             return services;
         }

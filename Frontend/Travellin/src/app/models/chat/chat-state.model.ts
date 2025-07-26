@@ -1,9 +1,10 @@
-import { ConversationDto,InboxDto } from "./conversation.model";
+import { ConversationDto } from './conversation.model';
+import { InboxDto } from './conversation.model';
 
 export interface ChatState {
   currentUserId: string;
-  activeConversation?: ConversationDto;
   conversations: ConversationDto[];
+  activeConversation?: ConversationDto;
   inbox: InboxDto[];
   isConnected: boolean;
   unreadCount: number;

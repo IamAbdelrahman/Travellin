@@ -86,8 +86,15 @@ export const routes: Routes = [
             m => m.AddPropertyComponent
           ),
       },
+      {
+        path: 'chat',
+        loadComponent: () =>
+          import('./pages/chat-page/chat-page.component').then(
+            m => m.ChatPageComponent
+          ),
+      },
        {
-      path: 'chat',
+      path: 'hubs/chat',
       loadComponent: () =>
         import('./pages/chat-page/chat-page.component').then(
           m => m.ChatPageComponent

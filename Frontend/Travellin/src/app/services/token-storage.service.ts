@@ -39,6 +39,13 @@ export class TokenStorageService {
 
   // Add this method to extract user ID from JWT token
   public getUserId(): string | null {
+    // First try to get from localStorage (like AuthService)
+    const storedUserId = localStorage.getItem('userId');
+    if (storedUserId) {
+      return storedUserId;
+    }
+
+    // Fallback to JWT decoding
     const token = this.getToken();
     if (!token) {
       return null;

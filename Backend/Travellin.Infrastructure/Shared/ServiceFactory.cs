@@ -21,7 +21,7 @@ namespace Travellin.Infrastructure.Shared
         private IConversationService? _conversationService;
         private IMessageService? _messageService;
         private IPropertyFilterExtractorService _propertyFilterExtractorService;
-
+        private readonly ILogger<StripeCheckoutService> _logger;
 
         public ServiceFactory(IServiceProvider provider, IConfiguration config)
         {
@@ -45,13 +45,14 @@ namespace Travellin.Infrastructure.Shared
         public IConversationService ConversationService =>
     _conversationService ??= new ConversationService(
         _provider.GetRequiredService<IConversationRepository>(),
-        _provider.GetRequiredService<IUnitOfWork>());
+        _provider.GetRequiredService<IUnitOfWork>());   
 
         public IMessageService MessageService =>
             _messageService ??= new MessageService(
                 _provider.GetRequiredService<IMessageRepository>(),
                 _provider.GetRequiredService<IConversationRepository>(),
-                _provider.GetRequiredService<IUnitOfWork>());
+                _provider.GetRequiredService<IUnitOfWork>(),
+                _provider.GetRequiredService<ILogger<MessageService>>());
         public IPropertyFilterExtractorService PropertyFilterExtractorService =>
             _propertyFilterExtractorService ??= new PropertyFilterExtractorService
                 (_provider.GetRequiredKeyedService<ChatClient>("MainOpenAIClient"), _provider.GetRequiredService<IUnitOfWork>());
