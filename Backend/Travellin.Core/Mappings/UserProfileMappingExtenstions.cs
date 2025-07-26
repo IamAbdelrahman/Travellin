@@ -22,7 +22,6 @@ namespace Travellin.Core.Mappings
                 Photo = MapProfilePhoto(userProfile)
             };
         }
-
         public static void ToEntity(this UpdateUserProfileDto dto, UserProfile userProfile)
         {
             userProfile.FirstName = dto?.FirstName ?? userProfile.FirstName;

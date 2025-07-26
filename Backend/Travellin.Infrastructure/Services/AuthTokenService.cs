@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Travellin.Core.Entities;
-using Travellin.Core.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Travellin.Core.Entities;
+using Travellin.Core.Interfaces;
+using Travellin.Infrastructure.Shared;
+using Travellin.Travellin.Core.Enums;
+using Travellin.Travellin.Core.Shared;
 
 namespace Travellin.Infrastructure.Services
 {
@@ -16,8 +19,9 @@ namespace Travellin.Infrastructure.Services
         private readonly string _audiance;
         private readonly int _expirationInDays;
         private readonly CookieOptions _cookieOptions;
-
-        public AuthTokenService(IConfiguration config)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ICurrentUserService _currentUser;
+        public AuthTokenService(IConfiguration config, IUnitOfWork unitOfWork, ICurrentUserService currentUser)
         {
             // JWT Configs
             var signingKey = config["Jwt:SigningKey"];
@@ -35,6 +39,8 @@ namespace Travellin.Infrastructure.Services
                 Expires = DateTime.UtcNow.AddDays(_expirationInDays),
                 IsEssential = true
             };
+            _unitOfWork = unitOfWork;
+            _currentUser = currentUser;
         }
 
 
@@ -83,6 +89,30 @@ namespace Travellin.Infrastructure.Services
         public void UnsetAccessTokenCookie(HttpContext ctx)
         {
             ctx.Response.Cookies.Delete("access_token", _cookieOptions);
+        }
+
+        public async Task EnsureEntityOwnershipAsync(string entityId, string userId, string errorMsg, AuthRoles role)
+        {
+            if (_currentUser == null)
+                throw new UnauthorizedAccessException("User context not found");
+
+            var entity = await _unitOfWork.PropertyRepository.GetByIdAsync(entityId);
+            if (entity == null)
+                throw new NotFoundException("Property not found");
+
+            bool isAdmin = _currentUser.IsInRole("Admin");
+            bool isHost = _currentUser.IsInRole("Host");
+            bool isGuest = _currentUser.IsInRole("Guest");
+
+            bool result = (role == AuthRoles.Admin && isAdmin) ||
+                             (role == AuthRoles.Host && isHost) ||
+                             (role == (AuthRoles.Admin | AuthRoles.Host) && (isAdmin || isHost)) ||
+                             (role == AuthRoles.Guest && isGuest);
+
+            if (result) return;
+
+            if (entity.OwnerId != userId || !result)
+                throw new ForbiddenException(errorMsg);
         }
     }
 }

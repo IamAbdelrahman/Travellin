@@ -13,5 +13,14 @@ namespace Travellin.Core.Mappings
                 Amenity = propertyAmenity.Amenity.ToDto()
             };
         }
+        public static PropertyAmenity ToEntity (this PropertyAmenityCreateDto dto)
+        {
+            return new PropertyAmenity
+            {
+                PropertyId = dto.PropertyId,
+                AmenityId = dto.AmenityId
+
+            };
+        }
     }
 }
