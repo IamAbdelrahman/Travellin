@@ -65,6 +65,7 @@ namespace Travellin.Api
             });
 
             builder.Services.AddHttpContextAccessor();
+            builder.Services.AddSignalR();
 
             var app = builder.Build();
 
@@ -79,7 +80,6 @@ namespace Travellin.Api
             }
 
             app.UseHttpsRedirection();
-            builder.Services.AddSignalR();
             app.UseCors(builder.Configuration["Cors:Policy"]);
 
             // Initialize FileUploadPathMappingExtensions with the service provider
