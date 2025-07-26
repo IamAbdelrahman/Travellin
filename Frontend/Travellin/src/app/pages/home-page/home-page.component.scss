@@ -9,6 +9,31 @@ $breakpoint-sm: 576px;
   transition: all 0.5s ease;
 }
 
+.hero-section {
+  position: relative;
+  height: 150px;
+  background: linear-gradient(180deg, #f8f8f8 0%, #fff 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.ai-search-container {
+  position: absolute;
+  bottom: -30px; /* moves it slightly overlapping the hero */
+  width: 60%;
+  max-width: 850px;
+  z-index: 10;
+}
+
+.ai-search-bar {
+  border-radius: 50px;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 5px 10px;
+}
+
 .search-bars-container {
   top: 6vh;
 }

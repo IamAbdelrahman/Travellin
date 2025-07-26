@@ -1,6 +1,7 @@
+import {environment} from '../../environments/environment';
 export class ApiConstant {
-  private static domainUrl = 'https:localhost:44348'; // Replace with your domain URL
-  public static baseUrl = `${ApiConstant.domainUrl}/api/v1`;
+  private static domainUrl = environment.apiUrl; // Replace with your domain URL
+  public static baseUrl = `${ApiConstant.domainUrl}/api`;
 
   public static AccountsApi = {
     register: `${ApiConstant.baseUrl}/accounts/register`,
@@ -20,7 +21,7 @@ export class ApiConstant {
   };
   public static AmenitiesApi = {
     getAllAmenities: `${ApiConstant.baseUrl}/Amenities`,
-    getAllAmenitiesCategories: `${ApiConstant.baseUrl}/AmenityCategories`,
+    getAllAmenitiesCategories: `${ApiConstant.baseUrl}/AmenitiesCategories`,
   };
 
   public static FavoritePropertiesApi = {
