@@ -12,7 +12,8 @@ namespace Travellin.Infrastructure.Shared
     {
         private readonly IServiceProvider _provider;
         private readonly IConfiguration _config;
-
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ICurrentUserService _currentUserService;
         private IAuthTokenService _authTokenService;
         private IFileUploadManagementService _fileUploadManagementService;
         private IBookingManagementService _bookingManagementService;
@@ -26,9 +27,12 @@ namespace Travellin.Infrastructure.Shared
         {
             _provider = provider;
             _config = config;
+            _unitOfWork = _provider.GetRequiredService<IUnitOfWork>();
+            _currentUserService = _provider.GetRequiredService<ICurrentUserService>();
         }
 
-        public IAuthTokenService AuthTokenService => _authTokenService ??= new AuthTokenService(_config);
+
+        public IAuthTokenService AuthTokenService => _authTokenService ??= new AuthTokenService(_config, _unitOfWork, _currentUserService);
         public IFileUploadManagementService FileUploadManagementService => _fileUploadManagementService ??= new FileUploadManagementService(_provider.GetRequiredService<IUnitOfWork>(), _provider.GetRequiredService<IFileStorageService>());
         public IBookingManagementService BookingManagementService =>
             _bookingManagementService ??= new BookingManagementService(_provider.GetRequiredService<IUnitOfWork>());
