@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Stripe;
 using Travellin.Api.Filters;
+using Travellin.Api.Hubs;
 using Travellin.Api.Utils;
 using Travellin.Core.Interfaces;
 using Travellin.Core.Mappings;
 using Travellin.Core.Services;
 using Travellin.Infrastructure;
-using Travellin.Infrastructure.Services;
 using Travellin.Infrastructure.Repositories;
+using Travellin.Infrastructure.Services;
 
 namespace Travellin.Api
 {
@@ -78,7 +79,7 @@ namespace Travellin.Api
             }
 
             app.UseHttpsRedirection();
-
+            builder.Services.AddSignalR();
             app.UseCors(builder.Configuration["Cors:Policy"]);
 
             // Initialize FileUploadPathMappingExtensions with the service provider
@@ -95,7 +96,7 @@ namespace Travellin.Api
             app.UseAuthorization();
 
             app.MapControllers();
-
+            app.MapHub<ChatHub>("/hubs/chat");
             app.Run();
         }
     }

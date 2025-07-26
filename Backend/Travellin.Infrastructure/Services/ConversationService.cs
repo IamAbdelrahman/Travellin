@@ -65,14 +65,20 @@ namespace Travellin.Infrastructure.Services
         public async Task<List<InboxDto>> GetInboxPreviewAsync(string userId)
         {
             var conversations = await _conversationRepo.GetInboxPreviewAsync(userId);
-            return conversations.Select(c => new InboxDto
+            return conversations.Select(c =>
             {
-                ConversationId = c.Id,
-                Participant = c.User1Id == userId ? c.User2Id : c.User1Id,
-                LastMessage = c.Messages.FirstOrDefault()?.Content,
-                SentAt = c.Messages.FirstOrDefault()?.SentAt ?? DateTime.MinValue,
-                IsUnread = c.Messages.FirstOrDefault()?.ReceiverId == userId && !(c.Messages.FirstOrDefault()?.IsRead ?? true)
-            }).ToList();
+                var otherUserId = c.User1Id == userId ? c.User2Id : c.User1Id;
+                var lastMsg = c.Messages.OrderByDescending(m => m.SentAt).FirstOrDefault();
+
+                return new InboxDto
+                {
+                    ConversationId = c.Id,
+                    Participant = otherUserId,
+                    LastMessage = lastMsg?.Content,
+                    SentAt = lastMsg?.SentAt ?? DateTime.MinValue,
+                    IsUnread = c.Messages.Any(m => m.ReceiverId == userId && !m.IsRead)
+                };
+            }).OrderByDescending(dto => dto.SentAt).ToList();
         }
 
         public async Task<List<ConversationSearchResultDto>> SearchConversationsAsync(string userId, string query)
