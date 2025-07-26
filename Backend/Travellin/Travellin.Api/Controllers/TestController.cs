@@ -7,7 +7,7 @@ using System.Diagnostics;
 namespace Travellin.Api.Controllers
 {
     [Authorize(Roles ="Guest")]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class TestController : ControllerBase
     {

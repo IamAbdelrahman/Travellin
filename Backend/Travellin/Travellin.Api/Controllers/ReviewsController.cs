@@ -10,7 +10,7 @@ using Travellin.Core.Services;
 
 namespace Travellin.Travellin.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class ReviewsController : ControllerBase
     {
