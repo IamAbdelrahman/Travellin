@@ -127,7 +127,6 @@ export class HomePageComponent implements OnInit {
     private route: Router,
     private favouriteService: FavoritePropertiesService,
     private toastService: ToastService,
-    private router: Router,
     private activeroute: ActivatedRoute
   ) {}
 
@@ -237,6 +236,7 @@ export class HomePageComponent implements OnInit {
       .subscribe({
         next: (response: HttpResponse<IpropertyRes>) => {
           this.isLoadingProperties = false;
+          console.log('API Response:', response); // <<<<< هنا الاختبار
           if (response.status === 200 && response.body) {
             this.property = response.body.items.map(prop => ({
               ...prop,
@@ -391,25 +391,25 @@ export class HomePageComponent implements OnInit {
       queryParams.GuestCount = this.guestsCount;
     }
 
-    // // Add price range
-    // if (this.minPrice >= 0) {
-    //   queryParams.PriceMin = this.minPrice;
-    // }
+    // Add price range
+    if (this.minPrice >= 0) {
+      queryParams.PriceMin = this.minPrice;
+    }
 
-    // // Add maxPrice if it's greater than 0
-    // if (this.maxPrice > 0 && this.maxPrice > this.minPrice) {
-    //   queryParams.PriceMax = this.maxPrice;
-    // }
+    // Add maxPrice if it's greater than 0
+    if (this.maxPrice > 0 && this.maxPrice > this.minPrice) {
+      queryParams.PriceMax = this.maxPrice;
+    }
 
-    // // Add propertyRating if it's greater than 0
-    // if (this.selectedRating > 0) {
-    //   queryParams.MinAvgRating = this.selectedRating;
-    // }
+    // Add propertyRating if it's greater than 0
+    if (this.selectedRating > 0) {
+      queryParams.MinAvgRating = this.selectedRating;
+    }
 
-    // // Add propertyTypeId if it's greater than 0
-    // if (this.selectedPropertyType) {
-    //   queryParams.PropertyTypeId = this.selectedPropertyType;
-    // }
+    // Add propertyTypeId if it's greater than 0
+    if (this.selectedPropertyType) {
+      queryParams.PropertyTypeId = this.selectedPropertyType;
+    }
 
     this.propertyService.searchProperty(queryParams).subscribe({
       next: (response: HttpResponse<IpropertyRes>) => {
