@@ -1,0 +1,97 @@
+
+.airbnb-profile-header {
+    padding-bottom: 24px;
+    border-bottom: 1px solid #ebebeb;
+    max-width: 600px;
+    margin: 2rem auto;
+  }
+  
+  .text-airbnb-red {
+    color: #FF385C;
+    font-size: 48px;
+  }
+  
+  .w-14 {
+    width: 56px;
+  }
+  
+  .h-14 {
+    height: 56px;
+  }
+  
+  .bg-gray-100 {
+    background-color: #f7f7f7;
+  }
+  
+  .border-gray-200 {
+    border-color: #dddddd;
+  }
+  
+  .text-\[22px\] {
+    font-size: 22px;
+    line-height: 26px;
+  }
+  
+  .font-semibold {
+    font-weight: 600;
+  }
+  
+  .text-gray-900 {
+    color: #222222;
+  }
+  
+  .text-sm {
+    font-size: 14px;
+  }
+  
+  .text-gray-500 {
+    color: #717171;
+  }
+  
+  .text-gray-300 {
+    color: #e0e0e0;
+  }
+  
+  .mt-1 {
+    margin-top: 4px;
+  }
+  
+  .mt-3 {
+    margin-top: 12px;
+  }
+  
+  .px-3 {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  
+  .py-1 {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  
+  .rounded-full {
+    border-radius: 9999px;
+    
+  }
+  
+  .text-xs {
+    font-size: 12px;
+  }
+  
+  .font-medium {
+    font-weight: 500;
+  }
+
+
+  .centered-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    width: 150px;
+    height: 150px;
+  }
+
+  

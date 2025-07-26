@@ -1,0 +1,86 @@
+<div class="d-flex flex-column gap-5" style="min-height: 80vh">
+  @if (isLoading) {
+    <div class="d-flex justify-content-center align-items-center flex-grow-1">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  } @else {
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 gy-5">
+      <!-- Removed flex-grow-1 -->
+      @for (property of properties; track property.propertyId) {
+        <div class="col">
+          <div class="card h-100 rounded-4" style="max-height: 400px">
+            <!-- Added max-height -->
+            <div class="position-relative h-100 d-flex flex-column">
+              <!-- Added flex column -->
+              <button
+                (click)="toggleFavorite($event, property)"
+                class="btn p-0 position-absolute top-0 end-0 me-2 mt-2 favorite-btn active bg-transparent border-0">
+                <lucide-icon [name]="icons.heart"></lucide-icon>
+              </button>
+              <div class="ratio ratio-16x9 flex-shrink-0">
+                <!-- Added flex-shrink-0 -->
+                <img
+                  [src]="property.mainPhoto.photoUrl"
+                  class="card-img-top object-fit-cover rounded-4"
+                  alt="property main photo"
+                  onerror="this.src='https://fakeimg.pl/600x400/?text=No+Image'" />
+              </div>
+              <div class="card-body d-flex flex-column">
+                <a
+                  [routerLink]="['/property', property.propertyId]"
+                  class="stretched-link text-decoration-none text-reset card-title fw-semibold h6"
+                  style="z-index: 1">
+                  {{ property.title }}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div
+          class="col-12 d-flex justify-content-center align-items-center"
+          style="min-height: 300px">
+          <div class="text-center">
+            <h4>No favorite properties found</h4>
+            <p>Start adding properties to your favorites list</p>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (totalPages > 1 && !isLoading) {
+    <div class="pagination-container d-flex justify-content-center mt-auto">
+      <!-- Added mt-auto -->
+      <nav aria-label="pagination nav">
+        <ul class="pagination">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a
+              class="page-link"
+              (click)="changePage(currentPage - 1)"
+              role="button"
+              >Previous</a
+            >
+          </li>
+          @for (page of getPages(); track page) {
+            <li class="page-item" [class.active]="page === currentPage">
+              <a class="page-link" (click)="changePage(page)" role="button">{{
+                page
+              }}</a>
+            </li>
+          }
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a
+              class="page-link"
+              (click)="changePage(currentPage + 1)"
+              role="button"
+              >Next</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </div>
+  }
+</div>

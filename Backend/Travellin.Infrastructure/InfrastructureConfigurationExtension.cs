@@ -91,11 +91,10 @@ namespace Travellin.Infrastructure
             services.AddScoped<IIdentityFactory, IdentityFactory>();
             services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<IServiceFactory, ServiceFactory>();
+            services.AddScoped<IAuthTokenService, AuthTokenService>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+
             //Messaging Services
-            services.AddScoped<IConversationService, ConversationService>();
-            services.AddScoped<IMessageService, MessageService>();
-            services.AddScoped<IConversationRepository, ConversationRepository>();
-            services.AddScoped<IMessageRepository, MessageRepository>();
             return services;
         }
     }

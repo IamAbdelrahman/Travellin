@@ -15,5 +15,15 @@ namespace Travellin.Core.Mappings
                 Quantity = propertySpaceItem.Quantity
             };
         }
+        public static PropertySpaceItem ToEntity(this PropertySpaceItemCreateDto dto)
+        {
+            return new PropertySpaceItem
+            {
+                PropertySpaceItemTypeId = dto.PropertySpaceItemTypeId,
+                PropertySpaceId = dto.PropertySpaceId,
+                Quantity = dto.Quantity
+            };
+        }
+
     }
 }

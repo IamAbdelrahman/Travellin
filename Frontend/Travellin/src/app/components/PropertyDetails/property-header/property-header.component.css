@@ -1,0 +1,55 @@
+
+.property-header {
+  padding-bottom: 24px;
+  border-bottom: 1px solid #ebebeb;
+  
+  .property-title {
+    font-size: 26px;
+    font-weight: 600;
+    color: #222;
+  }
+  
+  .property-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    font-size: 14px;
+    color: #717171;
+    
+    
+    
+    .location {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      
+      i {
+        font-size: 12px;
+      }
+    }
+    
+    .property-type {
+      flex-basis: 100%;
+      margin-top: 8px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .property-header {
+    .property-title {
+      font-size: 22px;
+    }
+    
+    .property-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      
+      .property-type {
+        margin-top: 0;
+      }
+    }
+  }
+}

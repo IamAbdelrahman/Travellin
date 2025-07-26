@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph.IdentityGovernance.AccessReviews.Definitions.FilterByCurrentUserWithOn;
+using Microsoft.Graph.Models;
 using System.Security.Claims;
 using Travellin.Core.Dtos.Bookings;
 using Travellin.Core.Entities;
@@ -83,6 +84,22 @@ namespace Travellin.Travellin.Api.Controllers
                 return NotFound($"Booking with ID {id} not found.");
 
             return Ok(booking);
+        }
+
+        [Authorize(Roles = "Host")]
+        [HttpPost("{bookingId}/accept")]
+        public async Task<IActionResult> AcceptBooking(string bookingId)
+        {
+            await ServiceFactory.BookingManagementService.AcceptBookingAsync(bookingId);
+            return Ok(new { message = "Booking accepted." });
+        }
+
+        [Authorize(Roles = "Host")]
+        [HttpPost("{bookingId}/decline")]
+        public async Task<IActionResult> DeclineBooking(string bookingId)
+        {
+            await ServiceFactory.BookingManagementService.DeclineBookingAsync(bookingId);
+            return Ok(new { message = "Booking declined." });
         }
     }
 }

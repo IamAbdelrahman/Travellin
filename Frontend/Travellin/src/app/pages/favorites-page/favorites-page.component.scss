@@ -1,0 +1,44 @@
+.card {
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.ratio-16x9 {
+  overflow: hidden;
+}
+
+.object-fit-cover {
+  object-fit: cover;
+}
+
+.favorite-btn {
+  z-index: 2;
+
+  color: var(--bs-light);
+
+  ::ng-deep svg {
+    fill: var(--bs-gray-600);
+  }
+
+  &.active {
+    ::ng-deep svg {
+      fill: var(--bs-primary);
+    }
+  }
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.25);
+  }
+}
+
+.card {
+  box-shadow: 0 0 1.5rem var(--bs-gray-400);
+}

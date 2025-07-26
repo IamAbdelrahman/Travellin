@@ -1,0 +1,109 @@
+<div class="card shadow-sm p-4 mb-4 rounded-3">
+  <!-- Price Section -->
+  <div class="d-flex align-items-end mb-4">
+    <span class="fw-semibold display-6"
+      >${{ property.pricePerNight | number }}</span
+    >
+    <span class="h5 text-muted ms-1">/night</span>
+  </div>
+
+  <!-- Date Picker -->
+  <div class="row g-2 mb-3">
+    <div class="col-md-6">
+      <div class="form-floating">
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="checkInDate"
+          [min]="today"
+          id="checkInDate" />
+        <label for="checkInDate">Check-in</label>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-floating">
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="checkOutDate"
+          [min]="checkInDate || today"
+          id="checkOutDate" />
+        <label for="checkOutDate">Checkout</label>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- guest type  -->
+  <div class="guests-selector" (click)="showGuestModal = true">
+    <label>GUESTS</label>
+    <div class="guest-summary">{{ guestSummary }}</div>
+  </div>
+  
+  <!-- Guest Selection Modal -->
+  <div
+    class="guest-modal"
+    *ngIf="showGuestModal"
+    (click)="$event.stopPropagation()">
+    <div class="guest-modal-content">
+      <!-- Dynamic guest type rows -->
+      <div class="guest-type-row" *ngFor="let type of guestTypes">
+        <div>
+          <div class="guest-type-label">{{ type.name }}</div>
+          <div class="guest-type-description">
+            <!-- Add descriptions based on type.id -->
+            <ng-container *ngIf="type.id === 1">Ages 13 or above</ng-container>
+            <ng-container *ngIf="type.id === 2">Ages 2-12</ng-container>
+            <ng-container *ngIf="type.id === 3">Under 2</ng-container>
+            <ng-container *ngIf="type.id === 4">Bringing a service animal?</ng-container>
+          </div>
+        </div>
+        <div class="guest-counter">
+          <button (click)="decrementGuestCount(type.id, 0)">−</button>
+          <span>{{ guestCounts[type.id] || 0 }}</span>
+          <button (click)="incrementGuestCount(type.id)">+</button>
+        </div>
+      </div>
+  
+      <div class="container mt-5">
+        <button
+          class="btn w-100 btn-primary fw-semibold"
+          (click)="showGuestModal = false">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="price-summary" *ngIf="nights > 0">
+    <div class="price-line mb-2">
+      <span>${{ property.pricePerNight | number }} × {{ nights }} nights:  ${{ subtotal | number }}</span>
+    </div>
+    <div class="price-line mb-2">
+      <span>Cleaning fee: ${{ cleaningFee | number: '1.2-2' }}</span>  
+    </div>
+    <div class="price-line mb-2">
+      <span>Service fee: ${{ serviceFee | number: '1.2-2' }}</span>
+    </div>
+    <div class="price-line mb-2" *ngIf="extraGuestFee > 0">
+      <span>Extra guest fee: ${{ extraGuestFee | number: '1.2-2' }}</span>
+    </div>
+    <div class="price-line mb-2" *ngIf="petFee > 0">
+      <span>Pet fee: ${{ petFee | number: '1.2-2' }}</span>
+    </div>
+  
+    <div class="price-line total mb-2">
+      <span>Total before taxes: ${{ total | number: '1.2-2' }}</span>   
+    </div>
+  </div>
+  
+  <button
+    class="btn btn-primary fw-semibold"
+    (click)="handleBookNow()"
+    [disabled]="!checkInDate || !checkOutDate || isBooking">
+    {{ isBooking ? 'Booking...' : 'Reserve' }}
+  </button>
+
+  
+</div>

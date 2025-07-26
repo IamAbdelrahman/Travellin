@@ -1,0 +1,1465 @@
+{
+  "region": [
+    {
+      "id": 1,
+      "name": "North America"
+    },
+    {
+      "id": 2,
+      "name": "Europe"
+    },
+    {
+      "id": 3,
+      "name": "Asia"
+    },
+    {
+      "id": 4,
+      "name": "South America"
+    },
+    {
+      "id": 5,
+      "name": "Africa & Oceania"
+    }
+  ],
+  "country": [
+    { "id": 1, "name": "Afghanistan", "regionId": 3 },
+    { "id": 2, "name": "Åland Islands", "regionId": 2 },
+    { "id": 3, "name": "Albania", "regionId": 2 },
+    { "id": 4, "name": "Algeria", "regionId": 5 },
+    { "id": 5, "name": "American Samoa", "regionId": 5 },
+    { "id": 6, "name": "Andorra", "regionId": 2 },
+    { "id": 7, "name": "Angola", "regionId": 5 },
+    { "id": 8, "name": "Anguilla", "regionId": 5 },
+    { "id": 9, "name": "Antarctica", "regionId": 5 },
+    { "id": 10, "name": "Antigua and Barbuda", "regionId": 5 },
+    { "id": 11, "name": "Argentina", "regionId": 4 },
+    { "id": 12, "name": "Armenia", "regionId": 3 },
+    { "id": 13, "name": "Aruba", "regionId": 5 },
+    { "id": 14, "name": "Australia", "regionId": 5 },
+    { "id": 15, "name": "Austria", "regionId": 2 },
+    { "id": 16, "name": "Azerbaijan", "regionId": 3 },
+    { "id": 17, "name": "Bahamas", "regionId": 4 },
+    { "id": 18, "name": "Bahrain", "regionId": 3 },
+    { "id": 19, "name": "Bangladesh", "regionId": 3 },
+    { "id": 20, "name": "Barbados", "regionId": 4 },
+    { "id": 21, "name": "Belarus", "regionId": 2 },
+    { "id": 22, "name": "Belgium", "regionId": 2 },
+    { "id": 23, "name": "Belize", "regionId": 4 },
+    { "id": 24, "name": "Benin", "regionId": 5 },
+    { "id": 25, "name": "Bermuda", "regionId": 4 },
+    { "id": 26, "name": "Bhutan", "regionId": 3 },
+    { "id": 27, "name": "Bolivia", "regionId": 4 },
+    { "id": 28, "name": "Bosnia and Herzegovina", "regionId": 2 },
+    { "id": 29, "name": "Botswana", "regionId": 5 },
+    { "id": 30, "name": "Bouvet Island", "regionId": 5 },
+    { "id": 31, "name": "Brazil", "regionId": 4 },
+    { "id": 32, "name": "British Indian Ocean Territory", "regionId": 5 },
+    { "id": 33, "name": "Brunei Darussalam", "regionId": 3 },
+    { "id": 34, "name": "Bulgaria", "regionId": 2 },
+    { "id": 35, "name": "Burkina Faso", "regionId": 5 },
+    { "id": 36, "name": "Burundi", "regionId": 5 },
+    { "id": 37, "name": "Cambodia", "regionId": 3 },
+    { "id": 38, "name": "Cameroon", "regionId": 5 },
+    { "id": 39, "name": "Canada", "regionId": 1 },
+    { "id": 40, "name": "Cape Verde", "regionId": 5 },
+    { "id": 41, "name": "Cayman Islands", "regionId": 4 },
+    { "id": 42, "name": "Central African Republic", "regionId": 5 },
+    { "id": 43, "name": "Chad", "regionId": 5 },
+    { "id": 44, "name": "Chile", "regionId": 4 },
+    { "id": 45, "name": "China", "regionId": 3 },
+    { "id": 46, "name": "Christmas Island", "regionId": 5 },
+    { "id": 47, "name": "Cocos (Keeling) Islands", "regionId": 5 },
+    { "id": 48, "name": "Colombia", "regionId": 4 },
+    { "id": 49, "name": "Comoros", "regionId": 5 },
+    { "id": 50, "name": "Congo", "regionId": 5 },
+    {
+      "id": 51,
+      "name": "Congo, The Democratic Republic of the",
+      "regionId": 5
+    },
+    { "id": 52, "name": "Cook Islands", "regionId": 5 },
+    { "id": 53, "name": "Costa Rica", "regionId": 4 },
+    { "id": 54, "name": "Cote D'Ivoire", "regionId": 5 },
+    { "id": 55, "name": "Croatia", "regionId": 2 },
+    { "id": 56, "name": "Cuba", "regionId": 4 },
+    { "id": 57, "name": "Cyprus", "regionId": 2 },
+    { "id": 58, "name": "Czech Republic", "regionId": 2 },
+    { "id": 59, "name": "Denmark", "regionId": 2 },
+    { "id": 60, "name": "Djibouti", "regionId": 5 },
+    { "id": 61, "name": "Dominica", "regionId": 5 },
+    { "id": 62, "name": "Dominican Republic", "regionId": 4 },
+    { "id": 63, "name": "Ecuador", "regionId": 4 },
+    { "id": 64, "name": "Egypt", "regionId": 5 },
+    { "id": 65, "name": "El Salvador", "regionId": 4 },
+    { "id": 66, "name": "Equatorial Guinea", "regionId": 5 },
+    { "id": 67, "name": "Eritrea", "regionId": 5 },
+    { "id": 68, "name": "Estonia", "regionId": 2 },
+    { "id": 69, "name": "Ethiopia", "regionId": 5 },
+    { "id": 70, "name": "Falkland Islands (Malvinas)", "regionId": 4 },
+    { "id": 71, "name": "Faroe Islands", "regionId": 2 },
+    { "id": 72, "name": "Fiji", "regionId": 5 },
+    { "id": 73, "name": "Finland", "regionId": 2 },
+    { "id": 74, "name": "France", "regionId": 2 },
+    { "id": 75, "name": "French Guiana", "regionId": 4 },
+    { "id": 76, "name": "French Polynesia", "regionId": 5 },
+    { "id": 77, "name": "French Southern Territories", "regionId": 5 },
+    { "id": 78, "name": "Gabon", "regionId": 5 },
+    { "id": 79, "name": "Gambia", "regionId": 5 },
+    { "id": 80, "name": "Georgia", "regionId": 3 },
+    { "id": 81, "name": "Germany", "regionId": 2 },
+    { "id": 82, "name": "Ghana", "regionId": 5 },
+    { "id": 83, "name": "Gibraltar", "regionId": 2 },
+    { "id": 84, "name": "Greece", "regionId": 2 },
+    { "id": 85, "name": "Greenland", "regionId": 1 },
+    { "id": 86, "name": "Grenada", "regionId": 5 },
+    { "id": 87, "name": "Guadeloupe", "regionId": 5 },
+    { "id": 88, "name": "Guam", "regionId": 5 },
+    { "id": 89, "name": "Guatemala", "regionId": 4 },
+    { "id": 90, "name": "Guernsey", "regionId": 2 },
+    { "id": 91, "name": "Guinea", "regionId": 5 },
+    { "id": 92, "name": "Guinea-Bissau", "regionId": 5 },
+    { "id": 93, "name": "Guyana", "regionId": 4 },
+    { "id": 94, "name": "Haiti", "regionId": 4 },
+    { "id": 95, "name": "Heard Island and McDonald Islands", "regionId": 5 },
+    { "id": 96, "name": "Honduras", "regionId": 4 },
+    { "id": 97, "name": "Hong Kong", "regionId": 3 },
+    { "id": 98, "name": "Hungary", "regionId": 2 },
+    { "id": 99, "name": "Iceland", "regionId": 2 },
+    { "id": 100, "name": "India", "regionId": 3 },
+    { "id": 101, "name": "Indonesia", "regionId": 3 },
+    { "id": 102, "name": "Iran", "regionId": 3 },
+    { "id": 103, "name": "Iraq", "regionId": 3 },
+    { "id": 104, "name": "Ireland", "regionId": 2 },
+    { "id": 105, "name": "Israel", "regionId": 3 },
+    { "id": 106, "name": "Italy", "regionId": 2 },
+    { "id": 107, "name": "Jamaica", "regionId": 4 },
+    { "id": 108, "name": "Japan", "regionId": 3 },
+    { "id": 109, "name": "Jersey", "regionId": 2 },
+    { "id": 110, "name": "Jordan", "regionId": 3 },
+    { "id": 111, "name": "Kazakhstan", "regionId": 3 },
+    { "id": 112, "name": "Kenya", "regionId": 5 },
+    { "id": 113, "name": "Kiribati", "regionId": 5 },
+    {
+      "id": 114,
+      "name": "Korea, Democratic People's Republic of",
+      "regionId": 3
+    },
+    { "id": 115, "name": "Korea, Republic of", "regionId": 3 },
+    { "id": 116, "name": "Kuwait", "regionId": 3 },
+    { "id": 117, "name": "Kyrgyzstan", "regionId": 3 },
+    { "id": 118, "name": "Lao People's Democratic Republic", "regionId": 3 },
+    { "id": 119, "name": "Latvia", "regionId": 2 },
+    { "id": 120, "name": "Lebanon", "regionId": 3 },
+    { "id": 121, "name": "Lesotho", "regionId": 5 },
+    { "id": 122, "name": "Liberia", "regionId": 5 },
+    { "id": 123, "name": "Libya", "regionId": 5 },
+    { "id": 124, "name": "Liechtenstein", "regionId": 2 },
+    { "id": 125, "name": "Lithuania", "regionId": 2 },
+    { "id": 126, "name": "Luxembourg", "regionId": 2 },
+    { "id": 127, "name": "Macao", "regionId": 3 },
+    { "id": 128, "name": "Madagascar", "regionId": 5 },
+    { "id": 129, "name": "Malawi", "regionId": 5 },
+    { "id": 130, "name": "Malaysia", "regionId": 3 },
+    { "id": 131, "name": "Maldives", "regionId": 3 },
+    { "id": 132, "name": "Mali", "regionId": 5 },
+    { "id": 133, "name": "Malta", "regionId": 2 },
+    { "id": 134, "name": "Marshall Islands", "regionId": 5 },
+    { "id": 135, "name": "Martinique", "regionId": 5 },
+    { "id": 136, "name": "Mauritania", "regionId": 5 },
+    { "id": 137, "name": "Mauritius", "regionId": 5 },
+    { "id": 138, "name": "Mayotte", "regionId": 5 },
+    { "id": 139, "name": "Mexico", "regionId": 4 },
+    { "id": 140, "name": "Micronesia (Federated States of)", "regionId": 5 },
+    { "id": 141, "name": "Moldova (Republic of)", "regionId": 2 },
+    { "id": 142, "name": "Monaco", "regionId": 2 },
+    { "id": 143, "name": "Mongolia", "regionId": 3 },
+    { "id": 144, "name": "Montenegro", "regionId": 2 },
+    { "id": 145, "name": "Montserrat", "regionId": 5 },
+    { "id": 146, "name": "Morocco", "regionId": 5 },
+    { "id": 147, "name": "Mozambique", "regionId": 5 },
+    { "id": 148, "name": "Myanmar", "regionId": 3 },
+    { "id": 149, "name": "Namibia", "regionId": 5 },
+    { "id": 150, "name": "Nauru", "regionId": 5 },
+    { "id": 151, "name": "Nepal", "regionId": 3 },
+    { "id": 152, "name": "Netherlands", "regionId": 2 },
+    { "id": 153, "name": "New Caledonia", "regionId": 5 },
+    { "id": 154, "name": "New Zealand", "regionId": 5 },
+    { "id": 155, "name": "Nicaragua", "regionId": 4 },
+    { "id": 156, "name": "Niger", "regionId": 5 },
+    { "id": 157, "name": "Nigeria", "regionId": 5 },
+    { "id": 158, "name": "Niue", "regionId": 5 },
+    { "id": 159, "name": "Norfolk Island", "regionId": 5 },
+    { "id": 160, "name": "North Macedonia", "regionId": 2 },
+    { "id": 161, "name": "Northern Mariana Islands", "regionId": 5 },
+    { "id": 162, "name": "Norway", "regionId": 2 },
+    { "id": 163, "name": "Oman", "regionId": 3 },
+    { "id": 164, "name": "Pakistan", "regionId": 3 },
+    { "id": 165, "name": "Palau", "regionId": 5 },
+    { "id": 166, "name": "Palestine", "regionId": 3 },
+    { "id": 167, "name": "Panama", "regionId": 4 },
+    { "id": 168, "name": "Papua New Guinea", "regionId": 5 },
+    { "id": 169, "name": "Paraguay", "regionId": 4 },
+    { "id": 170, "name": "Peru", "regionId": 4 },
+    { "id": 171, "name": "Philippines", "regionId": 3 },
+    { "id": 172, "name": "Pitcairn", "regionId": 5 },
+    { "id": 173, "name": "Poland", "regionId": 2 },
+    { "id": 174, "name": "Portugal", "regionId": 2 },
+    { "id": 175, "name": "Puerto Rico", "regionId": 4 },
+    { "id": 176, "name": "Qatar", "regionId": 3 },
+    { "id": 177, "name": "Romania", "regionId": 2 },
+    { "id": 178, "name": "Russian Federation", "regionId": 3 },
+    { "id": 179, "name": "Rwanda", "regionId": 5 },
+    { "id": 180, "name": "Réunion", "regionId": 5 },
+    { "id": 181, "name": "Saint Barthélemy", "regionId": 5 },
+    {
+      "id": 182,
+      "name": "Saint Helena, Ascension and Tristan da Cunha",
+      "regionId": 5
+    },
+    { "id": 183, "name": "Saint Kitts and Nevis", "regionId": 4 },
+    { "id": 184, "name": "Saint Lucia", "regionId": 5 },
+    { "id": 185, "name": "Saint Martin", "regionId": 5 },
+    { "id": 186, "name": "Saint Pierre and Miquelon", "regionId": 5 },
+    { "id": 187, "name": "Saint Vincent and the Grenadines", "regionId": 5 },
+    { "id": 188, "name": "Samoa", "regionId": 5 },
+    { "id": 189, "name": "San Marino", "regionId": 2 },
+    { "id": 190, "name": "Sao Tome and Principe", "regionId": 5 },
+    { "id": 191, "name": "Saudi Arabia", "regionId": 3 },
+    { "id": 192, "name": "Senegal", "regionId": 5 },
+    { "id": 193, "name": "Serbia", "regionId": 2 },
+    { "id": 194, "name": "Seychelles", "regionId": 5 },
+    { "id": 195, "name": "Sierra Leone", "regionId": 5 },
+    { "id": 196, "name": "Singapore", "regionId": 3 },
+    { "id": 197, "name": "Sint Maarten", "regionId": 5 },
+    { "id": 198, "name": "Slovakia", "regionId": 2 },
+    { "id": 199, "name": "Slovenia", "regionId": 2 },
+    { "id": 200, "name": "Solomon Islands", "regionId": 5 },
+    { "id": 201, "name": "Somalia", "regionId": 5 },
+    { "id": 202, "name": "South Africa", "regionId": 5 },
+    {
+      "id": 203,
+      "name": "South Georgia and the South Sandwich Islands",
+      "regionId": 5
+    },
+    { "id": 204, "name": "South Sudan", "regionId": 5 },
+    { "id": 205, "name": "Spain", "regionId": 2 },
+    { "id": 206, "name": "Sri Lanka", "regionId": 3 },
+    { "id": 207, "name": "Sudan", "regionId": 5 },
+    { "id": 208, "name": "Suriname", "regionId": 4 },
+    { "id": 209, "name": "Svalbard", "regionId": 2 },
+    { "id": 210, "name": "Swaziland", "regionId": 5 },
+    { "id": 211, "name": "Sweden", "regionId": 2 },
+    { "id": 212, "name": "Switzerland", "regionId": 2 },
+    { "id": 213, "name": "Syrian Arab Republic", "regionId": 3 },
+    { "id": 214, "name": "Taiwan", "regionId": 3 },
+    { "id": 215, "name": "Tajikistan", "regionId": 3 },
+    { "id": 216, "name": "Tanzania (United Republic of)", "regionId": 5 },
+    { "id": 217, "name": "Thailand", "regionId": 3 },
+    { "id": 218, "name": "Timor-Leste", "regionId": 3 },
+    { "id": 219, "name": "Togo", "regionId": 5 },
+    { "id": 220, "name": "Tokelau", "regionId": 5 },
+    { "id": 221, "name": "Tonga", "regionId": 5 },
+    { "id": 222, "name": "Trinidad and Tobago", "regionId": 4 },
+    { "id": 223, "name": "Tunisia", "regionId": 5 },
+    { "id": 224, "name": "Turkey", "regionId": 3 },
+    { "id": 225, "name": "Turkmenistan", "regionId": 3 },
+    { "id": 226, "name": "Tuvalu", "regionId": 5 },
+    { "id": 227, "name": "Uganda", "regionId": 5 },
+    { "id": 228, "name": "Ukraine", "regionId": 2 },
+    { "id": 229, "name": "United Arab Emirates", "regionId": 3 },
+    {
+      "id": 230,
+      "name": "United Kingdom of Great Britain and Northern Ireland",
+      "regionId": 2
+    },
+    { "id": 231, "name": "United States of America", "regionId": 1 },
+    { "id": 232, "name": "Uruguay", "regionId": 4 },
+    { "id": 233, "name": "Uzbekistan", "regionId": 3 },
+    { "id": 234, "name": "Vanuatu", "regionId": 5 },
+    { "id": 235, "name": "Venezuela (Bolivarian Republic of)", "regionId": 4 },
+    { "id": 236, "name": "Viet Nam", "regionId": 3 },
+    { "id": 237, "name": "Western Sahara", "regionId": 5 },
+    { "id": 238, "name": "Yemen", "regionId": 3 },
+    { "id": 239, "name": "Zambia", "regionId": 5 },
+    { "id": 240, "name": "Zimbabwe", "regionId": 5 },
+    { "id": 241, "name": "Antarctica", "regionId": 5 },
+    { "id": 242, "name": "Ascension Island", "regionId": 5 },
+    { "id": 243, "name": "French Guiana", "regionId": 5 }
+  ],
+  "guestType ": [
+    { "id": 1, "name": "Adults" },
+    { "id": 2, "name": "Childern" },
+    { "id": 3, "name": "Infants" },
+    { "id": 4, "name": "Pets" }
+  ],
+  "role": [
+    { "id": 1, "name": "Host" },
+    { "id": 2, "name": "Guest" },
+    { "id": 3, "name": "Admin" }
+  ],
+
+  "userAccount": [
+    {
+      "id": "84c95df7-7999-422e-a282-092fd73d17d9",
+      "firstName": "mahmoud",
+      "lastName": "gadallah",
+      "email": "mahmoudgadallah@gmail.com",
+      "password": "123456",
+      "photeId": 1,
+      "joinedAt": "2024-12-12"
+    },
+    {
+      "id": "15901a5f-efcd-4869-b45c-049d4cbd2bca",
+      "firstName": "mohamed",
+      "lastName": "abdelslam",
+      "email": "mohamedabdelslam@gmail.com",
+      "password": "123456",
+      "photeId": 2,
+      "joinedAt": "2024-12-12"
+    },
+    {
+      "firstName": "kareem",
+      "lastName": "Khairy",
+      "email": "kareemKhairy@gmail.com",
+      "password": "123456",
+      "photeId": 3,
+      "joinedAt": "2024-12-12",
+      "id": "dac587b1-3c70-48ce-8ee4-f1c11dfed375"
+    }
+  ],
+
+  "userRole": [
+    {
+      "id": "dac587b1-3c70-48ce-8ee4-f1c11dfed375",
+      "userId": 1
+    },
+    {
+      "id": "15901a5f-efcd-4869-b45c-049d4cbd2bca",
+      "userId": 2
+    },
+    {
+      "id": "84c95df7-7999-422e-a282-092fd73d17d9",
+      "userId": 3
+    }
+  ],
+
+  "amenityCategory": [
+    { "id": 1, "name": "Essentials" },
+    { "id": 2, "name": "Kitchen and dining" },
+    { "id": 3, "name": "Home safety" },
+    { "id": 4, "name": "Entertainment" },
+    { "id": 5, "name": "Outdoor" },
+    { "id": 6, "name": "Parking and facilities" },
+    { "id": 7, "name": "Heating and cooling" },
+    { "id": 8, "name": "Bedroom and laundry" },
+    { "id": 9, "name": "Bathroom" },
+    { "id": 10, "name": "Family" },
+    { "id": 11, "name": "Internet and office" },
+    { "id": 12, "name": "Location features" },
+    { "id": 13, "name": "Services" }
+  ],
+
+  "amenity": [
+    {
+      "id": 1,
+      "name": "Wi-Fi",
+      "icon": "fa-solid fa-wifi",
+      "categoryId": 11
+    },
+    {
+      "id": 2,
+      "name": "Pool",
+      "icon": "fa-solid fa-wifi",
+      "categoryId": 2
+    },
+    {
+      "id": 3,
+      "name": "Air conditioning",
+      "icon": "fa-solid fa-snowflake",
+      "categoryId": 7
+    },
+    {
+      "id": 4,
+      "name": "Bathtub",
+      "icon": "fa-solid fa-bath",
+      "categoryId": 9
+    },
+    {
+      "id": 5,
+      "name": "Hair dryer",
+      "icon": "fa-solid fa-wind",
+      "categoryId": 9
+    },
+    {
+      "id": 6,
+      "name": "Cleaning products",
+      "icon": "fa-solid fa-soap",
+      "categoryId": 9
+    },
+    {
+      "id": 7,
+      "name": "Shampoo",
+      "icon": "fa-solid fa-soap",
+      "categoryId": 9
+    },
+    {
+      "id": 8,
+      "name": "Conditioner",
+      "icon": "fa-solid fa-soap",
+      "categoryId": 9
+    },
+    {
+      "id": 9,
+      "name": "Body soap",
+      "icon": "fa-solid fa-soap",
+      "categoryId": 9
+    },
+    {
+      "id": 10,
+      "name": "Bidet",
+      "icon": "fa-solid fa-sink",
+      "categoryId": 9
+    },
+    {
+      "id": 11,
+      "name": "Outdoor shower",
+      "icon": "fa-solid fa-shower",
+      "categoryId": 9
+    },
+    {
+      "id": 12,
+      "name": "Hot water",
+      "icon": "fa-solid fa-water",
+      "categoryId": 9
+    },
+    {
+      "id": 13,
+      "name": "Shower gel",
+      "icon": "fa-solid fa-soap",
+      "categoryId": 9
+    },
+    {
+      "id": 14,
+      "name": "Free washer – In unit",
+      "icon": "fa-thin fa-spray-can-sparkles",
+      "categoryId": 8
+    },
+    {
+      "id": 15,
+      "name": "Hangers",
+      "icon": "fa-solid fa-shirt",
+      "categoryId": 8
+    },
+    {
+      "id": 16,
+      "name": "Bed linens",
+      "icon": "fa-solid fa-bed",
+      "categoryId": 8
+    },
+    {
+      "id": 17,
+      "name": "Extra pillows and blankets",
+      "icon": "fa-regular fa-mattress-pillow",
+      "categoryId": 8
+    },
+    {
+      "id": 18,
+      "name": "Room-darkening shades",
+      "icon": "fa-solid fa-couch",
+      "categoryId": 8
+    },
+    {
+      "id": 19,
+      "name": "Iron",
+      "icon": "fa-solid fa-fire-extinguisher",
+      "categoryId": 8
+    },
+    {
+      "id": 20,
+      "name": "Drying rack for clothing",
+      "icon": "fa-solid fa-shirt",
+      "categoryId": 8
+    },
+    {
+      "id": 21,
+      "name": "Mosquito net",
+      "icon": "fa-solid fa-mosquito-net",
+      "categoryId": 8
+    },
+    {
+      "id": 22,
+      "name": "Clothing storage: closet and dresser",
+      "icon": "fa-solid fa-warehouse",
+      "categoryId": 8
+    },
+    {
+      "id": 23,
+      "name": "Ethernet connection",
+      "icon": "fa-solid fa-wifi",
+      "categoryId": 4
+    },
+    {
+      "id": 24,
+      "name": "42 inch HDTV with Netflix",
+      "icon": "fa-solid fa-tv",
+      "categoryId": 4
+    },
+    {
+      "id": 25,
+      "name": "Sound system with aux",
+      "icon": "fa-solid fa-volume-high",
+      "categoryId": 4
+    },
+    {
+      "id": 26,
+      "name": "Game console",
+      "icon": "fa-solid fa-gamepad",
+      "categoryId": 4
+    },
+    {
+      "id": 27,
+      "name": "Ping pong table",
+      "icon": "fa-solid fa-table-tennis-paddle-ball",
+      "categoryId": 4
+    },
+    {
+      "id": 28,
+      "name": "Pool table",
+      "icon": "fa-solid fa-bowling-ball",
+      "categoryId": 4
+    },
+    {
+      "id": 29,
+      "name": "Books and reading material",
+      "icon": "fa-solid fa-book-open",
+      "categoryId": 4
+    },
+    {
+      "id": 30,
+      "name": "Movie theater",
+      "icon": "fa-solid fa-film",
+      "categoryId": 4
+    },
+    {
+      "id": 31,
+      "name": "Crib",
+      "icon": "fa-regular fa-chair",
+      "categoryId": 10
+    },
+
+    {
+      "id": 32,
+      "name": "Children’s books and toys",
+      "icon": "fa-solid fa-book",
+      "categoryId": 10
+    },
+    {
+      "id": 33,
+      "name": "High chair",
+      "icon": "fa-solid fa-chair",
+      "categoryId": 10
+    },
+    {
+      "id": 34,
+      "name": "Baby bath",
+      "icon": "fa-solid fa-bath",
+      "categoryId": 10
+    },
+    {
+      "id": 35,
+      "name": "Children’s dinnerware",
+      "icon": "fa-solid fa-utensils",
+      "categoryId": 10
+    },
+    {
+      "id": 36,
+      "name": "Board games",
+      "icon": "fa-solid fa-dice",
+      "categoryId": 10
+    },
+    {
+      "id": 37,
+      "name": "Baby safety gates",
+      "icon": "fa-solid fa-door-closed",
+      "categoryId": 10
+    },
+    {
+      "id": 38,
+      "name": "Babysitter recommendations",
+      "icon": "fa-solid fa-user-nurse",
+      "categoryId": 10
+    },
+    {
+      "id": 39,
+      "name": "Children's playroom",
+      "icon": "fa-solid fa-puzzle-piece",
+      "categoryId": 10
+    },
+    {
+      "id": 40,
+      "name": "Indoor fireplace: wood-burning",
+      "icon": "fa-solid fa-fire",
+      "categoryId": 7
+    },
+    {
+      "id": 41,
+      "name": "Ceiling fan",
+      "icon": "fa-light fa-fan",
+      "categoryId": 7
+    },
+    {
+      "id": 42,
+      "name": "Portable fans",
+      "icon": "fa-light fa-fan",
+      "categoryId": 7
+    },
+    {
+      "id": 43,
+      "name": "Heating",
+      "icon": "fa-solid fa-fire",
+      "categoryId": 7
+    },
+    {
+      "id": 44,
+      "name": "First aid kit",
+      "icon": "fa-solid fa-kit-medical",
+      "categoryId": 3
+    },
+    {
+      "id": 45,
+      "name": "Dedicated workspace",
+      "icon": "fa-solid fa-desktop",
+      "categoryId": 3
+    },
+    {
+      "id": 46,
+      "name": "Kitchen",
+      "icon": "fa-regular fa-kitchen-set",
+      "categoryId": 2
+    },
+    {
+      "id": 46,
+      "name": "Refrigerator",
+      "icon": "fa-regular fa-kitchen-set",
+      "categoryId": 2
+    },
+    {
+      "id": 47,
+      "name": "Cooking basics",
+      "icon": "fa-solid fa-kitchen-set",
+      "categoryId": 2
+    },
+    {
+      "id": 48,
+      "name": "Dishes and silverware",
+      "icon": "fa-solid fa-kitchen-set",
+      "categoryId": 2
+    },
+    {
+      "id": 49,
+      "name": "Freezer",
+      "icon": "fa-solid fa-snowflake",
+      "categoryId": 2
+    },
+    {
+      "id": 50,
+      "name": "Dishwasher",
+      "icon": "fa-solid fa-utensils",
+      "categoryId": 2
+    },
+    {
+      "id": 51,
+      "name": "Stove",
+      "icon": "fa-solid fa-utensils",
+      "categoryId": 2
+    },
+    {
+      "id": 52,
+      "name": "Oven",
+      "icon": "fa-solid fa-bowl-rice",
+      "categoryId": 2
+    },
+    {
+      "id": 53,
+      "name": "Hot water kettle",
+      "icon": "fa-solid fa-microwave",
+      "categoryId": 2
+    },
+    {
+      "id": 54,
+      "name": "Coffee maker",
+      "icon": "fa-solid fa-mug-hot",
+      "categoryId": 2
+    },
+    {
+      "id": 55,
+      "name": "Toaster",
+      "icon": "fa-solid fa-bread-slice",
+      "categoryId": 2
+    },
+    {
+      "id": 56,
+      "name": "Baking sheet",
+      "icon": "fa-solid fa-bread-slice",
+      "categoryId": 2
+    },
+    {
+      "id": 57,
+      "name": "Blender",
+      "icon": "fa-solid fa-blender",
+      "categoryId": 2
+    },
+    {
+      "id": 58,
+      "name": "Barbecue utensils",
+      "icon": "fa-solid fa-burger",
+      "categoryId": 2
+    },
+    {
+      "id": 59,
+      "name": "Coffee",
+      "icon": "fa-solid fa-mug-hot",
+      "categoryId": 2
+    },
+    {
+      "id": 60,
+      "name": "Private entrance",
+      "icon": "fa-solid fa-door-open",
+      "categoryId": 12
+    },
+    {
+      "id": 61,
+      "name": "Laundromat nearby",
+      "icon": "fa-regular fa-user-tie",
+      "categoryId": 12
+    },
+    {
+      "id": 62,
+      "name": "Balacony",
+      "icon": "fa-solid fa-mountain-sun",
+      "categoryId": 12
+    },
+    {
+      "id": 63,
+      "name": "Fire Pit",
+      "icon": "fa-solid fa-fire",
+      "categoryId": 12
+    },
+    {
+      "id": 64,
+      "name": "Outdoor furniture",
+      "icon": "fa-solid fa-couch",
+      "categoryId": 12
+    },
+    {
+      "id": 64,
+      "name": "Pets Allowed",
+      "icon": "fa-solid fa-paw",
+      "categoryId": 13
+    },
+    {
+      "id": 65,
+      "name": "Free street parking",
+      "icon": "fa-solid fa-car",
+      "categoryId": 6
+    },
+    {
+      "id": 65,
+      "name": "Free street On premises",
+      "icon": "fa-solid fa-car",
+      "categoryId": 6
+    },
+
+    {
+      "id": 66,
+      "name": "Long term stays allowed",
+      "icon": "fa-solid fa-calendar-days",
+      "categoryId": 13
+    }
+  ],
+
+  "property": [
+    {
+      "id": "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
+      "name": "Entire rental unit in Nazlet El-Semman, Egypt",
+      "description": "Enjoy your stay with Panoramic View of the giza pyramids and sphinx .Yes! view and pictures are all 100% real. (Be sure to check out our other listings too) Indulge in a stunning view of all the Giza Pyramids from anywhere within this contemporary oriental studio or while relaxing in the Jacuzzi. It is also a 10 min walk from the Pyramids entrance gate. To make the most of your trip, make sure to check out our experiences!We're committed to providing our guests the magical hospitality",
+      "pricePerNight": 3000,
+      "locationId": 1,
+      "latitude": 29.98333,
+      "longitude": 31.13333,
+      "maxGuests": 2,
+      "numBeds": 1,
+      "numBedrooms": 1,
+      "numBathrooms": 1,
+      "rating": 4.4,
+      "reviewsNumber": 11,
+
+      "safetyInfo": "No Carbon monoxide alarm , No Smoke alarm ",
+
+      "houseRules": "Check-in after 2:00 PM , Checkout before 11:00 AM , 2 guests maximum",
+
+      "cancellationPolicy": "Free cancellation before May 28 , Cancel before check-in on Jun 2 for a partial refund.",
+
+      " hostId": "dac587b1-3c70-48ce-8ee4-f1c11dfed375",
+      "typeId": 1
+    },
+    {
+      "id": "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
+      "name": "Milano Duomo center 10 min Flat inside a castle",
+      "description": "Elegant apartment inside the famous castle in Nolo, a royal choice right in the center of Milan A few steps away is the metro (M1 red for the Duomo 10 min), 10 minutes' walk for the central station. The apartment is well connected by trains, trams and buses The area is well supplied with restaurants, supermarkets, bars, clubs, etc. Complete comfort:82 Smart TV, Netflix, prime, wifi, dishwasher, kitchen, coffee machine The stay is included with a complete reception service",
+      "pricePerNight": 5000,
+      "locationId": 2,
+      "latitude": 45.46427,
+      "longitude": 9.18951,
+      "maxGuests": 5,
+      "numBeds": 2,
+      "numBedrooms": 1,
+      "numBathrooms": 1,
+      "rating": 3.2,
+      "reviewsNumber": 30,
+
+      "safetyInfo": "Carbon monoxide alarm ,Smoke alarm installed",
+
+      "houseRules": "Check-in: 3:00 PM - 11:00PM ,Checkout before 11:00 AM ,4 guests maximum",
+
+      "cancellationPolicy": "Free cancellation before May 17 , Cancel before check-in on May 18 for a partial refund.",
+
+      " hostId": "dac587b1-3c70-48ce-8ee4-f1c11dfed375",
+      "typeId": 19
+    },
+    {
+      "id": "3e7f99ab-228a-4d90-91c4-6adf8c12e048",
+      "name": "Rent an apartment near Alhar Mecca",
+      "description": "Relax with this listing Small 2-room 7-bed apartment near Alharam Al Makkah with a maximum of 10 to 12 minutes' walk away The ears and prayer are also heard inside the rooms and the window appears from the window of the Haram Al-Sharif .We offer a Surface kitchen with tea and coffee supplies, a mini fridge, a microwave, a water kettle and more A washing machine is available and we provide toiletries from towels, shampoo, lotion, soap, and more We provide a wheelchair ,wi-fi .This place is in a high tower where the apartment is located on the 17th floor Wish you a unique and pleasant stay",
+      "pricePerNight": 6000,
+      "locationId": 3,
+      "latitude": 21.4266,
+      "longitude": 39.8256,
+      "maxGuests": 7,
+      "numBeds": 3,
+      "numBedrooms": 2,
+      "numBathrooms": 2,
+      "rating": 4,
+      "reviewsNumber": 90,
+
+      "safetyInfo": "Carbon monoxide alarm ,Smoke alarm installed",
+
+      "houseRules": "Check-in after 3:00 PM , Checkout before 12:00 PM , 7 guests maximum",
+
+      "cancellationPolicy": "Free cancellation before May 17 , Cancel before check-in on May 18 for a partial refund.",
+
+      " hostId": "dac587b1-3c70-48ce-8ee4-f1c11dfed375",
+      "typeId": 1
+    },
+    {
+      "id": "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
+      "name": "Hawkeye Dome - New Pool and Spa",
+      "description": "Updated pool and spa! Sitting on 100 acres, Hawkeye House, featured on the cover of the May 2019 issue of Dwell Magazine, is an off grid Geodesic Dome. It has a 40 foot pool and hot tub that you will have to see to believe. This unique and modern home has been fully remodeled with an attention to both comfort and detail. Amazing hikes and privacy are abundant here. Most people never want to leave the property",
+      "pricePerNight": 15000,
+      "locationId": 4,
+      "latitude": 34.114174,
+      "longitude": -116.432236,
+      "maxGuests": 6,
+      "numBeds": 3,
+      "numBedrooms": 2,
+      "numBathrooms": 1,
+      "rating": 3.9,
+      "reviewsNumber": 35,
+
+      "safetyInfo": "Carbon monoxide alarm ,Smoke alarm installed",
+
+      "houseRules": "Check-in after 3:00 PM , Checkout before 12:00 PM , 7 guests maximum",
+
+      "cancellationPolicy": "Free cancellation before May 17 , Cancel before check-in on May 18 for a partial refund.",
+
+      " hostId": "dac587b1-3c70-48ce-8ee4-f1c11dfed375",
+      "typeId": 31
+    },
+    {
+      "id": "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2",
+      "name": "(4) charming oceanfront loft!",
+      "description": "Romantic Loft with mezzanine and large balcony in front of the sea, double bed and 1 single bed, tv, wi-fi, fan, cabinet modern decoration, 180 degree terrace to the sea, equipped kitchen, bathroom, total comfort and privacy, fourth floor without elevator, 5 minutes from the carnival circuit, Noble Quarter of the city. Between the Surf and Paciencia beaches. Total security. The most beautiful sunset in Salvador",
+      "pricePerNight": 1300,
+      "locationId": 5,
+      "latitude": -12.9711,
+      "longitude": -38.5108,
+      "maxGuests": 6,
+      "numBeds": 3,
+      "numBedrooms": 2,
+      "numBathrooms": 1,
+      "rating": 2.8,
+      "reviewsNumber": 5,
+
+      "safetyInfo": "Carbon monoxide alarm not reported , Smoke alarm not reported , Exterior security cameras on property",
+
+      "houseRules": "3 guests maximum , Pets allowed",
+
+      "cancellationPolicy": "Free cancellation before Oct 22 , Cancel before check-in on Oct 23 for a partial refund.",
+
+      " hostId": "dac587b1-3c70-48ce-8ee4-f1c11dfed375",
+      "typeId": 1
+    },
+    {
+      "id": "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
+      "name": "Sunny and cozy Apartment Sagrada Familia",
+      "description": "Set in an architectural prize-winning building, this modern Barcelona apartment beauty has impressive detail throughout. Ceiling-to-floor sloped windows, wood floor, and other soft designer textures accentuate this spectacular space. It is cozy and welcoming but with a very hip, urban edge.Design enthusiasts and those looking for that modern Barcelona feel will love the apartment. However, high-comfort and proximity to the Sagrada Familia suits all tastes.",
+      "pricePerNight": 6500,
+      "locationId": 6,
+      "latitude": 41.3888,
+      "longitude": 2.159,
+      "maxGuests": 2,
+      "numBeds": 1,
+      "numBedrooms": 1,
+      "numBathrooms": 1,
+      "rating": 5,
+      "reviewsNumber": 121,
+
+      "safetyInfo": "No carbon monoxide alarm , No smoke alarm , Heights without rails or protectio",
+      "houseRules": "Check-in: 3:00 PM - 5:00 PM ,Checkout before 10:00 AM ,2 guests maximum",
+
+      "cancellationPolicy": "Free cancellation before Jun 3. Cancel before check-in on Jun 4 for a partial refund",
+
+      " hostId": "dac587b1-3c70-48ce-8ee4-f1c11dfed375",
+      "typeId": 1
+    },
+    {
+      "id": "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
+      "name": "Wadi Rum Sunset Cave",
+      "description": "To give you the best experience of the authentic Bedouin life style, we will gather around the fire, cook our traditional food and tell you stories of our ancestors, while looking at the sky full of stars.Without a lie, this experience will be very special, if you used to cities and crowd in your everyday life.We created the space in a very simple, traditional and nomadic way. The Cave is inside the red rocks, waterproof and safe from all sides. Here you will have the whole Desert for yourself to get away from normal life, to relax, be in a quiet environment and meditate.",
+      "pricePerNight": 2200,
+      "locationId": 7,
+      "latitude": 29.5726,
+      "longitude": 35.4186,
+      "maxGuests": 4,
+      "numBeds": 1,
+      "numBedrooms": 1,
+      "numBathrooms": 2,
+      "rating": 4.5,
+
+      "reviewsNumber": 14,
+
+      "safetyInfo": "No carbon monoxide alarm , No smoke alarm , Heights without rails or protectio",
+      "houseRules": "Check-in: 3:00 PM - 5:00 PM ,Checkout before 10:00 AM ,2 guests maximum",
+
+      "cancellationPolicy": "Free cancellation before Jun 3. Cancel before check-in on Jun 4 for a partial refund",
+
+      " hostId": "dac587b1-3c70-48ce-8ee4-f1c11dfed375",
+      "typeId": 1
+    },
+    {
+      "id": "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
+      "name": "New! The View: See to Mouintain (with pool)",
+      "description": "Interior designer's own guesthouse, this unique place has a style all its own. Escape the ordinary and immerse yourself in comfort, calm and luxury at our charming bergerie, a conversion from a shepherd's old stone house! Nestled in the heart of the largest mimosa forest in Europe, overlooking the Cotes d’Azur and lower Alps, our tastefully designed retreat offers everything you need for an unforgettable tranquillity.We welcome up to 4 adults and have a small mezzanine for children.",
+      "pricePerNight": 9000,
+      "locationId": 8,
+      "latitude": 43.5914,
+      "longitude": 6.8761,
+      "maxGuests": 2,
+      "numBeds": 2,
+      "numBedrooms": 1,
+      "numBathrooms": 2,
+      "rating": 3.1,
+      "reviewsNumber": 23,
+
+      "safetyInfo": "No carbon monoxide alarm , No smoke alarm , Heights without rails or protectio",
+      "houseRules": "Check-in: 3:00 PM - 5:00 PM ,Checkout before 10:00 AM ,2 guests maximum",
+
+      "cancellationPolicy": "Free cancellation before Jun 3. Cancel before check-in on Jun 4 for a partial refund",
+
+      " hostId": "dac587b1-3c70-48ce-8ee4-f1c11dfed375",
+      "typeId": 1
+    }
+  ],
+  "category": [
+    {
+      "id": 1,
+      "name": "Castle",
+      "icon": "fa-light fa-chess-rook"
+    },
+    {
+      "id": 2,
+      "name": "Icons",
+      "icon": "fa-solid fa-font-awesome"
+    },
+    {
+      "id": 3,
+      "name": "Amazing views",
+      "icon": "fa-solid fa-mountain-sun"
+    },
+    {
+      "id": 4,
+      "name": "Beach",
+      "icon": "fa-solid fa-umbrella-beach"
+    },
+    {
+      "id": 5,
+      "name": "Golf",
+      "icon": "fa-thin fa-baseball-bat-ball"
+    },
+    {
+      "id": 6,
+      "name": "Earth homes",
+      "icon": "fa-solid fa-earth-americas"
+    },
+    {
+      "id": 7,
+      "name": "Camping",
+      "icon": "fa-solid fa-campground  "
+    },
+    {
+      "id": 8,
+      "name": "Tropical",
+      "icon": "fa-solid fa-tree"
+    },
+    {
+      "id": 9,
+      "name": "Mansions",
+      "icon": "fa-solid fa-house"
+    },
+    {
+      "id": 10,
+      "name": "Rooms",
+      "icon": "fa-solid fa-bed"
+    },
+    {
+      "id": 11,
+      "name": "Campers",
+      "icon": "fa-solid fa-tents"
+    },
+    {
+      "id": 12,
+      "name": "Islands",
+      "icon": "fa-solid fa-hotel"
+    },
+    {
+      "id": 13,
+      "name": "Arctic",
+      "icon": "fa-solid fa-snowflake"
+    },
+    {
+      "id": 14,
+      "name": "Amazing Pools",
+      "icon": "fa-solid fa-person-swimming"
+    },
+    {
+      "id": 15,
+      "name": "OMG!",
+      "icon": "fa-solid fa-rocket"
+    },
+    {
+      "id": 16,
+      "name": "Trending",
+      "icon": "fa-solid fa-fire"
+    },
+    {
+      "id": 17,
+      "name": "Caves",
+      "icon": "fa-solid fa-fire-burner"
+    },
+    {
+      "id": 18,
+      "name": "Bed & Breakfasts",
+      "icon": "fa-solid fa-bed"
+    },
+    {
+      "id": 19,
+      "name": "Lake Front",
+      "icon": "fa-solid fa-water"
+    },
+    {
+      "id": 20,
+      "name": "CountrySide",
+      "icon": "fa-solid fa-tractor"
+    },
+    {
+      "id": 21,
+      "name": "Top Cities",
+      "icon": "fa-solid fa-city"
+    },
+    {
+      "id": 22,
+      "name": "Farms",
+      "icon": "fa-solid fa-seedling"
+    },
+    {
+      "id": 23,
+      "name": "Cabins",
+      "icon": "fa-solid fa-house-chimney"
+    },
+    {
+      "id": 24,
+      "name": "Tiny Homes",
+      "icon": "fa-solid fa-house"
+    },
+    {
+      "id": 25,
+      "name": "Luxe",
+      "icon": "fa-solid fa-gem"
+    },
+    {
+      "id": 26,
+      "name": "Historical Houses",
+      "icon": "fa-solid fa-landmark"
+    },
+    {
+      "id": 27,
+      "name": "Top of the World",
+      "icon": "fa-solid fa-mountain"
+    },
+    {
+      "id": 28,
+      "name": "Skiing",
+      "icon": "fa-solid fa-person-skiing"
+    },
+    {
+      "id": 29,
+      "name": "Desert",
+      "icon": "fa-solid fa-sun"
+    },
+    {
+      "id": 30,
+      "name": "Chef's Kitchen",
+      "icon": "fa-solid fa-kitchen-set"
+    },
+    {
+      "id": 31,
+      "name": "Beach Front",
+      "icon": "fa-solid fa-water"
+    },
+    {
+      "id": 32,
+      "name": "TreeHouses",
+      "icon": "fa-solid fa-tree"
+    }
+  ],
+  "images": [
+    {
+      "id": 1,
+      "name": "images/egy1.avif"
+    },
+    {
+      "id": 2,
+      "name": "images/egy2.avif"
+    },
+    {
+      "id": 3,
+      "name": "images/egy3.avif"
+    },
+    {
+      "id": 4,
+      "name": "images/italy1.webp"
+    },
+    {
+      "id": 5,
+      "name": "images/italy2.avif"
+    },
+    {
+      "id": 6,
+      "name": "images/italy3.avif"
+    },
+    {
+      "id": 7,
+      "name": "images/makkah1.avif"
+    },
+    {
+      "id": 8,
+      "name": "images/makkah2.avif"
+    },
+    {
+      "id": 9,
+      "name": "images/makkah3.avif"
+    },
+    {
+      "id": 10,
+      "name": "images/california1.jpeg"
+    },
+    {
+      "id": 11,
+      "name": "images/california2.jpeg"
+    },
+    {
+      "id": 12,
+      "name": "images/california3.avif"
+    },
+    {
+      "id": 13,
+      "name": "images/brazil1.avif"
+    },
+    {
+      "id": 14,
+      "name": "images/brazil2.avif"
+    },
+    {
+      "id": 15,
+      "name": "images/brazil3.avif"
+    },
+    {
+      "id": 16,
+      "name": "images/barcelona1.avif"
+    },
+    {
+      "id": 17,
+      "name": "images/barcelona2.avif"
+    },
+    {
+      "id": 18,
+      "name": "images/barcelona3.avif"
+    },
+    {
+      "id": 19,
+      "name": "images/jordan1.avif"
+    },
+    {
+      "id": 20,
+      "name": "images/jordan2.avif"
+    },
+    {
+      "id": 21,
+      "name": "images/jordan3.avif"
+    },
+    {
+      "id": 22,
+      "name": "images/france1.avif"
+    },
+    {
+      "id": 23,
+      "name": "images/france2.avif"
+    },
+    {
+      "id": 24,
+      "name": "images/france3.avif"
+    }
+  ],
+  "location": [
+    {
+      "id": 1,
+      "name": "Nazlet El-Semman, Giza Governorate",
+      "countryId": 64
+    },
+    {
+      "id": 2,
+      "name": "Milan, Lombardia",
+      "countryId": 106
+    },
+    {
+      "id": 3,
+      "name": "Makkah, Makkah Province",
+      "countryId": 191
+    },
+    {
+      "id": 4,
+      "name": "Yucca Valley, California",
+      "countryId": 231
+    },
+    {
+      "id": 5,
+      "name": "Salvador, Bahia",
+      "countryId": 31
+    },
+    {
+      "id": 6,
+      "name": "Barcelona, Catalunya",
+      "countryId": 205
+    },
+    {
+      "id": 7,
+      "name": "Wadi Rum Village, Aqaba Governorate",
+      "countryId": 110
+    },
+    {
+      "id": 8,
+      "name": "Tanneron, Provence-Alpes-Côte d'Azur",
+      "countryId": 74
+    }
+  ],
+  "propertCategory": [
+    {
+      "propertyId": "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
+      "categoryId": 3
+    },
+    {
+      "propertyId": " 3e7f99ab-228a-4d90-91c4-6adf8c12e048",
+      "categoryId": 1
+    },
+
+    {
+      "propertyId": "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
+      "categoryId": 21
+    },
+    {
+      "propertyId": "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
+      "categoryId": 14
+    },
+    {
+      "propertyId": "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2",
+      "categoryId": 4
+    },
+    {
+      "propertyId": "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
+      "categoryId": 21
+    },
+    {
+      "propertyId": "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
+      "categoryId": 17
+    },
+    {
+      "propertyId": "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
+      "categoryId": 3
+    }
+  ],
+  "propertyImage": [
+    {
+      "properyID": "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
+      "imageId": 1,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
+      "imageId": 2,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
+      "imageId": 3,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
+      "imageId": 4,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
+      "imageId": 5,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
+      "imageId": 6,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "3e7f99ab-228a-4d90-91c4-6adf8c12e048",
+      "imageId": 7,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "3e7f99ab-228a-4d90-91c4-6adf8c12e048",
+      "imageId": 8,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "3e7f99ab-228a-4d90-91c4-6adf8c12e048",
+      "imageId": 9,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
+      "imageId": 10,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
+      "imageId": 11,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
+      "imageId": 12,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2",
+      "imageId": 13,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2",
+      "imageId": 14,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2",
+      "imageId": 15,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
+      "imageId": 16,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
+      "imageId": 17,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
+      "imageId": 18,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
+      "imageId": 19,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
+      "imageId": 20,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
+      "imageId": 21,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
+      "imageId": 22,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
+      "imageId": 23,
+      "touchedAt": "2025-04-07"
+    },
+    {
+      "properyID": "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
+      "imageId": 24,
+      "touchedAt": "2025-04-07"
+    }
+  ],
+  "propertyType": [
+    { "id": 1, "propertyType": "Entire home/apt" },
+    { "id": 2, "propertyType": "Private room" },
+    { "id": 3, "propertyType": "Shared room" },
+    { "id": 4, "propertyType": "Hotel room" },
+    { "id": 5, "propertyType": "Guest suite" },
+    { "id": 6, "propertyType": "Boutique hotel" },
+    { "id": 7, "propertyType": "Loft" },
+    { "id": 8, "propertyType": "Cabin" },
+    { "id": 9, "propertyType": "Condominium" },
+    { "id": 10, "propertyType": "Cottage" },
+    { "id": 11, "propertyType": "Villa" },
+    { "id": 12, "propertyType": "Bungalow" },
+    { "id": 13, "propertyType": "Farm stay" },
+    { "id": 14, "propertyType": "Houseboat" },
+    { "id": 15, "propertyType": "Tent" },
+    { "id": 16, "propertyType": "Camper/RV" },
+    { "id": 17, "propertyType": "Chalet" },
+    { "id": 18, "propertyType": "Mansion" },
+    { "id": 19, "propertyType": "Castle" },
+    { "id": 20, "propertyType": "Studio" },
+    { "id": 21, "propertyType": "Treehouse" },
+    { "id": 22, "propertyType": "Yurt" },
+    { "id": 23, "propertyType": "Barn" },
+    { "id": 24, "propertyType": "Bunkhouse" },
+    { "id": 25, "propertyType": "Lighthouse" },
+    { "id": 26, "propertyType": "Riad" },
+    { "id": 27, "propertyType": "Penthouse" },
+    { "id": 28, "propertyType": "Tipi" },
+    { "id": 29, "propertyType": "Island" },
+    { "id": 30, "propertyType": "DomeHouse" },
+    { "id": 31, "propertyType": "Hut" }
+  ]
+}

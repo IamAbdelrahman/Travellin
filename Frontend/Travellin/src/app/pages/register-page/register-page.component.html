@@ -1,0 +1,96 @@
+<div class="container py-5">
+  <div class="row justify-content-center align-items-center">
+    <div class="col-lg-6">
+      <div class="container h-100 d-flex justify-content-center">
+        <img src="logo.png" alt="" class="object-fit-contain logo" />
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="container d-flex flex-column gap-4">
+        <h2 class="text-primary text-center">Register</h2>
+        <form
+          id="signupForm"
+          [formGroup]="signupForm"
+          (ngSubmit)="onSubmit()"
+          class="w-100">
+          <!-- Email -->
+          <div class="form-floating mb-3 position-relative">
+            <input
+              type="email"
+              class="form-control"
+              formControlName="email"
+              placeholder="Email" />
+            <label>Email</label>
+            <div
+              class="text-danger"
+              *ngIf="
+                formControls['email'].invalid && formControls['email'].touched
+              ">
+              <small *ngIf="formControls['email'].errors?.['required']"
+                >Email is required.</small
+              >
+              <small *ngIf="formControls['email'].errors?.['email']"
+                >Invalid email format. Correct format: name &#64;
+                example.com</small
+              >
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="form-floating mb-4">
+            <input
+              [type]="passwordFieldType"
+              class="form-control pe-5"
+              formControlName="password"
+              placeholder="Password" />
+            <label>Password</label>
+
+            <!-- Eye Icon inside input field -->
+            <button
+              type="button"
+              class="btn position-absolute end-0 top-50 translate-middle-y me-3 p-0 border-0 bg-transparent"
+              (click)="togglePasswordVisibility()"
+              tabindex="-1">
+              <lucide-icon
+                [img]="showPassword ? icons.eyeOff : icons.eye"
+                size="20"
+                class="text-muted">
+              </lucide-icon>
+            </button>
+
+            <div
+              class="text-danger mt-1"
+              *ngIf="
+                formControls['password'].invalid &&
+                formControls['password'].touched
+              ">
+              <small *ngIf="formControls['password'].errors?.['required']">
+                Password is required.
+              </small>
+              <small *ngIf="formControls['password'].errors?.['minlength']">
+                Minimum 12 characters.
+              </small>
+              <small *ngIf="formControls['password'].errors?.['pattern']">
+                Must contain uppercase letter, number, and special character.
+              </small>
+            </div>
+          </div>
+
+          <p id="black">
+            By Selecting Agree and Continue,I agree to Airbnb's
+            <a routerLink="/register"
+              >Terms of Service,Payment Terms of Service and Nondiscrimination
+              Policy
+            </a>
+            and Acknowledge the Privacy Policy
+          </p>
+          <!-- Submit -->
+          <input
+            type="submit"
+            class="btn btn-primary text-white w-100 fw-semibold"
+            value="Register" />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

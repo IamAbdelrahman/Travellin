@@ -1,0 +1,81 @@
+Custom CSS to extend Tailwind .container {
+    max-width: 1200px;
+  }
+  
+  /* Primary Color Theme */
+  .bg-primary-600 {
+    background-color: #f18b7f;
+  }
+  
+  .hover\:bg-primary-700:hover {
+    background-color: #f18b7f;
+  }
+  
+  .text-primary-600 {
+    color: #f18b7f;
+  }
+  
+  .border-primary-500 {
+    border-color: #3b82f6;
+  }
+  
+  .focus\:ring-primary-500:focus {
+    --tw-ring-color: #3b82f6;
+    --tw-ring-offset-width: 2px;
+  }
+  
+  /* Status Colors */
+  .bg-green-100 {
+    background-color: #dcfce7;
+  }
+  
+  .text-green-800 {
+    color: #166534;
+  }
+  
+  .bg-yellow-100 {
+    background-color: #fef9c3;
+  }
+  
+  .text-yellow-800 {
+    color: #854d0e;
+  }
+  
+  .bg-red-100 {
+    background-color: #fee2e2;
+  }
+  
+  .text-red-800 {
+    color: #991b1b;
+  }
+  
+  .hover\:bg-red-50:hover {
+    background-color: #fef2f2;
+  }
+  
+  /* Transitions */
+  .transition-colors {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .md\:flex {
+      display: flex;
+    }
+  
+    .md\:w-1\/3 {
+      width: 33.333333%;
+    }
+  
+    .md\:w-2\/3 {
+      width: 66.666667%;
+    }
+  
+    .md\:grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  

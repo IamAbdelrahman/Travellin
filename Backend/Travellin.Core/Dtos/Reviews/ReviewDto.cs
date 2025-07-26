@@ -9,6 +9,7 @@
     }
     public class ReviewDto
     {
+        public string Id { get; set; }
         public string BookingId { get; set; }
         public string Comment { get; set; }
         public decimal Cleanliness { get; set; }

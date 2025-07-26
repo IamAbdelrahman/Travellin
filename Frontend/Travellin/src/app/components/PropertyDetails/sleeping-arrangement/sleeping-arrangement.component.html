@@ -1,0 +1,48 @@
+<!-- all spaces -->
+<div class="spaces-section">
+  <div class="section-title-container">
+    <div>
+      <lucide-icon [name]="icon.door" class="title-icon"></lucide-icon>
+    </div>
+    <div>
+      <h2 class="spaces-title">Spaces</h2>
+    </div>
+  </div>
+
+  <div class="spaces-grid">
+    <div class="space-card" *ngFor="let space of property.spaceSummaries">
+      <div class="space-header">
+        <h3 class="space-name">{{ space.spaceType.name }}</h3>
+        <div class="space-meta">
+          <span class="space-count"
+            >{{ space.count }}
+            {{
+              space.count > 1
+                ? space.spaceType.name + 's'
+                : space.spaceType.name
+            }}</span
+          >
+          <span *ngIf="space.isShared" class="shared-indicator">• Shared</span>
+        </div>
+      </div>
+
+      <div class="space-items" *ngIf="hasSpaceItems(space.spaceType.id)">
+        <div
+          class="space-item"
+          *ngFor="let item of getSpaceItems(space.spaceType.id)">
+          <div class="item-icon">
+            <lucide-icon
+              [name]="getSpaceItemIcon(item.itemType.name)"
+              size="18"></lucide-icon>
+          </div>
+          <div class="item-info">
+            <span class="item-name">{{ item.itemType.name }}</span>
+            <span *ngIf="item.quantity > 1" class="item-count">{{
+              item.quantity
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

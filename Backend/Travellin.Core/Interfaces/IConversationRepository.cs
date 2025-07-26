@@ -13,6 +13,8 @@ namespace Travellin.Core.Interfaces
         Task<List<Conversation>> GetUserConversationsAsync(string userId);
         Task<Conversation?> GetByIdWithMessagesAsync(int id);
         Task<List<Conversation>> GetInboxPreviewAsync(string userId);
+        Task<List<Conversation>> GetUserConversationsWithMessagesAndUsersAsync(string userId);
+
     }
 
 }

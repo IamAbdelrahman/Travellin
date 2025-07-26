@@ -1,0 +1,35 @@
+<div class="profile-prompt">
+  <h2>It's time to update your profile</h2>
+  <p>
+    Your Airbnb profile helps other Hosts and guests get to know you. Keep your
+    information up to date for better experiences.
+  </p>
+  <div class="container">
+    <button class="update-profile-button" (click)="navigateToProfile()">
+      Update profile
+    </button>
+
+    <!-- upgrade button for guest -->
+    <div
+      *ngIf="showButtonForGuest() && !isInRole('Host')"
+      class="guest-button-container">
+      <button class="guest-button" (click)="handleGuestAction()">
+        Upgrade To Host
+      </button>
+    </div>
+
+    <!-- host approval for admn  -->
+
+    <div *ngIf="showButtonForAdmin()" class="admin-button-container">
+      <button class="approve-button" (click)="handleAdmintAction()">
+        Admin Dashboard
+      </button>
+    </div>
+
+    <div *ngIf="showButtonForHost()" class="admin-button-container">
+      <button class="approve-button" (click)="handleHostAction()">
+        Add Property
+      </button>
+    </div>
+  </div>
+</div>

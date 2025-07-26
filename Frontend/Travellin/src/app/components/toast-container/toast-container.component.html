@@ -1,0 +1,24 @@
+<div
+  class="toast-container position-fixed top-0 end-0 p-3"
+  style="z-index: 1200">
+  @for (toast of toastService.getToasts(); track toast) {
+    <div
+      class="toast show align-items-center text-white rounded-3 bg-{{ toast.type }}"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          {{ toast.message }}
+        </div>
+        <button
+          type="button"
+          class="btn-close btn-close-white me-2 m-auto"
+          (click)="toastService.remove(toast)"
+          aria-label="Close">
+          <lucide-icon [name]="icons.x" size="16"></lucide-icon>
+        </button>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,94 @@
+.profile-prompt {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid #e4e4e4;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .profile-prompt h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #222;
+  }
+  
+  .profile-prompt p {
+    color: #717171;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+  
+  .update-profile-button {
+    background-color: #F18B7F;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .update-profile-button:hover {
+    background-color: #E04B50;
+  }
+
+
+  /* ===============upgrade button==================== */
+  .guest-button-container {
+    margin: 1rem 0;
+    text-align: center;
+  }
+  
+  .guest-button {
+    background-color: #F18B7F;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    
+    &:hover {
+      background-color: #E04B50;
+    }
+    
+    &:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+  }
+
+  .container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+
+
+  /* admin approve reqests */
+  .admin-button-container {
+    /* margin-top: 10px; */
+    display: flex;
+    gap: 10px;
+}
+
+.approve-button {
+  background-color: #F18B7F;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.approve-button:hover {
+  background-color: #E04B50;
+}
