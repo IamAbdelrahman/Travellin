@@ -1,7 +1,7 @@
 import {environment} from '../../environments/environment';
 export class ApiConstant {
   private static domainUrl = environment.apiUrl; // Replace with your domain URL
-  public static baseUrl = `${ApiConstant.domainUrl}/api`;
+  public static baseUrl = `${ApiConstant.domainUrl}/api/v1`;
 
   public static AccountsApi = {
     register: `${ApiConstant.baseUrl}/accounts/register`,
@@ -14,7 +14,7 @@ export class ApiConstant {
     getAll: `${ApiConstant.baseUrl}/Properties`,
     getById: `${ApiConstant.baseUrl}/Properties/{id}`,
     smartSearch: `${ApiConstant.baseUrl}/Properties/search`,
-    getAllPropertyTypes: `${ApiConstant.baseUrl}/PropertyTypes`,
+    getAllPropertyTypes: `${ApiConstant.baseUrl}/PropertyType`,
     getPropertyAmenities: `${ApiConstant.baseUrl}/Properties/{id}/Amenities`,
     getPropertyAvailability: `${ApiConstant.baseUrl}/Properties/{id}/Availabilities`,
     getPropertyFees: `${ApiConstant.baseUrl}/Properties/{id}/Fees`,

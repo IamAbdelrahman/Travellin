@@ -8,7 +8,7 @@ using Travellin.Core.Interfaces;
 
 namespace Travellin.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     [Authorize]
     public class ViolationsController : ControllerBase

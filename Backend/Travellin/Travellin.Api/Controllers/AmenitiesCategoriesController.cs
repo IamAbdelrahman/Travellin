@@ -8,7 +8,7 @@ using Travellin.Core.Dtos.AmenityCategories;
 
 namespace Travellin.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class AmenitiesCategoriesController : BaseController
     {

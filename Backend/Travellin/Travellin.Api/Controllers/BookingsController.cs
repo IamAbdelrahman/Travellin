@@ -12,7 +12,7 @@ using Travellin.Travellin.Core.Shared;
 
 namespace Travellin.Travellin.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class BookingsController : ControllerBase
     {
