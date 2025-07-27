@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 @Injectable({
   providedIn: 'root',
 })
@@ -52,4 +51,30 @@ export class AuthService {
     const role = this.getUserRole();
     return role === 'Admin';
   }
+
+  public isHost(): boolean {
+    const role = this.getUserRole();
+    return role == 'Host';
+  }
 }
+
+
+
+// import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from '@angular/fire/auth';
+
+
+// export class AuthService {
+//   constructor(private auth: Auth) {}
+
+//   signup(email: string, password: string) {
+//     return createUserWithEmailAndPassword(this.auth, email, password);
+//   }
+
+//   login(email: string, password: string) {
+//     return signInWithEmailAndPassword(this.auth, email, password);
+//   }
+
+//   logout() {
+//     return signOut(this.auth);
+//   }
+// }
