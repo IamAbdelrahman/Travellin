@@ -29,7 +29,7 @@ namespace Travellin.Infrastructure.Services
             ValidateGuestCounts(property, dto.Guests);
 
             //Check Poroperty is available for the selected dates
-            var isAvailable = IsPropertyAvailable(property, dto.CheckIn, dto.Checkout);
+            var isAvailable = await IsPropertyAvailable(property, dto.CheckIn, dto.Checkout);
             if (!isAvailable)
             {
                 throw new ConflictException("Property is not available for the selected dates");
@@ -125,24 +125,21 @@ namespace Travellin.Infrastructure.Services
             }
         }
         /////////////////////////////////////Check Property Availability////////////////////////////////////
-        private bool IsPropertyAvailable(Property property, DateTime checkIn, DateTime checkOut)
+        private async Task<bool> IsPropertyAvailable(Property property, DateTime checkIn, DateTime checkOut)
         {
-            var CheckAvailable = property.PropertyAvailabilities
-                .Where(a => a.IsAvailable &&
-                           a.StartDate < checkOut &&
-                           a.EndDate > checkIn)
-                .OrderBy(a => a.StartDate)
-                .ToList();
-
-
+            var dates = await _unitOfWork.PropertyAvailabilityRepository.GetAllAsync(a => a.PropertyId == property.Id &&
+                                  a.IsAvailable &&
+                                  a.StartDate < checkOut &&
+                                  a.EndDate > checkIn);
+            
             // 2. If no available periods exist at all — not available
-            if (!CheckAvailable.Any())
+            if (!dates.Any())
                 return false;
 
             // 3. Check that the availability windows fully cover the desired range without gaps
             DateTime currentCoverage = checkIn;
 
-            foreach (var availability in CheckAvailable)
+            foreach (var availability in dates)
             {
                 if (availability.StartDate > currentCoverage)
                     return false; // ⛔ Gap found — property not available for full duration
