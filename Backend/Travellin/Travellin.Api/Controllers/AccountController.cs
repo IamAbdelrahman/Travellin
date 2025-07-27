@@ -36,6 +36,12 @@ namespace Travellin.Api.Controllers
             {
                 UserName = username,
                 Email = dto.Email,
+                UserProfile = new UserProfile
+                {
+                    FirstName = dto.FirstName,
+                    LastName = dto.LastName,
+                    BirthDate = dto.BirthDate
+                }
             };
 
             var createdUser = await _identityFactory.UserManager.CreateAsync(appUser, dto.Password);
