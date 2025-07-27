@@ -64,6 +64,7 @@
         *ngFor="let inboxItem of filteredInbox; trackBy: trackByConversationId" 
         class="conversation-item p-3 border-bottom cursor-pointer"
         [class.active]="activeConversation?.id === inboxItem.conversationId"
+        [class.unread]="inboxItem.unreadCount && inboxItem.unreadCount > 0"
         (click)="selectConversationByInbox(inboxItem)">
         
         <div class="d-flex align-items-start">
@@ -72,22 +73,24 @@
                  style="width: 45px; height: 45px; font-size: 18px;">
               {{ getParticipantInitial(inboxItem.participant) }}
             </div>
-            <div *ngIf="inboxItem.isUnread" class="unread-indicator"></div>
+            <div *ngIf="inboxItem.unreadCount && inboxItem.unreadCount > 0" class="unread-indicator"></div>
           </div>
           
           <div class="flex-grow-1 min-width-0">
             <div class="d-flex justify-content-between align-items-start">
               <div class="flex-grow-1 min-width-0">
-                <h6 class="mb-1 text-truncate fw-semibold" [class.text-primary]="inboxItem.isUnread">
+                <h6 class="mb-1 text-truncate fw-semibold" [class.text-primary]="inboxItem.unreadCount && inboxItem.unreadCount > 0">
                   {{ getDisplayName(inboxItem.participant) }}
                 </h6>
-                <p class="mb-1 text-muted small text-truncate" [class.fw-semibold]="inboxItem.isUnread">
+                <p class="mb-1 text-muted small text-truncate" [class.fw-semibold]="inboxItem.unreadCount && inboxItem.unreadCount > 0">
                   {{ inboxItem.lastMessage || 'No messages yet' }}
                 </p>
               </div>
               <div class="text-end ms-2">
-                <small class="text-muted d-block">{{ formatMessageTime(inboxItem.sentAt) }}</small>
-                <div *ngIf="inboxItem.isUnread" class="unread-badge mt-1"></div>
+                <small class="text-muted d-block">{{ formatMessageTime(inboxItem.lastMessageTime) }}</small>
+                <div *ngIf="inboxItem.unreadCount && inboxItem.unreadCount > 0" class="unread-badge mt-1">
+                  <span class="badge bg-primary rounded-pill">{{ inboxItem.unreadCount }}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -116,6 +119,10 @@
                 Online
               </span>
               <span class="text-muted">• Active now</span>
+              <!-- Silent refresh indicator (subtle) -->
+              <span class="text-muted ms-2" style="font-size: 0.7rem;">
+                <i class="fas fa-sync-alt" style="animation: spin 2s linear infinite; opacity: 0.5;"></i>
+              </span>
             </small>
           </div>
         </div>
@@ -142,9 +149,14 @@
       <!-- Messages Container -->
       <div #messagesContainer class="messages-container flex-grow-1 p-3" style="overflow-y: auto; max-height: calc(100vh - 200px);">
         <div *ngFor="let message of activeConversation.messages; trackBy: trackByMessageId" class="message-wrapper mb-3">
-          <div class="d-flex" [class.justify-content-end]="message.senderId === currentUserId">
-            <div class="message-bubble p-3 rounded shadow-sm" 
-                 [class]="message.senderId === currentUserId ? 'bg-primary text-white ms-5' : 'bg-white me-5 border'">
+          <!-- Debug info (remove in production) -->
+          <div class="debug-info" style="font-size: 10px; color: #ccc; margin-bottom: 5px;">
+            Debug: Message ID: {{ message.id }}, Sender: {{ message.senderId }}, Current User: {{ currentUserId }}, IsFromCurrentUser: {{ isMessageFromCurrentUser(message) }}
+          </div>
+          
+          <div class="d-flex" [class.justify-content-end]="isMessageFromCurrentUser(message)">
+            <div class="message-bubble p-3 rounded shadow-sm position-relative" 
+                 [class]="isMessageFromCurrentUser(message) ? 'bg-primary text-white ms-5' : 'bg-white me-5 border'">
               
               <!-- Message Content -->
               <div class="message-content">
@@ -160,17 +172,29 @@
                 </div>
               </div>
               
-              <!-- Message Meta -->
+              <!-- Message Meta with Read Receipts -->
               <div class="message-meta d-flex justify-content-between align-items-center mt-2">
-                <small [class]="message.senderId === currentUserId ? 'text-white-50' : 'text-muted'">
+                <small [class]="isMessageFromCurrentUser(message) ? 'text-white-50' : 'text-muted'">
                   {{ formatMessageTime(message.sentAt) }}
                 </small>
                 
-                <!-- Read Receipt -->
-                <div *ngIf="message.senderId === currentUserId" class="read-receipt">
-                  <small [class]="message.senderId === currentUserId ? 'text-white-50' : 'text-muted'">
-                    <i class="fas" [class]="message.isRead ? 'fa-check-double text-info' : 'fa-check'"></i>
+                <!-- Read Receipt and Status Indicators -->
+                <div *ngIf="isMessageFromCurrentUser(message)" class="message-status d-flex align-items-center gap-1">
+                  <!-- Message Status Icon -->
+                  <small [class]="getMessageStatusClass(getMessageStatus(message.id))" 
+                         *ngIf="isMessageStatusVisible(message)">
+                    {{ getMessageStatusIcon(getMessageStatus(message.id)) }}
                   </small>
+                  
+                  <!-- Read Receipt -->
+                  <small [class]="message.isRead ? 'text-info' : 'text-white-50'">
+                    <i class="fas" [class]="message.isRead ? 'fa-check-double' : 'fa-check'"></i>
+                  </small>
+                </div>
+                
+                <!-- Unread indicator for received messages -->
+                <div *ngIf="!isMessageFromCurrentUser(message) && !message.isRead" class="unread-indicator-small">
+                  <i class="fas fa-circle text-primary" style="font-size: 0.5rem;"></i>
                 </div>
               </div>
             </div>
@@ -178,7 +202,7 @@
         </div>
 
         <!-- No messages state -->
-        <div *ngIf="activeConversation.messages.length === 0" class="text-center text-muted py-5">
+        <div *ngIf="!activeConversation.messages || activeConversation.messages.length === 0" class="text-center text-muted py-5">
           <div class="empty-state-icon mb-3">
             <i class="fas fa-comment-dots"></i>
           </div>

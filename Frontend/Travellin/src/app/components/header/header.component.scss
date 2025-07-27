@@ -1,3 +1,42 @@
 .nav-sticky {
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
 }
+
+// Add styling for unread count badge
+.nav-link {
+  position: relative;
+  
+  .badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 10px;
+    background: linear-gradient(45deg, #ff5722, #ff9800) !important;
+    box-shadow: 0 2px 4px rgba(255, 87, 34, 0.3);
+    animation: pulseBadge 2s infinite;
+    z-index: 10;
+  }
+}
+
+@keyframes pulseBadge {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 2px 4px rgba(255, 87, 34, 0.3);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 4px 8px rgba(255, 87, 34, 0.4);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 2px 4px rgba(255, 87, 34, 0.3);
+  }
+}
+
+// Ensure the chat nav link has proper positioning
+.nav-link[routerLink="/chat"] {
+  position: relative;
+}

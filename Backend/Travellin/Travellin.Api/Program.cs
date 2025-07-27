@@ -1,6 +1,7 @@
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Stripe;
 using Travellin.Api.Filters;
@@ -12,9 +13,19 @@ using Travellin.Core.Services;
 using Travellin.Infrastructure;
 using Travellin.Infrastructure.Repositories;
 using Travellin.Infrastructure.Services;
+using System.Security.Claims;
 
 namespace Travellin.Api
 {
+    public class CustomUserIdProvider : IUserIdProvider
+    {
+        public string? GetUserId(HubConnectionContext connection)
+        {
+            var userId = connection.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return userId;
+        }
+    }
+
     public class Program
     {
         public static void Main(string[] args)
@@ -87,7 +98,13 @@ namespace Travellin.Api
             });
 
             builder.Services.AddHttpContextAccessor();
-            builder.Services.AddSignalR();
+            builder.Services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+            });
+
+            // Add custom user provider for SignalR
+            builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
             var app = builder.Build();
 

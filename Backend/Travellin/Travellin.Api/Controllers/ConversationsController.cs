@@ -77,9 +77,6 @@ public class ConversationsController : ControllerBase
 
         var conversations = await _conversationService.GetUserConversationsAsync(userId);
 
-        if (!conversations.Any())
-            return NotFound();
-
         var result = conversations.Select(c => new ConversationDto
         {
             Id = c.Id,
