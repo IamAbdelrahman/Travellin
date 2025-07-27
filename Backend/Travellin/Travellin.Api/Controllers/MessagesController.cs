@@ -14,8 +14,15 @@ namespace Travellin.Api.Controllers
     public class MessagesController : ControllerBase
     {
         private readonly IMessageService _messageService;
-        private string GetCurrentUserId() =>
-    User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+        private string GetCurrentUserId()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("User not authenticated");
+            }
+            return userId;
+        }
 
         public MessagesController(IMessageService messageService)
         {
@@ -37,22 +44,40 @@ namespace Travellin.Api.Controllers
         [EndpointSummary("Send a new message between users")]
         public async Task<IActionResult> SendMessage([FromBody] CreateMessageDto dto)
         {
-            var currentUserId = GetCurrentUserId();
-
-            // Force sender to be the current user
-            if (dto.SenderId != currentUserId)
-                return Forbid();
-
-            var message = new Message
+            try
             {
-                SenderId = currentUserId,
-                ReceiverId = dto.ReceiverId,
-                Content = dto.Content,
-                IsRead = false,
-            };
+                var currentUserId = GetCurrentUserId();
+                Console.WriteLine($"SendMessage called by user {currentUserId} to {dto.ReceiverId}");
 
-            var savedMessage = await _messageService.SendMessageAsync(message);
-            return Ok(savedMessage);
+                // Force sender to be the current user
+                if (dto.SenderId != currentUserId)
+                {
+                    Console.WriteLine($"Forbidden: {dto.SenderId} != {currentUserId}");
+                    return Forbid();
+                }
+
+                var message = new Message
+                {
+                    SenderId = currentUserId,
+                    ReceiverId = dto.ReceiverId,
+                    Content = dto.Content,
+                    IsRead = false,
+                };
+
+                var savedMessage = await _messageService.SendMessageAsync(message);
+                Console.WriteLine($"Message sent successfully with ID: {savedMessage.Id}");
+                return Ok(savedMessage);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine($"Unauthorized access in SendMessage: {ex.Message}");
+                return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in SendMessage: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         /// <summary>

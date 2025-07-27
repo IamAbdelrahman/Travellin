@@ -35,11 +35,47 @@ namespace Travellin.Api.Hubs
             return userId;
         }
 
+        public async Task TestConnection()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                _logger.LogInformation("TestConnection called by user {UserId}", userId);
+                
+                await Clients.Caller.SendAsync("TestResponse", $"Connection test successful for user {userId}");
+                _logger.LogInformation("Test response sent to user {UserId}", userId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in TestConnection for user {UserId}", GetCurrentUserId());
+                await Clients.Caller.SendAsync("ReceiveError", "Test connection failed.");
+            }
+        }
+
+        public async Task GetConnectedUsers()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                _logger.LogInformation("GetConnectedUsers called by user {UserId}", userId);
+                
+                // This is a simplified version - in production you'd want to track connected users
+                await Clients.Caller.SendAsync("ConnectedUsersResponse", $"User {userId} is connected");
+                _logger.LogInformation("Connected users response sent to user {UserId}", userId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetConnectedUsers for user {UserId}", GetCurrentUserId());
+                await Clients.Caller.SendAsync("ReceiveError", "Failed to get connected users.");
+            }
+        }
+
         public async Task SendMessage(CreateMessageDto dto)
         {
             try
             {
                 var senderId = GetCurrentUserId();
+                _logger.LogInformation("SendMessage called by {SenderId} to {ReceiverId}", senderId, dto.ReceiverId);
 
                 // Validate sender
                 if (dto.SenderId != senderId)
@@ -67,6 +103,7 @@ namespace Travellin.Api.Hubs
                 };
 
                 var savedMessage = await _messageService.SendMessageAsync(message);
+                _logger.LogInformation("Message saved with ID: {MessageId}", savedMessage.Id);
 
                 var messageDto = new MessageDto
                 {
@@ -80,11 +117,17 @@ namespace Travellin.Api.Hubs
                     ConversationId = savedMessage.ConversationId
                 };
 
-                // Send to receiver if online
+                _logger.LogInformation("Sending message to user {ReceiverId}", dto.ReceiverId);
+                _logger.LogInformation("Current hub connections: {ConnectionCount}", Context.ConnectionId);
+                
+                // Send to receiver if online - try both user and group methods
                 await Clients.User(dto.ReceiverId).SendAsync("ReceiveMessage", messageDto);
+                await Clients.Group($"user_{dto.ReceiverId}").SendAsync("ReceiveMessage", messageDto);
+                _logger.LogInformation("Message sent to user {ReceiverId} via SignalR (both user and group methods)", dto.ReceiverId);
 
                 // Send confirmation to sender
                 await Clients.Caller.SendAsync("MessageSent", messageDto);
+                _logger.LogInformation("Message sent confirmation sent to sender {SenderId}", dto.SenderId);
 
                 _logger.LogInformation("Message sent from {SenderId} to {ReceiverId}", dto.SenderId, dto.ReceiverId);
             }
@@ -216,9 +259,14 @@ namespace Travellin.Api.Hubs
             try
             {
                 var userId = GetCurrentUserId();
-                await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
+                _logger.LogInformation("=== USER CONNECTING TO CHAT HUB ===");
+                _logger.LogInformation("User ID: {UserId}", userId);
+                _logger.LogInformation("Connection ID: {ConnectionId}", Context.ConnectionId);
                 
-                _logger.LogInformation("User {UserId} connected to chat hub", userId);
+                await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
+                _logger.LogInformation("User {UserId} added to group user_{UserId}", userId, userId);
+                
+                _logger.LogInformation("User {UserId} connected to chat hub successfully", userId);
                 await base.OnConnectedAsync();
             }
             catch (Exception ex)
@@ -233,7 +281,12 @@ namespace Travellin.Api.Hubs
             try
             {
                 var userId = GetCurrentUserId();
+                _logger.LogInformation("=== USER DISCONNECTING FROM CHAT HUB ===");
+                _logger.LogInformation("User ID: {UserId}", userId);
+                _logger.LogInformation("Connection ID: {ConnectionId}", Context.ConnectionId);
+                
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"user_{userId}");
+                _logger.LogInformation("User {UserId} removed from group user_{UserId}", userId, userId);
                 
                 _logger.LogInformation("User {UserId} disconnected from chat hub", userId);
                 await base.OnDisconnectedAsync(exception);

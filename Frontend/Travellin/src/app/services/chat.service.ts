@@ -48,6 +48,10 @@ export class ChatService {
   public errorReceived$ = new Subject<string>();
   public connectionStatus$ = new Subject<boolean>();
 
+  // Additional observables for the enhanced chat component
+  public newMessage$ = new Subject<MessageDto>();
+  public newConversation$ = new Subject<ConversationDto>();
+
   constructor(
     private http: HttpClient,
     private tokenStorage: TokenStorageService
@@ -76,6 +80,7 @@ export class ChatService {
   // SignalR Connection Management
   public async startConnection(): Promise<void> {
     if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
+      console.log('SignalR already connected');
       return;
     }
 
@@ -83,6 +88,10 @@ export class ChatService {
     if (!token) {
       throw new Error('No authentication token found');
     }
+
+    console.log('Starting SignalR connection...');
+    console.log('API URL:', environment.apiUrl);
+    console.log('Hub URL:', `${environment.apiUrl}/hubs/chat`);
 
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${environment.apiUrl}/hubs/chat`, {
@@ -97,107 +106,141 @@ export class ChatService {
 
     try {
       await this.hubConnection.start();
+      console.log('SignalR connection established successfully');
       this.updateConnectionStatus(true);
       this.reconnectAttempts = 0;
-      console.log('SignalR Connected');
-    } catch (err) {
-      console.error('Error while starting connection: ', err);
+    } catch (error) {
+      console.error('Failed to start SignalR connection:', error);
       this.updateConnectionStatus(false);
-      this.handleConnectionError();
-      throw err;
+      throw error;
     }
   }
 
   private handleConnectionError(): void {
-    if (this.reconnectAttempts < this.maxReconnectAttempts) {
-      this.reconnectAttempts++;
+    this.updateConnectionStatus(false);
+    this.reconnectAttempts++;
+
+    if (this.reconnectAttempts <= this.maxReconnectAttempts) {
+      console.log(`Attempting to reconnect... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
       setTimeout(() => {
-        console.log(`Attempting to reconnect... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
-        this.startConnection().catch(err => {
-          console.error('Reconnection failed:', err);
-        });
+        this.startConnection().catch(() => this.handleConnectionError());
       }, this.reconnectDelay * this.reconnectAttempts);
     } else {
       console.error('Max reconnection attempts reached');
-      this.errorReceived$.next('Connection failed. Please refresh the page.');
+      this.errorReceived$.next('Connection failed after maximum attempts');
     }
   }
 
   public async stopConnection(): Promise<void> {
     if (this.hubConnection) {
-      await this.hubConnection.stop();
-      this.updateConnectionStatus(false);
-      this.reconnectAttempts = 0;
-      console.log('SignalR Disconnected');
+      try {
+        await this.hubConnection.stop();
+        this.updateConnectionStatus(false);
+        console.log('SignalR connection stopped');
+      } catch (error) {
+        console.error('Error stopping SignalR connection:', error);
+      }
     }
   }
 
   private setupSignalRHandlers(): void {
     if (!this.hubConnection) return;
 
+    console.log('Setting up SignalR handlers...');
+
     this.hubConnection.on('ReceiveMessage', (message: MessageDto) => {
+      console.log('=== RECEIVED MESSAGE VIA SIGNALR ===');
+      console.log('Message:', message);
+      console.log('Current user ID:', this.tokenStorage.getUserId());
+      console.log('Message sender ID:', message.senderId);
+      console.log('Message receiver ID:', message.receiverId);
+      
       this.messageReceived$.next(message);
+      this.newMessage$.next(message);
       this.addMessageToState(message);
-      this.updateUnreadCount();
     });
 
     this.hubConnection.on('MessageSent', (message: MessageDto) => {
+      console.log('=== MESSAGE SENT VIA SIGNALR ===');
+      console.log('Message:', message);
       this.messageSent$.next(message);
-      this.addMessageToState(message);
-    });
-
-    this.hubConnection.on('NewConversationStarted', (conversation: ConversationDto) => {
-      this.conversationStarted$.next(conversation);
-      this.addConversationToState(conversation);
     });
 
     this.hubConnection.on('MessageMarkedAsRead', (messageId: number) => {
+      console.log('=== MESSAGE MARKED AS READ ===');
+      console.log('Message ID:', messageId);
       this.messageMarkedAsRead$.next(messageId);
       this.updateMessageReadStatus(messageId, true);
     });
 
     this.hubConnection.on('ConversationMarkedAsRead', (conversationId: number) => {
+      console.log('=== CONVERSATION MARKED AS READ ===');
+      console.log('Conversation ID:', conversationId);
       this.conversationMarkedAsRead$.next(conversationId);
       this.updateConversationReadStatus(conversationId);
     });
 
     this.hubConnection.on('JoinedConversation', (conversationId: number) => {
+      console.log('=== JOINED CONVERSATION ===');
+      console.log('Conversation ID:', conversationId);
       this.joinedConversation$.next(conversationId);
     });
 
     this.hubConnection.on('LeftConversation', (conversationId: number) => {
+      console.log('=== LEFT CONVERSATION ===');
+      console.log('Conversation ID:', conversationId);
       this.leftConversation$.next(conversationId);
     });
 
-    this.hubConnection.on('ReceiveError', (error: string) => {
-      this.errorReceived$.next(error);
+    this.hubConnection.on('NewConversation', (conversation: ConversationDto) => {
+      console.log('=== NEW CONVERSATION ===');
+      console.log('Conversation:', conversation);
+      this.conversationStarted$.next(conversation);
+      this.newConversation$.next(conversation);
+      this.addConversationToState(conversation);
+    });
+
+    this.hubConnection.on('TestResponse', (message: string) => {
+      console.log('=== TEST RESPONSE ===');
+      console.log('Message:', message);
+    });
+
+    this.hubConnection.on('ConnectedUsersResponse', (message: string) => {
+      console.log('=== CONNECTED USERS RESPONSE ===');
+      console.log('Message:', message);
     });
 
     this.hubConnection.onclose((error) => {
-      console.log('SignalR connection closed:', error);
+      console.log('=== SIGNALR CONNECTION CLOSED ===');
+      console.log('Error:', error);
       this.updateConnectionStatus(false);
       if (error) {
         this.handleConnectionError();
       }
     });
 
+    this.hubConnection.onreconnecting((error) => {
+      console.log('=== SIGNALR RECONNECTING ===');
+      console.log('Error:', error);
+      this.updateConnectionStatus(false);
+    });
+
     this.hubConnection.onreconnected((connectionId) => {
-      console.log('SignalR reconnected:', connectionId);
+      console.log('=== SIGNALR RECONNECTED ===');
+      console.log('Connection ID:', connectionId);
       this.updateConnectionStatus(true);
       this.reconnectAttempts = 0;
     });
 
-    this.hubConnection.onreconnecting((error) => {
-      console.log('SignalR reconnecting:', error);
-      this.updateConnectionStatus(false);
-    });
+    console.log('SignalR handlers setup complete');
   }
 
+  // SignalR Hub Methods
   public async sendMessageViaHub(createMessageDto: CreateMessageDto): Promise<void> {
     if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
       await this.hubConnection.invoke('SendMessage', createMessageDto);
     } else {
-      throw new Error('SignalR connection not established');
+      throw new Error('SignalR connection not available');
     }
   }
 
@@ -205,7 +248,7 @@ export class ChatService {
     if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
       await this.hubConnection.invoke('StartConversation', startConversationDto);
     } else {
-      throw new Error('SignalR connection not established');
+      throw new Error('SignalR connection not available');
     }
   }
 
@@ -213,7 +256,7 @@ export class ChatService {
     if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
       await this.hubConnection.invoke('MarkMessageAsRead', messageId);
     } else {
-      throw new Error('SignalR connection not established');
+      throw new Error('SignalR connection not available');
     }
   }
 
@@ -221,7 +264,7 @@ export class ChatService {
     if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
       await this.hubConnection.invoke('MarkConversationAsRead', conversationId);
     } else {
-      throw new Error('SignalR connection not established');
+      throw new Error('SignalR connection not available');
     }
   }
 
@@ -229,7 +272,7 @@ export class ChatService {
     if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
       await this.hubConnection.invoke('JoinConversation', conversationId);
     } else {
-      throw new Error('SignalR connection not established');
+      throw new Error('SignalR connection not available');
     }
   }
 
@@ -237,80 +280,81 @@ export class ChatService {
     if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
       await this.hubConnection.invoke('LeaveConversation', conversationId);
     } else {
-      throw new Error('SignalR connection not established');
+      throw new Error('SignalR connection not available');
+    }
+  }
+
+  public async testConnection(): Promise<void> {
+    if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
+      console.log('Testing SignalR connection...');
+      await this.hubConnection.invoke('TestConnection');
+    } else {
+      throw new Error('SignalR connection not available');
+    }
+  }
+
+  public async getConnectedUsers(): Promise<void> {
+    if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
+      console.log('Getting connected users...');
+      await this.hubConnection.invoke('GetConnectedUsers');
+    } else {
+      throw new Error('SignalR connection not available');
     }
   }
 
   // REST API Methods
   public sendMessage(createMessageDto: CreateMessageDto): Observable<MessageDto> {
-    return this.http.post<MessageDto>(`${this.baseUrl}/messages/send`, createMessageDto, {
-      headers: this.getHttpHeaders()
-    });
+    return this.http.post<MessageDto>(`${this.baseUrl}/messages/send`, createMessageDto, { headers: this.getHttpHeaders() });
   }
 
   public startConversation(startConversationDto: StartConversationDto): Observable<ConversationDto> {
-    return this.http.post<ConversationDto>(`${this.baseUrl}/conversations/start`, startConversationDto, {
-      headers: this.getHttpHeaders()
-    });
+    return this.http.post<ConversationDto>(`${this.baseUrl}/conversations/start`, startConversationDto, { headers: this.getHttpHeaders() });
   }
 
   public getUserConversations(userId: string): Observable<ConversationDto[]> {
-    const url = `${this.baseUrl}/conversations/by-user/${userId}`;
-    console.log('Calling getUserConversations:', url);
-    return this.http.get<ConversationDto[]>(url, {
-      headers: this.getHttpHeaders()
-    });
+    console.log('Calling getUserConversations for userId:', userId);
+    return this.http.get<ConversationDto[]>(`${this.baseUrl}/conversations/by-user/${userId}`, { headers: this.getHttpHeaders() });
   }
 
   public getConversationById(id: number): Observable<ConversationDto> {
-    return this.http.get<ConversationDto>(`${this.baseUrl}/conversations/${id}`, {
-      headers: this.getHttpHeaders()
-    });
+    return this.http.get<ConversationDto>(`${this.baseUrl}/conversations/${id}`, { headers: this.getHttpHeaders() });
   }
 
   public getMessagesByConversationId(conversationId: number): Observable<MessageDto[]> {
-    return this.http.get<MessageDto[]>(`${this.baseUrl}/messages/conversation/${conversationId}`, {
-      headers: this.getHttpHeaders()
-    });
+    return this.http.get<MessageDto[]>(`${this.baseUrl}/messages/conversation/${conversationId}`, { headers: this.getHttpHeaders() });
   }
 
   public markMessageAsRead(messageId: number): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/messages/${messageId}/mark-as-read`, {}, {
-      headers: this.getHttpHeaders()
-    });
+    return this.http.post<void>(`${this.baseUrl}/messages/${messageId}/mark-as-read`, {}, { headers: this.getHttpHeaders() });
   }
 
   public markAllMessagesAsRead(conversationId: number): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/messages/mark-read/${conversationId}`, {}, {
-      headers: this.getHttpHeaders()
-    });
+    return this.http.put<void>(`${this.baseUrl}/messages/mark-read/${conversationId}`, {}, { headers: this.getHttpHeaders() });
+  }
+
+  // Add the missing method that the component expects
+  public markConversationAsRead(conversationId: number): Observable<void> {
+    return this.markAllMessagesAsRead(conversationId);
   }
 
   public getUnreadCount(): Observable<{ unreadCount: number }> {
-    return this.http.get<{ unreadCount: number }>(`${this.baseUrl}/messages/unread/count`, {
-      headers: this.getHttpHeaders()
-    });
+    return this.http.get<{ unreadCount: number }>(`${this.baseUrl}/messages/unread/count`, { headers: this.getHttpHeaders() });
   }
 
   public getInboxPreview(userId: string): Observable<InboxDto[]> {
-    const url = `${this.baseUrl}/conversations/inbox/${userId}`;
-    console.log('Calling getInboxPreview:', url);
-    return this.http.get<InboxDto[]>(url, {
-      headers: this.getHttpHeaders()
-    });
+    console.log('Calling getInboxPreview for userId:', userId);
+    return this.http.get<InboxDto[]>(`${this.baseUrl}/conversations/inbox/${userId}`, { headers: this.getHttpHeaders() });
   }
 
   public searchConversations(userId: string, query: string): Observable<ConversationSearchResultDto[]> {
     return this.http.get<ConversationSearchResultDto[]>(`${this.baseUrl}/conversations/search`, {
-      params: { userId, query },
-      headers: this.getHttpHeaders()
+      headers: this.getHttpHeaders(),
+      params: { userId, query }
     });
   }
 
   public deleteConversation(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/conversations/${id}`, {
-      headers: this.getHttpHeaders()
-    });
+    return this.http.delete<void>(`${this.baseUrl}/conversations/${id}`, { headers: this.getHttpHeaders() });
   }
 
   // State Management Methods
@@ -324,36 +368,46 @@ export class ChatService {
   }
 
   private addMessageToState(message: MessageDto): void {
+    console.log('=== ADDING MESSAGE TO STATE ===');
+    console.log('Message:', message);
+    console.log('Current user ID:', this.tokenStorage.getUserId());
+    console.log('Is message from current user:', message.senderId === this.tokenStorage.getUserId());
+    
     const currentState = this.chatStateSubject.value;
-    const conversations = [...currentState.conversations];
-
-    const conversationIndex = conversations.findIndex(c => c.id === message.conversationId);
+    
+    // Find the conversation
+    const conversationIndex = currentState.conversations.findIndex(c => c.id === message.conversationId);
+    
     if (conversationIndex !== -1) {
-      const conversation = { ...conversations[conversationIndex] };
-      const messageExists = conversation.messages.some(m => m.id === message.id);
-
-      if (!messageExists) {
-        conversation.messages = [...conversation.messages, message];
-        conversations[conversationIndex] = conversation;
-      }
+      // Update existing conversation
+      const updatedConversations = [...currentState.conversations];
+      updatedConversations[conversationIndex] = {
+        ...updatedConversations[conversationIndex],
+        messages: [...(updatedConversations[conversationIndex].messages || []), message]
+      };
+      
+      console.log('Updated conversation with new message');
+      this.chatStateSubject.next({
+        ...currentState,
+        conversations: updatedConversations
+      });
+      
+      // Update unread count after adding message
+      this.updateUnreadCount();
+    } else {
+      console.log('Conversation not found in state, message might be for a new conversation');
     }
-
-    this.chatStateSubject.next({
-      ...currentState,
-      conversations
-    });
   }
 
   private addConversationToState(conversation: ConversationDto): void {
     const currentState = this.chatStateSubject.value;
-    const existingIndex = currentState.conversations.findIndex(c => c.id === conversation.id);
-
-    let conversations: ConversationDto[];
+    const conversations = [...currentState.conversations];
+    
+    const existingIndex = conversations.findIndex(c => c.id === conversation.id);
     if (existingIndex !== -1) {
-      conversations = [...currentState.conversations];
       conversations[existingIndex] = conversation;
     } else {
-      conversations = [...currentState.conversations, conversation];
+      conversations.push(conversation);
     }
 
     this.chatStateSubject.next({
@@ -366,15 +420,17 @@ export class ChatService {
     const currentState = this.chatStateSubject.value;
     const conversations = currentState.conversations.map(conversation => ({
       ...conversation,
-      messages: conversation.messages.map(message => 
+      messages: conversation.messages?.map(message => 
         message.id === messageId ? { ...message, isRead } : message
-      )
+      ) || []
     }));
 
     this.chatStateSubject.next({
       ...currentState,
       conversations
     });
+
+    this.updateUnreadCount();
   }
 
   private updateConversationReadStatus(conversationId: number): void {
@@ -383,10 +439,7 @@ export class ChatService {
       if (conversation.id === conversationId) {
         return {
           ...conversation,
-          messages: conversation.messages.map(message => ({
-            ...message,
-            isRead: message.receiverId === currentState.currentUserId ? true : message.isRead
-          }))
+          messages: conversation.messages?.map(message => ({ ...message, isRead: true })) || []
         };
       }
       return conversation;
@@ -396,6 +449,8 @@ export class ChatService {
       ...currentState,
       conversations
     });
+
+    this.updateUnreadCount();
   }
 
   public setActiveConversation(conversation: ConversationDto | undefined): void {
@@ -407,21 +462,20 @@ export class ChatService {
   }
 
   public loadUserConversations(): void {
-    const currentUserId = this.chatStateSubject.value.currentUserId;
-    console.log('Loading conversations for user:', currentUserId);
-    if (!currentUserId) {
-      console.error('No current user ID available');
+    const userId = this.tokenStorage.getUserId();
+    if (!userId) {
+      console.error('No user ID available for loading conversations');
       return;
     }
 
-    this.getUserConversations(currentUserId).subscribe({
+    this.getUserConversations(userId).subscribe({
       next: (conversations) => {
-        console.log('Received conversations:', conversations);
         const currentState = this.chatStateSubject.value;
         this.chatStateSubject.next({
           ...currentState,
           conversations
         });
+        console.log('Loaded conversations:', conversations);
       },
       error: (error) => {
         console.error('Error loading conversations:', error);
@@ -431,21 +485,20 @@ export class ChatService {
   }
 
   public loadInboxPreview(): void {
-    const currentUserId = this.chatStateSubject.value.currentUserId;
-    console.log('Loading inbox for user:', currentUserId);
-    if (!currentUserId) {
-      console.error('No current user ID available');
+    const userId = this.tokenStorage.getUserId();
+    if (!userId) {
+      console.error('No user ID available for loading inbox');
       return;
     }
 
-    this.getInboxPreview(currentUserId).subscribe({
+    this.getInboxPreview(userId).subscribe({
       next: (inbox) => {
-        console.log('Received inbox:', inbox);
         const currentState = this.chatStateSubject.value;
         this.chatStateSubject.next({
           ...currentState,
           inbox
         });
+        console.log('Loaded inbox:', inbox);
       },
       error: (error) => {
         console.error('Error loading inbox:', error);
@@ -455,17 +508,16 @@ export class ChatService {
   }
 
   private updateUnreadCount(): void {
-    this.getUnreadCount().subscribe({
-      next: (result) => {
-        const currentState = this.chatStateSubject.value;
-        this.chatStateSubject.next({
-          ...currentState,
-          unreadCount: result.unreadCount
-        });
-      },
-      error: (error) => {
-        console.error('Error updating unread count:', error);
-      }
+    const currentState = this.chatStateSubject.value;
+    const unreadCount = currentState.conversations.reduce((total, conversation) => {
+      return total + (conversation.messages?.filter(m => !m.isRead && m.senderId !== currentState.currentUserId).length || 0);
+    }, 0);
+
+    console.log('ChatService: Updating unread count to:', unreadCount);
+    
+    this.chatStateSubject.next({
+      ...currentState,
+      unreadCount
     });
   }
 
@@ -484,5 +536,24 @@ export class ChatService {
 
   public getConnectionState(): signalR.HubConnectionState | null {
     return this.hubConnection?.state || null;
+  }
+
+  // Public method to manually update unread count
+  public refreshUnreadCount(): void {
+    console.log('ChatService: Manual unread count refresh triggered');
+    this.updateUnreadCount();
+  }
+
+  // Debug method to check unread count state
+  public debugUnreadCount(): void {
+    const currentState = this.chatStateSubject.value;
+    console.log('=== UNREAD COUNT DEBUG ===');
+    console.log('Current unread count in state:', currentState.unreadCount);
+    console.log('Total conversations:', currentState.conversations.length);
+    
+    currentState.conversations.forEach((conv, index) => {
+      const unreadMessages = conv.messages?.filter(m => !m.isRead && m.senderId !== currentState.currentUserId).length || 0;
+      console.log(`Conversation ${index + 1} (ID: ${conv.id}): ${unreadMessages} unread messages`);
+    });
   }
 }
