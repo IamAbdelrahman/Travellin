@@ -32,7 +32,7 @@ export class ApiConstant {
   public static booking = {
     getAllBookings: `${ApiConstant.baseUrl}/Bookings`,
     getBookingById: `${ApiConstant.baseUrl}/Bookings/{id}`,
-    createBooking: `${ApiConstant.baseUrl}/Bookings`,
+    createBooking: `${ApiConstant.baseUrl}/Bookings/Reserve`,
     cancelBooking: `${ApiConstant.baseUrl}/Bookings/{id}/cancel`,
   };
   public static country = {
