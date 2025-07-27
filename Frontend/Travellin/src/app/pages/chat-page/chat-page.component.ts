@@ -5,13 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { ChatService } from '../../services/chat.service';
-import { UsersService } from '../../services/users.service';
+import { ToastService } from '../../services/toast.service';
+import { AuthService } from '../../core/services/auth.service';
 import { 
   MessageDto, 
   CreateMessageDto, 
 } from '../../models/chat/message.model';
-import { ConversationDto, StartConversationDto , InboxDto , ConversationSearchResultDto  } from '../../models/chat/conversation.model';
-import { ChatUser } from '../../models/chat/user.model';
+import { ConversationDto, InboxDto , ConversationSearchResultDto  } from '../../models/chat/conversation.model';
 
 @Component({
   selector: 'app-chat-page',
@@ -34,25 +34,31 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
   activeConversation?: ConversationDto;
   inbox: InboxDto[] = [];
   unreadCount: number = 0;
+  isAdmin: boolean = false;
 
   // UI State
   newMessageContent: string = '';
   searchQuery: string = '';
   isLoading: boolean = false;
-  showNewChatModal: boolean = false;
-  selectedUserId: string = '';
-  users: ChatUser[] = [];
+  isSendingMessage: boolean = false;
 
   // Filters
   filteredInbox: InboxDto[] = [];
 
   constructor(
     private chatService: ChatService,
-    private usersService: UsersService,
+    private toastService: ToastService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    this.currentUserId = this.authService.getUserId() || '';
+    this.isAdmin = this.authService.isAdmin();
+    
+    // Update the chat service with the current user ID
+    this.chatService.updateCurrentUserId();
+    
     this.initializeChat();
     this.setupSubscriptions();
     this.loadInitialData();
@@ -75,8 +81,10 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.isLoading = true;
     try {
       await this.chatService.startConnection();
+      this.toastService.showSuccess('Chat connected successfully');
     } catch (error) {
       console.error('Failed to establish chat connection:', error);
+      this.toastService.showError('Failed to connect to chat. Please refresh the page.');
     } finally {
       this.isLoading = false;
     }
@@ -115,44 +123,69 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.handleNewConversation(conversation);
       });
 
+    this.chatService.messageMarkedAsRead$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(messageId => {
+        this.handleMessageMarkedAsRead(messageId);
+      });
+
+    this.chatService.conversationMarkedAsRead$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(conversationId => {
+        this.handleConversationMarkedAsRead(conversationId);
+      });
+
+    this.chatService.joinedConversation$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(conversationId => {
+        console.log(`Joined conversation: ${conversationId}`);
+      });
+
+    this.chatService.leftConversation$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(conversationId => {
+        console.log(`Left conversation: ${conversationId}`);
+      });
+
     this.chatService.errorReceived$
       .pipe(takeUntil(this.destroy$))
       .subscribe(error => {
         console.error('Chat error:', error);
-        // You can show a toast notification here
+        this.toastService.showError(error);
       });
   }
 
   private loadInitialData(): void {
-    this.chatService.loadUserConversations();
-    this.chatService.loadInboxPreview();
-    this.loadUsers();
-  }
-
-  private loadUsers(): void {
-    // Assuming you have a method to get all users
-    // You might want to modify this based on your users service
-    this.usersService.getAllUsers().subscribe({
-      next: (users) => {
-        this.users = users.filter(u => u.id !== this.currentUserId);
-      },
-      error: (error) => {
-        console.error('Error loading users:', error);
-      }
-    });
+    const userId = this.authService.getUserId();
+    if (userId) {
+      this.chatService.loadUserConversations();
+      this.chatService.loadInboxPreview();
+    } else {
+      console.error('No user ID found, cannot load conversations');
+      this.toastService.showError('Authentication error. Please log in again.');
+    }
   }
 
   // Message handling
   async sendMessage(): Promise<void> {
-    if (!this.newMessageContent.trim() || !this.activeConversation) {
+    if (!this.newMessageContent.trim() || !this.activeConversation || this.isSendingMessage) {
       return;
     }
 
-    const receiverId = this.getOtherUserId(this.activeConversation);
+    this.isSendingMessage = true;
+    const receiverId = this.activeConversation.user1Id === this.currentUserId ? 
+      this.activeConversation.user2Id : this.activeConversation.user1Id;
+    
+    // Add admin prefix if user is admin
+    let messageContent = this.newMessageContent.trim();
+    if (this.isAdmin) {
+      messageContent = `[ADMIN] ${messageContent}`;
+    }
+    
     const createMessageDto: CreateMessageDto = {
       senderId: this.currentUserId,
       receiverId: receiverId,
-      content: this.newMessageContent.trim()
+      content: messageContent
     };
 
     try {
@@ -161,7 +194,7 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.newMessageContent = '';
       this.shouldScrollToBottom = true;
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('Error sending message via SignalR:', error);
       // Fallback to REST API
       this.chatService.sendMessage(createMessageDto).subscribe({
         next: (message) => {
@@ -170,8 +203,14 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
         },
         error: (error) => {
           console.error('Error sending message via REST:', error);
+          this.toastService.showError('Failed to send message. Please try again.');
+        },
+        complete: () => {
+          this.isSendingMessage = false;
         }
       });
+    } finally {
+      this.isSendingMessage = false;
     }
   }
 
@@ -179,6 +218,9 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
   selectConversation(conversation: ConversationDto): void {
     this.chatService.setActiveConversation(conversation);
     this.shouldScrollToBottom = true;
+    
+    // Join conversation group for real-time updates
+    this.joinConversationGroup(conversation.id);
     
     // Mark messages as read
     this.markConversationAsRead(conversation.id);
@@ -197,52 +239,47 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
         },
         error: (error) => {
           console.error('Error loading conversation:', error);
+          this.toastService.showError('Failed to load conversation');
         }
       });
     }
   }
 
-  async startNewConversation(): Promise<void> {
-    if (!this.selectedUserId) return;
-
-    const startConversationDto: StartConversationDto = {
-      user1Id: this.currentUserId,
-      user2Id: this.selectedUserId
-    };
-
+  private async joinConversationGroup(conversationId: number): Promise<void> {
     try {
-      // Try SignalR first
-      await this.chatService.startConversationViaHub(startConversationDto);
-      this.closeNewChatModal();
+      await this.chatService.joinConversationViaHub(conversationId);
     } catch (error) {
-      console.error('Error starting conversation via SignalR:', error);
-      // Fallback to REST API
-      this.chatService.startConversation(startConversationDto).subscribe({
-        next: (conversation) => {
-          this.chatService.setActiveConversation(conversation);
-          this.closeNewChatModal();
-        },
-        error: (error) => {
-          console.error('Error starting conversation:', error);
-        }
-      });
+      console.error('Error joining conversation group:', error);
+    }
+  }
+
+  private async leaveConversationGroup(conversationId: number): Promise<void> {
+    try {
+      await this.chatService.leaveConversationViaHub(conversationId);
+    } catch (error) {
+      console.error('Error leaving conversation group:', error);
     }
   }
 
   private markConversationAsRead(conversationId: number): void {
-    this.chatService.markAllMessagesAsRead(conversationId).subscribe({
-      next: () => {
-        // Update local state
-        if (this.activeConversation && this.activeConversation.id === conversationId) {
-          this.activeConversation.messages = this.activeConversation.messages.map(m => ({
-            ...m,
-            isRead: m.receiverId === this.currentUserId ? true : m.isRead
-          }));
+    // Try SignalR first
+    this.chatService.markConversationAsReadViaHub(conversationId).catch(error => {
+      console.error('Error marking conversation as read via SignalR:', error);
+      // Fallback to REST API
+      this.chatService.markAllMessagesAsRead(conversationId).subscribe({
+        next: () => {
+          // Update local state
+          if (this.activeConversation && this.activeConversation.id === conversationId) {
+            this.activeConversation.messages = this.activeConversation.messages.map(m => ({
+              ...m,
+              isRead: m.receiverId === this.currentUserId ? true : m.isRead
+            }));
+          }
+        },
+        error: (error) => {
+          console.error('Error marking messages as read:', error);
         }
-      },
-      error: (error) => {
-        console.error('Error marking messages as read:', error);
-      }
+      });
     });
   }
 
@@ -271,6 +308,14 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.chatService.loadInboxPreview();
   }
 
+  private handleMessageMarkedAsRead(messageId: number): void {
+    console.log(`Message ${messageId} marked as read`);
+  }
+
+  private handleConversationMarkedAsRead(conversationId: number): void {
+    console.log(`Conversation ${conversationId} marked as read`);
+  }
+
   // Search and filter
   onSearchChange(): void {
     this.filterInbox();
@@ -287,27 +332,10 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 
-  // Modal management
-  showNewChat(): void {
-    this.showNewChatModal = true;
-    this.selectedUserId = '';
-  }
-
-  closeNewChatModal(): void {
-    this.showNewChatModal = false;
-    this.selectedUserId = '';
-  }
-
-  // Utility methods
-  getOtherUserId(conversation: ConversationDto): string {
-    return conversation.user1Id === this.currentUserId ? conversation.user2Id : conversation.user1Id;
-  }
-
   getOtherUserName(conversation: ConversationDto): string {
-    // You might want to implement user name resolution
-    const otherUserId = this.getOtherUserId(conversation);
-    const user = this.users.find(u => u.id === otherUserId);
-    return user ? (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.userName) : otherUserId;
+    const otherUserId = conversation.user1Id === this.currentUserId ? conversation.user2Id : conversation.user1Id;
+    // For now, return a formatted user ID, but this should be replaced with actual username
+    return `User ${otherUserId.substring(0, 8)}`;
   }
 
   formatMessageTime(sentAt: Date): string {
@@ -348,5 +376,51 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   get connectionStatusClass(): string {
     return this.isConnected ? 'text-success' : 'text-danger';
+  }
+
+  // Message status methods
+  isMessageFromCurrentUser(message: MessageDto): boolean {
+    return message.senderId === this.currentUserId;
+  }
+
+  isMessageUnread(message: MessageDto): boolean {
+    return !message.isRead && message.receiverId === this.currentUserId;
+  }
+
+  // Conversation status methods
+  getConversationUnreadCount(conversation: ConversationDto): number {
+    return conversation.messages.filter(m => 
+      !m.isRead && m.receiverId === this.currentUserId
+    ).length;
+  }
+
+  hasUnreadMessages(conversation: ConversationDto): boolean {
+    return conversation.messages.some(message => 
+      message.receiverId === this.currentUserId && !message.isRead
+    );
+  }
+
+  // TrackBy functions for better performance
+  trackByConversationId(index: number, item: InboxDto): number {
+    return item.conversationId;
+  }
+
+  trackByMessageId(index: number, item: MessageDto): number {
+    return item.id;
+  }
+
+  // Display name helpers
+  getParticipantInitial(participant: string): string {
+    return participant.charAt(0).toUpperCase();
+  }
+
+  getDisplayName(participant: string): string {
+    // If it's a user ID (GUID format), try to get a display name
+    if (participant.includes('-') && participant.length > 20) {
+      // This is likely a user ID, we should get the actual username
+      // For now, return a formatted version
+      return `User ${participant.substring(0, 8)}`;
+    }
+    return participant;
   }
 }

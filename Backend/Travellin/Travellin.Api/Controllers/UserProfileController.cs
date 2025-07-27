@@ -35,6 +35,18 @@ namespace Travellin.Travellin.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("chat-users")]
+        [EndpointSummary("Get users for chat purposes (For all authenticated users).")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(PaginatedResult<UserProfileDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetChatUsers([FromQuery] UserProfileQueryParamsDto dto)
+        {
+            // Allow any authenticated user to get users for chat
+            var result = await _unitOfWork.UserProfileRepository.GetFilteredProfilesAsync(dto);
+            return Ok(result);
+        }
+
         [HttpGet("me")]
         [EndpointSummary("Get my profile Info.")]
         [Produces("application/json")]

@@ -39,6 +39,10 @@ namespace Travellin.Infrastructure.Repositories
         {
             return await _dbContext.Conversations
                 .Where(c => c.User1Id == userId || c.User2Id == userId)
+                .Include(c => c.User1)
+                    .ThenInclude(u => u.UserProfile)
+                .Include(c => c.User2)
+                    .ThenInclude(u => u.UserProfile)
                 .Include(c => c.Messages.OrderByDescending(m => m.SentAt).Take(1))
                 .ToListAsync();
         }

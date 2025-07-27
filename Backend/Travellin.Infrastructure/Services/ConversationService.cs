@@ -70,10 +70,28 @@ namespace Travellin.Infrastructure.Services
                 var otherUserId = c.User1Id == userId ? c.User2Id : c.User1Id;
                 var lastMsg = c.Messages.OrderByDescending(m => m.SentAt).FirstOrDefault();
 
+                // Get the other user's information
+                var otherUser = c.User1Id == userId ? c.User2 : c.User1;
+                var participantName = otherUser?.UserName ?? $"User {otherUserId.Substring(0, 8)}";
+
+                // Try to get the user profile for better display name
+                if (otherUser?.UserProfile != null)
+                {
+                    var profile = otherUser.UserProfile;
+                    if (!string.IsNullOrEmpty(profile.FirstName) || !string.IsNullOrEmpty(profile.LastName))
+                    {
+                        var fullName = $"{profile.FirstName ?? ""} {profile.LastName ?? ""}".Trim();
+                        if (!string.IsNullOrEmpty(fullName))
+                        {
+                            participantName = fullName;
+                        }
+                    }
+                }
+
                 return new InboxDto
                 {
                     ConversationId = c.Id,
-                    Participant = otherUserId,
+                    Participant = participantName,
                     LastMessage = lastMsg?.Content,
                     SentAt = lastMsg?.SentAt ?? DateTime.MinValue,
                     IsUnread = c.Messages.Any(m => m.ReceiverId == userId && !m.IsRead)

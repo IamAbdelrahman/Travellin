@@ -12,6 +12,7 @@ import {
   LogIn,
   LogOut,
   Menu,
+  MessageCircle,
 } from 'lucide-angular';
 
 @Component({
@@ -34,6 +35,7 @@ export class HeaderComponent {
     login: LogIn,
     logout: LogOut,
     menu: Menu,
+    chat: MessageCircle,
   };
 
   constructor(

@@ -1,7 +1,7 @@
 <div
   class="toast-container position-fixed top-0 end-0 p-3"
   style="z-index: 1200">
-  @for (toast of toastService.getToasts(); track toast) {
+  @for (toast of toasts; track toast.id) {
     <div
       class="toast show align-items-center text-white rounded-3 bg-{{ toast.type }}"
       role="alert"
@@ -14,7 +14,7 @@
         <button
           type="button"
           class="btn-close btn-close-white me-2 m-auto"
-          (click)="toastService.remove(toast)"
+          (click)="removeToast(toast)"
           aria-label="Close">
           <lucide-icon [name]="icons.x" size="16"></lucide-icon>
         </button>
