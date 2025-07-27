@@ -71,23 +71,23 @@ export class RegisterPageComponent {
     if (this.signupForm.valid) {
       const formData = this.signupForm.value;
 
-      this.accountService
-        .register({
-          email: formData.email,
-          password: formData.password,
-        })
-        .subscribe({
-          next: (res: { body: IRegisterRes }) => {
-            const body = res.body;
-            if (body && body.token) {
-              this.authService.setAuthData(body.id, body.userName, body.token);
-              this.router.navigate(['/home']);
-            }
-          },
-          error: err => {
-            console.error('Registration error:', err);
-          },
-        });
+      // this.accountService
+      //   .register({
+      //     email: formData.email,
+      //     password: formData.password
+      //   })
+      //   .subscribe({
+      //     next: (res: { body: IRegisterRes }) => {
+      //       const body = res.body;
+      //       if (body && body.token) {
+      //         this.authService.setAuthData(body.id, body.userName, body.token);
+      //         this.router.navigate(['/home']);
+      //       }
+      //     },
+      //     error: err => {
+      //       console.error('Registration error:', err);
+      //     },
+      //   });
     } else {
       this.signupForm.markAllAsTouched();
     }
