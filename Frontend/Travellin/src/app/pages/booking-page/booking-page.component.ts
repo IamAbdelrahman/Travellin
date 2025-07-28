@@ -135,44 +135,6 @@ export class BookingPageComponent implements OnInit {
     });
   }
 
-  onCheckOut() {
-    this.isCheckingOut = true; // Show spinner when checkout starts
-
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      console.error('Access token is missing');
-      alert('You must be logged in to checkout.');
-      this.isCheckingOut = false;
-      return;
-    }
-    if (!this.selectedBookingId) {
-      console.error('Booking ID is missing');
-      alert('Please select a booking before proceeding to checkout.');
-      this.isCheckingOut = false;
-      return;
-    }
-
-    this.checkOutService.checkOut(this.selectedBookingId).subscribe({
-      next: response => {
-        console.log('Checkout successful', response);
-        const sessionUrl = response?.sessionUrl;
-
-        if (!sessionUrl) {
-          console.error('Session ID or URL is missing from response');
-          alert('Invalid checkout session, please try again');
-          this.isCheckingOut = false;
-          return;
-        }
-
-        window.location.href = sessionUrl;
-      },
-      error: err => {
-        console.error('Checkout failed', err);
-        alert('Failed to proceed to checkout, please try again');
-        this.isCheckingOut = false;
-      },
-    });
-  }
   get hasBookingWithPhotos(): boolean {
     return (
       this.bookings &&
@@ -271,4 +233,65 @@ export class BookingPageComponent implements OnInit {
       },
     });
   }
+
+  onCheckOut() {
+  this.isCheckingOut = true;
+
+  const booking = this.bookings[0];
+  if (!booking || !booking.property || !booking.bookingGuests?.[0]) {
+    alert('Booking data is incomplete.');
+    this.isCheckingOut = false;
+    return;
+  }
+
+  console.log('📤 Preparing to send checkout request with booking data:', booking);
+  // const requestBody = {
+  //   bookingId: booking.id,
+  //   guest: {
+  //     id: booking.bookingGuests[0].guestId,
+  //     email: booking.bookingGuests[0].guestEmail || 'test@example.com' // use actual if available
+  //   },
+  //   property: {
+  //     id: booking.property.id,
+  //     title: booking.property.title,
+  //     description: booking.property.description,
+  //     mainPhotoUrl: booking.property.photos?.[0]?.photoUrl || '',
+  //     locationName: booking.property.location?.name || ''
+  //   },
+  //   bookingPeriod: {
+  //     checkInDate: booking.checkIn,
+  //     checkOutDate: booking.checkOut,
+  //     nights: this.calculateNumberOfNights(booking.checkIn, booking.checkOut) || 1
+  //   },
+  //   pricing: {
+  //     pricePerNight: booking.property.pricePerNight,
+  //     totalFees: booking.totalFees,
+  //     totalAmount: this.calculateTotal(booking.checkIn, booking.checkOut)
+  //   },
+  //   metadata: {
+  //     additionalProp1: 'test1',
+  //     additionalProp2: 'test2',
+  //     additionalProp3: 'test3'
+  //   },
+  //   totalAmount: this.calculateTotal(booking.checkIn, booking.checkOut)
+  // };
+
+  // this.checkOutService.checkOut(requestBody).subscribe({
+  //   next: response => {
+  //     const sessionUrl = response?.sessionUrl;
+  //     if (!sessionUrl) {
+  //       alert('Stripe session URL not received.');
+  //       this.isCheckingOut = false;
+  //       return;
+  //     }
+  //     window.location.href = sessionUrl;
+  //   },
+  //   error: err => {
+  //     console.error('Checkout failed:', err);
+  //     alert('Checkout failed.');
+  //     this.isCheckingOut = false;
+  //   }
+  // });
+}
+
 }
