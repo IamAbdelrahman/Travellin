@@ -1,139 +1,242 @@
 <!-- src/app/pages/chat-page/chat-page.component.html -->
 <div class="chat-container d-flex h-100">
   <!-- Sidebar - Conversations List -->
-  <div class="chat-sidebar" [class.open]="isSidebarOpen">
-    <div class="d-flex flex-column h-100">
-      <!-- Sidebar Header -->
-      <div class="chat-sidebar-header p-3 border-bottom">
-        <div class="d-flex justify-content-between align-items-center">
-          <h5 class="mb-0">Messages</h5>
-          <div class="d-flex align-items-center">
-            <span *ngIf="isAdmin" class="badge bg-warning text-dark">Admin</span>
-            <button class="btn btn-sm btn-icon d-lg-none" (click)="toggleSidebar()">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
+  <div class="chat-sidebar border-end">
+    <div class="chat-sidebar-header p-3 border-bottom">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold text-primary">
+          <i class="fas fa-comments me-2"></i>Messages
+        </h5>
+        <div class="d-flex align-items-center gap-2">
+          <span *ngIf="isAdmin" class="badge bg-warning text-dark">
+            <i class="fas fa-shield-alt me-1"></i>Admin
+          </span>
         </div>
-        <div class="mt-3">
-            <input type="text" class="form-control form-control-sm" placeholder="Search chats..."
-                #searchInput
-                (input)="onSearchChange(searchInput.value)">
-        </div>
-        <div class="d-flex justify-content-between align-items-center mt-2">
-            <div class="d-flex align-items-center">
-                <span class="badge me-2" [class]="(chatService.conversations$ | async) ? 'bg-success' : 'bg-danger'"></span>
-                <small class="text-muted">
-                    {{ (chatService.conversations$ | async) ? 'Connected' : 'Disconnected' }}
-                </small>
-            </div>
-            <small class="text-muted" *ngIf="(inbox$ | async) as inbox; and: inbox.length > 0">
-                <i class="fas fa-bell me-1"></i>{{ unreadCount }} unread
-            </small>
+      </div>
+      
+      <!-- Search -->
+      <div class="mt-3">
+        <div class="input-group input-group-sm">
+          <span class="input-group-text bg-light border-end-0">
+            <i class="fas fa-search text-muted"></i>
+          </span>
+          <input 
+            type="text" 
+            class="form-control border-start-0 ps-0" 
+            placeholder="Search conversations..."
+            [(ngModel)]="searchQuery"
+            (input)="onSearchChange()">
         </div>
       </div>
 
-      <!-- Inbox List -->
-      <div class="chat-inbox-list flex-grow-1" *ngIf="(filteredInbox$ | async) as filteredInbox">
-        <div *ngIf="isLoading" class="text-center p-4">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
+      <!-- Connection Status -->
+      <div class="mt-3 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+          <span class="badge me-2" [class]="isConnected ? 'bg-success' : 'bg-danger'">
+            <i class="fas fa-circle me-1" style="font-size: 0.6rem;"></i>
+            {{ connectionStatusText }}
+          </span>
         </div>
-        <div *ngIf="!isLoading && filteredInbox.length === 0" class="text-center p-4 text-muted">
-          <i class="fas fa-comments fa-2x mb-2"></i>
-          <p>No conversations found.</p>
+        <small class="text-muted" *ngIf="unreadCount > 0">
+          <i class="fas fa-bell me-1"></i>{{ unreadCount }} unread
+        </small>
+      </div>
+    </div>
+
+    <!-- Conversations List -->
+    <div class="chat-conversations-list">
+      <div *ngIf="isLoading" class="text-center p-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
         </div>
-        <div class="list-group list-group-flush">
-          <a href="javascript:;"
-            *ngFor="let inboxItem of filteredInbox; trackBy: trackByConversationId"
-            class="list-group-item list-group-item-action"
-            [class.active]="(activeConversation$ | async)?.id === inboxItem.conversationId"
-            (click)="selectConversationByInbox(inboxItem)">
-            <div class="d-flex align-items-center">
-              <div class="flex-shrink-0 me-3">
-                <div class="avatar-sm rounded-circle bg-primary text-white d-flex align-items-center justify-content-center">
-                  {{ getParticipantInitial(inboxItem.participant) }}
-                </div>
-              </div>
-              <div class="flex-grow-1">
-                <div class="d-flex justify-content-between">
-                  <h6 class="mb-1">{{ getDisplayName(inboxItem.participant) }}</h6>
-                  <small class="text-muted">{{ inboxItem.lastMessageTime | date:'shortTime' }}</small>
-                </div>
-                <p class="mb-1 text-muted text-truncate" [innerHTML]="inboxItem.lastMessage"></p>
-              </div>
-              <div *ngIf="inboxItem.unreadCount && inboxItem.unreadCount > 0" class="badge bg-danger rounded-pill ms-2">{{ inboxItem.unreadCount }}</div>
+        <p class="text-muted mt-2">Loading conversations...</p>
+      </div>
+
+      <div *ngIf="!isLoading && filteredInbox.length === 0" class="text-center p-4 text-muted">
+        <div class="empty-state-icon mb-3">
+          <i class="fas fa-comments"></i>
+        </div>
+        <h6 class="mb-2">No conversations yet</h6>
+        <p class="mb-0 small">Start chatting with other users to see conversations here</p>
+      </div>
+
+      <div 
+        *ngFor="let inboxItem of filteredInbox; trackBy: trackByConversationId" 
+        class="conversation-item p-3 border-bottom cursor-pointer"
+        [class.active]="activeConversation?.id === inboxItem.conversationId"
+        [class.unread]="inboxItem.unreadCount && inboxItem.unreadCount > 0"
+        (click)="selectConversationByInbox(inboxItem)">
+        
+        <div class="d-flex align-items-start">
+          <div class="avatar me-3 position-relative">
+            <div class="bg-gradient-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" 
+                 style="width: 45px; height: 45px; font-size: 18px;">
+              {{ getParticipantInitial(inboxItem.participant) }}
             </div>
-          </a>
+            <div *ngIf="inboxItem.unreadCount && inboxItem.unreadCount > 0" class="unread-indicator"></div>
+          </div>
+          
+          <div class="flex-grow-1 min-width-0">
+            <div class="d-flex justify-content-between align-items-start">
+              <div class="flex-grow-1 min-width-0">
+                <h6 class="mb-1 text-truncate fw-semibold" [class.text-primary]="inboxItem.unreadCount && inboxItem.unreadCount > 0">
+                  {{ getDisplayName(inboxItem.participant) }}
+                </h6>
+                <p class="mb-1 text-muted small text-truncate" [class.fw-semibold]="inboxItem.unreadCount && inboxItem.unreadCount > 0">
+                  {{ inboxItem.lastMessage || 'No messages yet' }}
+                </p>
+              </div>
+              <div class="text-end ms-2">
+                <small class="text-muted d-block">{{ formatMessageTime(inboxItem.lastMessageTime) }}</small>
+                <div *ngIf="inboxItem.unreadCount && inboxItem.unreadCount > 0" class="unread-badge mt-1">
+                  <span class="badge bg-primary rounded-pill">{{ inboxItem.unreadCount }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Chat Area -->
-  <div class="chat-area">
-    <div class="d-flex flex-column h-100" *ngIf="activeConversation$ | async as activeConversation">
-      <!-- Chat Header -->
-      <div class="chat-header p-3 border-bottom bg-white">
+  <!-- Main Chat Area -->
+  <div class="chat-main flex-grow-1 d-flex flex-column">
+    <!-- Chat Header -->
+    <div class="chat-header p-3 border-bottom bg-white" *ngIf="activeConversation">
+      <div class="d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center">
-          <button class="btn btn-sm btn-icon d-lg-none me-2" (click)="toggleSidebar()">
-            <i class="fas fa-arrow-left"></i>
-          </button>
-          <div class="avatar-sm rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3">
-            {{ getOtherUserName(activeConversation).charAt(0).toUpperCase() }}
+          <div class="avatar me-3">
+            <div class="bg-gradient-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" 
+                 style="width: 50px; height: 50px; font-size: 20px;">
+              {{ getOtherUserName(activeConversation).charAt(0).toUpperCase() }}
+            </div>
           </div>
           <div>
             <h6 class="mb-0 fw-bold">{{ getOtherUserName(activeConversation) }}</h6>
-            <!-- Add status if available, e.g., 'Online' -->
+            <small class="text-muted">
+              <span class="badge bg-success badge-sm me-2">
+                <i class="fas fa-circle me-1" style="font-size: 0.6rem;"></i>
+                Online
+              </span>
+              <span class="text-muted">• Active now</span>
+              <!-- Silent refresh indicator (subtle) -->
+              <span class="text-muted ms-2" style="font-size: 0.7rem;">
+                <i class="fas fa-sync-alt" style="animation: spin 2s linear infinite; opacity: 0.5;"></i>
+              </span>
+            </small>
           </div>
         </div>
-      </div>
-      
-      <!-- Messages -->
-      <div class="chat-messages flex-grow-1 p-4" #messagesContainer>
-        <div *ngIf="!activeConversation.messages || activeConversation.messages.length === 0"
-             class="text-center text-muted mt-5">
-          <i class="fas fa-comment-dots fa-3x mb-3"></i>
-          <p>Start the conversation!</p>
-        </div>
-
-        <div *ngFor="let message of activeConversation.messages; trackBy: trackByMessageId" class="message-wrapper">
-          <!-- Debug Info -->
-          <!-- <p>Message ID: {{ message.id }}, IsFromCurrentUser: {{ isMessageFromCurrentUser(message) }}</p> -->
-          <div class="d-flex mb-3" [class.justify-content-end]="isMessageFromCurrentUser(message)">
-            <div class="message p-3 rounded"
-                 [class]="isMessageFromCurrentUser(message) ? 'bg-primary text-white' : 'bg-light'">
-              <p class="mb-0">{{ message.content }}</p>
-              <div class="message-meta text-end mt-1">
-                <small [class]="isMessageFromCurrentUser(message) ? 'text-white-50' : 'text-muted'">
-                  {{ formatMessageTime(message.sentAt) }}
-                </small>
-                <span *ngIf="isMessageFromCurrentUser(message)" class="ms-2">
-                  <small [class]="getMessageStatusClass(getMessageStatus(message.id))" *ngIf="isMessageStatusVisible(message)">
-                    <i [class]="getMessageStatusIcon(getMessageStatus(message.id))"></i>
-                  </small>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Message Input -->
-      <div class="chat-input p-3 bg-white border-top">
-        <div class="input-group">
-          <input type="text" class="form-control" placeholder="Type a message..."
-            [(ngModel)]="newMessageContent"
-            (keypress)="onKeyPress($event)">
-          <button class="btn btn-primary" (click)="sendMessage()" [disabled]="!newMessageContent.trim() || isSendingMessage">
-            <i class="fas" [class]="isSendingMessage ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
+        
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-outline-secondary btn-sm" title="More options">
+            <i class="fas fa-ellipsis-v"></i>
           </button>
         </div>
       </div>
     </div>
-    <div *ngIf="!(activeConversation$ | async)" class="chat-empty-state d-flex flex-column justify-content-center align-items-center h-100">
-      <i class="fas fa-comments fa-4x text-muted mb-3"></i>
-      <h5 class="text-muted">Select a conversation to start chatting</h5>
+
+    <!-- Empty State -->
+    <div *ngIf="!activeConversation" class="chat-empty-state d-flex flex-column align-items-center justify-content-center flex-grow-1 text-muted">
+      <div class="empty-state-icon mb-4">
+        <i class="fas fa-comments"></i>
+      </div>
+      <h5 class="fw-bold mb-2">Select a conversation</h5>
+      <p class="text-muted mb-0">Choose from your existing conversations to start chatting</p>
+    </div>
+
+    <!-- Messages Area -->
+    <div *ngIf="activeConversation" class="chat-messages flex-grow-1 d-flex flex-column">
+      <!-- Messages Container -->
+      <div #messagesContainer class="messages-container flex-grow-1 p-3" style="overflow-y: auto; max-height: calc(100vh - 200px);">
+        <div *ngFor="let message of activeConversation.messages; trackBy: trackByMessageId" class="message-wrapper mb-3">
+          <!-- Debug info (remove in production) -->
+          <div class="debug-info" style="font-size: 10px; color: #ccc; margin-bottom: 5px;">
+            Debug: Message ID: {{ message.id }}, Sender: {{ message.senderId }}, Current User: {{ currentUserId }}, IsFromCurrentUser: {{ isMessageFromCurrentUser(message) }}
+          </div>
+          
+          <div class="d-flex" [class.justify-content-end]="isMessageFromCurrentUser(message)">
+            <div class="message-bubble p-3 rounded shadow-sm position-relative" 
+                 [class]="isMessageFromCurrentUser(message) ? 'bg-primary text-white ms-5' : 'bg-white me-5 border'">
+              
+              <!-- Message Content -->
+              <div class="message-content">
+                <p class="mb-1">{{ message.content }}</p>
+                
+                <!-- Translated Content -->
+                <div *ngIf="message.translatedContent && message.translatedContent !== message.content" 
+                     class="translated-content mt-2 pt-2">
+                  <small class="text-muted">
+                    <i class="fas fa-language me-1"></i>Translated:
+                  </small>
+                  <p class="mb-0 small">{{ message.translatedContent }}</p>
+                </div>
+              </div>
+              
+              <!-- Message Meta with Read Receipts -->
+              <div class="message-meta d-flex justify-content-between align-items-center mt-2">
+                <small [class]="isMessageFromCurrentUser(message) ? 'text-white-50' : 'text-muted'">
+                  {{ formatMessageTime(message.sentAt) }}
+                </small>
+                
+                <!-- Read Receipt and Status Indicators -->
+                <div *ngIf="isMessageFromCurrentUser(message)" class="message-status d-flex align-items-center gap-1">
+                  <!-- Message Status Icon -->
+                  <small [class]="getMessageStatusClass(getMessageStatus(message.id))" 
+                         *ngIf="isMessageStatusVisible(message)">
+                    {{ getMessageStatusIcon(getMessageStatus(message.id)) }}
+                  </small>
+                  
+                  <!-- Read Receipt -->
+                  <small [class]="message.isRead ? 'text-info' : 'text-white-50'">
+                    <i class="fas" [class]="message.isRead ? 'fa-check-double' : 'fa-check'"></i>
+                  </small>
+                </div>
+                
+                <!-- Unread indicator for received messages -->
+                <div *ngIf="!isMessageFromCurrentUser(message) && !message.isRead" class="unread-indicator-small">
+                  <i class="fas fa-circle text-primary" style="font-size: 0.5rem;"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- No messages state -->
+        <div *ngIf="!activeConversation.messages || activeConversation.messages.length === 0" class="text-center text-muted py-5">
+          <div class="empty-state-icon mb-3">
+            <i class="fas fa-comment-dots"></i>
+          </div>
+          <h6 class="mb-2">No messages yet</h6>
+          <p class="mb-0 small">Start the conversation by sending a message!</p>
+        </div>
+      </div>
+
+      <!-- Message Input -->
+      <div class="chat-input p-3 border-top bg-white">
+        <div class="input-group">
+          <textarea 
+            #messageInput
+            class="form-control"
+            placeholder="Type your message..."
+            [(ngModel)]="newMessageContent"
+            (keypress)="onKeyPress($event)"
+            rows="1"
+            style="resize: none; max-height: 100px; border-radius: 20px; padding: 12px 20px;">
+          </textarea>
+          <button 
+            class="btn btn-primary rounded-circle ms-2"
+            type="button"
+            (click)="sendMessage()"
+            [disabled]="!newMessageContent.trim() || !isConnected || isSendingMessage"
+            style="width: 45px; height: 45px;">
+            <i class="fas" [class]="isSendingMessage ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
+          </button>
+        </div>
+        <small class="text-muted mt-2 d-block">
+          <i class="fas fa-info-circle me-1"></i>
+          Press Enter to send, Shift+Enter for new line
+        </small>
+      </div>
     </div>
   </div>
 </div>
