@@ -8,5 +8,7 @@ namespace Travellin.Core.Interfaces
     public interface IPropertyFeeRepository : IGenericRepository<PropertyFee, int>
     {
         public Task<PaginatedResult<PropertyFeeDto>> GetByPropertyIdAsync(string propertyId, GetAllQueryDto dto);
+        Task<List<PropertyFee>> GetAllByPropertyIdAsync(string propertyId);
+
     }
 }
