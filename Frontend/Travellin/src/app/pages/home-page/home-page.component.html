@@ -10,14 +10,15 @@
     <div class="btn-group" role="group">
       <button
         type="button"
-        class="btn btn-outline-primary"
+        class="btn searchBtn"
         (click)="setSearchMode('simple')"
-        [class.active]="searchMode === 'simple'">
+        [class.active]="searchMode === 'simple'"
+        [ngClass]="{'btn-primary': searchMode === 'simple', 'btn-secondary': searchMode !== 'simple'}">
         Simple Search
       </button>
       <button
         type="button"
-        class="btn btn-outline-primary"
+        class="btn searchBtn"
         (click)="setSearchMode('advanced')"
         [class.active]="searchMode === 'advanced'">
         Advanced Search
