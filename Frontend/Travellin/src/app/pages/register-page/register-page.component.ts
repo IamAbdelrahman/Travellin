@@ -110,7 +110,6 @@ export class RegisterPageComponent {
   onSubmit(): void {
     if (this.signupForm.valid) {
       const formData = this.signupForm.value;
-
       this.accountService
         .register({
           email: formData.email,
@@ -131,10 +130,6 @@ export class RegisterPageComponent {
             console.error('Registration error:', err);
           },
         });
-    } else {
-      this.signupForm.markAllAsTouched();
-    }
-  }
 
   minimumAgeValidator(minAge: number) {
     return (control: any) => {
