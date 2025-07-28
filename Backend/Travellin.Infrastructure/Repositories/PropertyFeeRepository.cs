@@ -39,5 +39,12 @@ namespace Travellin.Infrastructure.Repositories
                 }
             };
         }
+        public async Task<List<PropertyFee>> GetAllByPropertyIdAsync(string propertyId)
+        {
+            return await _dbContext.PropertyFees
+                .Where(fee => fee.PropertyId == propertyId)
+                .ToListAsync();
+        }
+
     }
 }

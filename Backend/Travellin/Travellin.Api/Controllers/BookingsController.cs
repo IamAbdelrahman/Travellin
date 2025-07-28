@@ -39,15 +39,9 @@ namespace Travellin.Travellin.Api.Controllers
                 return Unauthorized();
 
             var createBook = await ServiceFactory.BookingManagementService.CreateBookingAsync(userId, createBookingDto);
-            return Ok(new
-            {
-                Message = "Booking created successfully.",
-                BookingId = createBook.Id,
-                Status = createBook.Status,
-                CheckIn = createBook.CheckIn,
-                CheckOut = createBook.CheckOut,
-                createBook.TotalFees
-            });
+
+            var bookingDto = await _unitOfWork.BookingRepository.GetBookingDetailsAsync(createBook.Id);
+            return new ObjectResult(bookingDto) { StatusCode = 201 };
 
         }
         [Authorize]

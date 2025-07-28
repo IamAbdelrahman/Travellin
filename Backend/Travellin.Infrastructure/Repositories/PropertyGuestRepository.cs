@@ -48,6 +48,14 @@ namespace Travellin.Infrastructure.Repositories
                .Where(x => x.PropertyId == propertyId && x.GuestTypeId == guestTypeId)
                .FirstOrDefaultAsync();
         }
+        /////////////////////   GetAllPropertyGuests   /////////////////////
+        public async Task<List<PropertyGuest>> GetAllPropertyGuests(string propertyId)
+        {
+            return await _dbContext.PropertyGuests
+                .Include(x => x.GuestType)
+                .Where(x => x.PropertyId == propertyId)
+                .ToListAsync();
+        }
 
         public void Create(PropertyGuest entity)
         {
