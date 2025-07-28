@@ -7,6 +7,7 @@ export class ApiConstant {
     register: `${ApiConstant.baseUrl}/accounts/register`,
     login: `${ApiConstant.baseUrl}/accounts/login`,
     logout: `${ApiConstant.baseUrl}/accounts/logout`,
+    googleLogin: `${ApiConstant.baseUrl}/accounts/google-login`,
     'change-password': `${ApiConstant.baseUrl}/accounts/change-password`,
   };
 

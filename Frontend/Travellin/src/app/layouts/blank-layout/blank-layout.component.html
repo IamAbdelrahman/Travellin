@@ -1,1 +1,91 @@
-<router-outlet></router-outlet>
+<div class="container-custom">
+    <div class="container">
+        <!-- Airbnb Logo -->
+        <div class="row">
+            <div class="col-12">
+                <img src="https://i.pinimg.com/1200x/0c/12/4d/0c124d10af045dddfaa579daadd999ca.jpg"
+                    class="Travellin-logo" alt="Lost girl scene" style="width: 200px; height: 200px">
+            </div>
+
+            <div class="row align-items-center min-vh-75">
+                <!-- Left Content -->
+                <div class="col-lg-6 col-md-7">
+                    <h1 class="oops-title">Oops!</h1>
+                    <p class="subtitle">
+                        We can't seem to find the page<br>
+                        you're looking for.
+                    </p>
+
+                    <p class="error-code">Error code: 404</p>
+
+                    <p class="helpful-text">Here are some helpful links instead:</p>
+
+                    <ul class="links-list">
+                        <li><a href="#" onclick="animateLink(this)">Home</a></li>
+                        <li><a href="#" onclick="animateLink(this)">Search</a></li>
+                        <li><a href="#" onclick="animateLink(this)">Help</a></li>
+                        <li><a href="#" onclick="animateLink(this)">Traveling on Travellin</a></li>
+                        <li><a href="#" onclick="animateLink(this)">Hosting on Travellin</a></li>
+                        <li><a href="#" onclick="animateLink(this)">Trust & Safety</a></li>
+                        <li><a href="#" onclick="animateLink(this)">Sitemap</a></li>
+                    </ul>
+                </div>
+
+                <!-- Right Character -->
+                <div class="col-lg-6 col-md-5 text-center">
+                    <img class="not-found-image"
+                        src="https://i.pinimg.com/736x/b8/df/b5/b8dfb5b2d9c7067aeab73bc6051ac8e0.jpg" alt="Not found"
+                        style="width: 100%; height: auto;">
+                </div>
+                <script>
+                    function animateLink(element) {
+                        element.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            element.style.transform = 'translateX(10px)';
+                        }, 100);
+                    }
+
+                    // Add mouse interaction to character
+                    document.querySelector('.character').addEventListener('mouseenter', function () {
+                        this.style.transform = 'scale(1.1) rotate(5deg)';
+                        this.style.transition = 'transform 0.3s ease';
+                    });
+
+                    document.querySelector('.character').addEventListener('mouseleave', function () {
+                        this.style.transform = 'scale(1) rotate(0deg)';
+                    });
+
+                    // Random floating animation for spilled items
+                    function randomFloat() {
+                        const items = document.querySelectorAll('.spilled-item');
+                        items.forEach((item, index) => {
+                            const randomDelay = Math.random() * 2;
+                            const randomDuration = 2 + Math.random() * 2;
+                            item.style.animationDelay = randomDelay + 's';
+                            item.style.animationDuration = randomDuration + 's';
+                        });
+                    }
+
+                    // Initialize random animations
+                    randomFloat();
+
+                    // Add subtle parallax effect on mouse move
+                    document.addEventListener('mousemove', function (e) {
+                        const character = document.querySelector('.character-container');
+                        const mouseX = e.clientX / window.innerWidth;
+                        const mouseY = e.clientY / window.innerHeight;
+
+                        const moveX = (mouseX - 0.5) * 20;
+                        const moveY = (mouseY - 0.5) * 20;
+
+                        character.style.transform = translate(${ moveX }px, ${ moveY }px);
+                    });
+
+                    // Add click effect to the main title
+                    document.querySelector('.oops-title').addEventListener('click', function () {
+                        this.style.animation = 'none';
+                        setTimeout(() => {
+                            this.style.animation = 'bounceIn 0.8s ease-out';
+                        }, 10);
+                    });
+                </script>

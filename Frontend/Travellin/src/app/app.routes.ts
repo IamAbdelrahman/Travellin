@@ -23,6 +23,22 @@ export const routes: Routes = [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', component: HomePageComponent },
       { path: 'property/:id', component: PropertyInfoComponent },
+      {
+        path: 'auth',
+        loadComponent: () =>
+          import('./pages/auth-page/auth-page.component').then(
+            m => m.AuthPageComponent
+          ),
+        children: [
+          {
+            path: 'auth/social',
+            loadComponent: () =>
+              import('./components/social-links/social-links').then(
+                m => m.SocialLinksComponent
+              )
+          }
+        ]
+      },
     ],
   },
   {
@@ -94,13 +110,13 @@ export const routes: Routes = [
             m => m.ChatPageComponent
           ),
       },
-       {
-      path: 'hubs/chat',
-      loadComponent: () =>
-        import('./pages/chat-page/chat-page.component').then(
-          m => m.ChatPageComponent
-        ),
-    },
+      {
+        path: 'hubs/chat',
+        loadComponent: () =>
+          import('./pages/chat-page/chat-page.component').then(
+            m => m.ChatPageComponent
+          ),
+      },
       {
         path: 'admin',
         loadComponent: () =>
@@ -114,26 +130,5 @@ export const routes: Routes = [
       },
     ],
   },
-  {
-    path: '',
-    component: BlankLayoutComponent,
-    children: [
-      {
-        path: 'auth',
-        loadComponent: () =>
-          import('./pages/auth-page/auth-page.component').then(
-            m => m.AuthPageComponent
-          ),
-          children: [
-            {
-              path: 'auth/social',
-              loadComponent: () =>
-                import('./components/social-links/social-links').then(
-                  m => m.SocialLinksComponent
-                )
-            }
-          ]
-      },
-    ],
-  },
+  { path: '**', component: BlankLayoutComponent },
 ];

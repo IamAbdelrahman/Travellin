@@ -1,12 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { AccountService } from '../../services/account.service';
 @Component({
   standalone: true,
   selector: 'app-social-links',
   imports: [CommonModule],
   templateUrl: './social-links.html',
-  styleUrls: ['./social-links.css']  // خليها styleUrls بدل styleUrl
+  styleUrls: ['./social-links.css']  
 })
 export class SocialLinksComponent {
   @Input() emailOption = false;
@@ -14,10 +14,14 @@ export class SocialLinksComponent {
 
   @Output() emailOptionChange = new EventEmitter<boolean>();
   @Output() phoneOptionChange = new EventEmitter<boolean>();
-
-  continueWithGoogle() {
-    console.log('Continue with Google clicked');
-  }
+  constructor(private auth: AccountService) {}
+  signInGoogle() {
+    this.auth.continueWithGoogle().then(() => {
+      console.log('Google sign-in successful');
+    }).catch((error) => {
+      console.error('Google sign-in failed', error);
+    });
+}
 
   continueWithFacebook() {
     console.log('Continue with Facebook clicked');
