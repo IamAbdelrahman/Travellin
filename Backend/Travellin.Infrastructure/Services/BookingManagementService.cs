@@ -4,6 +4,7 @@ using Travellin.Core.Entities;
 using Travellin.Core.Interfaces;
 using Travellin.Travellin.Core.Shared;
 using Travellin.Travellin.Core.Enums;
+using System.Threading.Tasks;
 
 namespace Travellin.Infrastructure.Services
 {
@@ -26,7 +27,7 @@ namespace Travellin.Infrastructure.Services
 
 
             // Validate guest counts 
-            ValidateGuestCounts(property, dto.Guests);
+            await ValidateGuestCounts(property, dto.Guests);
 
             //Check Poroperty is available for the selected dates
             var isAvailable = await IsPropertyAvailable(property, dto.CheckIn, dto.Checkout);
@@ -35,13 +36,14 @@ namespace Travellin.Infrastructure.Services
                 throw new ConflictException("Property is not available for the selected dates");
             }
 
+
+            ////////////////////////////Calculate Total Fees////////////////////////////////////
+            var propertyFees = await _unitOfWork.PropertyFeeRepository.GetAllByPropertyIdAsync(dto.PropertyId);
+            var totalFees = propertyFees.Sum(f => f.Amount);
+
             //If yes and user reserve those nights mark as unavailable
             //Update:those nights block them as they are booked now so any coming guest cannot book them
             await UpdateAvailabilityRecordsAsync(property, dto.CheckIn, dto.Checkout);
-
-            //Calculate total fees
-            var nights = (dto.Checkout - dto.CheckIn).Days;
-            var totalFees = property.PricePerNight * nights;
 
             //Create booking
             var booking = new Booking
@@ -68,7 +70,8 @@ namespace Travellin.Infrastructure.Services
             return booking;
         }
 
-        //Cncel Booking
+
+        //Cancel Booking
         public async Task CancelBookingAsync(string bookingId, string userId, bool isAdmin)
         {
             var booking = await _unitOfWork.BookingRepository.GetByIdAsync(bookingId, x => x.Property);
@@ -101,15 +104,17 @@ namespace Travellin.Infrastructure.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        //////////////////////////////////Validate Guest Counts////////////////////////////////////
-        private void ValidateGuestCounts(Property property, List<CreateBookingGuestDto> guests)
+        //////////////////////////////////Validate Guest Count and Type////////////////////////////////////
+        private async Task ValidateGuestCounts(Property property, List<CreateBookingGuestDto> guests)
         {
+            var propertyGuests = await _unitOfWork.PropertyGuestRepository.GetAllPropertyGuests(property.Id);
+
             if (property.PropertyGuests == null || !property.PropertyGuests.Any())
                 return;
 
             foreach (var guestDto in guests)
             {
-                var propertyGuest = property.PropertyGuests
+                var propertyGuest = propertyGuests
                     .FirstOrDefault(pg => pg.GuestTypeId == guestDto.GuestTypeId);
 
                 if (propertyGuest == null)
@@ -127,19 +132,19 @@ namespace Travellin.Infrastructure.Services
         /////////////////////////////////////Check Property Availability////////////////////////////////////
         private async Task<bool> IsPropertyAvailable(Property property, DateTime checkIn, DateTime checkOut)
         {
-            var dates = await _unitOfWork.PropertyAvailabilityRepository.GetAllAsync(a => a.PropertyId == property.Id &&
+            var CheckAvailable = await _unitOfWork.PropertyAvailabilityRepository.GetAllAsync(a => a.PropertyId == property.Id &&
                                   a.IsAvailable &&
                                   a.StartDate < checkOut &&
                                   a.EndDate > checkIn);
-            
+
             // 2. If no available periods exist at all — not available
-            if (!dates.Any())
+            if (!CheckAvailable.Any())
                 return false;
 
             // 3. Check that the availability windows fully cover the desired range without gaps
             DateTime currentCoverage = checkIn;
 
-            foreach (var availability in dates)
+            foreach (var availability in CheckAvailable)
             {
                 if (availability.StartDate > currentCoverage)
                     return false; // ⛔ Gap found — property not available for full duration
