@@ -9,6 +9,7 @@ import {
   GetBookingsResponse,
 } from '../../models/api/request/iget-bookings';
 import { PropertyDetails } from '../../models/api/request/iget-propertiesDetails';
+import { ICheckoutBookingRequest } from '../../models/api/request/ICheckoutBookingRequest';
 
 @Component({
   selector: 'app-booking-page',
@@ -135,6 +136,7 @@ export class BookingPageComponent implements OnInit {
     });
   }
 
+
   get hasBookingWithPhotos(): boolean {
     return (
       this.bookings &&
@@ -234,64 +236,66 @@ export class BookingPageComponent implements OnInit {
     });
   }
 
-  onCheckOut() {
+onCheckOut(): void {
   this.isCheckingOut = true;
 
-  const booking = this.bookings[0];
-  if (!booking || !booking.property || !booking.bookingGuests?.[0]) {
+  const booking = this.bookings[0]; // Assume you have a bookings array
+  if (!booking || !booking.property) {
     alert('Booking data is incomplete.');
     this.isCheckingOut = false;
     return;
   }
 
-  console.log('📤 Preparing to send checkout request with booking data:', booking);
-  // const requestBody = {
-  //   bookingId: booking.id,
-  //   guest: {
-  //     id: booking.bookingGuests[0].guestId,
-  //     email: booking.bookingGuests[0].guestEmail || 'test@example.com' // use actual if available
-  //   },
-  //   property: {
-  //     id: booking.property.id,
-  //     title: booking.property.title,
-  //     description: booking.property.description,
-  //     mainPhotoUrl: booking.property.photos?.[0]?.photoUrl || '',
-  //     locationName: booking.property.location?.name || ''
-  //   },
-  //   bookingPeriod: {
-  //     checkInDate: booking.checkIn,
-  //     checkOutDate: booking.checkOut,
-  //     nights: this.calculateNumberOfNights(booking.checkIn, booking.checkOut) || 1
-  //   },
-  //   pricing: {
-  //     pricePerNight: booking.property.pricePerNight,
-  //     totalFees: booking.totalFees,
-  //     totalAmount: this.calculateTotal(booking.checkIn, booking.checkOut)
-  //   },
-  //   metadata: {
-  //     additionalProp1: 'test1',
-  //     additionalProp2: 'test2',
-  //     additionalProp3: 'test3'
-  //   },
-  //   totalAmount: this.calculateTotal(booking.checkIn, booking.checkOut)
-  // };
+  const email = localStorage.getItem('email') || 'guest@example.com';
+  const userId = localStorage.getItem('userId') || 'default-id';
 
-  // this.checkOutService.checkOut(requestBody).subscribe({
-  //   next: response => {
-  //     const sessionUrl = response?.sessionUrl;
-  //     if (!sessionUrl) {
-  //       alert('Stripe session URL not received.');
-  //       this.isCheckingOut = false;
-  //       return;
-  //     }
-  //     window.location.href = sessionUrl;
-  //   },
-  //   error: err => {
-  //     console.error('Checkout failed:', err);
-  //     alert('Checkout failed.');
-  //     this.isCheckingOut = false;
-  //   }
-  // });
+  const requestBody: ICheckoutBookingRequest = {
+    bookingId: booking.id,
+    guest: {
+      id: userId,
+      email: email,
+    },
+    property: {
+      id: booking.property.id,
+      title: booking.property.title,
+      description:  '',
+      mainPhotoUrl: booking.property.photos?.[0]?.photoUrl || '',
+      locationName: booking.property.location?.name || '',
+    },
+    bookingPeriod: {
+      checkInDate: booking.checkIn,
+      checkOutDate: booking.checkOut,
+      nights: this.calculateNumberOfNights(booking.checkIn, booking.checkOut) || 1,
+    },
+    pricing: {
+      pricePerNight: booking.property.pricePerNight,
+      totalFees: booking.totalFees,
+      totalAmount: this.calculateTotal(booking.checkIn, booking.checkOut)??0,
+    },
+    metadata: {
+      additionalProp1: 'test1',
+      additionalProp2: 'test2',
+      additionalProp3: 'test3',
+    },
+    totalAmount: this.calculateTotal(booking.checkIn, booking.checkOut)??0,
+  };
+
+  this.checkOutService.checkOut(requestBody).subscribe({
+    next: (res) => {
+      if (res?.sessionUrl) {
+        window.location.href = res.sessionUrl;
+      } else {
+        alert('Stripe session URL not received.');
+        this.isCheckingOut = false;
+      }
+    },
+    error: (err) => {
+      console.error('Checkout failed:', err);
+      alert('Checkout failed.');
+      this.isCheckingOut = false;
+    }
+  });
 }
+
 
 }
