@@ -164,23 +164,20 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
   constructor(private notificationService: NotificationService) {}
 
   ngOnInit(): void {
-    // Subscribe to new notifications
     this.subscription.add(
-      this.notificationService.notifications$.subscribe(notification => {
-        this.updateNotifications();
+      this.notificationService.notifications$.subscribe(notifications => {
+        this.notifications = notifications;
       })
     );
-
-    this.updateNotifications();
+    this.subscription.add(
+      this.notificationService.unreadCount$.subscribe(count => {
+        this.unreadCount = count;
+      })
+    );
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-  }
-
-  private updateNotifications(): void {
-    this.notifications = this.notificationService.getNotifications();
-    this.unreadCount = this.notificationService.getUnreadCount();
   }
 
   toggleDropdown(): void {
@@ -188,31 +185,22 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
   }
 
   handleNotificationClick(notification: NotificationData): void {
-    // Mark as read
     this.notificationService.markAsRead(notification.id);
-    this.updateNotifications();
-
-    // Execute action if available
     if (notification.action) {
       notification.action();
     }
-
-    // Close dropdown
     this.showDropdown = false;
   }
 
   markAllAsRead(): void {
     this.notificationService.markAllAsRead();
-    this.updateNotifications();
   }
 
   clearAll(): void {
     this.notificationService.clearNotifications();
-    this.updateNotifications();
   }
 
   viewAllNotifications(): void {
-    // Navigate to notifications page or show full list
     console.log('Navigate to notifications page');
     this.showDropdown = false;
   }
