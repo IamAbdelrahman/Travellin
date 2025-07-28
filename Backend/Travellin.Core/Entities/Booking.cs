@@ -20,7 +20,7 @@ namespace Travellin.Core.Entities
         public virtual Review? Review { get; set; }
         public virtual ICollection<Payment> Payments { get; set; } = new HashSet<Payment>();
 
-        // Computed property
+        // Computed for each property TotalAmount
         public decimal TotalAmount =>
             (decimal)(CheckOut - CheckIn).TotalDays * PricePerNight + TotalFees;
     }
