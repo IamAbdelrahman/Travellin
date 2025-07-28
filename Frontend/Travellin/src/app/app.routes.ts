@@ -14,6 +14,7 @@ import { UsersAdminComponent } from './components/users-admin/users-admin.compon
 import { PropertyAdminComponent } from './components/property-admin/property-admin.component';
 import { FavoritesPageComponent } from './pages/favorites-page/favorites-page.component';
 import { ToastContainerComponent } from './components/toast-container/toast-container.component';
+import { SocialLinksComponent } from './components/social-links/social-links';
 export const routes: Routes = [
   {
     path: '',
@@ -123,6 +124,15 @@ export const routes: Routes = [
           import('./pages/auth-page/auth-page.component').then(
             m => m.AuthPageComponent
           ),
+          children: [
+            {
+              path: 'auth/social',
+              loadComponent: () =>
+                import('./components/social-links/social-links').then(
+                  m => m.SocialLinksComponent
+                )
+            }
+          ]
       },
     ],
   },

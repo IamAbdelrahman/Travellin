@@ -148,6 +148,13 @@ $carousel-control-margin: 6px;
   background-color: var(--bs-light);
 }
 
+.searchBtn:hover {
+  background-color: #d50027;
+  color: var(--bs-light);
+}
+.searchBtn:active {
+  color: #ff385c;
+}
 // Favorite Heart
 .favorite-btn {
   z-index: 2;
@@ -160,7 +167,7 @@ $carousel-control-margin: 6px;
 
   &.active {
     ::ng-deep svg {
-      fill: var(--bs-primary);
+      fill: #d50027;
     }
   }
 
