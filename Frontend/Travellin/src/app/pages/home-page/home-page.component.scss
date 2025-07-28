@@ -12,7 +12,6 @@ $breakpoint-sm: 576px;
 .search-bars-container {
   top: 10vh;
   background: linear-gradient(180deg, #f8f8f8 0%, #fff 100%);
-  z-index: 1030; // Stay above content
 }
 
 
@@ -26,7 +25,6 @@ $breakpoint-sm: 576px;
   max-width: 800px;
   padding: 0.5rem 1rem !important;
   border-radius: 2rem;
-  z-index: 1050; // Stay above header
 }
 .search-bars-container.minimized input {
   background-color: rgba(255, 255, 255, 0.9);
