@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import {
   FormBuilder,
@@ -14,6 +14,7 @@ import { IRegisterRes } from '../../models/api/response/iregister-res';
 import { AuthService } from '../../core/services/auth.service';
 import { Eye, EyeOff, LucideAngularModule } from 'lucide-angular';
 import { ILoginRes } from '../../models/api/response/ilogin-res';
+import { SocialLinksComponent } from '../../components/social-links/social-links';
 
 @Component({
   standalone: true,
@@ -22,8 +23,8 @@ import { ILoginRes } from '../../models/api/response/ilogin-res';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule,
     LucideAngularModule,
+    SocialLinksComponent
   ],
   templateUrl: './auth-page.component.html',
   styleUrl: './auth-page.component.scss',
@@ -32,17 +33,19 @@ export class AuthPageComponent {
   signupForm: FormGroup;
   phoneForm: FormGroup;
   loginForm: FormGroup;
-  isLoggingIn = false;
-  errorMessage: string = '';
   isLoginMode = true;
   showPassword = false;
   isModalOpen = true;
-  isEmailOption = false;
-  isPhoneOption = true;
+  emailOption = false;
+  phoneOption = true;
+  isLoggingIn = false;
+  errorMessage: string = '';
+
   icons = {
     eye: Eye,
     eyeOff: EyeOff,
   };
+
   countries = [
     { name: 'Egypt', code: '+20' },
     { name: 'United States', code: '+1' },
@@ -74,6 +77,7 @@ export class AuthPageComponent {
     { name: 'Algeria', code: '+213' },
     { name: 'Tunisia', code: '+216' },
   ];
+
   constructor(
     private fb: FormBuilder,
     private accountService: AccountService,
@@ -81,15 +85,16 @@ export class AuthPageComponent {
     private router: Router
   ) {
     this.signupForm = this.fb.group({
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      birthDate: ['', [Validators.required, this.minimumAgeValidator(18)]],
       email: ['', [Validators.required, Validators.email]],
       password: [
         '',
         [
           Validators.required,
           Validators.minLength(12),
-          Validators.pattern(
-            /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{12,}$/
-          ),
+          Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+]).{12,}$/),
         ],
       ],
     });
@@ -106,33 +111,22 @@ export class AuthPageComponent {
         [
           Validators.required,
           Validators.minLength(12),
-          Validators.pattern(
-            /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{12,}$/
-          ),
+          Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+]).{12,}$/),
         ],
       ],
     });
   }
 
-  get signupFormControls() {
-    return this.signupForm.controls;
-  }
-  get loginFormControls() {
-    return this.loginForm.controls;
-  }
-  get phoneControls() {
-    return this.phoneForm.controls;
-  }
-  get passwordFieldType(): string {
-    return this.showPassword ? 'text' : 'password';
-  }
+  get signupFormControls() { return this.signupForm.controls; }
+  get loginFormControls() { return this.loginForm.controls; }
+  get phoneControls() { return this.phoneForm.controls; }
+  get passwordFieldType(): string { return this.showPassword ? 'text' : 'password'; }
 
-  togglePasswordVisibility() {
-    this.showPassword = !this.showPassword;
-  }
-
-  switchMode() {
-    this.isLoginMode = !this.isLoginMode;
+  togglePasswordVisibility() { this.showPassword = !this.showPassword; }
+  switchMode() { this.isLoginMode = !this.isLoginMode; }
+  closeModal() { this.isModalOpen = false; this.router.navigate(['/home']); }
+    openPrivacyPolicy() {
+    console.log('Open privacy policy');
   }
 
   onSignup(): void {
@@ -154,9 +148,7 @@ export class AuthPageComponent {
               this.router.navigate(['/home']);
             }
           },
-          error: err => {
-            console.error('Registration error:', err);
-          },
+          error: err => { console.error('Registration error:', err); },
         });
     }
   }
@@ -167,38 +159,32 @@ export class AuthPageComponent {
       this.errorMessage = '';
       this.isLoggingIn = true;
       this.accountService
-      .login({ email, password })
-      .subscribe({
-        next: (response: HttpResponse<ILoginRes>) => {
-          const body = response.body;
-          if (response.status === 200 && body && body.token) {
-            this.authService.setAuthData(body.id, body.userName, body.token);
-            this.router.navigate(['/home']);
-          } else {
-            this.handleLoginError('Invalid credentials');
-          }
-        },
-        error: (error: HttpErrorResponse) => {
-          if (error.status === 401 || error.status === 403) {
-            this.handleLoginError('Invalid email or password');
-          } else if (error.status === 0) {
-            this.handleLoginError(
-              'Network error - please check your connection'
-            );
-          } else if (error.status >= 500) {
-            this.handleLoginError('Server error - please try again later');
-          } else if (error.status === 429) {
-            this.handleLoginError(
-              'Too many Requests Try Again after 30 minutes.'
-            );
-          } else {
-            this.handleLoginError('Login failed - please try again');
-          }
-        },
-        complete: () => {
-          this.isLoggingIn = false;
-        },
-      });
+        .login({ email, password })
+        .subscribe({
+          next: (response: HttpResponse<ILoginRes>) => {
+            const body = response.body;
+            if (response.status === 200 && body && body.token) {
+              this.authService.setAuthData(body.id, body.userName, body.token);
+              this.router.navigate(['/home']);
+            } else {
+              this.handleLoginError('Invalid credentials');
+            }
+          },
+          error: (error: HttpErrorResponse) => {
+            if (error.status === 401 || error.status === 403) {
+              this.handleLoginError('Invalid email or password');
+            } else if (error.status === 0) {
+              this.handleLoginError('Network error - please check your connection');
+            } else if (error.status >= 500) {
+              this.handleLoginError('Server error - please try again later');
+            } else if (error.status === 429) {
+              this.handleLoginError('Too many Requests Try Again after 30 minutes.');
+            } else {
+              this.handleLoginError('Login failed - please try again');
+            }
+          },
+          complete: () => { this.isLoggingIn = false; },
+        });
     } else {
       this.errorMessage = 'Please enter valid email and password.';
     }
@@ -214,49 +200,22 @@ export class AuthPageComponent {
     return (control: any) => {
       const birthDate = new Date(control.value);
       const today = new Date();
-
-      if (isNaN(birthDate.getTime())) {
-        return null; // Ignore if not a valid date yet
-      }
-
+      if (isNaN(birthDate.getTime())) return null;
       const age = today.getFullYear() - birthDate.getFullYear();
       const monthDiff = today.getMonth() - birthDate.getMonth();
       const dayDiff = today.getDate() - birthDate.getDate();
-
-      const isOldEnough =
-        age > minAge ||
-        (age === minAge &&
-          (monthDiff > 0 || (monthDiff === 0 && dayDiff >= 0)));
-
+      const isOldEnough = age > minAge || (age === minAge && (monthDiff > 0 || (monthDiff === 0 && dayDiff >= 0)));
       return isOldEnough ? null : { tooYoung: true };
     };
   }
 
-  continueWithGoogle() {
-    console.log('Continue with Google');
-    // TODO: Call Firebase Google auth
+  // Events from SocialLinks
+  onEmailOptionChange(value: boolean) {
+    this.emailOption = value;
+    this.phoneOption = !value;
   }
-
-  continueWithEmail() {
-    console.log('Continue with Email');
-    this.isEmailOption = true;
-    this.isPhoneOption = false;
-  }
-  continueWithPhoneNumber() {
-    console.log('Continue with Phone Number');
-    this.isPhoneOption = true;
-    this.isEmailOption = false;
-  }
-  continueWithFacebook() {
-    console.log('Continue with Facebook');
-    // TODO: Call Firebase Facebook auth
-  }
-
-  openPrivacyPolicy() {
-    console.log('Open privacy policy');
-  }
-  closeModal() {
-    this.isModalOpen = false;
-    this.router.navigate(['/home']);
+  onPhoneOptionChange(value: boolean) {
+    this.phoneOption = value;
+    this.emailOption = !value;
   }
 }
