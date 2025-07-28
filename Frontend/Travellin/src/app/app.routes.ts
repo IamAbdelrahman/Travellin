@@ -118,17 +118,10 @@ export const routes: Routes = [
     component: BlankLayoutComponent,
     children: [
       {
-        path: 'register',
+        path: 'auth',
         loadComponent: () =>
-          import('./pages/register-page/register-page.component').then(
-            m => m.RegisterPageComponent
-          ),
-      },
-      {
-        path: 'login',
-        loadComponent: () =>
-          import('./pages/login-page/login-page.component').then(
-            m => m.LoginPageComponent
+          import('./pages/auth-page/auth-page.component').then(
+            m => m.AuthPageComponent
           ),
       },
     ],

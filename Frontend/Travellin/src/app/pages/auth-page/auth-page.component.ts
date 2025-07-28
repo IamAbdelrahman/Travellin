@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import {
   FormBuilder,
   FormGroup,
@@ -12,6 +13,7 @@ import { AccountService } from '../../services/account.service';
 import { IRegisterRes } from '../../models/api/response/iregister-res';
 import { AuthService } from '../../core/services/auth.service';
 import { Eye, EyeOff, LucideAngularModule } from 'lucide-angular';
+import { ILoginRes } from '../../models/api/response/ilogin-res';
 
 @Component({
   standalone: true,
@@ -23,12 +25,16 @@ import { Eye, EyeOff, LucideAngularModule } from 'lucide-angular';
     RouterModule,
     LucideAngularModule,
   ],
-  templateUrl: './register-page.component.html',
-  styleUrl: './register-page.component.scss',
+  templateUrl: './auth-page.component.html',
+  styleUrl: './auth-page.component.scss',
 })
-export class RegisterPageComponent {
+export class AuthPageComponent {
   signupForm: FormGroup;
   phoneForm: FormGroup;
+  loginForm: FormGroup;
+  isLoggingIn = false;
+  errorMessage: string = '';
+  isLoginMode = true;
   showPassword = false;
   isModalOpen = true;
   isEmailOption = false;
@@ -87,14 +93,32 @@ export class RegisterPageComponent {
         ],
       ],
     });
+
     this.phoneForm = this.fb.group({
       countryCode: ['+20', Validators.required],
       phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]{6,15}$')]]
     });
+
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(12),
+          Validators.pattern(
+            /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{12,}$/
+          ),
+        ],
+      ],
+    });
   }
 
-  get formControls() {
+  get signupFormControls() {
     return this.signupForm.controls;
+  }
+  get loginFormControls() {
+    return this.loginForm.controls;
   }
   get phoneControls() {
     return this.phoneForm.controls;
@@ -107,7 +131,11 @@ export class RegisterPageComponent {
     this.showPassword = !this.showPassword;
   }
 
-  onSubmit(): void {
+  switchMode() {
+    this.isLoginMode = !this.isLoginMode;
+  }
+
+  onSignup(): void {
     if (this.signupForm.valid) {
       const formData = this.signupForm.value;
       this.accountService
@@ -130,8 +158,58 @@ export class RegisterPageComponent {
             console.error('Registration error:', err);
           },
         });
-      }   
     }
+  }
+
+  onLogin(): void {
+    if (this.loginForm.valid) {
+      const { email, password } = this.loginForm.value;
+      this.errorMessage = '';
+      this.isLoggingIn = true;
+      this.accountService
+      .login({ email, password })
+      .subscribe({
+        next: (response: HttpResponse<ILoginRes>) => {
+          const body = response.body;
+          if (response.status === 200 && body && body.token) {
+            this.authService.setAuthData(body.id, body.userName, body.token);
+            this.router.navigate(['/home']);
+          } else {
+            this.handleLoginError('Invalid credentials');
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          if (error.status === 401 || error.status === 403) {
+            this.handleLoginError('Invalid email or password');
+          } else if (error.status === 0) {
+            this.handleLoginError(
+              'Network error - please check your connection'
+            );
+          } else if (error.status >= 500) {
+            this.handleLoginError('Server error - please try again later');
+          } else if (error.status === 429) {
+            this.handleLoginError(
+              'Too many Requests Try Again after 30 minutes.'
+            );
+          } else {
+            this.handleLoginError('Login failed - please try again');
+          }
+        },
+        complete: () => {
+          this.isLoggingIn = false;
+        },
+      });
+    } else {
+      this.errorMessage = 'Please enter valid email and password.';
+    }
+  }
+
+  private handleLoginError(message: string): void {
+    this.errorMessage = message;
+    this.loginForm.get('password')?.reset();
+    this.isLoggingIn = false;
+  }
+
   minimumAgeValidator(minAge: number) {
     return (control: any) => {
       const birthDate = new Date(control.value);
@@ -153,8 +231,8 @@ export class RegisterPageComponent {
       return isOldEnough ? null : { tooYoung: true };
     };
   }
-  
-    continueWithGoogle() {
+
+  continueWithGoogle() {
     console.log('Continue with Google');
     // TODO: Call Firebase Google auth
   }
