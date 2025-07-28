@@ -130,7 +130,8 @@ export class RegisterPageComponent {
             console.error('Registration error:', err);
           },
         });
-
+      }   
+    }
   minimumAgeValidator(minAge: number) {
     return (control: any) => {
       const birthDate = new Date(control.value);
@@ -152,6 +153,7 @@ export class RegisterPageComponent {
       return isOldEnough ? null : { tooYoung: true };
     };
   }
+  
     continueWithGoogle() {
     console.log('Continue with Google');
     // TODO: Call Firebase Google auth
