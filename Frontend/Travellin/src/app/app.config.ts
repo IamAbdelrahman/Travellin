@@ -10,6 +10,9 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from './core/interceptors/auth.interceptor';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { environment } from '../environments/environment';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
@@ -20,8 +23,12 @@ export const appConfig: ApplicationConfig = {
     },
     provideRouter(routes),
     AuthGuard,
-    // RoleGuard,
+    RoleGuard,
     provideBrowserGlobalErrorListeners(),
-    TokenStorageService
+    TokenStorageService,
+    provideRouter(routes),
+    provideHttpClient(withInterceptorsFromDi()),
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideAuth(() => getAuth()),
   ]
 };
