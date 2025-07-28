@@ -1,42 +1,62 @@
-.nav-sticky {
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  z-index: 1000;
 }
 
-// Add styling for unread count badge
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-brand img {
+  max-height: 50px;
+  width: auto;
+  transition: transform 0.2s ease;
+}
+
+.navbar-brand img:hover {
+  transform: scale(1.05);
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem; // adjust spacing between links
+}
+
 .nav-link {
-  position: relative;
-  
-  .badge {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    font-size: 0.6rem;
-    font-weight: 600;
-    padding: 0.25rem 0.5rem;
-    border-radius: 10px;
-    background: linear-gradient(45deg, #ff5722, #ff9800) !important;
-    box-shadow: 0 2px 4px rgba(255, 87, 34, 0.3);
-    animation: pulseBadge 2s infinite;
-    z-index: 10;
-  }
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #484848;
+  transition: color 0.2s ease;
+  padding: 0.3rem 0.5rem;
 }
 
-@keyframes pulseBadge {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-    box-shadow: 0 2px 4px rgba(255, 87, 34, 0.3);
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.1);
-    box-shadow: 0 4px 8px rgba(255, 87, 34, 0.4);
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    box-shadow: 0 2px 4px rgba(255, 87, 34, 0.3);
-  }
+.nav-link .my-icon {
+  margin-right: 0.35rem;
+  font-size: 1rem;
+  color: #484848;
 }
 
+.nav-link:hover,
+.nav-link.active {
+  color: #ff385c;
+}
+
+.nav-link:hover .my-icon,
+.nav-link.active .my-icon {
+  color: #ff385c;
+}
 // Ensure the chat nav link has proper positioning
 .nav-link[routerLink="/chat"] {
   position: relative;
 }
+
