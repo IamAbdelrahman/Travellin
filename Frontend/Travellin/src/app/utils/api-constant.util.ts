@@ -31,7 +31,7 @@ export class ApiConstant {
     add: `${ApiConstant.baseUrl}/FavoriteProperties`,
   };
   public static booking = {
-    getAllBookings: `${ApiConstant.baseUrl}/Bookings`,
+    getAllBookings: `${ApiConstant.baseUrl}/Bookings/AllBookings`,
     getBookingById: `${ApiConstant.baseUrl}/Bookings/{id}`,
     createBooking: `${ApiConstant.baseUrl}/Bookings/Reserve`,
     cancelBooking: `${ApiConstant.baseUrl}/Bookings/{id}/cancel`,
@@ -46,9 +46,9 @@ export class ApiConstant {
     getAllLocations: `${ApiConstant.baseUrl}/Locations`,
   };
 
-  public static Booking = {
-    createBooking: `${ApiConstant.baseUrl}/Bookings`,
-    checkout: `${ApiConstant.baseUrl}/Bookings/{bookingId}/checkout`,
+  public static payment = {
+    createCheckoutSession: `${ApiConstant.baseUrl}/Payments/create-checkout-session`,
+    webhook: `${ApiConstant.baseUrl}/Payments/stripe/webhook`,
   };
 
   public static upgrade = {
