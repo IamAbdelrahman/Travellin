@@ -133,8 +133,6 @@ export class UpgradeTohostComponent {
     // Append files with exact field names expected by backend
     formData.append('FrontPhoto', this.uploadedFiles.front!);
     formData.append('BackPhoto', this.uploadedFiles.back!);
-    console.log('Front File:', this.uploadedFiles.front);
-    console.log('Back File:', this.uploadedFiles.back);
 
     return formData;
   }

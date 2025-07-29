@@ -37,31 +37,13 @@ public class ConversationsController : ControllerBase
     public async Task<IActionResult> StartConversation([FromBody] StartConversationDto dto)
     {
         var currentUserId = GetCurrentUserId();
+        if (currentUserId == null)
+            return Unauthorized();
 
-        if (dto.User1Id != currentUserId && dto.User2Id != currentUserId)
-            return Forbid();
+        var conversation = await _conversationService.CreateOrGetConversationWithPropertyAsync(
+            dto.User1Id, dto.User2Id, dto.PropertyId);
 
-        var conversation = await _conversationService.CreateOrGetConversationWithPropertyAsync(dto.User1Id, dto.User2Id, dto.PropertyId);
-
-        var result = new ConversationDto
-        {
-            Id = conversation.Id,
-            User1Id = conversation.User1Id,
-            User2Id = conversation.User2Id,
-            PropertyId = conversation.PropertyId,
-            PropertyTitle = conversation.Property?.Title,
-            Messages = conversation.Messages.Select(m => new MessageDto
-            {
-                Id = m.Id,
-                Content = m.Content,
-                SenderId = m.SenderId,
-                ReceiverId = m.ReceiverId,
-                IsRead = m.IsRead,
-                SentAt = m.SentAt,
-                TranslatedContent = m.TranslatedContent
-            }).ToList()
-        };
-
+        var result = await _unitOfWork.ConversationRepository.GetByIdWithMessagesAsync(conversation.Id);
         return Ok(result);
     }
 
@@ -87,6 +69,8 @@ public class ConversationsController : ControllerBase
             Id = c.Id,
             User1Id = c.User1Id,
             User2Id = c.User2Id,
+            User1Name = c.User1?.UserName ?? $"User {c.User1Id.Substring(0, 8)}",
+            User2Name = c.User2?.UserName ?? $"User {c.User2Id.Substring(0, 8)}",
             PropertyId = c.PropertyId,
             PropertyTitle = c.Property?.Title,
             Messages = c.Messages.Select(m => new MessageDto
@@ -123,6 +107,8 @@ public class ConversationsController : ControllerBase
             Id = conversation.Id,
             User1Id = conversation.User1Id,
             User2Id = conversation.User2Id,
+            User1Name = conversation.User1?.UserName ?? $"User {conversation.User1Id.Substring(0, 8)}",
+            User2Name = conversation.User2?.UserName ?? $"User {conversation.User2Id.Substring(0, 8)}",
             PropertyId = conversation.PropertyId,
             PropertyTitle = conversation.Property?.Title,
             Messages = conversation.Messages.Select(m => new MessageDto
@@ -194,6 +180,8 @@ public class ConversationsController : ControllerBase
             Id = c.Id,
             User1Id = c.User1Id,
             User2Id = c.User2Id,
+            User1Name = c.User1?.UserName ?? $"User {c.User1Id.Substring(0, 8)}",
+            User2Name = c.User2?.UserName ?? $"User {c.User2Id.Substring(0, 8)}",
             PropertyId = c.PropertyId,
             PropertyTitle = c.Property?.Title,
             Messages = c.Messages.Select(m => new MessageDto
@@ -223,12 +211,14 @@ public class ConversationsController : ControllerBase
         if (conversation == null)
             return NotFound();
 
-        // Create message as admin
+        var currentUserId = GetCurrentUserId();
+
+        // Create message as admin using the actual admin user ID
         var message = new Message
         {
             Content = dto.Content,
-            SenderId = "admin", // Admin sender ID
-            ReceiverId = conversation.User1Id == "admin" ? conversation.User2Id : conversation.User1Id,
+            SenderId = currentUserId, // Use actual admin user ID
+            ReceiverId = dto.ReceiverId, // Use the receiver ID from the DTO
             ConversationId = dto.ConversationId,
             IsRead = false,
             SentAt = DateTime.UtcNow

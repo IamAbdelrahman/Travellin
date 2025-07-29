@@ -26,6 +26,8 @@ namespace Travellin.Infrastructure.Repositories
         {
             return await _dbContext.Conversations
                 .Where(c => c.User1Id == userId || c.User2Id == userId)
+                .Include(c => c.User1)
+                .Include(c => c.User2)
                 .Include(c => c.Messages)
                 .Include(c => c.Property)
                 .ToListAsync();
@@ -33,6 +35,8 @@ namespace Travellin.Infrastructure.Repositories
         public async Task<Conversation?> GetByIdWithMessagesAsync(int id)
         {
             return await _dbContext.Conversations
+                .Include(c => c.User1)
+                .Include(c => c.User2)
                 .Include(c => c.Messages)
                 .Include(c => c.Property)
                 .FirstOrDefaultAsync(c => c.Id == id);

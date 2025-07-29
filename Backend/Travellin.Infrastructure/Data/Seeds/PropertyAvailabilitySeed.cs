@@ -34,6 +34,11 @@ namespace Travellin.Infrastructure.Data.Seeds
             new PropertyAvailability { Id = 11, StartDate = new DateTime(2025, 5, 10), EndDate = new DateTime(2025, 5, 14), PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3" },
             new PropertyAvailability { Id = 19, StartDate = new DateTime(2025, 6, 5), EndDate = new DateTime(2025, 6, 12), PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3" },
             new PropertyAvailability { Id = 20, StartDate = new DateTime(2025, 7, 20), EndDate = new DateTime(2025, 7, 27), PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3" },
+            new PropertyAvailability { Id = 21, StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 15), PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3" },
+            new PropertyAvailability { Id = 22, StartDate = new DateTime(2025, 9, 1), EndDate = new DateTime(2025, 9, 10), PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3" },
+            new PropertyAvailability { Id = 23, StartDate = new DateTime(2025, 10, 5), EndDate = new DateTime(2025, 10, 20), PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3" },
+            new PropertyAvailability { Id = 24, StartDate = new DateTime(2025, 11, 1), EndDate = new DateTime(2025, 11, 15), PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3" },
+            new PropertyAvailability { Id = 25, StartDate = new DateTime(2025, 12, 1), EndDate = new DateTime(2025, 12, 31), PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3" },
 
             // Property: f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7 (Wadi Rum)
             new PropertyAvailability { Id = 12, StartDate = new DateTime(2025, 5, 22), EndDate = new DateTime(2025, 5, 30), PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7" },
@@ -128,7 +133,70 @@ namespace Travellin.Infrastructure.Data.Seeds
             // Property: 2e3ed231-a2a6-4961-a1ba-f232d56c6f35 (Bodrum Hotel)
             new PropertyAvailability { Id = 73, StartDate = new DateTime(2025, 5, 10), EndDate = new DateTime(2025, 5, 20), PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35" },
             new PropertyAvailability { Id = 74, StartDate = new DateTime(2025, 6, 15), EndDate = new DateTime(2025, 6, 25), PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35" },
-            new PropertyAvailability { Id = 75, StartDate = new DateTime(2025, 7, 1), EndDate = new DateTime(2025, 7, 10), PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35" }
+            new PropertyAvailability { Id = 75, StartDate = new DateTime(2025, 7, 1), EndDate = new DateTime(2025, 7, 10), PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35" },
+
+            // Property: f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7 (Wadi Rum)
+            new PropertyAvailability { Id = 26, StartDate = new DateTime(2025, 5, 15), EndDate = new DateTime(2025, 5, 25), PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7" },
+            new PropertyAvailability { Id = 27, StartDate = new DateTime(2025, 6, 10), EndDate = new DateTime(2025, 6, 20), PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7" },
+            new PropertyAvailability { Id = 28, StartDate = new DateTime(2025, 7, 1), EndDate = new DateTime(2025, 7, 15), PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7" },
+            new PropertyAvailability { Id = 29, StartDate = new DateTime(2025, 8, 5), EndDate = new DateTime(2025, 8, 20), PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7" },
+            new PropertyAvailability { Id = 30, StartDate = new DateTime(2025, 9, 1), EndDate = new DateTime(2025, 9, 15), PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7" },
+
+            // Property: 8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4 (Milan)
+            new PropertyAvailability { Id = 31, StartDate = new DateTime(2025, 5, 20), EndDate = new DateTime(2025, 5, 30), PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4" },
+            new PropertyAvailability { Id = 32, StartDate = new DateTime(2025, 6, 15), EndDate = new DateTime(2025, 6, 25), PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4" },
+            new PropertyAvailability { Id = 33, StartDate = new DateTime(2025, 7, 5), EndDate = new DateTime(2025, 7, 20), PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4" },
+            new PropertyAvailability { Id = 34, StartDate = new DateTime(2025, 8, 10), EndDate = new DateTime(2025, 8, 25), PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4" },
+            new PropertyAvailability { Id = 35, StartDate = new DateTime(2025, 9, 5), EndDate = new DateTime(2025, 9, 20), PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4" },
+
+            // Property: cc4e48ea-ca54-4d32-a448-3c2c9d14f936 (Egypt)
+            new PropertyAvailability { Id = 36, StartDate = new DateTime(2025, 5, 25), EndDate = new DateTime(2025, 6, 5), PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936" },
+            new PropertyAvailability { Id = 37, StartDate = new DateTime(2025, 6, 20), EndDate = new DateTime(2025, 7, 5), PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936" },
+            new PropertyAvailability { Id = 38, StartDate = new DateTime(2025, 7, 10), EndDate = new DateTime(2025, 7, 25), PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936" },
+            new PropertyAvailability { Id = 39, StartDate = new DateTime(2025, 8, 15), EndDate = new DateTime(2025, 8, 30), PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936" },
+            new PropertyAvailability { Id = 40, StartDate = new DateTime(2025, 9, 10), EndDate = new DateTime(2025, 9, 25), PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936" },
+
+            // Property: 4e3d342-8e8d-4f1d-8123-2d09cb92b6a2 (Brazil)
+            new PropertyAvailability { Id = 41, StartDate = new DateTime(2025, 5, 30), EndDate = new DateTime(2025, 6, 10), PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2" },
+            new PropertyAvailability { Id = 42, StartDate = new DateTime(2025, 6, 25), EndDate = new DateTime(2025, 7, 10), PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2" },
+            new PropertyAvailability { Id = 43, StartDate = new DateTime(2025, 7, 15), EndDate = new DateTime(2025, 7, 30), PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2" },
+            new PropertyAvailability { Id = 44, StartDate = new DateTime(2025, 8, 20), EndDate = new DateTime(2025, 9, 5), PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2" },
+            new PropertyAvailability { Id = 45, StartDate = new DateTime(2025, 9, 15), EndDate = new DateTime(2025, 9, 30), PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2" },
+
+            // Property: 3e7f99ab-228a-4d90-91c4-6adf8c12e048 (Makkah)
+            new PropertyAvailability { Id = 46, StartDate = new DateTime(2025, 5, 1), EndDate = new DateTime(2025, 5, 15), PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048" },
+            new PropertyAvailability { Id = 47, StartDate = new DateTime(2025, 6, 1), EndDate = new DateTime(2025, 6, 15), PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048" },
+            new PropertyAvailability { Id = 48, StartDate = new DateTime(2025, 7, 1), EndDate = new DateTime(2025, 7, 15), PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048" },
+            new PropertyAvailability { Id = 49, StartDate = new DateTime(2025, 8, 1), EndDate = new DateTime(2025, 8, 15), PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048" },
+            new PropertyAvailability { Id = 50, StartDate = new DateTime(2025, 9, 1), EndDate = new DateTime(2025, 9, 15), PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048" },
+
+            // Property: 5ca2f710-3c1f-4966-a924-7bcdf5ce57aa (California)
+            new PropertyAvailability { Id = 51, StartDate = new DateTime(2025, 5, 5), EndDate = new DateTime(2025, 5, 20), PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa" },
+            new PropertyAvailability { Id = 52, StartDate = new DateTime(2025, 6, 5), EndDate = new DateTime(2025, 6, 20), PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa" },
+            new PropertyAvailability { Id = 53, StartDate = new DateTime(2025, 7, 5), EndDate = new DateTime(2025, 7, 20), PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa" },
+            new PropertyAvailability { Id = 54, StartDate = new DateTime(2025, 8, 5), EndDate = new DateTime(2025, 8, 20), PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa" },
+            new PropertyAvailability { Id = 55, StartDate = new DateTime(2025, 9, 5), EndDate = new DateTime(2025, 9, 20), PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa" },
+
+            // Property: 763e6c5f-1ad1-4071-b0e6-55e924624198 (Morocco)
+            new PropertyAvailability { Id = 56, StartDate = new DateTime(2025, 5, 10), EndDate = new DateTime(2025, 5, 25), PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198" },
+            new PropertyAvailability { Id = 57, StartDate = new DateTime(2025, 6, 10), EndDate = new DateTime(2025, 6, 25), PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198" },
+            new PropertyAvailability { Id = 58, StartDate = new DateTime(2025, 7, 10), EndDate = new DateTime(2025, 7, 25), PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198" },
+            new PropertyAvailability { Id = 59, StartDate = new DateTime(2025, 8, 10), EndDate = new DateTime(2025, 8, 25), PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198" },
+            new PropertyAvailability { Id = 60, StartDate = new DateTime(2025, 9, 10), EndDate = new DateTime(2025, 9, 25), PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198" },
+
+            // Property: a555515a-ff8a-4741-b0a4-db9be729198e (Tunisia)
+            new PropertyAvailability { Id = 61, StartDate = new DateTime(2025, 5, 15), EndDate = new DateTime(2025, 5, 30), PropertyId = "a555515a-ff8a-4741-b0a4-db9be729198e" },
+            new PropertyAvailability { Id = 62, StartDate = new DateTime(2025, 6, 15), EndDate = new DateTime(2025, 6, 30), PropertyId = "a555515a-ff8a-4741-b0a4-db9be729198e" },
+            new PropertyAvailability { Id = 63, StartDate = new DateTime(2025, 7, 15), EndDate = new DateTime(2025, 7, 30), PropertyId = "a555515a-ff8a-4741-b0a4-db9be729198e" },
+            new PropertyAvailability { Id = 64, StartDate = new DateTime(2025, 8, 15), EndDate = new DateTime(2025, 8, 30), PropertyId = "a555515a-ff8a-4741-b0a4-db9be729198e" },
+            new PropertyAvailability { Id = 65, StartDate = new DateTime(2025, 9, 15), EndDate = new DateTime(2025, 9, 30), PropertyId = "a555515a-ff8a-4741-b0a4-db9be729198e" },
+
+            // Property: d8eecb1f-5583-4d64-a7dc-5aef5e2c498f (France)
+            new PropertyAvailability { Id = 66, StartDate = new DateTime(2025, 5, 20), EndDate = new DateTime(2025, 6, 5), PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f" },
+            new PropertyAvailability { Id = 67, StartDate = new DateTime(2025, 6, 20), EndDate = new DateTime(2025, 7, 5), PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f" },
+            new PropertyAvailability { Id = 68, StartDate = new DateTime(2025, 7, 20), EndDate = new DateTime(2025, 8, 5), PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f" },
+            new PropertyAvailability { Id = 69, StartDate = new DateTime(2025, 8, 20), EndDate = new DateTime(2025, 9, 5), PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f" },
+            new PropertyAvailability { Id = 70, StartDate = new DateTime(2025, 9, 20), EndDate = new DateTime(2025, 10, 5), PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f" }
 };
     }
 }

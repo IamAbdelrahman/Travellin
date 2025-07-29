@@ -139,7 +139,6 @@ export class NotificationService implements OnDestroy {
   private async requestNotificationPermission(): Promise<void> {
     if ('Notification' in window) {
       this.notificationPermission = await Notification.requestPermission();
-      console.log('Notification permission:', this.notificationPermission);
     }
   }
 
@@ -180,7 +179,6 @@ export class NotificationService implements OnDestroy {
       isRead: false,
       action: () => {
         // Navigate to chat or specific conversation
-        console.log('Navigate to conversation:', message.conversationId);
       }
     };
 
@@ -209,7 +207,6 @@ export class NotificationService implements OnDestroy {
       isRead: false,
       action: () => {
         // Navigate to booking details
-        console.log('Navigate to booking:', paymentData.bookingId);
       }
     };
 
@@ -236,7 +233,6 @@ export class NotificationService implements OnDestroy {
       timestamp: new Date(),
       isRead: false,
       action: () => {
-        console.log('Navigate to booking request:', bookingData.bookingId);
       }
     };
 
@@ -256,7 +252,6 @@ export class NotificationService implements OnDestroy {
       timestamp: new Date(),
       isRead: false,
       action: () => {
-        console.log('Navigate to booking:', bookingData.bookingId);
       }
     };
 
@@ -282,7 +277,6 @@ export class NotificationService implements OnDestroy {
       timestamp: new Date(),
       isRead: false,
       action: () => {
-        console.log('Navigate to review:', reviewData.reviewId);
       }
     };
 
@@ -307,7 +301,6 @@ export class NotificationService implements OnDestroy {
       timestamp: new Date(),
       isRead: false,
       action: () => {
-        console.log('Navigate to host upgrade:', upgradeData.requestId);
       }
     };
 
@@ -332,7 +325,6 @@ export class NotificationService implements OnDestroy {
       timestamp: new Date(),
       isRead: false,
       action: () => {
-        console.log('Navigate to booking:', arrivalData.bookingId);
       }
     };
 
@@ -358,7 +350,6 @@ export class NotificationService implements OnDestroy {
       isRead: false,
       action: () => {
         if (systemData.actionUrl) {
-          console.log('Navigate to:', systemData.actionUrl);
         }
       }
     };

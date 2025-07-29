@@ -4,29 +4,40 @@ $warning: #fd7e14;
 $info: #17a2b8;
 
 .toast-success {
-  background-color: $success;
-  border-left: 4px solid darken($success, 10%);
+  background: linear-gradient(135deg, $success 0%, darken($success, 10%) 100%);
+  border-left: 4px solid darken($success, 15%);
+  color: white !important;
+  box-shadow: 0 4px 15px rgba($success, 0.3);
 }
 
 .toast-danger {
-  background-color: $danger;
-  border-left: 4px solid darken($danger, 10%);
+  background: linear-gradient(135deg, $danger 0%, darken($danger, 10%) 100%);
+  border-left: 4px solid darken($danger, 15%);
+  color: white !important;
+  box-shadow: 0 4px 15px rgba($danger, 0.3);
 }
 
 .toast-warning {
-  background-color: $warning;
-  border-left: 4px solid darken($warning, 10%);
+  background: linear-gradient(135deg, $warning 0%, darken($warning, 10%) 100%);
+  border-left: 4px solid darken($warning, 15%);
+  color: white !important;
+  box-shadow: 0 4px 15px rgba($warning, 0.3);
 }
 
 .toast-info {
-  background-color: $info;
-  border-left: 4px solid darken($info, 10%);
+  background: linear-gradient(135deg, $info 0%, darken($info, 10%) 100%);
+  border-left: 4px solid darken($info, 15%);
+  color: white !important;
+  box-shadow: 0 4px 15px rgba($info, 0.3);
 }
 
 .toast {
   animation: fadeIn 0.3s ease-out;
   border: none;
-  opacity: 95%;
+  opacity: 98%;
+  font-weight: 500;
+  min-width: 300px;
+  max-width: 400px;
 }
 .btn-close {
   opacity: 1;
