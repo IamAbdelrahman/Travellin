@@ -236,7 +236,6 @@ export class HomePageComponent implements OnInit {
       .subscribe({
         next: (response: HttpResponse<IpropertyRes>) => {
           this.isLoadingProperties = false;
-          console.log('API Response:', response); // <<<<< هنا الاختبار
           if (response.status === 200 && response.body) {
             this.property = response.body.items.map(prop => ({
               ...prop,
@@ -415,7 +414,6 @@ export class HomePageComponent implements OnInit {
       next: (response: HttpResponse<IpropertyRes>) => {
         this.isLoadingProperties = false;
         if (response.status === 200 && response.body) {
-          console.log(response.body.items);
           this.property = response.body.items.map(prop => ({
             ...prop,
             distanceFromMe: this.getDistanceFromLatLonInKm(
@@ -447,7 +445,6 @@ export class HomePageComponent implements OnInit {
         next: (response: HttpResponse<ISmartSearchRes>) => {
           this.isLoadingProperties = false;
           if (response.status === 200 && response.body) {
-            console.log(response.body.items);
             this.property = response.body.items.map(prop => ({
               ...prop,
               distanceFromMe: this.getDistanceFromLatLonInKm(

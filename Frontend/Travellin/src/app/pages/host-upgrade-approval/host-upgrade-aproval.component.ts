@@ -36,7 +36,6 @@ export class HostUpgradeAprovalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('Component initialized');
     this.loadRequests();
   }
 
@@ -47,18 +46,14 @@ export class HostUpgradeAprovalComponent implements OnInit {
       status: this.statusFilter,
       documentType: this.documentTypeFilter,
     };
-    console.log('Sending params:', params);
 
     this.hostUpgradeService.getUpgradeRequests(params).subscribe({
       next: response => {
-        console.log('API Response:', response);
         this.requests = response.items;
         this.totalItems = response.metaData.total;
-        console.log('Updated requests:', this.requests);
       },
       error: err => {
         this.toastr.showError('Failed to load requests', 5000);
-        console.error(err);
       },
     });
   }
@@ -73,11 +68,9 @@ export class HostUpgradeAprovalComponent implements OnInit {
   }
 
   openRejectModal(request: any): void {
-    console.log('Opening reject modal for request:', request);
     this.selectedRequest = null;
     this.requestToReject = request;
     this.showRejectModal = true;
-    console.log('showRejectModal set to:', this.showRejectModal);
   }
 
   closeRejectModal(): void {

@@ -80,7 +80,6 @@ export class ChatService {
   // SignalR Connection Management
   public async startConnection(): Promise<void> {
     if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
-      console.log('SignalR already connected');
       return;
     }
 
@@ -88,10 +87,6 @@ export class ChatService {
     if (!token) {
       throw new Error('No authentication token found');
     }
-
-    console.log('Starting SignalR connection...');
-    console.log('API URL:', environment.apiUrl);
-    console.log('Hub URL:', `${environment.apiUrl}/hubs/chat`);
 
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${environment.apiUrl}/hubs/chat`, {
@@ -106,11 +101,9 @@ export class ChatService {
 
     try {
       await this.hubConnection.start();
-      console.log('SignalR connection established successfully');
       this.updateConnectionStatus(true);
       this.reconnectAttempts = 0;
     } catch (error) {
-      console.error('Failed to start SignalR connection:', error);
       this.updateConnectionStatus(false);
       throw error;
     }
@@ -121,12 +114,10 @@ export class ChatService {
     this.reconnectAttempts++;
 
     if (this.reconnectAttempts <= this.maxReconnectAttempts) {
-      console.log(`Attempting to reconnect... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
       setTimeout(() => {
         this.startConnection().catch(() => this.handleConnectionError());
       }, this.reconnectDelay * this.reconnectAttempts);
     } else {
-      console.error('Max reconnection attempts reached');
       this.errorReceived$.next('Connection failed after maximum attempts');
     }
   }
@@ -136,7 +127,6 @@ export class ChatService {
       try {
         await this.hubConnection.stop();
         this.updateConnectionStatus(false);
-        console.log('SignalR connection stopped');
       } catch (error) {
         console.error('Error stopping SignalR connection:', error);
       }
@@ -146,73 +136,49 @@ export class ChatService {
   private setupSignalRHandlers(): void {
     if (!this.hubConnection) return;
 
-    console.log('Setting up SignalR handlers...');
-
     this.hubConnection.on('ReceiveMessage', (message: MessageDto) => {
-      console.log('=== RECEIVED MESSAGE VIA SIGNALR ===');
-      console.log('Message:', message);
-      console.log('Current user ID:', this.tokenStorage.getUserId());
-      console.log('Message sender ID:', message.senderId);
-      console.log('Message receiver ID:', message.receiverId);
-      
       this.messageReceived$.next(message);
       this.newMessage$.next(message);
       this.addMessageToState(message);
     });
 
     this.hubConnection.on('MessageSent', (message: MessageDto) => {
-      console.log('=== MESSAGE SENT VIA SIGNALR ===');
-      console.log('Message:', message);
       this.messageSent$.next(message);
     });
 
     this.hubConnection.on('MessageMarkedAsRead', (messageId: number) => {
-      console.log('=== MESSAGE MARKED AS READ ===');
-      console.log('Message ID:', messageId);
       this.messageMarkedAsRead$.next(messageId);
       this.updateMessageReadStatus(messageId, true);
     });
 
     this.hubConnection.on('ConversationMarkedAsRead', (conversationId: number) => {
-      console.log('=== CONVERSATION MARKED AS READ ===');
-      console.log('Conversation ID:', conversationId);
       this.conversationMarkedAsRead$.next(conversationId);
       this.updateConversationReadStatus(conversationId);
     });
 
     this.hubConnection.on('JoinedConversation', (conversationId: number) => {
-      console.log('=== JOINED CONVERSATION ===');
-      console.log('Conversation ID:', conversationId);
       this.joinedConversation$.next(conversationId);
     });
 
     this.hubConnection.on('LeftConversation', (conversationId: number) => {
-      console.log('=== LEFT CONVERSATION ===');
-      console.log('Conversation ID:', conversationId);
       this.leftConversation$.next(conversationId);
     });
 
     this.hubConnection.on('NewConversation', (conversation: ConversationDto) => {
-      console.log('=== NEW CONVERSATION ===');
-      console.log('Conversation:', conversation);
       this.conversationStarted$.next(conversation);
       this.newConversation$.next(conversation);
       this.addConversationToState(conversation);
     });
 
     this.hubConnection.on('TestResponse', (message: string) => {
-      console.log('=== TEST RESPONSE ===');
-      console.log('Message:', message);
+      // Test response handler
     });
 
     this.hubConnection.on('ConnectedUsersResponse', (message: string) => {
-      console.log('=== CONNECTED USERS RESPONSE ===');
-      console.log('Message:', message);
+      // Connected users response handler
     });
 
     this.hubConnection.onclose((error) => {
-      console.log('=== SIGNALR CONNECTION CLOSED ===');
-      console.log('Error:', error);
       this.updateConnectionStatus(false);
       if (error) {
         this.handleConnectionError();
@@ -220,19 +186,15 @@ export class ChatService {
     });
 
     this.hubConnection.onreconnecting((error) => {
-      console.log('=== SIGNALR RECONNECTING ===');
-      console.log('Error:', error);
       this.updateConnectionStatus(false);
     });
 
     this.hubConnection.onreconnected((connectionId) => {
-      console.log('=== SIGNALR RECONNECTED ===');
-      console.log('Connection ID:', connectionId);
       this.updateConnectionStatus(true);
       this.reconnectAttempts = 0;
     });
 
-    console.log('SignalR handlers setup complete');
+    // SignalR handlers setup complete
   }
 
   // SignalR Hub Methods
@@ -286,7 +248,6 @@ export class ChatService {
 
   public async testConnection(): Promise<void> {
     if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
-      console.log('Testing SignalR connection...');
       await this.hubConnection.invoke('TestConnection');
     } else {
       throw new Error('SignalR connection not available');
@@ -295,7 +256,6 @@ export class ChatService {
 
   public async getConnectedUsers(): Promise<void> {
     if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
-      console.log('Getting connected users...');
       await this.hubConnection.invoke('GetConnectedUsers');
     } else {
       throw new Error('SignalR connection not available');
@@ -311,8 +271,16 @@ export class ChatService {
     return this.http.post<ConversationDto>(`${this.baseUrl}/conversations/start`, startConversationDto, { headers: this.getHttpHeaders() });
   }
 
+  // Admin methods
+  public getAllConversations(): Observable<ConversationDto[]> {
+    return this.http.get<ConversationDto[]>(`${this.baseUrl}/conversations/admin/all`, { headers: this.getHttpHeaders() });
+  }
+
+  public sendMessageAsAdmin(createMessageDto: CreateMessageDto): Observable<MessageDto> {
+    return this.http.post<MessageDto>(`${this.baseUrl}/conversations/admin/send-message`, createMessageDto, { headers: this.getHttpHeaders() });
+  }
+
   public getUserConversations(userId: string): Observable<ConversationDto[]> {
-    console.log('Calling getUserConversations for userId:', userId);
     return this.http.get<ConversationDto[]>(`${this.baseUrl}/conversations/by-user/${userId}`, { headers: this.getHttpHeaders() });
   }
 
@@ -342,7 +310,6 @@ export class ChatService {
   }
 
   public getInboxPreview(userId: string): Observable<InboxDto[]> {
-    console.log('Calling getInboxPreview for userId:', userId);
     return this.http.get<InboxDto[]>(`${this.baseUrl}/conversations/inbox/${userId}`, { headers: this.getHttpHeaders() });
   }
 
@@ -368,11 +335,6 @@ export class ChatService {
   }
 
   private addMessageToState(message: MessageDto): void {
-    console.log('=== ADDING MESSAGE TO STATE ===');
-    console.log('Message:', message);
-    console.log('Current user ID:', this.tokenStorage.getUserId());
-    console.log('Is message from current user:', message.senderId === this.tokenStorage.getUserId());
-    
     const currentState = this.chatStateSubject.value;
     
     // Find the conversation
@@ -386,7 +348,6 @@ export class ChatService {
         messages: [...(updatedConversations[conversationIndex].messages || []), message]
       };
       
-      console.log('Updated conversation with new message');
       this.chatStateSubject.next({
         ...currentState,
         conversations: updatedConversations
@@ -395,7 +356,8 @@ export class ChatService {
       // Update unread count after adding message
       this.updateUnreadCount();
     } else {
-      console.log('Conversation not found in state, message might be for a new conversation');
+      // Conversation not found in state, message might be for a new conversation
+      // This case should be handled by refreshing conversations from the server
     }
   }
 
@@ -475,7 +437,6 @@ export class ChatService {
           ...currentState,
           conversations
         });
-        console.log('Loaded conversations:', conversations);
       },
       error: (error) => {
         console.error('Error loading conversations:', error);
@@ -498,7 +459,6 @@ export class ChatService {
           ...currentState,
           inbox
         });
-        console.log('Loaded inbox:', inbox);
       },
       error: (error) => {
         console.error('Error loading inbox:', error);
@@ -513,8 +473,6 @@ export class ChatService {
       return total + (conversation.messages?.filter(m => !m.isRead && m.senderId !== currentState.currentUserId).length || 0);
     }, 0);
 
-    console.log('ChatService: Updating unread count to:', unreadCount);
-    
     this.chatStateSubject.next({
       ...currentState,
       unreadCount
@@ -540,7 +498,6 @@ export class ChatService {
 
   // Public method to manually update unread count
   public refreshUnreadCount(): void {
-    console.log('ChatService: Manual unread count refresh triggered');
     this.updateUnreadCount();
   }
 

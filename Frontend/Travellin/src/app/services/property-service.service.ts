@@ -254,26 +254,11 @@ export class PropertyService {
   }
   // =============================booking reserveation===================================
   createBooking(bookingData: IBookingRequest): Observable<IBookingResponse> {
-    const token = localStorage.getItem('token') || '';
-
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
     });
 
-    const formattedBooking = {
-      ...bookingData,
-      checkIn: new Date(bookingData.checkIn).toISOString(),
-      checkOut: new Date(bookingData.checkOut).toISOString(),
-    };
-
-    console.log('Making request to:', this.apiUrl5);
-    console.log('Request headers:', headers);
-    console.log('Request body:', bookingData);
-    return this.http.post<IBookingResponse>(this.apiUrl5, bookingData, {
-      headers: headers,
-      withCredentials: true,
-    });
+    return this.http.post<IBookingResponse>(this.apiUrl5, bookingData, { headers });
   }
 
   //=============================amenities pagination(add-property)=================================

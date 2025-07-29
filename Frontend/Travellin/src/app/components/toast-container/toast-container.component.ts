@@ -41,4 +41,19 @@ export class ToastContainerComponent implements OnInit, OnDestroy {
       this.toasts.splice(index, 1);
     }
   }
+
+  getToastClass(type: string): string {
+    switch (type) {
+      case 'success':
+        return 'toast-success text-white';
+      case 'error':
+        return 'toast-danger text-white';
+      case 'warning':
+        return 'toast-warning text-white';
+      case 'info':
+        return 'toast-info text-white';
+      default:
+        return 'toast-info text-white';
+    }
+  }
 }

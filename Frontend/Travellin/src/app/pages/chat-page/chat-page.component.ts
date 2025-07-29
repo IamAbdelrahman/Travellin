@@ -2,8 +2,8 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subject, takeUntil, Observable } from 'rxjs';
 import { ChatService } from '../../services/chat.service';
 import { ToastService } from '../../services/toast.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -48,157 +48,46 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
     private chatService: ChatService,
     private toastService: ToastService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    const userId = this.authService.getUserId();
-    if (!userId) {
-      console.error('No user ID available');
-      return;
-    }
-    
-    this.currentUserId = userId;
-    this.isAdmin = this.authService.isAdmin();
-    
-    console.log('Chat component initialized with user ID:', this.currentUserId);
-    console.log('Is admin:', this.isAdmin);
-
-    this.initializeChat();
     this.setupSubscriptions();
     this.loadInitialData();
     this.startSilentRefresh();
     
-    // Make component available globally for debugging
-    (window as any).chatComponent = this;
-  }
-
-  // Test method for debugging unread counts
-  testUnreadCount(): void {
-    console.log('=== UNREAD COUNT DEBUG ===');
-    console.log('Total unread count:', this.unreadCount);
-    console.log('Inbox items:', this.inbox);
-    console.log('Filtered inbox:', this.filteredInbox);
-    
-    this.inbox.forEach((item, index) => {
-      console.log(`Inbox item ${index}:`, {
-        conversationId: item.conversationId,
-        participant: item.participant,
-        unreadCount: item.unreadCount,
-        isUnread: item.isUnread,
-        lastMessage: item.lastMessage
-      });
-    });
-  }
-
-  // Test method to simulate new message
-  testNewMessage(conversationId: number, senderId: string, content: string): void {
-    const testMessage: MessageDto = {
-      id: Date.now(),
-      conversationId: conversationId,
-      senderId: senderId,
-      receiverId: this.currentUserId,
-      content: content,
-      sentAt: new Date(),
-      isRead: false
-    };
-    
-    console.log('Testing new message:', testMessage);
-    this.handleNewMessage(testMessage);
-  }
-
-  // Test method to test SignalR connection
-  async testSignalRConnection(): Promise<void> {
-    try {
-      console.log('Testing SignalR connection...');
-      await this.chatService.testConnection();
-      console.log('SignalR connection test completed');
-    } catch (error) {
-      console.error('SignalR connection test failed:', error);
+    // Check for conversationId in URL query params
+    const conversationId = this.route.snapshot.queryParams['conversationId'];
+    if (conversationId) {
+      this.selectConversationById(conversationId);
     }
   }
 
-  // Debug method to check authentication state
-  debugAuthState(): void {
-    console.log('=== AUTH STATE DEBUG ===');
-    console.log('AuthService.getUserId():', this.authService.getUserId());
-    console.log('AuthService.getUserName():', this.authService.getUserName());
-    console.log('AuthService.getAccessToken():', this.authService.getAccessToken() ? 'Present' : 'Missing');
-    console.log('AuthService.isAuthenticated():', this.authService.isAuthenticated());
-    console.log('AuthService.getUserRole():', this.authService.getUserRole());
-    console.log('AuthService.isAdmin():', this.authService.isAdmin());
-    console.log('Component currentUserId:', this.currentUserId);
-    console.log('Component isAdmin:', this.isAdmin);
-  }
 
-  // Debug method to check SignalR connection and real-time status
-  debugRealTimeStatus(): void {
-    console.log('=== REAL-TIME STATUS DEBUG ===');
-    console.log('ChatService connection state:', this.chatService.getConnectionState());
-    console.log('ChatService is connected:', this.chatService.isConnected());
-    console.log('Component isConnected:', this.isConnected);
-    console.log('Active conversation:', this.activeConversation);
-    console.log('Current user ID:', this.currentUserId);
-    
-    // Test SignalR connection
-    this.chatService.testConnection().then(() => {
-      console.log('✅ SignalR connection test successful');
-    }).catch((error) => {
-      console.error('❌ SignalR connection test failed:', error);
-    });
 
-    // Get connected users
-    this.chatService.getConnectedUsers().then(() => {
-      console.log('✅ Connected users request sent');
-    }).catch((error) => {
-      console.error('❌ Connected users request failed:', error);
-    });
-  }
 
-  // Test real-time message delivery
-  testRealTimeMessage(): void {
-    if (!this.activeConversation) {
-      console.error('No active conversation to test');
-      return;
-    }
 
-    console.log('=== TESTING REAL-TIME MESSAGE ===');
-    const testMessage: MessageDto = {
-      id: Date.now(),
-      conversationId: this.activeConversation.id,
-      senderId: this.currentUserId,
-      receiverId: this.activeConversation.user1Id === this.currentUserId ? 
-          this.activeConversation.user2Id : this.activeConversation.user1Id,
-      content: `Test real-time message at ${new Date().toLocaleTimeString()}`,
-      sentAt: new Date(),
-      isRead: false
-    };
 
-    console.log('Simulating new message:', testMessage);
-    this.handleNewMessage(testMessage);
-  }
+
+
+
+
+
+
 
   // Manual refresh method (can be called by user or automatically)
   async manualRefresh(): Promise<void> {
-    console.log('Manual refresh triggered...');
     try {
       await this.silentRefreshData();
-      console.log('Manual refresh completed');
     } catch (error) {
       console.error('Manual refresh failed:', error);
     }
   }
 
   // Debug method to check refresh status
-  debugRefreshStatus(): void {
-    console.log('=== REFRESH STATUS DEBUG ===');
-    console.log('Refresh interval active:', !!this.refreshInterval);
-    console.log('Last refresh time:', this.lastRefreshTime);
-    console.log('Current time:', new Date());
-    console.log('Time since last refresh:', new Date().getTime() - this.lastRefreshTime.getTime(), 'ms');
-    console.log('Active conversation messages count:', this.activeConversation?.messages?.length || 0);
-    console.log('Total conversations count:', this.conversations.length);
-    console.log('Inbox items count:', this.inbox.length);
+  private logRefreshStatus(): void {
+    // Debug information removed for clean console
   }
 
   ngOnDestroy(): void {
@@ -210,8 +99,6 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   // Silent refresh methods
   private startSilentRefresh(): void {
-    console.log('Starting silent refresh mechanism...');
-    // Refresh every 5 seconds silently
     this.refreshInterval = setInterval(() => {
       this.silentRefreshData();
     }, 5000);
@@ -221,7 +108,6 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (this.refreshInterval) {
       clearInterval(this.refreshInterval);
       this.refreshInterval = null;
-      console.log('Stopped silent refresh mechanism');
     }
   }
 
@@ -230,36 +116,26 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
       const userId = this.authService.getUserId();
       if (!userId) return;
 
-      console.log('Silent refresh: Loading updated data...');
-      
-      // Refresh conversations silently
-      this.chatService.getUserConversations(userId).subscribe({
-        next: (conversations) => {
-          this.updateConversationsSilently(conversations);
-        },
-        error: (error) => {
-          console.error('Silent refresh conversations error:', error);
-        }
-      });
+      const conversations = await this.chatService.getUserConversations(userId).toPromise();
+      const inbox = await this.chatService.getInboxPreview(userId).toPromise();
 
-      // Refresh inbox silently
-      this.chatService.getInboxPreview(userId).subscribe({
-        next: (inbox) => {
-          this.updateInboxSilently(inbox);
-        },
-        error: (error) => {
-          console.error('Silent refresh inbox error:', error);
-        }
-      });
-
-      // Refresh active conversation messages if exists
-      if (this.activeConversation) {
-        this.refreshActiveConversationMessages();
+      if (conversations && conversations.length !== this.conversations.length) {
+        this.conversations = conversations;
       }
 
-      this.lastRefreshTime = new Date();
+      if (inbox && inbox.length !== this.inbox.length) {
+        this.inbox = inbox;
+      }
+
+      // Update active conversation messages if needed
+      if (this.activeConversation) {
+        const updatedConversation = conversations?.find(c => c.id === this.activeConversation?.id);
+        if (updatedConversation && updatedConversation.messages.length !== this.activeConversation.messages.length) {
+          this.activeConversation = updatedConversation;
+        }
+      }
     } catch (error) {
-      console.error('Silent refresh error:', error);
+      // Silent error handling
     }
   }
 
@@ -267,7 +143,6 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
     // Only update if there are new messages
     const hasNewMessages = this.hasNewMessagesInConversations(newConversations);
     if (hasNewMessages) {
-      console.log('Silent refresh: New messages detected, updating conversations');
       this.conversations = newConversations;
       
       // Update active conversation if it exists
@@ -285,7 +160,6 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
     // Only update if there are changes
     const hasChanges = this.hasInboxChanges(newInbox);
     if (hasChanges) {
-      console.log('Silent refresh: Inbox changes detected, updating inbox');
       this.inbox = newInbox;
       this.filteredInbox = this.searchQuery.trim() ? this.inbox.filter(item => 
         item.participant.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
@@ -334,7 +208,6 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.chatService.getMessagesByConversationId(this.activeConversation.id).subscribe({
       next: (messages) => {
         if (messages.length !== this.activeConversation?.messages.length) {
-          console.log('Silent refresh: Updating active conversation messages');
           this.activeConversation!.messages = messages;
           this.shouldScrollToBottom = true;
         }
@@ -419,17 +292,32 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
       return;
     }
 
-    // Load conversations
-    this.chatService.getUserConversations(userId).subscribe({
-      next: (conversations) => {
-        this.conversations = conversations;
-        console.log('Loaded conversations:', conversations);
-      },
-      error: (error) => {
-        console.error('Error loading conversations:', error);
-        this.toastService.showError('Failed to load conversations');
-      }
-    });
+    // Load conversations based on user role
+    if (this.isAdmin) {
+      // Admin can see all conversations
+      this.chatService.getAllConversations().subscribe({
+        next: (conversations) => {
+          this.conversations = conversations;
+          console.log('Loaded all conversations (admin):', conversations);
+        },
+        error: (error) => {
+          console.error('Error loading all conversations:', error);
+          this.toastService.showError('Failed to load conversations');
+        }
+      });
+    } else {
+      // Regular users see only their conversations
+      this.chatService.getUserConversations(userId).subscribe({
+        next: (conversations) => {
+          this.conversations = conversations;
+          console.log('Loaded conversations:', conversations);
+        },
+        error: (error) => {
+          console.error('Error loading conversations:', error);
+          this.toastService.showError('Failed to load conversations');
+        }
+      });
+    }
 
     // Load inbox preview
     this.chatService.getInboxPreview(userId).subscribe({
@@ -472,55 +360,57 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
       currentUserId: this.currentUserId,
       receiverId: receiverId,
       activeConversation: this.activeConversation,
-      content: this.newMessageContent.trim()
+      content: this.newMessageContent.trim(),
+      isAdmin: this.isAdmin
     });
     
     let messageContent = this.newMessageContent.trim();
     if (this.isAdmin) {
       messageContent = `[ADMIN] ${messageContent}`;
     }
+    
     const createMessageDto: CreateMessageDto = {
       senderId: this.currentUserId,
       receiverId: receiverId,
-      content: messageContent
+      content: messageContent,
+      conversationId: this.activeConversation.id
     };
 
     try {
-      const message = await this.chatService.sendMessage(createMessageDto).toPromise();
-      if (message) {
-        // Add temporary message with 'sending' status
-        const tempMessage: MessageDto = {
-          ...message,
-          id: Date.now(), // Temporary ID
-          sentAt: new Date(),
-          isRead: false
-        };
-        
-        // Add to active conversation messages
-        if (this.activeConversation) {
-          this.activeConversation.messages = this.activeConversation.messages || [];
-          this.activeConversation.messages.push(tempMessage);
-          this.messageStatus.set(tempMessage.id, 'sending');
-        }
-        
-        this.newMessageContent = '';
-        this.shouldScrollToBottom = true;
-        
-        // Update status to 'sent' after a short delay
-        setTimeout(() => {
-          this.messageStatus.set(tempMessage.id, 'sent');
-        }, 500);
-        
-        // Update status to 'delivered' after another delay
-        setTimeout(() => {
-          this.messageStatus.set(tempMessage.id, 'delivered');
-        }, 1000);
+      let messageObservable: Observable<MessageDto>;
+      
+      if (this.isAdmin) {
+        // Admin sends message using admin endpoint
+        messageObservable = this.chatService.sendMessageAsAdmin(createMessageDto);
+      } else {
+        // Regular user sends message using normal endpoint
+        messageObservable = this.chatService.sendMessage(createMessageDto);
       }
+
+      messageObservable.subscribe({
+        next: (message) => {
+          console.log('Message sent successfully:', message);
+          this.newMessageContent = '';
+          this.isSendingMessage = false;
+          
+          // Add message to active conversation
+          if (this.activeConversation) {
+            this.activeConversation.messages.push(message);
+            this.shouldScrollToBottom = true;
+          }
+          
+          this.toastService.showSuccess('Message sent!');
+        },
+        error: (error) => {
+          console.error('Error sending message:', error);
+          this.isSendingMessage = false;
+          this.toastService.showError('Failed to send message');
+        }
+      });
     } catch (error) {
-      console.error('Error sending message:', error);
-      this.toastService.showError('Failed to send message');
-    } finally {
+      console.error('Exception in sendMessage:', error);
       this.isSendingMessage = false;
+      this.toastService.showError('Failed to send message');
     }
   }
 
@@ -574,6 +464,38 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.conversations.push(loadedConversation);
           }
           this.selectConversation(loadedConversation);
+        },
+        error: (error) => {
+          console.error('Error loading conversation:', error);
+          this.toastService.showError('Failed to load conversation');
+        }
+      });
+    }
+  }
+
+  selectConversationById(conversationId: string | number): void {
+    console.log('Selecting conversation by ID:', conversationId);
+    
+    // Convert to number if it's a string
+    const id = typeof conversationId === 'string' ? parseInt(conversationId, 10) : conversationId;
+    
+    // First try to find the conversation in the loaded conversations
+    let conversation = this.conversations.find(c => c.id === id);
+    
+    if (conversation) {
+      console.log('Found conversation in loaded conversations:', conversation);
+      this.selectConversation(conversation);
+    } else {
+      // If not found, load it from API
+      console.log('Loading conversation from API:', id);
+      this.chatService.getConversationById(id).subscribe({
+        next: (conversation) => {
+          console.log('Loaded conversation from API:', conversation);
+          // Add to conversations array if not already there
+          if (!this.conversations.find(c => c.id === conversation.id)) {
+            this.conversations.push(conversation);
+          }
+          this.selectConversation(conversation);
         },
         error: (error) => {
           console.error('Error loading conversation:', error);
@@ -742,18 +664,18 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
     
     if (conversation.user1Id === this.currentUserId) {
       // Current user is user1, return user2's name
-      if (conversation.user2Name) {
+      if (conversation.user2Name && conversation.user2Name !== conversation.user2Id) {
         return conversation.user2Name;
       } else {
-        // Fallback to user ID if name is not available
+        // Fallback to user ID if name is not available or is the same as ID
         return `User ${conversation.user2Id.substring(0, 8)}`;
       }
     } else {
       // Current user is user2, return user1's name
-      if (conversation.user1Name) {
+      if (conversation.user1Name && conversation.user1Name !== conversation.user1Id) {
         return conversation.user1Name;
       } else {
-        // Fallback to user ID if name is not available
+        // Fallback to user ID if name is not available or is the same as ID
         return `User ${conversation.user1Id.substring(0, 8)}`;
       }
     }
@@ -800,7 +722,69 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   get connectionStatusClass(): string {
-    return this.isConnected ? 'text-success' : 'text-danger';
+    return this.isConnected ? 'bg-success' : 'bg-danger';
+  }
+
+  // Admin methods
+  loadAllConversations(): void {
+    if (!this.isAdmin) return;
+    
+    this.chatService.getAllConversations().subscribe({
+      next: (conversations) => {
+        this.conversations = conversations;
+      },
+      error: (error) => {
+        this.toastService.showError('Failed to load all conversations');
+      }
+    });
+  }
+
+  sendAsAdmin(): void {
+    console.log('=== SEND AS ADMIN DEBUG ===');
+    console.log('isAdmin:', this.isAdmin);
+    console.log('activeConversation:', this.activeConversation);
+    console.log('currentUserId:', this.currentUserId);
+    console.log('AuthService.isAdmin():', this.authService.isAdmin());
+    console.log('AuthService.getUserRole():', this.authService.getUserRole());
+    console.log('Token:', this.authService.getAccessToken() ? 'Present' : 'Missing');
+    
+    if (!this.isAdmin || !this.activeConversation) {
+      this.toastService.showError('Admin access required');
+      return;
+    }
+
+    const adminMessage = prompt('Enter admin message:');
+    if (!adminMessage?.trim()) return;
+
+    const createMessageDto: CreateMessageDto = {
+      senderId: this.currentUserId, // Use actual admin user ID instead of 'admin'
+      receiverId: this.activeConversation.user1Id === this.currentUserId ? this.activeConversation.user2Id : this.activeConversation.user1Id,
+      content: `[ADMIN] ${adminMessage.trim()}`,
+      conversationId: this.activeConversation.id
+    };
+
+    console.log('Sending admin message with DTO:', createMessageDto);
+
+    this.chatService.sendMessageAsAdmin(createMessageDto).subscribe({
+      next: (message) => {
+        console.log('Admin message sent successfully:', message);
+        if (this.activeConversation) {
+          this.activeConversation.messages.push(message);
+          this.shouldScrollToBottom = true;
+        }
+        this.toastService.showSuccess('Admin message sent!');
+      },
+      error: (error) => {
+        console.error('Error sending admin message:', error);
+        console.error('Error details:', {
+          status: error.status,
+          statusText: error.statusText,
+          message: error.message,
+          error: error.error
+        });
+        this.toastService.showError('Failed to send admin message');
+      }
+    });
   }
 
   isMessageFromCurrentUser(message: MessageDto): boolean {
@@ -836,6 +820,12 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   getDisplayName(participant: string): string {
+    // If participant is a user ID (starts with a letter and contains numbers/letters)
+    if (participant && participant.length > 8 && /^[a-zA-Z0-9-]+$/.test(participant)) {
+      // It's likely a user ID, show a shortened version
+      return `User ${participant.substring(0, 8)}`;
+    }
+    
     // First try to parse as "FirstName LastName"
     const nameParts = participant.split(' ');
     if (nameParts.length >= 2) {
@@ -843,7 +833,7 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
     
     // If it's just one word, return as is
-    return participant;
+    return participant || 'Unknown User';
   }
 
   // New methods for message status

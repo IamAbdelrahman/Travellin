@@ -11,13 +11,14 @@ namespace Travellin.Core.Interfaces
     public interface IConversationService
     {
         Task<Conversation> CreateOrGetConversationAsync(string user1Id, string user2Id);
+        Task<Conversation> CreateOrGetConversationWithPropertyAsync(string user1Id, string user2Id, string? propertyId);
         Task<List<Conversation>> GetUserConversationsAsync(string userId);
         Task<Conversation?> GetConversationByIdAsync(int conversationId);   
         Task<bool> DeleteConversationAsync(int conversationId);
         Task<List<InboxDto>> GetInboxPreviewAsync(string userId);
         Task<List<ConversationSearchResultDto>> SearchConversationsAsync(string userId, string query);
         Task<bool> UserIsInConversationAsync(int conversationId, string userId);
-
+        Task<List<Conversation>> GetAllConversationsAsync(); // New method for admin
     }
 
 }

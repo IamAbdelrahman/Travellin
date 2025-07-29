@@ -27,7 +27,6 @@ export class AccountService {
 
   login(dto: ILoginReq): Observable<HttpResponse<any>> {
     localStorage.setItem('email', dto.email);
-    console.log('Email saved to localStorage:', dto.email);
     return this.http.post(`${ApiConstant.AccountsApi.login}`, dto, {
       observe: 'response',
       withCredentials: true,
