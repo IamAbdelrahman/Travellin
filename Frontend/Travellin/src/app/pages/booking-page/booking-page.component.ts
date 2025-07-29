@@ -128,6 +128,7 @@ export class BookingPageComponent implements OnInit {
     this.checkOutService.getPropertyDetails(propertyId).subscribe({
       next: response => {
         this.propertyDetails = response;
+        console.log('Property Details:', this.propertyDetails);
       },
       error: err => {
         console.error('Error loading property details', err);
@@ -224,10 +225,9 @@ export class BookingPageComponent implements OnInit {
     };
 
     this.checkOutService.createBooking(bookingData).subscribe({
-      next: (response: any) => {
-        this.isBooking = false;
-        this.toaster.showSuccess('Booking created successfully!');
-        this.router.navigateByUrl(`/booking/${response.body.id}`);
+      next: response => {
+        console.log('Booking created successfully:', response);
+        alert('Booking created successfully!');
       },
       error: err => {
         console.error('Error creating booking:', err);
