@@ -27,12 +27,14 @@ namespace Travellin.Infrastructure.Repositories
             return await _dbContext.Conversations
                 .Where(c => c.User1Id == userId || c.User2Id == userId)
                 .Include(c => c.Messages)
+                .Include(c => c.Property)
                 .ToListAsync();
         }
         public async Task<Conversation?> GetByIdWithMessagesAsync(int id)
         {
             return await _dbContext.Conversations
                 .Include(c => c.Messages)
+                .Include(c => c.Property)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
         public async Task<List<Conversation>> GetInboxPreviewAsync(string userId)
@@ -43,6 +45,7 @@ namespace Travellin.Infrastructure.Repositories
                     .ThenInclude(u => u.UserProfile)
                 .Include(c => c.User2)
                     .ThenInclude(u => u.UserProfile)
+                .Include(c => c.Property)
                 .Include(c => c.Messages.OrderByDescending(m => m.SentAt).Take(1))
                 .ToListAsync();
         }
@@ -52,7 +55,18 @@ namespace Travellin.Infrastructure.Repositories
                 .Include(c => c.User1)
                 .Include(c => c.User2)
                 .Include(c => c.Messages)
+                .Include(c => c.Property)
                 .Where(c => c.User1Id == userId || c.User2Id == userId)
+                .ToListAsync();
+        }
+
+        public async Task<List<Conversation>> GetAllConversationsAsync()
+        {
+            return await _dbContext.Conversations
+                .Include(c => c.User1)
+                .Include(c => c.User2)
+                .Include(c => c.Messages)
+                .Include(c => c.Property)
                 .ToListAsync();
         }
     }

@@ -14,7 +14,7 @@ namespace Travellin.Core.Interfaces
         Task<Conversation?> GetByIdWithMessagesAsync(int id);
         Task<List<Conversation>> GetInboxPreviewAsync(string userId);
         Task<List<Conversation>> GetUserConversationsWithMessagesAndUsersAsync(string userId);
-
+        Task<List<Conversation>> GetAllConversationsAsync(); // New method for admin
     }
 
 }

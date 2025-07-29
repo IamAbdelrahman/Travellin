@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked }
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, Observable } from 'rxjs';
 import { ChatService } from '../../services/chat.service';
 import { ToastService } from '../../services/toast.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -419,17 +419,32 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
       return;
     }
 
-    // Load conversations
-    this.chatService.getUserConversations(userId).subscribe({
-      next: (conversations) => {
-        this.conversations = conversations;
-        console.log('Loaded conversations:', conversations);
-      },
-      error: (error) => {
-        console.error('Error loading conversations:', error);
-        this.toastService.showError('Failed to load conversations');
-      }
-    });
+    // Load conversations based on user role
+    if (this.isAdmin) {
+      // Admin can see all conversations
+      this.chatService.getAllConversations().subscribe({
+        next: (conversations) => {
+          this.conversations = conversations;
+          console.log('Loaded all conversations (admin):', conversations);
+        },
+        error: (error) => {
+          console.error('Error loading all conversations:', error);
+          this.toastService.showError('Failed to load conversations');
+        }
+      });
+    } else {
+      // Regular users see only their conversations
+      this.chatService.getUserConversations(userId).subscribe({
+        next: (conversations) => {
+          this.conversations = conversations;
+          console.log('Loaded conversations:', conversations);
+        },
+        error: (error) => {
+          console.error('Error loading conversations:', error);
+          this.toastService.showError('Failed to load conversations');
+        }
+      });
+    }
 
     // Load inbox preview
     this.chatService.getInboxPreview(userId).subscribe({
@@ -472,55 +487,57 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
       currentUserId: this.currentUserId,
       receiverId: receiverId,
       activeConversation: this.activeConversation,
-      content: this.newMessageContent.trim()
+      content: this.newMessageContent.trim(),
+      isAdmin: this.isAdmin
     });
     
     let messageContent = this.newMessageContent.trim();
     if (this.isAdmin) {
       messageContent = `[ADMIN] ${messageContent}`;
     }
+    
     const createMessageDto: CreateMessageDto = {
       senderId: this.currentUserId,
       receiverId: receiverId,
-      content: messageContent
+      content: messageContent,
+      conversationId: this.activeConversation.id
     };
 
     try {
-      const message = await this.chatService.sendMessage(createMessageDto).toPromise();
-      if (message) {
-        // Add temporary message with 'sending' status
-        const tempMessage: MessageDto = {
-          ...message,
-          id: Date.now(), // Temporary ID
-          sentAt: new Date(),
-          isRead: false
-        };
-        
-        // Add to active conversation messages
-        if (this.activeConversation) {
-          this.activeConversation.messages = this.activeConversation.messages || [];
-          this.activeConversation.messages.push(tempMessage);
-          this.messageStatus.set(tempMessage.id, 'sending');
-        }
-        
-        this.newMessageContent = '';
-        this.shouldScrollToBottom = true;
-        
-        // Update status to 'sent' after a short delay
-        setTimeout(() => {
-          this.messageStatus.set(tempMessage.id, 'sent');
-        }, 500);
-        
-        // Update status to 'delivered' after another delay
-        setTimeout(() => {
-          this.messageStatus.set(tempMessage.id, 'delivered');
-        }, 1000);
+      let messageObservable: Observable<MessageDto>;
+      
+      if (this.isAdmin) {
+        // Admin sends message using admin endpoint
+        messageObservable = this.chatService.sendMessageAsAdmin(createMessageDto);
+      } else {
+        // Regular user sends message using normal endpoint
+        messageObservable = this.chatService.sendMessage(createMessageDto);
       }
+
+      messageObservable.subscribe({
+        next: (message) => {
+          console.log('Message sent successfully:', message);
+          this.newMessageContent = '';
+          this.isSendingMessage = false;
+          
+          // Add message to active conversation
+          if (this.activeConversation) {
+            this.activeConversation.messages.push(message);
+            this.shouldScrollToBottom = true;
+          }
+          
+          this.toastService.showSuccess('Message sent!');
+        },
+        error: (error) => {
+          console.error('Error sending message:', error);
+          this.isSendingMessage = false;
+          this.toastService.showError('Failed to send message');
+        }
+      });
     } catch (error) {
-      console.error('Error sending message:', error);
-      this.toastService.showError('Failed to send message');
-    } finally {
+      console.error('Exception in sendMessage:', error);
       this.isSendingMessage = false;
+      this.toastService.showError('Failed to send message');
     }
   }
 
@@ -800,7 +817,56 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   get connectionStatusClass(): string {
-    return this.isConnected ? 'text-success' : 'text-danger';
+    return this.isConnected ? 'bg-success' : 'bg-danger';
+  }
+
+  // Admin methods
+  loadAllConversations(): void {
+    if (!this.isAdmin) return;
+    
+    this.chatService.getAllConversations().subscribe({
+      next: (conversations) => {
+        this.conversations = conversations;
+        console.log('Loaded all conversations (admin):', conversations);
+        this.toastService.showSuccess('Loaded all conversations');
+      },
+      error: (error) => {
+        console.error('Error loading all conversations:', error);
+        this.toastService.showError('Failed to load all conversations');
+      }
+    });
+  }
+
+  sendAsAdmin(): void {
+    if (!this.isAdmin || !this.activeConversation) {
+      this.toastService.showError('Admin access required');
+      return;
+    }
+
+    const adminMessage = prompt('Enter admin message:');
+    if (!adminMessage?.trim()) return;
+
+    const createMessageDto: CreateMessageDto = {
+      senderId: 'admin',
+      receiverId: this.activeConversation.user1Id === 'admin' ? this.activeConversation.user2Id : this.activeConversation.user1Id,
+      content: `[ADMIN] ${adminMessage.trim()}`,
+      conversationId: this.activeConversation.id
+    };
+
+    this.chatService.sendMessageAsAdmin(createMessageDto).subscribe({
+      next: (message) => {
+        console.log('Admin message sent successfully:', message);
+        if (this.activeConversation) {
+          this.activeConversation.messages.push(message);
+          this.shouldScrollToBottom = true;
+        }
+        this.toastService.showSuccess('Admin message sent!');
+      },
+      error: (error) => {
+        console.error('Error sending admin message:', error);
+        this.toastService.showError('Failed to send admin message');
+      }
+    });
   }
 
   isMessageFromCurrentUser(message: MessageDto): boolean {

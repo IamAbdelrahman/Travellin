@@ -311,6 +311,15 @@ export class ChatService {
     return this.http.post<ConversationDto>(`${this.baseUrl}/conversations/start`, startConversationDto, { headers: this.getHttpHeaders() });
   }
 
+  // Admin methods
+  public getAllConversations(): Observable<ConversationDto[]> {
+    return this.http.get<ConversationDto[]>(`${this.baseUrl}/conversations/admin/all`, { headers: this.getHttpHeaders() });
+  }
+
+  public sendMessageAsAdmin(createMessageDto: CreateMessageDto): Observable<MessageDto> {
+    return this.http.post<MessageDto>(`${this.baseUrl}/conversations/admin/send-message`, createMessageDto, { headers: this.getHttpHeaders() });
+  }
+
   public getUserConversations(userId: string): Observable<ConversationDto[]> {
     console.log('Calling getUserConversations for userId:', userId);
     return this.http.get<ConversationDto[]>(`${this.baseUrl}/conversations/by-user/${userId}`, { headers: this.getHttpHeaders() });

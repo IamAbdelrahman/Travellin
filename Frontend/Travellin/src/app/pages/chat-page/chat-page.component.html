@@ -11,6 +11,12 @@
           <span *ngIf="isAdmin" class="badge bg-warning text-dark">
             <i class="fas fa-shield-alt me-1"></i>Admin
           </span>
+          <button *ngIf="isAdmin" class="btn btn-outline-primary btn-sm" title="View All Conversations" (click)="loadAllConversations()">
+            <i class="fas fa-list"></i>
+          </button>
+          <button *ngIf="isAdmin" class="btn btn-outline-info btn-sm" title="Send as Admin" (click)="sendAsAdmin()">
+            <i class="fas fa-user-shield"></i>
+          </button>
         </div>
       </div>
       
@@ -85,6 +91,10 @@
                 <p class="mb-1 text-muted small text-truncate" [class.fw-semibold]="inboxItem.unreadCount && inboxItem.unreadCount > 0">
                   {{ inboxItem.lastMessage || 'No messages yet' }}
                 </p>
+                <!-- Property context -->
+                <p *ngIf="inboxItem.propertyTitle" class="mb-0 text-muted small text-truncate">
+                  <i class="fas fa-home me-1"></i>{{ inboxItem.propertyTitle }}
+                </p>
               </div>
               <div class="text-end ms-2">
                 <small class="text-muted d-block">{{ formatMessageTime(inboxItem.lastMessageTime) }}</small>
@@ -119,6 +129,10 @@
                 Online
               </span>
               <span class="text-muted">• Active now</span>
+              <!-- Property context -->
+              <span *ngIf="activeConversation.propertyTitle" class="text-muted ms-2">
+                • {{ activeConversation.propertyTitle }}
+              </span>
               <!-- Silent refresh indicator (subtle) -->
               <span class="text-muted ms-2" style="font-size: 0.7rem;">
                 <i class="fas fa-sync-alt" style="animation: spin 2s linear infinite; opacity: 0.5;"></i>
