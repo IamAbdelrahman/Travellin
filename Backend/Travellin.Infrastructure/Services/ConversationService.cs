@@ -57,7 +57,7 @@ namespace Travellin.Infrastructure.Services
                 CreatedAt = DateTime.UtcNow
             };
 
-            await _conversationRepo.Create(conversation);
+            _conversationRepo.Create(conversation);
             await _unitOfWork.SaveChangesAsync();
 
             return conversation;
