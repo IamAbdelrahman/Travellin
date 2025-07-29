@@ -56,6 +56,8 @@ namespace Travellin.Infrastructure.Shared
         public IPropertyFilterExtractorService PropertyFilterExtractorService =>
                 _propertyFilterExtractorService ??= new PropertyFilterExtractorService
                 (_provider.GetRequiredKeyedService<ChatClient>("MainOpenAIClient"), _provider.GetRequiredService<IUnitOfWork>());
+        public ICancellationService CancellationService => _provider.GetRequiredService<ICancellationService>();
+        public IPaymentRefundService PaymentRefundService => _provider.GetRequiredService<IPaymentRefundService>();
 
     }
 }

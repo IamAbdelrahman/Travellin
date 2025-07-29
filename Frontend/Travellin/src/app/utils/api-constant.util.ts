@@ -31,10 +31,28 @@ export class ApiConstant {
     add: `${ApiConstant.baseUrl}/FavoriteProperties`,
   };
   public static booking = {
-    getAllBookings: `${ApiConstant.baseUrl}/Bookings/AllBookings`,
+    getAllBookings: `${ApiConstant.baseUrl}/Bookings/HistoryBooking`,
     getBookingById: `${ApiConstant.baseUrl}/Bookings/{id}`,
     createBooking: `${ApiConstant.baseUrl}/Bookings/Reserve`,
     cancelBooking: `${ApiConstant.baseUrl}/Bookings/{id}/cancel`,
+    cancelEnhanced: `${ApiConstant.baseUrl}/Bookings/{id}/cancel-enhanced`,
+    canCancel: `${ApiConstant.baseUrl}/Bookings/{id}/can-cancel`,
+    refund: `${ApiConstant.baseUrl}/Bookings/{id}/refund`,
+    
+    // Host booking management
+    hostBookings: `${ApiConstant.baseUrl}/Bookings/host/bookings`,
+    hostPendingBookings: `${ApiConstant.baseUrl}/Bookings/host/pending-bookings`,
+    hostPendingCount: `${ApiConstant.baseUrl}/Bookings/host/pending-count`,
+    propertyBookings: `${ApiConstant.baseUrl}/Bookings/host/property/{propertyId}/bookings`,
+    
+    // Admin booking management
+    adminAllBookings: `${ApiConstant.baseUrl}/Bookings/admin/all-bookings`,
+    adminPendingBookings: `${ApiConstant.baseUrl}/Bookings/admin/pending-bookings`,
+    adminPendingCount: `${ApiConstant.baseUrl}/Bookings/admin/pending-count`,
+    
+    // Booking actions
+    acceptBooking: `${ApiConstant.baseUrl}/Bookings/{bookingId}/accept`,
+    declineBooking: `${ApiConstant.baseUrl}/Bookings/{bookingId}/decline`,
   };
   public static country = {
     getAllCountries: `${ApiConstant.baseUrl}/Countries`,
