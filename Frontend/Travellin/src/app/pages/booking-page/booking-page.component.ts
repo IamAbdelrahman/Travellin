@@ -10,6 +10,7 @@ import {
 } from '../../models/api/request/iget-bookings';
 import { PropertyDetails } from '../../models/api/request/iget-propertiesDetails';
 import { ICheckoutBookingRequest } from '../../models/api/request/ICheckoutBookingRequest';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-booking-page',
@@ -34,6 +35,7 @@ export class BookingPageComponent implements OnInit {
   savedInfants = 0;
   savedPets = 0;
   isCheckingOut = false;
+  isBooking = false;
 
   openOverlay(type: 'guest' | 'date'): void {
     // this.isOverlayOpen = true;
@@ -99,7 +101,8 @@ export class BookingPageComponent implements OnInit {
   constructor(
     private checkOutService: CheckOutBookingService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toaster: ToastService
   ) {
     this.selectedBookingId = this.route.snapshot.paramMap.get('id')!;
   }
