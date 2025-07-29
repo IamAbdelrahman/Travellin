@@ -4528,114 +4528,114 @@ namespace Travellin.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            EndDate = new DateTime(2025, 6, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
-                            StartDate = new DateTime(2025, 6, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
-                            EndDate = new DateTime(2025, 5, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
-                            StartDate = new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 3,
-                            EndDate = new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
-                            StartDate = new DateTime(2025, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 4,
-                            EndDate = new DateTime(2025, 5, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
-                            StartDate = new DateTime(2025, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 5,
-                            EndDate = new DateTime(2025, 5, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
-                            StartDate = new DateTime(2025, 5, 11, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 11, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 14,
-                            EndDate = new DateTime(2025, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
-                            StartDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 6,
-                            EndDate = new DateTime(2025, 6, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048",
-                            StartDate = new DateTime(2025, 6, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 7,
-                            EndDate = new DateTime(2025, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048",
-                            StartDate = new DateTime(2025, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 15,
-                            EndDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048",
-                            StartDate = new DateTime(2025, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 8,
-                            EndDate = new DateTime(2025, 9, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
-                            StartDate = new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 16,
-                            EndDate = new DateTime(2025, 10, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
                             StartDate = new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = 17,
-                            EndDate = new DateTime(2025, 11, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Id = 8,
+                            EndDate = new DateTime(2025, 12, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
-                            StartDate = new DateTime(2025, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 12, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 16,
+                            EndDate = new DateTime(2025, 12, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
+                            StartDate = new DateTime(2025, 12, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 17,
+                            EndDate = new DateTime(2025, 12, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
+                            StartDate = new DateTime(2025, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 9,
-                            EndDate = new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2",
-                            StartDate = new DateTime(2025, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 10,
-                            EndDate = new DateTime(2025, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2",
-                            StartDate = new DateTime(2025, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -4648,482 +4648,482 @@ namespace Travellin.Infrastructure.Migrations
                         new
                         {
                             Id = 11,
-                            EndDate = new DateTime(2025, 5, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
-                            StartDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 19,
-                            EndDate = new DateTime(2025, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
-                            StartDate = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 20,
-                            EndDate = new DateTime(2025, 7, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
-                            StartDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 12,
-                            EndDate = new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
-                            StartDate = new DateTime(2025, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 21,
-                            EndDate = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
                             StartDate = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = 22,
-                            EndDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Id = 19,
+                            EndDate = new DateTime(2025, 9, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
-                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
+                            PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
                             StartDate = new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
+                            Id = 20,
+                            EndDate = new DateTime(2025, 10, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
+                            StartDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 12,
+                            EndDate = new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
+                            StartDate = new DateTime(2025, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 21,
+                            EndDate = new DateTime(2025, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
+                            StartDate = new DateTime(2025, 11, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 22,
+                            EndDate = new DateTime(2025, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
+                            StartDate = new DateTime(2025, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
                             Id = 13,
-                            EndDate = new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
-                            StartDate = new DateTime(2025, 5, 18, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 23,
-                            EndDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 11, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
-                            StartDate = new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 24,
-                            EndDate = new DateTime(2025, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 12, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
-                            StartDate = new DateTime(2025, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 25,
-                            EndDate = new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "4b04a76a-1608-4a8f-b09c-8d9043b83e16",
-                            StartDate = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 26,
-                            EndDate = new DateTime(2025, 7, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "4b04a76a-1608-4a8f-b09c-8d9043b83e16",
-                            StartDate = new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 27,
-                            EndDate = new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "4b04a76a-1608-4a8f-b09c-8d9043b83e16",
-                            StartDate = new DateTime(2025, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 28,
-                            EndDate = new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1",
-                            StartDate = new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 29,
-                            EndDate = new DateTime(2025, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1",
-                            StartDate = new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 30,
-                            EndDate = new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1",
-                            StartDate = new DateTime(2025, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 31,
-                            EndDate = new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
-                            StartDate = new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 32,
-                            EndDate = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
-                            StartDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 33,
-                            EndDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
-                            StartDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 34,
-                            EndDate = new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
-                            StartDate = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 35,
-                            EndDate = new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
-                            StartDate = new DateTime(2025, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 36,
                             EndDate = new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
-                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
+                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
                             StartDate = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
+                            Id = 32,
+                            EndDate = new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
+                            StartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 33,
+                            EndDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
+                            StartDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 34,
+                            EndDate = new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
+                            StartDate = new DateTime(2025, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 35,
+                            EndDate = new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
+                            StartDate = new DateTime(2025, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 36,
+                            EndDate = new DateTime(2025, 11, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
+                            StartDate = new DateTime(2025, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
                             Id = 37,
-                            EndDate = new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c5c0d4db-b048-4ee4-8835-344900fd35b2",
-                            StartDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 38,
-                            EndDate = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c5c0d4db-b048-4ee4-8835-344900fd35b2",
-                            StartDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 39,
-                            EndDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c5c0d4db-b048-4ee4-8835-344900fd35b2",
-                            StartDate = new DateTime(2025, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 40,
-                            EndDate = new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "0bb50f31-e322-4b76-97dd-6a7fcf585d33",
-                            StartDate = new DateTime(2025, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 41,
-                            EndDate = new DateTime(2025, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "0bb50f31-e322-4b76-97dd-6a7fcf585d33",
-                            StartDate = new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 42,
-                            EndDate = new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "0bb50f31-e322-4b76-97dd-6a7fcf585d33",
-                            StartDate = new DateTime(2025, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 43,
-                            EndDate = new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "a555515a-ff8a-4741-b0a4-db9be729198e",
-                            StartDate = new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 44,
-                            EndDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "a555515a-ff8a-4741-b0a4-db9be729198e",
-                            StartDate = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 45,
-                            EndDate = new DateTime(2025, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "a555515a-ff8a-4741-b0a4-db9be729198e",
-                            StartDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 46,
-                            EndDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c10d2d46-869a-46bc-a46d-90bdd958c252",
-                            StartDate = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 47,
-                            EndDate = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c10d2d46-869a-46bc-a46d-90bdd958c252",
-                            StartDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 48,
-                            EndDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c10d2d46-869a-46bc-a46d-90bdd958c252",
-                            StartDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 49,
-                            EndDate = new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08",
-                            StartDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 50,
-                            EndDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08",
-                            StartDate = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 51,
-                            EndDate = new DateTime(2025, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08",
-                            StartDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 52,
-                            EndDate = new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "294e2751-203b-4beb-b21e-0bb96f082d7c",
-                            StartDate = new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 53,
-                            EndDate = new DateTime(2025, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "294e2751-203b-4beb-b21e-0bb96f082d7c",
-                            StartDate = new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 54,
-                            EndDate = new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "294e2751-203b-4beb-b21e-0bb96f082d7c",
-                            StartDate = new DateTime(2025, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 55,
-                            EndDate = new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "06dbae08-bc6b-4ca6-9162-3213784b9971",
-                            StartDate = new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 56,
-                            EndDate = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "06dbae08-bc6b-4ca6-9162-3213784b9971",
-                            StartDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 57,
-                            EndDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "06dbae08-bc6b-4ca6-9162-3213784b9971",
-                            StartDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 58,
-                            EndDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "f1e8be41-4fd5-47e4-8960-12d8f4afc273",
-                            StartDate = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 59,
-                            EndDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "f1e8be41-4fd5-47e4-8960-12d8f4afc273",
-                            StartDate = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 60,
-                            EndDate = new DateTime(2025, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "f1e8be41-4fd5-47e4-8960-12d8f4afc273",
-                            StartDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 61,
-                            EndDate = new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198",
-                            StartDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 62,
-                            EndDate = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198",
-                            StartDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 63,
-                            EndDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198",
-                            StartDate = new DateTime(2025, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 64,
-                            EndDate = new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "efd964ab-dceb-4b96-b113-665c5684a102",
-                            StartDate = new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 65,
-                            EndDate = new DateTime(2025, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "efd964ab-dceb-4b96-b113-665c5684a102",
-                            StartDate = new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 66,
-                            EndDate = new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "efd964ab-dceb-4b96-b113-665c5684a102",
-                            StartDate = new DateTime(2025, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 67,
-                            EndDate = new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "52a8df7d-c0b2-4ee3-8369-9daed4885f9f",
-                            StartDate = new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 68,
-                            EndDate = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "52a8df7d-c0b2-4ee3-8369-9daed4885f9f",
-                            StartDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 69,
-                            EndDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "52a8df7d-c0b2-4ee3-8369-9daed4885f9f",
-                            StartDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 70,
-                            EndDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c150e428-1c9a-43a2-be07-f4366875f1ce",
-                            StartDate = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 71,
-                            EndDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c150e428-1c9a-43a2-be07-f4366875f1ce",
-                            StartDate = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 72,
-                            EndDate = new DateTime(2025, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c150e428-1c9a-43a2-be07-f4366875f1ce",
-                            StartDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 73,
-                            EndDate = new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35",
-                            StartDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 74,
-                            EndDate = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35",
-                            StartDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 75,
-                            EndDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35",
-                            StartDate = new DateTime(2025, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -5531,6 +5531,16 @@ namespace Travellin.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("QualityFeedback")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("QualityStatus")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<DateTime>("TouchedAt")
                         .HasColumnType("datetime2(3)");
 
@@ -5545,450 +5555,96 @@ namespace Travellin.Infrastructure.Migrations
                         {
                             PhotoId = "b455bb0a-69a3-4024-b5fa-5a49323e58fd",
                             PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
+                            QualityFeedback = "Photo is clear and well-lit.",
+                            QualityStatus = "HighQuality",
                             TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PhotoId = "dc16e3d2-16ed-4ff5-b9c2-27a1e8b5ccbe",
                             PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
+                            QualityFeedback = "Image is blurry, please upload a clearer photo.",
+                            QualityStatus = "Blurry",
                             TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PhotoId = "4b0f81f1-9bc0-45c6-988e-1a4fd270b3e0",
                             PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
+                            QualityFeedback = "Photo is too dark, try taking it in better lighting.",
+                            QualityStatus = "Dark",
                             TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PhotoId = "2ac68b52-e7b6-4bb7-9f8e-49aa7f2b2b6c",
                             PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
+                            QualityFeedback = "Excellent composition and clarity.",
+                            QualityStatus = "HighQuality",
                             TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PhotoId = "69c6c01e-65b3-4cf7-bbc7-2e94272b658a",
                             PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
+                            QualityFeedback = "Photo does not show the property.",
+                            QualityStatus = "Irrelevant",
                             TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PhotoId = "95cde2b1-305e-4c13-9293-8c4c8f7c8b9f",
                             PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
+                            QualityFeedback = "Photo is suitable for listing.",
+                            QualityStatus = "HighQuality",
                             TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PhotoId = "7a18064f-b6cb-4d58-a51b-0e8a74eac7a4",
                             PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048",
+                            QualityFeedback = "Photo is clear and attractive.",
+                            QualityStatus = "HighQuality",
                             TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PhotoId = "4dfe3d56-2d34-4a6b-9cb5-f7a5a2dd8c28",
                             PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048",
+                            QualityFeedback = "Please retake the photo for better clarity.",
+                            QualityStatus = "Blurry",
                             TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PhotoId = "6c54a231-b88f-409f-b5d5-170180930186",
                             PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048",
+                            QualityFeedback = "Good lighting and focus.",
+                            QualityStatus = "HighQuality",
                             TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PhotoId = "26d418bb-0f90-4f3c-b339-7dd5c31b5e99",
                             PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
+                            QualityFeedback = "Photo is clear and well-composed.",
+                            QualityStatus = "HighQuality",
                             TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PhotoId = "a4c0d40d-e90e-4b14-8a2a-5ac0212be9b1",
                             PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
+                            QualityFeedback = "Increase brightness for better visibility.",
+                            QualityStatus = "Dark",
                             TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PhotoId = "89f65612-5023-489e-9604-2f01074abf0c",
                             PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "b21f8f4f-6d95-4f60-81b4-56d2ef017a08",
-                            PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "e34a2808-38df-4e47-8c3e-d6e3f2712f11",
-                            PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "5b742ed2-28d9-4e3b-8125-6e9c4587a0d3",
-                            PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "2cf95d6d-63ae-4b97-8101-c6c5e8227b6d",
-                            PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "ce9e31d6-6553-4214-8b94-fb9c8f3065ed",
-                            PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "5e2e82a1-4893-4a63-9375-d73f7a09d7c5",
-                            PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "7d861c0c-011d-4b2a-8ce5-f5b1f0b81d01",
-                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "fbc177de-bf4c-4b75-a1f6-884d05ce6c9f",
-                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "51d1e109-dccf-45fd-9f15-bbd3c0b7fcd5",
-                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "6c79893d-f97f-4fc6-b0c3-4ebfcab3f85f",
-                            PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "98a76538-918f-4e60-9c01-b364e0e1891f",
-                            PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "f3885b77-0f9e-4ec3-9b3e-cbc194a07d7f",
-                            PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "da2afaf9-b1df-4daf-bb44-3d6a79be4a17",
-                            PropertyId = "4b04a76a-1608-4a8f-b09c-8d9043b83e16",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "1cc7082f-8324-4888-b903-9d8ed2ffd144",
-                            PropertyId = "4b04a76a-1608-4a8f-b09c-8d9043b83e16",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "11010e1b-3c99-4d25-a176-9b826b19ec88",
-                            PropertyId = "4b04a76a-1608-4a8f-b09c-8d9043b83e16",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "a6d2fafb-6490-4f6f-a4c7-f42fdde98bf2",
-                            PropertyId = "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "7ae244c8-42a8-422c-9be6-b809c1b427f6",
-                            PropertyId = "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "ab39dc17-5108-425b-8350-1995323ba1a1",
-                            PropertyId = "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "55a42f5d-4934-41df-8077-4ea9654c8d4f",
-                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "b01df5ef-3951-4e4c-80c5-00e10029a682",
-                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "68b3f994-ed3d-461e-89b2-13ebe89d53b6",
-                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "0184da01-3f04-431a-821b-863db48eee6b",
-                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "87668883-00e2-4d99-9dea-b612fb1f09fb",
-                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "aca8279a-04bd-4277-8370-1338beb17581",
-                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "1d0aa7e5-30b6-42f6-aa21-11fed6d12c9a",
-                            PropertyId = "c5c0d4db-b048-4ee4-8835-344900fd35b2",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "160b2604-8211-42b5-9f78-4360d5a71ee9",
-                            PropertyId = "c5c0d4db-b048-4ee4-8835-344900fd35b2",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "9f90c24f-0a95-46a3-a2e2-a0688c460a23",
-                            PropertyId = "c5c0d4db-b048-4ee4-8835-344900fd35b2",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "84d8e12a-4754-4825-b0fc-2b43981f6ba0",
-                            PropertyId = "0bb50f31-e322-4b76-97dd-6a7fcf585d33",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "e0f27e50-9e45-489b-90d6-f62211f67f12",
-                            PropertyId = "0bb50f31-e322-4b76-97dd-6a7fcf585d33",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "caf5622f-99a6-4927-a913-48d66437de5d",
-                            PropertyId = "0bb50f31-e322-4b76-97dd-6a7fcf585d33",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "e3d6bbae-2087-4269-b6ca-784e3301cce0",
-                            PropertyId = "a555515a-ff8a-4741-b0a4-db9be729198e",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "aac5407d-a994-4c3e-a1ff-b7646d79162a",
-                            PropertyId = "a555515a-ff8a-4741-b0a4-db9be729198e",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "a05afc7a-9127-4a33-839c-908e1f47a4ae",
-                            PropertyId = "a555515a-ff8a-4741-b0a4-db9be729198e",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "90cd8c79-cc01-4edf-85b8-9931cd3fc772",
-                            PropertyId = "c10d2d46-869a-46bc-a46d-90bdd958c252",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "3588517b-0a71-4d29-ad8c-906a8e545d00",
-                            PropertyId = "c10d2d46-869a-46bc-a46d-90bdd958c252",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "da734851-2db8-4541-a788-b675b7560eec",
-                            PropertyId = "c10d2d46-869a-46bc-a46d-90bdd958c252",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "9ea371c2-fefe-423f-953c-c744a33d5fb9",
-                            PropertyId = "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "4c376b94-d74f-4472-b1a5-4c3d51df56d8",
-                            PropertyId = "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "e56c967f-ee64-4e53-b0e6-1b1342baf2da",
-                            PropertyId = "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "9b0d97e4-6dad-4e5b-893c-38aaff4a50e2",
-                            PropertyId = "294e2751-203b-4beb-b21e-0bb96f082d7c",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "9201fad7-d63f-4dbf-84f1-adb25c451e9e",
-                            PropertyId = "294e2751-203b-4beb-b21e-0bb96f082d7c",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "303c12b0-baca-42d4-824e-d84b940d317a",
-                            PropertyId = "294e2751-203b-4beb-b21e-0bb96f082d7c",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "0f18b242-e627-45eb-a22d-516722b7c78c",
-                            PropertyId = "06dbae08-bc6b-4ca6-9162-3213784b9971",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "a2529147-026b-4b8b-a811-cb18989a8129",
-                            PropertyId = "06dbae08-bc6b-4ca6-9162-3213784b9971",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "301f7e01-cc25-48ed-90aa-fafe16fce3b5",
-                            PropertyId = "06dbae08-bc6b-4ca6-9162-3213784b9971",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "08f3b524-1ff0-4d1f-a4f9-a50c0d6ee717",
-                            PropertyId = "f1e8be41-4fd5-47e4-8960-12d8f4afc273",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "1389e44f-240f-4eed-bde3-93623d7c41d1",
-                            PropertyId = "f1e8be41-4fd5-47e4-8960-12d8f4afc273",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "ff840d01-6eab-45fb-a911-674725a89003",
-                            PropertyId = "f1e8be41-4fd5-47e4-8960-12d8f4afc273",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "f3db201e-fddd-4278-9beb-96863dde2f0f",
-                            PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "82da2e46-5e65-4ad8-97e9-ad10fdd63171",
-                            PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "e4a28523-f13c-431a-8af5-2ebd307f1a85",
-                            PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "6f572d60-4465-40a4-8b63-7bb2eb876cbd",
-                            PropertyId = "efd964ab-dceb-4b96-b113-665c5684a102",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "5c8fa3e9-2590-44d4-8e36-ee7f3c526b37",
-                            PropertyId = "efd964ab-dceb-4b96-b113-665c5684a102",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "3777d149-0028-4ea1-ba62-db41d33939f5",
-                            PropertyId = "efd964ab-dceb-4b96-b113-665c5684a102",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "1fb978f8-fb49-4f38-8acb-345be5c86bc7",
-                            PropertyId = "52a8df7d-c0b2-4ee3-8369-9daed4885f9f",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "ba47797b-da79-47a0-8014-48e5422f0500",
-                            PropertyId = "52a8df7d-c0b2-4ee3-8369-9daed4885f9f",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "e019ead5-3b99-4f78-a84b-23b34ba27e26",
-                            PropertyId = "52a8df7d-c0b2-4ee3-8369-9daed4885f9f",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "f4b528d3-1204-4ccc-af05-2a39346d7ace",
-                            PropertyId = "c150e428-1c9a-43a2-be07-f4366875f1ce",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "a73860df-b173-4d4d-b834-124f19d93a20e",
-                            PropertyId = "c150e428-1c9a-43a2-be07-f4366875f1ce",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "3cb5e765-921f-4e0e-97be-b6d1e4c762cf",
-                            PropertyId = "c150e428-1c9a-43a2-be07-f4366875f1ce",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "ec263c4f-fcc3-4d72-805e-d0b116e2cdd7",
-                            PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "2f50cb6f-8aeb-4428-8279-7c3a11d18232",
-                            PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35",
-                            TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            PhotoId = "fbb7ade9-39b8-4b3b-abb5-b38fc1f70471",
-                            PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35",
+                            QualityFeedback = "Photo is suitable for listing.",
+                            QualityStatus = "HighQuality",
                             TouchedAt = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
