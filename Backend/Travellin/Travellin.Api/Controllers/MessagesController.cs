@@ -14,27 +14,23 @@ namespace Travellin.Api.Controllers
     public class MessagesController : ControllerBase
     {
         private readonly IMessageService _messageService;
+        private readonly IServiceFactory _serviceFactory;
+        
         private string GetCurrentUserId()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new UnauthorizedAccessException("User not authenticated");
-            }
-            return userId;
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
 
-        public MessagesController(IMessageService messageService)
+        public MessagesController(IMessageService messageService, IServiceFactory serviceFactory)
         {
             _messageService = messageService;
+            _serviceFactory = serviceFactory;
         }
 
         /// <summary>
-        /// Send a new message from one user to another.
+        /// Send a new message between users.
         /// </summary>
-        /// <remarks>
-        /// Automatically creates a conversation between the sender and receiver if one doesn't exist.
-        /// </remarks>
+        /// <param name="dto">The message data</param>
         [HttpPost("send")]
         [Consumes("application/json")]
         [Produces("application/json")]
@@ -63,7 +59,7 @@ namespace Travellin.Api.Controllers
                     IsRead = false
                 };
 
-                var savedMessage = await ServiceFactory.MessageService.CreateMessageAsync(message);
+                var savedMessage = await _messageService.SendMessageAsync(message);
                 return Ok(savedMessage);
             }
             catch (UnauthorizedAccessException ex)

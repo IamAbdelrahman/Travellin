@@ -19,6 +19,8 @@ namespace Travellin.Core.Entities
         [ForeignKey("Property")]
         public string? PropertyId { get; set; }
         
+        public DateTime CreatedAt { get; set; }
+        
         public AppUser User1 { get; set; }
         public AppUser User2 { get; set; }
         public Property? Property { get; set; }
