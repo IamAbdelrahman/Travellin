@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 using Travellin.Core.Entities;
+using Travellin.Core.Enums;
 using Travellin.Infrastructure.Data.Seeds;
 
 namespace Travellin.Infrastructure.Data.Configurations
@@ -22,6 +24,12 @@ namespace Travellin.Infrastructure.Data.Configurations
                 .IsRequired()
                 .HasColumnType("datetime2(3)");
 
+            builder.Property(e => e.QualityStatus)
+                  .IsRequired()
+                  .HasMaxLength(50);
+
+            builder.Property(e => e.QualityFeedback).HasMaxLength(500);
+
             builder.HasOne(x => x.Property)
                 .WithMany(x => x.PropertyPhotos)
                 .HasForeignKey(x => x.PropertyId);
@@ -35,3 +43,4 @@ namespace Travellin.Infrastructure.Data.Configurations
         }
     }
 }
+
