@@ -47,36 +47,32 @@ namespace Travellin.Api.Controllers
             try
             {
                 var currentUserId = GetCurrentUserId();
-                Console.WriteLine($"SendMessage called by user {currentUserId} to {dto.ReceiverId}");
+                if (currentUserId == null)
+                    return Unauthorized();
 
-                // Force sender to be the current user
                 if (dto.SenderId != currentUserId)
-                {
-                    Console.WriteLine($"Forbidden: {dto.SenderId} != {currentUserId}");
                     return Forbid();
-                }
 
                 var message = new Message
                 {
-                    SenderId = currentUserId,
+                    ConversationId = dto.ConversationId,
+                    SenderId = dto.SenderId,
                     ReceiverId = dto.ReceiverId,
                     Content = dto.Content,
-                    IsRead = false,
+                    SentAt = DateTime.UtcNow,
+                    IsRead = false
                 };
 
-                var savedMessage = await _messageService.SendMessageAsync(message);
-                Console.WriteLine($"Message sent successfully with ID: {savedMessage.Id}");
+                var savedMessage = await ServiceFactory.MessageService.CreateMessageAsync(message);
                 return Ok(savedMessage);
             }
             catch (UnauthorizedAccessException ex)
             {
-                Console.WriteLine($"Unauthorized access in SendMessage: {ex.Message}");
                 return Unauthorized();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in SendMessage: {ex.Message}");
-                return StatusCode(500, "Internal server error");
+                return BadRequest(ex.Message);
             }
         }
 

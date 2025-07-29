@@ -11,6 +11,12 @@
           <span *ngIf="isAdmin" class="badge bg-warning text-dark">
             <i class="fas fa-shield-alt me-1"></i>Admin
           </span>
+          <button *ngIf="isAdmin" class="btn btn-outline-primary btn-sm" title="View All Conversations" (click)="loadAllConversations()">
+            <i class="fas fa-list"></i>
+          </button>
+          <button *ngIf="isAdmin" class="btn btn-outline-info btn-sm" title="Send as Admin" (click)="sendAsAdmin()">
+            <i class="fas fa-user-shield"></i>
+          </button>
         </div>
       </div>
       
@@ -62,7 +68,7 @@
 
       <div 
         *ngFor="let inboxItem of filteredInbox; trackBy: trackByConversationId" 
-        class="conversation-item p-3 border-bottom cursor-pointer"
+        class="conversation-item p-2 border-bottom cursor-pointer"
         [class.active]="activeConversation?.id === inboxItem.conversationId"
         [class.unread]="inboxItem.unreadCount && inboxItem.unreadCount > 0"
         (click)="selectConversationByInbox(inboxItem)">
@@ -70,7 +76,7 @@
         <div class="d-flex align-items-start">
           <div class="avatar me-3 position-relative">
             <div class="bg-gradient-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" 
-                 style="width: 45px; height: 45px; font-size: 18px;">
+                 style="width: 38px; height: 38px; font-size: 14px;">
               {{ getParticipantInitial(inboxItem.participant) }}
             </div>
             <div *ngIf="inboxItem.unreadCount && inboxItem.unreadCount > 0" class="unread-indicator"></div>
@@ -84,6 +90,10 @@
                 </h6>
                 <p class="mb-1 text-muted small text-truncate" [class.fw-semibold]="inboxItem.unreadCount && inboxItem.unreadCount > 0">
                   {{ inboxItem.lastMessage || 'No messages yet' }}
+                </p>
+                <!-- Property context -->
+                <p *ngIf="inboxItem.propertyTitle" class="mb-0 text-muted small text-truncate">
+                  <i class="fas fa-home me-1"></i>{{ inboxItem.propertyTitle }}
                 </p>
               </div>
               <div class="text-end ms-2">
@@ -102,23 +112,22 @@
   <!-- Main Chat Area -->
   <div class="chat-main flex-grow-1 d-flex flex-column">
     <!-- Chat Header -->
-    <div class="chat-header p-3 border-bottom bg-white" *ngIf="activeConversation">
+    <div class="chat-header p-2 border-bottom bg-white" *ngIf="activeConversation">
       <div class="d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center">
           <div class="avatar me-3">
             <div class="bg-gradient-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" 
-                 style="width: 50px; height: 50px; font-size: 20px;">
+                 style="width: 42px; height: 42px; font-size: 16px;">
               {{ getOtherUserName(activeConversation).charAt(0).toUpperCase() }}
             </div>
           </div>
           <div>
             <h6 class="mb-0 fw-bold">{{ getOtherUserName(activeConversation) }}</h6>
             <small class="text-muted">
-              <span class="badge bg-success badge-sm me-2">
-                <i class="fas fa-circle me-1" style="font-size: 0.6rem;"></i>
-                Online
+              <!-- Property context -->
+              <span *ngIf="activeConversation.propertyTitle" class="text-muted">
+                <i class="fas fa-home me-1"></i>{{ activeConversation.propertyTitle }}
               </span>
-              <span class="text-muted">• Active now</span>
               <!-- Silent refresh indicator (subtle) -->
               <span class="text-muted ms-2" style="font-size: 0.7rem;">
                 <i class="fas fa-sync-alt" style="animation: spin 2s linear infinite; opacity: 0.5;"></i>
@@ -127,11 +136,6 @@
           </div>
         </div>
         
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-outline-secondary btn-sm" title="More options">
-            <i class="fas fa-ellipsis-v"></i>
-          </button>
-        </div>
       </div>
     </div>
 
@@ -147,15 +151,11 @@
     <!-- Messages Area -->
     <div *ngIf="activeConversation" class="chat-messages flex-grow-1 d-flex flex-column">
       <!-- Messages Container -->
-      <div #messagesContainer class="messages-container flex-grow-1 p-3" style="overflow-y: auto; max-height: calc(100vh - 200px);">
+      <div #messagesContainer class="messages-container">
         <div *ngFor="let message of activeConversation.messages; trackBy: trackByMessageId" class="message-wrapper mb-3">
-          <!-- Debug info (remove in production) -->
-          <div class="debug-info" style="font-size: 10px; color: #ccc; margin-bottom: 5px;">
-            Debug: Message ID: {{ message.id }}, Sender: {{ message.senderId }}, Current User: {{ currentUserId }}, IsFromCurrentUser: {{ isMessageFromCurrentUser(message) }}
-          </div>
           
           <div class="d-flex" [class.justify-content-end]="isMessageFromCurrentUser(message)">
-            <div class="message-bubble p-3 rounded shadow-sm position-relative" 
+            <div class="message-bubble p-2 rounded shadow-sm position-relative" 
                  [class]="isMessageFromCurrentUser(message) ? 'bg-primary text-white ms-5' : 'bg-white me-5 border'">
               
               <!-- Message Content -->

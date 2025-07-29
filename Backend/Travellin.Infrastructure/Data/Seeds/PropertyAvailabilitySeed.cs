@@ -1,4 +1,4 @@
-﻿using Travellin.Core.Entities;
+using Travellin.Core.Entities;
 
 namespace Travellin.Infrastructure.Data.Seeds
 {

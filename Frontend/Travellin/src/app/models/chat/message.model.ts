@@ -13,4 +13,5 @@ export interface CreateMessageDto {
   senderId: string;
   receiverId: string;
   content: string;
+  conversationId: number; // Added for admin message sending
 }

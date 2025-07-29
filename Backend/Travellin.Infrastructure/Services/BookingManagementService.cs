@@ -5,6 +5,8 @@ using Travellin.Core.Interfaces;
 using Travellin.Travellin.Core.Shared;
 using Travellin.Travellin.Core.Enums;
 using System.Threading.Tasks;
+using System;
+using System.Linq;
 
 namespace Travellin.Infrastructure.Services
 {

@@ -32,6 +32,37 @@ namespace Travellin.Infrastructure.Services
             return conversation;
         }
 
+        public async Task<Conversation> CreateOrGetConversationWithPropertyAsync(string user1Id, string user2Id, string? propertyId = null)
+        {
+            // Find existing conversation between these users
+            var existing = await _conversationRepo.GetBetweenUsersAsync(user1Id, user2Id);
+            
+            if (existing != null)
+            {
+                // Update existing conversation with property context if provided
+                if (!string.IsNullOrEmpty(propertyId) && existing.PropertyId != propertyId)
+                {
+                    existing.PropertyId = propertyId;
+                    await _unitOfWork.SaveChangesAsync();
+                }
+                return existing;
+            }
+
+            // Create new conversation
+            var conversation = new Conversation
+            {
+                User1Id = user1Id,
+                User2Id = user2Id,
+                PropertyId = propertyId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _conversationRepo.Create(conversation);
+            await _unitOfWork.SaveChangesAsync();
+
+            return conversation;
+        }
+
         public async Task<List<Conversation>> GetUserConversationsAsync(string userId)
         {
             return await _conversationRepo.GetUserConversationsAsync(userId);
@@ -129,6 +160,11 @@ namespace Travellin.Infrastructure.Services
                 return false;
 
             return conversation.User1Id == userId || conversation.User2Id == userId;
+        }
+
+        public async Task<List<Conversation>> GetAllConversationsAsync()
+        {
+            return await _conversationRepo.GetAllConversationsAsync();
         }
 
     }

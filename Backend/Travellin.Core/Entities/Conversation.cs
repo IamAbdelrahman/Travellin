@@ -15,8 +15,13 @@ namespace Travellin.Core.Entities
         [ForeignKey("User2")]
         public string User2Id { get; set; }
         
+        // Property context for the conversation
+        [ForeignKey("Property")]
+        public string? PropertyId { get; set; }
+        
         public AppUser User1 { get; set; }
         public AppUser User2 { get; set; }
+        public Property? Property { get; set; }
         public ICollection<Message> Messages { get; set; } = new List<Message>();
     }
 }
