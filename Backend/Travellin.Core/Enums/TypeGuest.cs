@@ -3,6 +3,8 @@
     public enum TypeGuest
     {
         Child,
-        Adult
+        Adult,
+        Infants,
+        Pets
     }
 }
