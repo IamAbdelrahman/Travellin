@@ -1,3 +1,4 @@
+import { transformation } from 'leaflet';
 import {environment} from '../../environments/environment';
 export class ApiConstant {
   private static domainUrl = environment.apiUrl; // Replace with your domain URL
@@ -67,6 +68,7 @@ export class ApiConstant {
   public static payment = {
     createCheckoutSession: `${ApiConstant.baseUrl}/Payments/create-checkout-session`,
     webhook: `${ApiConstant.baseUrl}/Payments/stripe/webhook`,
+    transferToHost: `${ApiConstant.baseUrl}/Payments/transfer-to-host`,
   };
 
   public static upgrade = {
