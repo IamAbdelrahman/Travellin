@@ -27,6 +27,66 @@ namespace Travellin.Infrastructure.Services
             _cancelurl = config["Stripe:CancelUrl"];
         }
 
+        //public async Task<CreateCheckoutResult> CreateCheckoutSessionAsync(CheckoutOptions options)
+        //{
+        //    var sessionService = new SessionService(_stripeClient);
+
+        //    var sessionOptions = new SessionCreateOptions
+        //    {
+        //        CustomerEmail = options.Guest.Email,
+        //        PaymentMethodTypes = new List<string> { "card" },
+        //        LineItems = new List<SessionLineItemOptions>
+        //    {
+        //        new()
+        //        {
+        //            PriceData = new SessionLineItemPriceDataOptions
+        //            {
+        //                UnitAmount = (long)(options.Pricing.TotalAmount * 100),
+        //                Currency = "usd",
+        //                ProductData = new SessionLineItemPriceDataProductDataOptions
+        //                {
+        //                    Name = options.Property.Title,
+        //                    Description = $"Booking from {options.BookingPeriod.CheckInDate:d} to {options.BookingPeriod.CheckOutDate:d}",
+        //                    Images = !string.IsNullOrEmpty(options.Property.MainPhotoUrl)
+        //                        ? new List<string> { options.Property.MainPhotoUrl }
+        //                        : null
+        //                }
+        //            },
+        //            Quantity = 1
+        //        }
+        //    },
+        //        Mode = "payment",
+        //        SuccessUrl = _successUrl,
+        //        CancelUrl = _cancelurl,
+        //        ClientReferenceId = options.BookingId,
+        //        Metadata = options.Metadata
+        //    };
+
+        //    var session = await sessionService.CreateAsync(sessionOptions);
+
+        //    var newPayment = new Payment
+        //    {
+        //        BookingId = options.BookingId,
+        //        StripeSessionId = session.Id,
+        //        StripePaymentIntentId = session.PaymentIntentId,
+        //        Amount = session.AmountTotal.Value / 100m, // Convert from cents to dollars
+        //        Currency = session.Currency,
+        //        Status = PaymentStatus.Pending,
+        //        CreatedAt = DateTime.UtcNow,
+        //        UpdatedAt = DateTime.UtcNow
+        //    };
+
+        //    _unitOfWork.PaymentRepository.Create(newPayment);
+        //    await _unitOfWork.SaveChangesAsync();
+
+        //    return new CreateCheckoutResult
+        //    {
+        //        SessionId = session.Id,
+        //        SessionUrl = session.Url,
+        //        ExpiresAt = session.ExpiresAt
+        //    };
+        //}
+
         public async Task<CreateCheckoutResult> CreateCheckoutSessionAsync(CheckoutOptions options)
         {
             var sessionService = new SessionService(_stripeClient);
@@ -34,32 +94,31 @@ namespace Travellin.Infrastructure.Services
             var sessionOptions = new SessionCreateOptions
             {
                 CustomerEmail = options.Guest.Email,
-                PaymentMethodTypes = new List<string> { "card" },
-                LineItems = new List<SessionLineItemOptions>
-            {
-                new()
-                {
-                    PriceData = new SessionLineItemPriceDataOptions
-                    {
-                        UnitAmount = (long)(options.Pricing.TotalAmount * 100),
-                        Currency = "usd",
-                        ProductData = new SessionLineItemPriceDataProductDataOptions
-                        {
-                            Name = options.Property.Title,
-                            Description = $"Booking from {options.BookingPeriod.CheckInDate:d} to {options.BookingPeriod.CheckOutDate:d}",
-                            Images = !string.IsNullOrEmpty(options.Property.MainPhotoUrl)
-                                ? new List<string> { options.Property.MainPhotoUrl }
-                                : null
-                        }
-                    },
-                    Quantity = 1
-                }
+                PaymentMethodTypes = new List<string> { "card"
             },
+                LineItems = new List<SessionLineItemOptions> {new SessionLineItemOptions
+            {
+                PriceData = new SessionLineItemPriceDataOptions
+                {
+                    UnitAmount = (long)(options.Pricing.TotalAmount * 100), // تحويل المبلغ إلى سنتات
+                    Currency = "usd",
+                    ProductData = new SessionLineItemPriceDataProductDataOptions
+                    {
+                        Name = options.Property.Title,
+                        Description = $"Booking from {options.BookingPeriod.CheckInDate:d} to {options.BookingPeriod.CheckOutDate:d}",
+                        Images = !string.IsNullOrEmpty(options.Property.MainPhotoUrl)
+                            ? new List<string> { options.Property.MainPhotoUrl }
+                            : null
+                    }
+                },
+                Quantity = 1
+            }
+        },
                 Mode = "payment",
                 SuccessUrl = _successUrl,
                 CancelUrl = _cancelurl,
                 ClientReferenceId = options.BookingId,
-                Metadata = options.Metadata
+                Metadata = options.Metadata,
             };
 
             var session = await sessionService.CreateAsync(sessionOptions);
@@ -69,7 +128,7 @@ namespace Travellin.Infrastructure.Services
                 BookingId = options.BookingId,
                 StripeSessionId = session.Id,
                 StripePaymentIntentId = session.PaymentIntentId,
-                Amount = session.AmountTotal.Value / 100m, // Convert from cents to dollars
+                Amount = session.AmountTotal.Value / 100m, // تحويل من سنت إلى دولار
                 Currency = session.Currency,
                 Status = PaymentStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
@@ -86,7 +145,6 @@ namespace Travellin.Infrastructure.Services
                 ExpiresAt = session.ExpiresAt
             };
         }
-
         public async Task HandlePaymentWebhookAsync(string json, string signature)
         {
             var stripeEvent = EventUtility.ConstructEvent(json, signature, _stripeWebHookSecretKey);
