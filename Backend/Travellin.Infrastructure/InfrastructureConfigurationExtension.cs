@@ -96,6 +96,11 @@ namespace Travellin.Infrastructure
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IConversationService, ConversationService>();
+            services.AddScoped<ICheckoutManagementService, StripeCheckoutService>();
+            services.AddScoped<ICancellationService, CancellationService>();
+            services.AddScoped<IPaymentRefundService, StripeRefundService>();
+            services.AddScoped<IBookingManagementService, BookingManagementService>();
+            services.AddScoped<IStripeTransferService, StripeTransferService>();
             //Messaging Services
             return services;
         }

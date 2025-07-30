@@ -118,6 +118,20 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'host-dashboard',
+        loadComponent: () =>
+          import('./pages/host-dashboard').then(
+            m => m.HostDashboardComponent
+          ),
+      },
+      {
+        path: 'admin-dashboard',
+        loadComponent: () =>
+          import('./pages/admin-dashboard').then(
+            m => m.AdminDashboardComponent
+          ),
+      },
+      {
         path: 'admin',
         loadComponent: () =>
           import('./pages/admin/admin.component').then(m => m.AdminComponent),

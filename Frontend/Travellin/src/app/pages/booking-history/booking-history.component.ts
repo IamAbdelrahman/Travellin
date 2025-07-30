@@ -1,15 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {
-  Bookings,
-  GetBookingsResponse,
-} from '../../models/api/request/iget-bookings';
+import { RouterModule } from '@angular/router';
 import { CheckOutBookingService } from '../../services/check-out-booking.service';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { CancellationService, CancellationRequest } from '../../services/cancellation.service';
 import { ToastService } from '../../services/toast.service';
-import { IRole } from '../../models/domain/iuser-role';
-import { Router, RouterModule } from '@angular/router';
+import { Bookings, GetBookingsResponse } from '../../models/api/request/iget-bookings';
 
 @Component({
   selector: 'app-booking-history',
@@ -18,152 +14,126 @@ import { Router, RouterModule } from '@angular/router';
   styleUrl: './booking-history.component.scss',
 })
 export class BookingHistoryComponent implements OnInit {
-  allBookings: Bookings[] = []; // Store original bookings
-  filteredBookings: Bookings[] = []; // Store filtered bookings
-  selectedStatus: string = 'all';
-  selectedFilter: string = 'checkIn-desc';
-  searchQuery: string = '';
-  userRole: string | undefined;
+  bookings: Bookings[] = [];
+  filteredBookings: Bookings[] = [];
+  loading = false;
+  currentPage = 1;
+  totalPages = 1;
+  pageSize = 10;
+  
+  // Search and filter properties
+  searchQuery = '';
+  selectedStatus = 'all';
+  selectedFilter = 'all';
 
   constructor(
     private checkOutService: CheckOutBookingService,
-    private toastService: ToastService,
-    private route: Router
+    private cancellationService: CancellationService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
     this.loadBookings();
-    this.loadUserProfile();
   }
 
   loadBookings(): void {
+    this.loading = true;
     this.checkOutService.getAllBookings().subscribe({
-      next: (response: HttpResponse<GetBookingsResponse>) => {
-        this.allBookings = response?.body?.items || [];
-        this.applyFilters(); // Apply filters when data loads
+      next: (response: any) => {
+        this.bookings = response.body?.items || [];
+        this.totalPages = response.body?.metaData?.total ? Math.ceil(response.body.metaData.total / this.pageSize) : 1;
+        this.filteredBookings = [...this.bookings];
+        this.loading = false;
       },
-      error: (err: HttpErrorResponse) => {
-        console.error('Booking load error:', err);
-        this.allBookings = [];
-        this.filteredBookings = [];
+      error: (error: any) => {
+        console.error('Error loading bookings:', error);
         this.toastService.showError('Failed to load bookings');
+        this.loading = false;
       },
     });
   }
 
-  loadUserProfile(): void {
-    this.checkOutService.getUserRole().subscribe({
-      next: (response: HttpResponse<IRole>) => {
-        this.userRole = response?.body?.name || undefined;
-      },
-      error: (err: HttpErrorResponse) => {
-        console.error('Role load error:', err);
-      },
-    });
+  // Search functionality
+  searchBookings(): void {
+    if (!this.searchQuery.trim()) {
+      this.filteredBookings = [...this.bookings];
+      return;
+    }
+
+    this.filteredBookings = this.bookings.filter(booking => 
+      booking.property?.title?.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+      booking.property?.location?.name?.toLowerCase().includes(this.searchQuery.toLowerCase())
+    );
   }
 
-  // Get guest count for specific booking
-  getGuestCount(booking: Bookings): number {
-    return booking?.bookingGuests?.[0]?.guestCount || 0;
-  }
-
-  // Apply all filters (status, search, sort)
+  // Filter functionality
   applyFilters(): void {
-    // Start with all bookings
-    let filtered = [...this.allBookings];
+    let filtered = [...this.bookings];
 
     // Apply status filter
     if (this.selectedStatus !== 'all') {
-      filtered = filtered.filter(
-        booking => booking?.status === this.selectedStatus
-      );
+      filtered = filtered.filter(booking => booking.status === this.selectedStatus);
     }
 
     // Apply search filter
-    if (this.searchQuery) {
-      const query = this.searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        booking =>
-          booking?.property?.title?.toLowerCase().includes(query) ||
-          booking?.property?.location?.name?.toLowerCase().includes(query) ||
-          booking?.property?.owner?.userName?.toLowerCase().includes(query)
+    if (this.searchQuery.trim()) {
+      filtered = filtered.filter(booking => 
+        booking.property?.title?.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        booking.property?.location?.name?.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
     }
-
-    // Apply sorting
-    this.applySort(filtered);
 
     this.filteredBookings = filtered;
   }
 
-  // Apply sorting to the provided array
-  applySort(bookings: Bookings[]): void {
-    switch (this.selectedFilter) {
-      case 'checkIn-desc':
-        bookings.sort(
-          (a, b) =>
-            new Date(b.checkIn).getTime() - new Date(a.checkIn).getTime()
-        );
-        break;
-      case 'checkIn-asc':
-        bookings.sort(
-          (a, b) =>
-            new Date(a.checkIn).getTime() - new Date(b.checkIn).getTime()
-        );
-        break;
-      case 'price-asc':
-        bookings.sort(
-          (a, b) =>
-            (a.property?.pricePerNight || 0) - (b.property?.pricePerNight || 0)
-        );
-        break;
-      case 'price-desc':
-        bookings.sort(
-          (a, b) =>
-            (b.property?.pricePerNight || 0) - (a.property?.pricePerNight || 0)
-        );
-        break;
+  // Enhanced cancellation with refund support
+  async cancelBookingEnhanced(booking: Bookings) {
+    try {
+      // First check if booking can be cancelled
+      const canCancelResponse = await this.cancellationService.canCancelBooking(booking.id).toPromise();
+      
+      if (!canCancelResponse?.canCancel) {
+        this.toastService.showWarning('This booking cannot be cancelled at this time.');
+        return;
+      }
+
+      // Show refund information
+      const refundInfo = canCancelResponse.refundAmount > 0 
+        ? `You will receive a refund of $${canCancelResponse.refundAmount.toFixed(2)}.`
+        : 'No refund will be issued.';
+
+      if (!confirm(`Are you sure you want to cancel this booking? ${refundInfo}`)) {
+        return;
+      }
+
+      const cancellationRequest: CancellationRequest = {
+        bookingId: booking.id,
+        cancelledByUserId: localStorage.getItem('userId') || '',
+        isHostCancellation: false,
+        cancellationReason: 'Cancelled by guest'
+      };
+
+      this.cancellationService.cancelBookingEnhanced(cancellationRequest).subscribe({
+        next: (result) => {
+          if (result.isSuccessful) {
+            this.toastService.showSuccess(result.message);
+            this.loadBookings(); // Refresh the list
+          } else {
+            this.toastService.showError(result.message);
+          }
+        },
+        error: (error) => {
+          console.error('Cancellation failed:', error);
+          this.toastService.showError('Failed to cancel booking');
+        },
+      });
+    } catch (error) {
+      console.error('Error checking cancellation status:', error);
+      this.toastService.showError('Failed to check cancellation status');
     }
   }
 
-  searchBookings(): void {
-    this.applyFilters(); // Now uses the unified filter approach
-  }
-
-  calculateNumberOfNights(checkIn: string, checkOut: string): number {
-    if (!checkIn || !checkOut) return 0;
-
-    const checkInDate = new Date(checkIn);
-    const checkOutDate = new Date(checkOut);
-
-    // Ensure valid dates and check-out is after check-in
-    if (
-      isNaN(checkInDate.getTime()) ||
-      isNaN(checkOutDate.getTime()) ||
-      checkOutDate <= checkInDate
-    ) {
-      return 0;
-    }
-
-    const timeDiff = checkOutDate.getTime() - checkInDate.getTime();
-    return Math.max(1, Math.floor(timeDiff / (1000 * 3600 * 24))); // At least 1 night
-  }
-
-  calculateTotalPrice(booking: Bookings): number {
-    if (!booking?.property?.pricePerNight) return 0;
-
-    const nights = this.calculateNumberOfNights(
-      booking.checkIn,
-      booking.checkOut
-    );
-    return booking.property.pricePerNight * nights;
-  }
-
-  calculateTotalWithFees(booking: Bookings): number {
-    const basePrice = this.calculateTotalPrice(booking);
-    return basePrice + (booking.totalFees || 0);
-  }
-
+  // Legacy cancellation (existing functionality)
   cancelBooking(booking: Bookings) {
     if (booking.status.toLowerCase() === 'pending') {
       this.checkOutService.cancelBookings(booking.id).subscribe({
@@ -177,6 +147,60 @@ export class BookingHistoryComponent implements OnInit {
       });
     } else {
       this.toastService.showWarning('Only pending bookings can be cancelled.');
+    }
+  }
+
+  // New method to show cancellation options
+  showCancellationOptions(booking: Bookings) {
+    const status = booking.status.toLowerCase();
+    
+    if (status === 'pending') {
+      // Use legacy cancellation for pending bookings
+      this.cancelBooking(booking);
+    } else if (status === 'confirmed') {
+      // Use enhanced cancellation for confirmed bookings
+      this.cancelBookingEnhanced(booking);
+    } else {
+      this.toastService.showWarning('This booking cannot be cancelled.');
+    }
+  }
+
+  // Get guest count for display
+  getGuestCount(booking: Bookings): number {
+    if (!booking.bookingGuests || booking.bookingGuests.length === 0) {
+      return 0;
+    }
+    return booking.bookingGuests.reduce((total, guest) => total + guest.guestCount, 0);
+  }
+
+  calculateNumberOfNights(checkIn: string, checkOut: string): number {
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+    const timeDiff = checkOutDate.getTime() - checkInDate.getTime();
+    return Math.ceil(timeDiff / (1000 * 3600 * 24));
+  }
+
+  calculateTotalWithFees(booking: Bookings): number {
+    const nights = this.calculateNumberOfNights(booking.checkIn, booking.checkOut);
+    const basePrice = booking.property?.pricePerNight || 0;
+    const fees = booking.totalFees || 0;
+    return (basePrice * nights) + fees;
+  }
+
+  getStatusColor(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'text-yellow-600 bg-yellow-100';
+      case 'confirmed':
+        return 'text-green-600 bg-green-100';
+      case 'cancelled':
+        return 'text-red-600 bg-red-100';
+      case 'declined':
+        return 'text-red-600 bg-red-100';
+      case 'completed':
+        return 'text-blue-600 bg-blue-100';
+      default:
+        return 'text-gray-600 bg-gray-100';
     }
   }
 }

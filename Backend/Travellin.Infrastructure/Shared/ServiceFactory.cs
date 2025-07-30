@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using OpenAI.Chat;
 using Stripe;
 using Travellin.Core.Interfaces;
@@ -21,7 +22,9 @@ namespace Travellin.Infrastructure.Shared
         private IConversationService? _conversationService;
         private IMessageService? _messageService;
         private IPropertyFilterExtractorService _propertyFilterExtractorService;
+        private IStripeTransferService _stripeTransferService; 
         private readonly ILogger<StripeCheckoutService> _logger;
+        private readonly ILogger<StripeTransferService> _loggerTransfer;
 
         public ServiceFactory(IServiceProvider provider, IConfiguration config)
         {
@@ -56,6 +59,9 @@ namespace Travellin.Infrastructure.Shared
         public IPropertyFilterExtractorService PropertyFilterExtractorService =>
                 _propertyFilterExtractorService ??= new PropertyFilterExtractorService
                 (_provider.GetRequiredKeyedService<ChatClient>("MainOpenAIClient"), _provider.GetRequiredService<IUnitOfWork>());
+        public ICancellationService CancellationService => _provider.GetRequiredService<ICancellationService>();
+        public IPaymentRefundService PaymentRefundService => _provider.GetRequiredService<IPaymentRefundService>();
+        public IStripeTransferService StripeTransferService => _provider.GetRequiredService<IStripeTransferService>();
 
     }
 }
