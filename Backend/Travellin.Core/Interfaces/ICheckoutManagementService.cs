@@ -39,6 +39,7 @@
         public PricingDetails Pricing { get; set; }
         public Dictionary<string, string> Metadata { get; set; } = new();
         public decimal TotalAmount => Pricing.TotalAmount * BookingPeriod.Nights;
+        //public string HostStripeAccountId { get; set; }
     }
 
     public class CreateCheckoutResult
