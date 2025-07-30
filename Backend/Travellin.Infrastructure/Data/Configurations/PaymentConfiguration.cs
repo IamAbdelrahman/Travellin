@@ -25,6 +25,10 @@ namespace Travellin.Infrastructure.Data.Configurations
                 .IsRequired()
                 .HasMaxLength(255);
 
+            builder.Property(x => x.HostStripeAccountId)
+                .IsRequired(false)
+                .HasMaxLength(255);
+
             builder.Property(x => x.StripePaymentIntentId)
                 .HasMaxLength(255)
                 .IsRequired(false);
