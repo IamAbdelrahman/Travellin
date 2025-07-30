@@ -28,6 +28,10 @@ namespace Travellin.Infrastructure.Data.Configurations
             builder.Property(x => x.CountryId)
                 .IsRequired(false);
 
+            builder.Property(x => x.StripeAccountId)
+                .IsRequired(false)
+                .HasMaxLength(100);
+
             builder.Property(x => x.BirthDate)
                 .IsRequired(false);
 

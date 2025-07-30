@@ -1,0 +1,100 @@
+<div class="modal-overlay" *ngIf="isModalOpen">
+  <div class="modal">
+    <div class="modal-header">
+      <img src="logo.png" alt="Travellin Logo" width="150" height="150">
+      <button class="close-btn" type="button" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div *ngIf="isLoginMode; else signupFormTemplate">
+        <div class="welcome-text">Welcome Back</div>
+        <!-- Phone Login -->
+        <form [formGroup]="phoneForm" *ngIf="phoneOption" (ngSubmit)="onLogin()">
+          <div class="form-group">
+            <div class="country-selector">
+              <select formControlName="countryCode" class="country-dropdown">
+                <option *ngFor="let country of countries" [value]="country.code">
+                  {{ country.name }} ({{ country.code }})
+                </option>
+              </select>
+            </div>
+            <input type="tel" formControlName="phoneNumber" class="phone-input" placeholder="Phone number" required />
+          </div>
+          <div class="disclaimer">
+            We'll call or text you to confirm your number.
+            <a href="#" (click)="openPrivacyPolicy()">Privacy Policy</a>
+          </div>
+          <button type="submit" class="continue-btn" [disabled]="phoneForm.invalid">Continue</button>
+        </form>
+
+        <!-- Email Login -->
+        <form *ngIf="emailOption" [formGroup]="loginForm" (ngSubmit)="onLogin()">
+          <div class="form-floating mb-3 position-relative">
+            <input type="email" class="form-control" formControlName="email" placeholder="Email" />
+            <label>Email</label>
+          </div>
+          <div class="form-floating mb-4">
+            <input [type]="passwordFieldType" class="form-control pe-5" formControlName="password" placeholder="Password" />
+            <label>Password</label>
+            <button type="button" class="btn position-absolute end-0 top-50 translate-middle-y me-3 p-0 border-0 bg-transparent"
+              (click)="togglePasswordVisibility()" tabindex="-1">
+              <lucide-icon [img]="showPassword ? icons.eyeOff : icons.eye" size="20" class="text-muted"></lucide-icon>
+            </button>
+          </div>
+          <input type="submit" class="continue-btn" value="Login" />
+        </form>
+
+        <!-- Social Links -->
+        <app-social-links
+          [emailOption]="emailOption"
+          [phoneOption]="phoneOption"
+          (emailOptionChange)="onEmailOptionChange($event)"
+          (phoneOptionChange)="onPhoneOptionChange($event)">
+        </app-social-links>
+
+        <p class="text-center mt-3">
+          Don't have an account?
+          <button (click)="switchMode()"><span style="color: red;">Sign Up</span></button>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #signupFormTemplate>
+  <div class="welcome-text">Create an account</div>
+  <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
+    <div class="form-floating mb-3">
+      <input type="text" formControlName="firstName" class="form-control" placeholder="First Name">
+      <label>First Name</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" formControlName="lastName" class="form-control" placeholder="Last Name">
+      <label>Last Name</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="date" formControlName="birthDate" class="form-control" placeholder="Birth Date">
+      <label>Birth Date</label>
+      <div *ngIf="signupFormControls['birthDate'].touched && signupFormControls['birthDate'].errors?.['tooYoung']" class="text-danger">
+        You must be at least 18 years old
+      </div>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="email" formControlName="email" class="form-control" placeholder="Email">
+      <label>Email</label>
+    </div>
+    <div class="form-floating mb-4">
+      <input [type]="passwordFieldType" formControlName="password" class="form-control pe-5" placeholder="Password">
+      <label>Password</label>
+      <button type="button" class="btn position-absolute end-0 top-50 translate-middle-y me-3 p-0 border-0 bg-transparent"
+        (click)="togglePasswordVisibility()" tabindex="-1">
+        <lucide-icon [img]="showPassword ? icons.eyeOff : icons.eye" size="20" class="text-muted"></lucide-icon>
+      </button>
+    </div>
+    <button type="submit" class="continue-btn" [disabled]="signupForm.invalid">Sign Up</button>
+    <p class="text-center mt-3">
+      Already have an account?
+      <a href="#" (click)="switchMode()">Login</a>
+    </p>
+  </form>
+</ng-template>

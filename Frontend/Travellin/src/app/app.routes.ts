@@ -14,6 +14,7 @@ import { UsersAdminComponent } from './components/users-admin/users-admin.compon
 import { PropertyAdminComponent } from './components/property-admin/property-admin.component';
 import { FavoritesPageComponent } from './pages/favorites-page/favorites-page.component';
 import { ToastContainerComponent } from './components/toast-container/toast-container.component';
+import { SocialLinksComponent } from './components/social-links/social-links';
 export const routes: Routes = [
   {
     path: '',
@@ -22,6 +23,22 @@ export const routes: Routes = [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', component: HomePageComponent },
       { path: 'property/:id', component: PropertyInfoComponent },
+      {
+        path: 'auth',
+        loadComponent: () =>
+          import('./pages/auth-page/auth-page.component').then(
+            m => m.AuthPageComponent
+          ),
+        children: [
+          {
+            path: 'auth/social',
+            loadComponent: () =>
+              import('./components/social-links/social-links').then(
+                m => m.SocialLinksComponent
+              )
+          }
+        ]
+      },
     ],
   },
   {
@@ -86,13 +103,34 @@ export const routes: Routes = [
             m => m.AddPropertyComponent
           ),
       },
-       {
-      path: 'chat',
-      loadComponent: () =>
-        import('./pages/chat-page/chat-page.component').then(
-          m => m.ChatPageComponent
-        ),
-    },
+      {
+        path: 'chat',
+        loadComponent: () =>
+          import('./pages/chat-page/chat-page.component').then(
+            m => m.ChatPageComponent
+          ),
+      },
+      {
+        path: 'hubs/chat',
+        loadComponent: () =>
+          import('./pages/chat-page/chat-page.component').then(
+            m => m.ChatPageComponent
+          ),
+      },
+      {
+        path: 'host-dashboard',
+        loadComponent: () =>
+          import('./pages/host-dashboard').then(
+            m => m.HostDashboardComponent
+          ),
+      },
+      {
+        path: 'admin-dashboard',
+        loadComponent: () =>
+          import('./pages/admin-dashboard').then(
+            m => m.AdminDashboardComponent
+          ),
+      },
       {
         path: 'admin',
         loadComponent: () =>
@@ -106,24 +144,5 @@ export const routes: Routes = [
       },
     ],
   },
-  {
-    path: '',
-    component: BlankLayoutComponent,
-    children: [
-      {
-        path: 'register',
-        loadComponent: () =>
-          import('./pages/register-page/register-page.component').then(
-            m => m.RegisterPageComponent
-          ),
-      },
-      {
-        path: 'login',
-        loadComponent: () =>
-          import('./pages/login-page/login-page.component').then(
-            m => m.LoginPageComponent
-          ),
-      },
-    ],
-  },
+  { path: '**', component: BlankLayoutComponent },
 ];

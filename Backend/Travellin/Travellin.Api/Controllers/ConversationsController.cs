@@ -16,13 +16,16 @@ namespace Travellin.Travellin.Api.Controllers;
 public class ConversationsController : ControllerBase
 {
     private readonly IConversationService _conversationService;
+    private readonly IUnitOfWork _unitOfWork;
+    
     private string GetCurrentUserId() =>
         User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
 
 
-    public ConversationsController(IConversationService conversationService)
+    public ConversationsController(IConversationService conversationService, IUnitOfWork unitOfWork)
     {
         _conversationService = conversationService;
+        _unitOfWork = unitOfWork;
     }
 
     [HttpPost("start")]
@@ -34,29 +37,13 @@ public class ConversationsController : ControllerBase
     public async Task<IActionResult> StartConversation([FromBody] StartConversationDto dto)
     {
         var currentUserId = GetCurrentUserId();
+        if (currentUserId == null)
+            return Unauthorized();
 
-        if (dto.User1Id != currentUserId && dto.User2Id != currentUserId)
-            return Forbid();
+        var conversation = await _conversationService.CreateOrGetConversationWithPropertyAsync(
+            dto.User1Id, dto.User2Id, dto.PropertyId);
 
-        var conversation = await _conversationService.CreateOrGetConversationAsync(dto.User1Id, dto.User2Id);
-
-        var result = new ConversationDto
-        {
-            Id = conversation.Id,
-            User1Id = conversation.User1Id,
-            User2Id = conversation.User2Id,
-            Messages = conversation.Messages.Select(m => new MessageDto
-            {
-                Id = m.Id,
-                Content = m.Content,
-                SenderId = m.SenderId,
-                ReceiverId = m.ReceiverId,
-                IsRead = m.IsRead,
-                SentAt = m.SentAt,
-                TranslatedContent = m.TranslatedContent
-            }).ToList()
-        };
-
+        var result = await _unitOfWork.ConversationRepository.GetByIdWithMessagesAsync(conversation.Id);
         return Ok(result);
     }
 
@@ -69,16 +56,23 @@ public class ConversationsController : ControllerBase
     {
         var currentUserId = GetCurrentUserId();
 
-        var conversations = await _conversationService.GetUserConversationsAsync(currentUserId);
+        // Ensure users can only access their own conversations (unless they're admin)
+        if (userId != currentUserId)
+        {
+            return Forbid();
+        }
 
-        if (!conversations.Any())
-            return NotFound();
+        var conversations = await _conversationService.GetUserConversationsAsync(userId);
 
         var result = conversations.Select(c => new ConversationDto
         {
             Id = c.Id,
             User1Id = c.User1Id,
             User2Id = c.User2Id,
+            User1Name = c.User1?.UserName ?? $"User {c.User1Id.Substring(0, 8)}",
+            User2Name = c.User2?.UserName ?? $"User {c.User2Id.Substring(0, 8)}",
+            PropertyId = c.PropertyId,
+            PropertyTitle = c.Property?.Title,
             Messages = c.Messages.Select(m => new MessageDto
             {
                 Id = m.Id,
@@ -113,6 +107,10 @@ public class ConversationsController : ControllerBase
             Id = conversation.Id,
             User1Id = conversation.User1Id,
             User2Id = conversation.User2Id,
+            User1Name = conversation.User1?.UserName ?? $"User {conversation.User1Id.Substring(0, 8)}",
+            User2Name = conversation.User2?.UserName ?? $"User {conversation.User2Id.Substring(0, 8)}",
+            PropertyId = conversation.PropertyId,
+            PropertyTitle = conversation.Property?.Title,
             Messages = conversation.Messages.Select(m => new MessageDto
             {
                 Id = m.Id,
@@ -145,9 +143,15 @@ public class ConversationsController : ControllerBase
     [EndpointSummary("Get inbox preview for user")]
     public async Task<IActionResult> GetInboxPreview(string userId)
     {
-
         var currentUserId = GetCurrentUserId();
-        var result = await _conversationService.GetInboxPreviewAsync(currentUserId);
+        
+        // Ensure users can only access their own inbox (unless they're admin)
+        if (userId != currentUserId)
+        {
+            return Forbid();
+        }
+        
+        var result = await _conversationService.GetInboxPreviewAsync(userId);
         return Ok(result);
     }
 
@@ -160,5 +164,82 @@ public class ConversationsController : ControllerBase
         var currentUserId = GetCurrentUserId();
         var results = await _conversationService.SearchConversationsAsync(currentUserId, query);
         return Ok(results);
+    }
+
+    [HttpGet("admin/all")]
+    [Authorize(Roles = "Admin")]
+    [EndpointSummary("Get all conversations (Admin only)")]
+    [ProducesResponseType(typeof(IEnumerable<ConversationDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> GetAllConversations()
+    {
+        var conversations = await _conversationService.GetAllConversationsAsync();
+
+        var result = conversations.Select(c => new ConversationDto
+        {
+            Id = c.Id,
+            User1Id = c.User1Id,
+            User2Id = c.User2Id,
+            User1Name = c.User1?.UserName ?? $"User {c.User1Id.Substring(0, 8)}",
+            User2Name = c.User2?.UserName ?? $"User {c.User2Id.Substring(0, 8)}",
+            PropertyId = c.PropertyId,
+            PropertyTitle = c.Property?.Title,
+            Messages = c.Messages.Select(m => new MessageDto
+            {
+                Id = m.Id,
+                Content = m.Content,
+                SenderId = m.SenderId,
+                ReceiverId = m.ReceiverId,
+                IsRead = m.IsRead,
+                SentAt = m.SentAt,
+                TranslatedContent = m.TranslatedContent
+            }).ToList()
+        });
+
+        return Ok(result);
+    }
+
+    [HttpPost("admin/send-message")]
+    [Authorize(Roles = "Admin")]
+    [EndpointSummary("Send message as admin to any conversation")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(MessageDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> SendMessageAsAdmin([FromBody] CreateMessageDto dto)
+    {
+        var conversation = await _conversationService.GetConversationByIdAsync(dto.ConversationId);
+        if (conversation == null)
+            return NotFound();
+
+        var currentUserId = GetCurrentUserId();
+
+        // Create message as admin using the actual admin user ID
+        var message = new Message
+        {
+            Content = dto.Content,
+            SenderId = currentUserId, // Use actual admin user ID
+            ReceiverId = dto.ReceiverId, // Use the receiver ID from the DTO
+            ConversationId = dto.ConversationId,
+            IsRead = false,
+            SentAt = DateTime.UtcNow
+        };
+
+        // Save message using AddAsync
+        await _unitOfWork.MessageRepository.AddAsync(message);
+        await _unitOfWork.SaveChangesAsync();
+
+        var messageDto = new MessageDto
+        {
+            Id = message.Id,
+            Content = message.Content,
+            SenderId = message.SenderId,
+            ReceiverId = message.ReceiverId,
+            ConversationId = message.ConversationId,
+            IsRead = message.IsRead,
+            SentAt = message.SentAt,
+            TranslatedContent = message.TranslatedContent
+        };
+
+        return Ok(messageDto);
     }
 }

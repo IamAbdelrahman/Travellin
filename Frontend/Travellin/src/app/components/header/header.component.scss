@@ -1,3 +1,61 @@
-.nav-sticky {
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-brand img {
+  max-height: 50px;
+  width: auto;
+  transition: transform 0.2s ease;
+}
+
+.navbar-brand img:hover {
+  transform: scale(1.05);
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem; // adjust spacing between links
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #484848;
+  transition: color 0.2s ease;
+  padding: 0.3rem 0.5rem;
+}
+
+.nav-link .my-icon {
+  margin-right: 0.35rem;
+  font-size: 1rem;
+  color: #484848;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #ff385c;
+}
+
+.nav-link:hover .my-icon,
+.nav-link.active .my-icon {
+  color: #ff385c;
+}
+// Ensure the chat nav link has proper positioning
+.nav-link[routerLink="/chat"] {
+  position: relative;
+}
+

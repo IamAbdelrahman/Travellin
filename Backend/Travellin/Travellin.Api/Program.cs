@@ -1,5 +1,7 @@
 using AspNetCoreRateLimit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Stripe;
 using Travellin.Api.Filters;
@@ -11,9 +13,19 @@ using Travellin.Core.Services;
 using Travellin.Infrastructure;
 using Travellin.Infrastructure.Repositories;
 using Travellin.Infrastructure.Services;
+using System.Security.Claims;
 
 namespace Travellin.Api
 {
+    public class CustomUserIdProvider : IUserIdProvider
+    {
+        public string? GetUserId(HubConnectionContext connection)
+        {
+            var userId = connection.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return userId;
+        }
+    }
+
     public class Program
     {
         public static void Main(string[] args)
@@ -22,6 +34,27 @@ namespace Travellin.Api
 
             // Add services to the container.
             builder.Services.ConfigureInfrastructure(builder.Configuration);
+            builder.Services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                options.Events ??= new JwtBearerEvents();
+
+                var originalOnMessageReceived = options.Events.OnMessageReceived;
+
+                options.Events.OnMessageReceived = async context =>
+                {
+                    var accessToken = context.Request.Query["access_token"];
+                    var path = context.HttpContext.Request.Path;
+
+                    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/chat"))
+                    {
+                        context.Token = accessToken;
+                    }
+                    else if (originalOnMessageReceived != null)
+                    {
+                        await originalOnMessageReceived(context);
+                    }
+                };
+            });
 
 
             builder.Services.AddControllers(options =>
@@ -59,13 +92,19 @@ namespace Travellin.Api
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .AllowCredentials() // For cookies
-                          .WithHeaders("Authorization", "Content-Type", "X-Requested-With");
+                          .WithHeaders("Authorization", "Content-Type", "X-Requested-With", "x-signalr-user-agent", "x-negotiateversion");
                 });
 
             });
 
             builder.Services.AddHttpContextAccessor();
-            builder.Services.AddSignalR();
+            builder.Services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+            });
+
+            // Add custom user provider for SignalR
+            builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
             var app = builder.Build();
 

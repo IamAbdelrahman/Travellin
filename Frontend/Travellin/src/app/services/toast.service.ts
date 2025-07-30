@@ -1,61 +1,45 @@
 // src/app/services/toast.service.ts
-import { Injectable, inject } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
-export type ToastType = 'success' | 'danger' | 'warning' | 'info';
-
-export interface Toast {
+export interface ToastMessage {
+  id: number;
   message: string;
-  type: ToastType;
-  delay?: number;
+  type: 'success' | 'error' | 'warning' | 'info';
+  duration?: number;
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ToastService {
-  private sanitizer = inject(DomSanitizer);
-  private toasts: Toast[] = [];
+  private toastSubject = new Subject<ToastMessage>();
+  public toast$ = this.toastSubject.asObservable();
+  private toastId = 0;
 
-  getToasts() {
-    return this.toasts;
+  showSuccess(message: string, duration: number = 3000): void {
+    this.showToast(message, 'success', duration);
   }
 
-  show(message: string, type: ToastType = 'info', delay: number = 5000): void {
-    const toast: Toast = {
-      message: this.sanitizer.sanitize(1, message) || '',
+  showError(message: string, duration: number = 5000): void {
+    this.showToast(message, 'error', duration);
+  }
+
+  showWarning(message: string, duration: number = 4000): void {
+    this.showToast(message, 'warning', duration);
+  }
+
+  showInfo(message: string, duration: number = 3000): void {
+    this.showToast(message, 'info', duration);
+  }
+
+  private showToast(message: string, type: ToastMessage['type'], duration: number): void {
+    const toast: ToastMessage = {
+      id: ++this.toastId,
+      message,
       type,
-      delay,
+      duration
     };
-    this.toasts.push(toast);
-
-    if (delay > 0) {
-      setTimeout(() => this.remove(toast), delay);
-    }
-  }
-
-  remove(toast: Toast): void {
-    this.toasts = this.toasts.filter(t => t !== toast);
-  }
-
-  clear(): void {
-    this.toasts = [];
-  }
-
-  // Convenience methods
-  showSuccess(message: string, delay: number = 5000): void {
-    this.show(message, 'success', delay);
-  }
-
-  showError(message: string, delay: number = 5000): void {
-    this.show(message, 'danger', delay);
-  }
-
-  showWarning(message: string, delay: number = 5000): void {
-    this.show(message, 'warning', delay);
-  }
-
-  showInfo(message: string, delay: number = 5000): void {
-    this.show(message, 'info', delay);
+    this.toastSubject.next(toast);
   }
 }

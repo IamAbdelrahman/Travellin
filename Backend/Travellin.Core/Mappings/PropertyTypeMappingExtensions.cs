@@ -7,6 +7,7 @@ namespace Travellin.Core.Mappings
     {
         public static PropertyTypeDto ToDto(this PropertyType propertyType)
         {
+            if (propertyType == null) return null;
             return new PropertyTypeDto
             {
                 Id = propertyType.Id,

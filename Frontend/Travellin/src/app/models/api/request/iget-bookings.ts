@@ -1,3 +1,5 @@
+import { User } from '../response/iget-users';
+
 export interface Property {
   id: string;
   title: string;
@@ -33,6 +35,7 @@ export interface BookingGuest {
   guestTypeId: number;
   guestCount: number;
 }
+
 export interface Bookings {
   id: string;
   userId: string;
@@ -46,6 +49,7 @@ export interface Bookings {
   updatedAt: string;
   bookingGuests: BookingGuest[];
   property: Property;
+  user?: User; // Optional user property for host dashboard
 }
 export interface GetBookingsResponse {
   items: Bookings[];

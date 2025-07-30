@@ -1,0 +1,221 @@
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { AccountService } from '../../services/account.service';
+import { IRegisterRes } from '../../models/api/response/iregister-res';
+import { AuthService } from '../../core/services/auth.service';
+import { Eye, EyeOff, LucideAngularModule } from 'lucide-angular';
+import { ILoginRes } from '../../models/api/response/ilogin-res';
+import { SocialLinksComponent } from '../../components/social-links/social-links';
+
+@Component({
+  standalone: true,
+  imports: [
+    RouterModule,
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    LucideAngularModule,
+    SocialLinksComponent
+  ],
+  templateUrl: './auth-page.component.html',
+  styleUrl: './auth-page.component.scss',
+})
+export class AuthPageComponent {
+  signupForm: FormGroup;
+  phoneForm: FormGroup;
+  loginForm: FormGroup;
+  isLoginMode = true;
+  showPassword = false;
+  isModalOpen = true;
+  emailOption = false;
+  phoneOption = true;
+  isLoggingIn = false;
+  errorMessage: string = '';
+
+  icons = {
+    eye: Eye,
+    eyeOff: EyeOff,
+  };
+
+  countries = [
+    { name: 'Egypt', code: '+20' },
+    { name: 'United States', code: '+1' },
+    { name: 'United Kingdom', code: '+44' },
+    { name: 'France', code: '+33' },
+    { name: 'Germany', code: '+49' },
+    { name: 'Italy', code: '+39' },
+    { name: 'Spain', code: '+34' },
+    { name: 'Netherlands', code: '+31' },
+    { name: 'Belgium', code: '+32' },
+    { name: 'Switzerland', code: '+41' },
+    { name: 'Austria', code: '+43' },
+    { name: 'Denmark', code: '+45' },
+    { name: 'Sweden', code: '+46' },
+    { name: 'Norway', code: '+47' },
+    { name: 'Finland', code: '+358' },
+    { name: 'Portugal', code: '+351' },
+    { name: 'Greece', code: '+30' },
+    { name: 'Turkey', code: '+90' },
+    { name: 'Saudi Arabia', code: '+966' },
+    { name: 'UAE', code: '+971' },
+    { name: 'Kuwait', code: '+965' },
+    { name: 'Bahrain', code: '+973' },
+    { name: 'Qatar', code: '+974' },
+    { name: 'Oman', code: '+968' },
+    { name: 'Jordan', code: '+962' },
+    { name: 'Lebanon', code: '+961' },
+    { name: 'Morocco', code: '+212' },
+    { name: 'Algeria', code: '+213' },
+    { name: 'Tunisia', code: '+216' },
+  ];
+
+  constructor(
+    private fb: FormBuilder,
+    private accountService: AccountService,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    this.signupForm = this.fb.group({
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      birthDate: ['', [Validators.required, this.minimumAgeValidator(18)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(12),
+          Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+]).{12,}$/),
+        ],
+      ],
+    });
+
+    this.phoneForm = this.fb.group({
+      countryCode: ['+20', Validators.required],
+      phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]{6,15}$')]]
+    });
+
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(12),
+          Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+]).{12,}$/),
+        ],
+      ],
+    });
+  }
+
+  get signupFormControls() { return this.signupForm.controls; }
+  get loginFormControls() { return this.loginForm.controls; }
+  get phoneControls() { return this.phoneForm.controls; }
+  get passwordFieldType(): string { return this.showPassword ? 'text' : 'password'; }
+
+  togglePasswordVisibility() { this.showPassword = !this.showPassword; }
+  switchMode() { this.isLoginMode = !this.isLoginMode; }
+  closeModal() { this.isModalOpen = false; this.router.navigate(['/home']); }
+    openPrivacyPolicy() {
+    console.log('Open privacy policy');
+  }
+
+  onSignup(): void {
+    if (this.signupForm.valid) {
+      const formData = this.signupForm.value;
+      this.accountService
+        .register({
+          email: formData.email,
+          password: formData.password,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          birthDate: formData.birthDate,
+        })
+        .subscribe({
+          next: (res: { body: IRegisterRes }) => {
+            const body = res.body;
+            if (body && body.token) {
+              this.authService.setAuthData(body.id, body.userName, body.token);
+              this.router.navigate(['/home']);
+            }
+          },
+          error: err => { console.error('Registration error:', err); },
+        });
+    }
+  }
+
+  onLogin(): void {
+    if (this.loginForm.valid) {
+      const { email, password } = this.loginForm.value;
+      this.errorMessage = '';
+      this.isLoggingIn = true;
+      this.accountService
+        .login({ email, password })
+        .subscribe({
+          next: (response: HttpResponse<ILoginRes>) => {
+            const body = response.body;
+            if (response.status === 200 && body && body.token) {
+              this.authService.setAuthData(body.id, body.userName, body.token);
+              this.router.navigate(['/home']);
+            } else {
+              this.handleLoginError('Invalid credentials');
+            }
+          },
+          error: (error: HttpErrorResponse) => {
+            if (error.status === 401 || error.status === 403) {
+              this.handleLoginError('Invalid email or password');
+            } else if (error.status === 0) {
+              this.handleLoginError('Network error - please check your connection');
+            } else if (error.status >= 500) {
+              this.handleLoginError('Server error - please try again later');
+            } else if (error.status === 429) {
+              this.handleLoginError('Too many Requests Try Again after 30 minutes.');
+            } else {
+              this.handleLoginError('Login failed - please try again');
+            }
+          },
+          complete: () => { this.isLoggingIn = false; },
+        });
+    } else {
+      this.errorMessage = 'Please enter valid email and password.';
+    }
+  }
+
+  private handleLoginError(message: string): void {
+    this.errorMessage = message;
+    this.loginForm.get('password')?.reset();
+    this.isLoggingIn = false;
+  }
+
+  minimumAgeValidator(minAge: number) {
+    return (control: any) => {
+      const birthDate = new Date(control.value);
+      const today = new Date();
+      if (isNaN(birthDate.getTime())) return null;
+      const age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      const dayDiff = today.getDate() - birthDate.getDate();
+      const isOldEnough = age > minAge || (age === minAge && (monthDiff > 0 || (monthDiff === 0 && dayDiff >= 0)));
+      return isOldEnough ? null : { tooYoung: true };
+    };
+  }
+
+  // Events from SocialLinks
+  onEmailOptionChange(value: boolean) {
+    this.emailOption = value;
+    this.phoneOption = !value;
+  }
+  onPhoneOptionChange(value: boolean) {
+    this.phoneOption = value;
+    this.emailOption = !value;
+  }
+}

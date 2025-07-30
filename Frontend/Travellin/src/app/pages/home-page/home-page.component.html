@@ -1,5 +1,6 @@
+
 <div
-  class="container-fluid search-bars-container fixed-top p-5 transition-all hero-section"
+  class="container-fluid search-bars-container fixed-top p-5 transition-all"
   [class.minimized]="scrollY > 50"
   tabindex="0"
   (focus)="onFocus()"
@@ -9,14 +10,15 @@
     <div class="btn-group" role="group">
       <button
         type="button"
-        class="btn btn-outline-primary"
+        class="btn searchBtn"
         (click)="setSearchMode('simple')"
-        [class.active]="searchMode === 'simple'">
+        [class.active]="searchMode === 'simple'"
+        [ngClass]="{'btn-primary': searchMode === 'simple', 'btn-secondary': searchMode !== 'simple'}">
         Simple Search
       </button>
       <button
         type="button"
-        class="btn btn-outline-primary"
+        class="btn searchBtn"
         (click)="setSearchMode('advanced')"
         [class.active]="searchMode === 'advanced'">
         Advanced Search
@@ -25,9 +27,12 @@
   </div>
 
   <!-- AI Search Bar (Simple Mode) -->
-  <div *ngIf="searchMode === 'simple'" class="container-fluid w-75 ">
+  <div *ngIf="searchMode === 'simple'" class="container-fluid w-75">
     <div class="text-center mb-3" [class.d-none]="scrollY > 50">
       <h3>How can we help you find your perfect stay?</h3>
+      <p class="text-muted">
+        Describe what you're looking for in natural language
+      </p>
     </div>
 
     <div class="ai-search-container w-100">
@@ -160,7 +165,7 @@
       </div>
 
       <!-- Additional Filters Button -->
-      <div class="text-center mt-0">
+      <div class="text-center mt-3">
         <button class="btn btn-outline-primary" (click)="toggleFilters()">
           <fa-icon [icon]="icons['sliders']" class="me-2"></fa-icon>
           {{ showFilters ? 'Hide Filters' : 'More Filters' }}
@@ -243,7 +248,7 @@
 </div>
 
 <div
-  class="container"
+  class="container pt-md-5 pt-sm-5 pt-1"
   id="cards"
   [ngStyle]="{ 'margin-top': getMarginTop() + 'px' }">
   <!-- Loading Spinner -->
@@ -257,7 +262,7 @@
     </div>
   } @else {
     <div
-      class="container py-8"
+      class="container py-6"
       id="cards"
       [ngStyle]="{ 'margin-top': getMarginTop() + 'px' }">
       <div

@@ -7,7 +7,7 @@ using Travellin.Travellin.Core.Shared;
 using Travellin.Core.Mappings;
 namespace Travellin.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class PropertyTypeController : BaseController
     {

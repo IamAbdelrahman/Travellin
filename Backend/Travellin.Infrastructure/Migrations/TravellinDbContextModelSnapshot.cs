@@ -1164,6 +1164,13 @@ namespace Travellin.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PropertyId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("User1Id")
                         .IsRequired()
                         .HasMaxLength(450)
@@ -1176,6 +1183,8 @@ namespace Travellin.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PropertyId");
+
                     b.HasIndex("User1Id");
 
                     b.HasIndex("User2Id");
@@ -1186,6 +1195,7 @@ namespace Travellin.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             User1Id = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             User2Id = "4dacdb51-fee9-4479-904c-cafe7dca22a8"
                         });
@@ -3578,6 +3588,10 @@ namespace Travellin.Infrastructure.Migrations
                         .HasColumnType("nvarchar(10)")
                         .HasDefaultValue("usd");
 
+                    b.Property<string>("HostStripeAccountId")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -3679,9 +3693,9 @@ namespace Travellin.Infrastructure.Migrations
                         new
                         {
                             Id = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
-                            CancellationPolicy = "Free cancellation before May 28 , Cancel before check-in on Jun 2 for a partial refund.",
-                            Description = "Enjoy your stay with Panoramic View of the giza pyramids and sphinx .Yes! view and pictures are all 100% real. (Be sure to check out our other listings too) Indulge in a stunning view of all the Giza Pyramids from anywhere within this contemporary oriental studio or while relaxing in the Jacuzzi. It is also a 10 min walk from the Pyramids entrance gate. To make the most of your trip, make sure to check out our experiences!We're committed to providing our guests the magical hospitality",
-                            HouseRules = "Check-in after 2:00 PM , Checkout before 11:00 AM , 2 guests maximum",
+                            CancellationPolicy = "Free cancellation before May 28, Cancel before check-in on Jun 2 for a partial refund.",
+                            Description = "Experience the magic of ancient Egypt from your private oasis! This contemporary oriental studio boasts breathtaking panoramic views of the Giza Pyramids and Sphinx, 100% real and as stunning as the pictures. Relax in your private jacuzzi with iconic vistas. Just a 10-minute walk to the Pyramids entrance. Explore our unique experiences to enhance your trip. We're dedicated to providing magical hospitality!",
+                            HouseRules = "Check-in after 2:00 PM, Checkout before 11:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 29.98333m,
@@ -3690,15 +3704,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 100m,
                             PropertyTypeId = 1,
-                            SafteyInfo = "No Carbon monoxide alarm , No Smoke alarm ",
-                            Title = "Entire rental unit in Nazlet El-Semman, Egypt"
+                            SafteyInfo = "No Carbon monoxide alarm, No Smoke alarm",
+                            Title = "Pyramid View Oasis: Jacuzzi & 10-Min Walk to Giza!"
                         },
                         new
                         {
                             Id = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
-                            CancellationPolicy = "Free cancellation before May 17 , Cancel before check-in on May 18 for a partial refund.",
-                            Description = "Elegant apartment inside the famous castle in Nolo, a royal choice right in the center of Milan A few steps away is the metro (M1 red for the Duomo 10 min), 10 minutes' walk for the central station. The apartment is well connected by trains, trams and buses The area is well supplied with restaurants, supermarkets, bars, clubs, etc. Complete comfort:82 Smart TV, Netflix, prime, wifi, dishwasher, kitchen, coffee machine The stay is included with a complete reception service",
-                            HouseRules = "Check-in: 3:00 PM - 11:00PM ,Checkout before 11:00 AM ,4 guests maximum",
+                            CancellationPolicy = "Free cancellation before May 17, Cancel before check-in on May 18 for a partial refund.",
+                            Description = "Live like royalty in this elegant apartment within a famous Milanese castle! Located in vibrant Nolo, you're just steps from the M1 metro (10 mins to Duomo) and a 10-minute walk to Central Station. Excellent connections via trains, trams, and buses. Enjoy a neighborhood rich with restaurants, supermarkets, and nightlife. Featuring an 82\" Smart TV with Netflix/Prime, Wi-Fi, dishwasher, full kitchen, and coffee machine. Includes complete reception service for a comfortable stay.",
+                            HouseRules = "Check-in: 3:00 PM - 11:00PM, Checkout before 11:00 AM, 4 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 45.46427m,
@@ -3707,15 +3721,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 250m,
                             PropertyTypeId = 3,
-                            SafteyInfo = "Carbon monoxide alarm ,Smoke alarm installed",
-                            Title = "Milano Duomo center 10 min Flat inside a castle"
+                            SafteyInfo = "Carbon monoxide alarm, Smoke alarm installed",
+                            Title = "Milan Castle Apartment: Duomo 10 Mins, Central Hub!"
                         },
                         new
                         {
                             Id = "3e7f99ab-228a-4d90-91c4-6adf8c12e048",
-                            CancellationPolicy = "Free cancellation before May 17 , Cancel before check-in on May 18 for a partial refund.",
-                            Description = "Relax with this listing Small 2-room 7-bed apartment near Alharam Al Makkah with a maximum of 10 to 12 minutes' walk away The ears and prayer are also heard inside the rooms and the window appears from the window of the Haram Al-Sharif .We offer a Surface kitchen with tea and coffee supplies, a mini fridge, a microwave, a water kettle and more A washing machine is available and we provide toiletries from towels, shampoo, lotion, soap, and more We provide a wheelchair ,wi-fi .This place is in a high tower where the apartment is located on the 17th floor Wish you a unique and pleasant stay",
-                            HouseRules = "Check-in after 3:00 PM , Checkout before 12:00 PM , 7 guests maximum",
+                            CancellationPolicy = "Free cancellation before May 17, Cancel before check-in on May 18 for a partial refund.",
+                            Description = "Find serenity in this cozy 2-room apartment, a 10-12 minute walk from Al-Haram Al-Makkah. Listen to the call to prayer from your window, which offers a glimpse of Al-Haram Al-Sharif. Equipped with a surface kitchen (tea/coffee, mini-fridge, microwave, kettle), washing machine, and toiletries. Wheelchair accessible and free Wi-Fi. Located on the 17th floor of a high tower for a truly unique and pleasant stay.",
+                            HouseRules = "Check-in after 3:00 PM, Checkout before 12:00 PM, 7 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 21.4266m,
@@ -3724,15 +3738,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 90m,
                             PropertyTypeId = 1,
-                            SafteyInfo = "Carbon monoxide alarm ,Smoke alarm installed",
-                            Title = "Rent an apartment near Alhar Mecca"
+                            SafteyInfo = "Carbon monoxide alarm, Smoke alarm installed",
+                            Title = "Peaceful Mecca Retreat: Haram Views, 10-Min Walk!"
                         },
                         new
                         {
                             Id = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
-                            CancellationPolicy = "Free cancellation before May 17 , Cancel before check-in on May 18 for a partial refund.",
-                            Description = "Updated pool and spa! Sitting on 100 acres, Hawkeye House, featured on the cover of the May 2019 issue of Dwell Magazine, is an off grid Geodesic Dome. It has a 40 foot pool and hot tub that you will have to see to believe. This unique and modern home has been fully remodeled with an attention to both comfort and detail. Amazing hikes and privacy are abundant here. Most people never want to leave the property",
-                            HouseRules = "Check-in after 3:00 PM , Checkout before 12:00 PM , 7 guests maximum",
+                            CancellationPolicy = "Free cancellation before May 17, Cancel before check-in on May 18 for a partial refund.",
+                            Description = "Featured on Dwell Magazine's cover, the Hawkeye Dome offers an extraordinary off-grid experience on 100 sprawling acres. Immerse yourself in nature with an updated 40-foot pool and hot tub that are truly spectacular. This unique, fully remodeled geodesic dome blends modern design with ultimate comfort. Endless hiking and complete privacy await. You'll never want to leave!",
+                            HouseRules = "Check-in after 3:00 PM, Checkout before 12:00 PM, 7 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 34.114174m,
@@ -3741,15 +3755,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 110m,
                             PropertyTypeId = 2,
-                            SafteyInfo = "Carbon monoxide alarm ,Smoke alarm installed",
-                            Title = "Hawkeye Dome - New Pool and Spa"
+                            SafteyInfo = "Carbon monoxide alarm, Smoke alarm installed",
+                            Title = "Hawkeye Dome: Epic Glamping with New Pool & Spa!"
                         },
                         new
                         {
                             Id = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2",
-                            CancellationPolicy = "Free cancellation before Oct 22 , Cancel before check-in on Oct 23 for a partial refund.",
-                            Description = "Romantic Loft with mezzanine and large balcony in front of the sea, double bed and 1 single bed, tv, wi-fi, fan, cabinet modern decoration, 180 degree terrace to the sea, equipped kitchen, bathroom, total comfort and privacy, fourth floor without elevator, 5 minutes from the carnival circuit, Noble Quarter of the city. Between the Surf and Paciencia beaches. Total security. The most beautiful sunset in Salvador",
-                            HouseRules = "3 guests maximum , Pets allowed",
+                            CancellationPolicy = "Free cancellation before Oct 22, Cancel before check-in on Oct 23 for a partial refund.",
+                            Description = "Discover this romantic loft featuring a mezzanine and a large, 180-degree oceanfront balcony. Enjoy a double bed, single bed, TV, Wi-Fi, and fan, all within a modernly decorated space. The equipped kitchen and private bathroom offer total comfort. Located on the fourth floor (no elevator) in a noble quarter, 5 minutes from the carnival circuit, between Surf and Paciencia beaches. Experience the most beautiful sunsets in Salvador with total security.",
+                            HouseRules = "3 guests maximum, Pets allowed",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = -12.9711m,
@@ -3758,15 +3772,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 130m,
                             PropertyTypeId = 1,
-                            SafteyInfo = "Carbon monoxide alarm not reported , Smoke alarm not reported , Exterior security cameras on property",
-                            Title = "(4) charming oceanfront loft!"
+                            SafteyInfo = "Carbon monoxide alarm not reported, Smoke alarm not reported, Exterior security cameras on property",
+                            Title = "Charming Oceanfront Loft: Salvador Sunset Views!"
                         },
                         new
                         {
                             Id = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
                             CancellationPolicy = "Free cancellation before Jun 3. Cancel before check-in on Jun 4 for a partial refund",
-                            Description = "Set in an architectural prize-winning building, this modern Barcelona apartment beauty has impressive detail throughout. Ceiling-to-floor sloped windows, wood floor, and other soft designer textures accentuate this spectacular space. It is cozy and welcoming but with a very hip, urban edge.Design enthusiasts and those looking for that modern Barcelona feel will love the apartment. However, high-comfort and proximity to the Sagrada Familia suits all tastes.",
-                            HouseRules = "Check-in: 3:00 PM - 5:00 PM ,Checkout before 10:00 AM ,2 guests maximum",
+                            Description = "Stay in a prize-winning architectural building with this stunning modern Barcelona apartment. Impressive details abound, from ceiling-to-floor sloped windows to rich wood floors and designer textures. This space is cozy yet boasts a very hip, urban edge. Perfect for design enthusiasts and those seeking a modern Barcelona experience. High comfort and proximity to Sagrada Familia make it ideal for all guests.",
+                            HouseRules = "Check-in: 3:00 PM - 5:00 PM, Checkout before 10:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 41.3888m,
@@ -3775,15 +3789,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 310m,
                             PropertyTypeId = 1,
-                            SafteyInfo = "No carbon monoxide alarm , No smoke alarm , Heights without rails or protectio",
-                            Title = "Sunny and cozy Apartment Sagrada Familia"
+                            SafteyInfo = "No carbon monoxide alarm, No smoke alarm, Heights without rails or protection",
+                            Title = "Sunny Sagrada Familia Apartment: Modern Barcelona Gem!"
                         },
                         new
                         {
                             Id = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
                             CancellationPolicy = "Free cancellation before Jun 3. Cancel before check-in on Jun 4 for a partial refund",
-                            Description = "To give you the best experience of the authentic Bedouin life style, we will gather around the fire, cook our traditional food and tell you stories of our ancestors, while looking at the sky full of stars.Without a lie, this experience will be very special, if you used to cities and crowd in your everyday life.We created the space in a very simple, traditional and nomadic way. The Cave is inside the red rocks, waterproof and safe from all sides. Here you will have the whole Desert for yourself to get away from normal life, to relax, be in a quiet environment and meditate.",
-                            HouseRules = "Check-in: 3:00 PM - 5:00 PM ,Checkout before 10:00 AM ,2 guests maximum",
+                            Description = "Immerse yourself in authentic Bedouin life at our unique Wadi Rum Sunset Cave. Gather around the fire, enjoy traditional food, and hear ancestral stories under a sky full of stars. A truly special escape from city life, offering a quiet environment for relaxation and meditation. This simple, traditional cave, built into the red rocks, is waterproof and safe, providing you with the entire desert to yourself.",
+                            HouseRules = "Check-in: 3:00 PM - 5:00 PM, Checkout before 10:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 29.5726m,
@@ -3792,15 +3806,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 220m,
                             PropertyTypeId = 1,
-                            SafteyInfo = "No carbon monoxide alarm , No smoke alarm , Heights without rails or protectio",
-                            Title = "Wadi Rum Sunset Cave"
+                            SafteyInfo = "No carbon monoxide alarm, No smoke alarm, Heights without rails or protection",
+                            Title = "Wadi Rum Sunset Cave: Authentic Bedouin Stargazing!"
                         },
                         new
                         {
                             Id = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
                             CancellationPolicy = "Free cancellation before Jun 3. Cancel before check-in on Jun 4 for a partial refund",
-                            Description = "Interior designer's own guesthouse, this unique place has a style all its own. Escape the ordinary and immerse yourself in comfort, calm and luxury at our charming bergerie, a conversion from a shepherd's old stone house! Nestled in the heart of the largest mimosa forest in Europe, overlooking the Cotes d'Azur and lower Alps, our tastefully designed retreat offers everything you need for an unforgettable tranquillity.We welcome up to 4 adults and have a small mezzanine for children.",
-                            HouseRules = "Check-in: 3:00 PM - 5:00 PM ,Checkout before 10:00 AM ,2 guests maximum",
+                            Description = "Escape to 'The View,' an interior designer's guesthouse offering style and tranquility. This unique bergerie, a converted old stone shepherd's house, is nestled in Europe's largest mimosa forest with stunning views of the Cotes d'Azur and lower Alps. Tastefully designed for comfort and luxury, it provides everything for an unforgettable, tranquil escape. Accommodates up to 4 adults, with a small mezzanine for children.",
+                            HouseRules = "Check-in: 3:00 PM - 5:00 PM, Checkout before 10:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 43.5914m,
@@ -3809,15 +3823,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 132m,
                             PropertyTypeId = 1,
-                            SafteyInfo = "No carbon monoxide alarm , No smoke alarm , Heights without rails or protectio",
-                            Title = "New! The View: See to Mouintain (with pool)"
+                            SafteyInfo = "No carbon monoxide alarm, No smoke alarm, Heights without rails or protection",
+                            Title = "The View: Designer Guesthouse with Pool & Mountain Vistas!"
                         },
                         new
                         {
                             Id = "4b04a76a-1608-4a8f-b09c-8d9043b83e16",
-                            CancellationPolicy = "Free cancellation for 48 hours , Cancel before Jan 13 for a partial refund.",
-                            Description = "Built in the 19th century, with a 360 degrees view over the sea and surroundings on the top floor.It features a Bedroom, a very well-decorated living room with kitchenette, and a WC.Free WiFi, air conditioning, Led TV and DVD player.Private parking inside the premises, providing extra security.Perfect for an unforgettable honeymoon experience.",
-                            HouseRules = "Check-in: 3:00 PM - 5:00 PM ,Checkout before 10:00 AM ,2 guests maximum",
+                            CancellationPolicy = "Free cancellation for 48 hours, Cancel before Jan 13 for a partial refund.",
+                            Description = "Step back in time at Moinho das Feteiras, a beautifully restored 19th-century mill house with a 360-degree sea and surrounding view from the top floor. This charming retreat features a cozy bedroom, a well-decorated living room with a kitchenette, and a WC. Enjoy modern comforts with free WiFi, air conditioning, LED TV, and DVD player. Private parking offers extra security. Perfect for an unforgettable honeymoon!",
+                            HouseRules = "Check-in: 3:00 PM - 5:00 PM, Checkout before 10:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 37.7428m,
@@ -3826,15 +3840,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 200m,
                             PropertyTypeId = 4,
-                            SafteyInfo = "Climbing or play structure , Carbon monoxide alarmSmoke alarm",
-                            Title = "Moinho das Feteiras | The Mill House"
+                            SafteyInfo = "Climbing or play structure, Carbon monoxide alarm, Smoke alarm",
+                            Title = "The Mill House: Romantic 19th-Century Sea View Retreat!"
                         },
                         new
                         {
                             Id = "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1",
                             CancellationPolicy = "Free cancellation before May 19. Cancel before check-in on May 24 for a partial refund.",
-                            Description = "This is a guitar-shaped country house located in Icheon, a ceramic art village. It is a private house with a spacious terrace on the 3rd floor of the Sera Guitar Culture Center, famous for its unique appearance in the Icheon Ceramic Art Village, which blends in very well with nature.",
-                            HouseRules = "Check-in: 3:00 PM - 12:00 AM  , Checkout before 11:00  AM , 2 guests maximum",
+                            Description = "Discover a truly unique stay at this guitar-shaped country house in Icheon, a renowned ceramic art village. This private retreat, featuring a spacious terrace on the 3rd floor of the Sera Guitar Culture Center, blends seamlessly with nature. Perfect for emotional healing and a memorable escape near Seoul.",
+                            HouseRules = "Check-in: 3:00 PM - 12:00 AM, Checkout before 11:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 37.3154m,
@@ -3843,15 +3857,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 180m,
                             PropertyTypeId = 1,
-                            SafteyInfo = "Carbon monoxide alarm not reported , Smoke alarm , Must climb stairs",
-                            Title = "Emotional healing accommodation in Icheon-si, near Seoul"
+                            SafteyInfo = "Carbon monoxide alarm not reported, Smoke alarm, Must climb stairs",
+                            Title = "Unique Guitar House: Emotional Healing in Icheon-si, Korea!"
                         },
                         new
                         {
                             Id = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
                             CancellationPolicy = "Free cancellation before May 19. Cancel before check-in on May 24 for a partial refund.",
-                            Description = "This is a guitar-shaped country house located in Icheon, a ceramic art village. It is a private house with a spacious terrace on the 3rd floor of the Sera Guitar Culture Center, famous for its unique appearance in the Icheon Ceramic Art Village, which blends in very well with nature.",
-                            HouseRules = "Check-in: 3:00 PM - 12:00 AM  , Checkout before 11:00  AM , 2 guests maximum",
+                            Description = "Unwind at Kai Cottage, a tranquil escape perfectly situated to offer stunning nature views. This private haven provides a spacious terrace and a serene atmosphere, ideal for relaxation and rejuvenation. Experience peace and quiet in a beautiful setting.",
+                            HouseRules = "Check-in: 3:00 PM - 12:00 AM, Checkout before 11:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 33.9249m,
@@ -3860,15 +3874,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 210m,
                             PropertyTypeId = 1,
-                            SafteyInfo = "Carbon monoxide alarm not reported , Smoke alarm , Must climb stairs",
-                            Title = "Kai Cottage"
+                            SafteyInfo = "Carbon monoxide alarm not reported, Smoke alarm, Must climb stairs",
+                            Title = "Kai Cottage: Serene Getaway with Nature Views!"
                         },
                         new
                         {
                             Id = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
                             CancellationPolicy = "Free cancellation before Jun 18. Cancel before check-in on Jun 23 for a partial refund.",
-                            Description = "Maadi is an uptown , green suburb with villas and gardens. My building is a five storey building . It is in a quiet area but a few minutes-walk away from Rd 9 where there are shops, cafes and restaurants. Everything you need is right here yet in 15 mins u can be in center of town.",
-                            HouseRules = "Flexible check-in , 2 guests maximum , No pets",
+                            Description = "Discover a sunny, spacious, and clean room in the heart of Maadi, Cairo's upscale, green suburb. Nestled in a quiet area, this five-story building is just minutes from Road 9, offering an abundance of shops, cafes, and restaurants. Enjoy the perfect blend of tranquility and urban convenience, with downtown just a 15-minute ride away.",
+                            HouseRules = "Flexible check-in, 2 guests maximum, No pets",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 29.9617m,
@@ -3877,15 +3891,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 100m,
                             PropertyTypeId = 2,
-                            SafteyInfo = "No carbon monoxide alarm , No smoke alarm ,Nearby lake, river, other body of water",
-                            Title = "sunny, spacious, clean room in maadi, cairo.."
+                            SafteyInfo = "No carbon monoxide alarm, No smoke alarm, Nearby lake, river, other body of water",
+                            Title = "Sunny Maadi Room: Cairo Charm, Steps from Cafes!"
                         },
                         new
                         {
                             Id = "c5c0d4db-b048-4ee4-8835-344900fd35b2",
                             CancellationPolicy = "Add your trip dates to get the cancellation details for this stay.",
-                            Description = "Charming small cottage situated on the edge of wetlands with beautiful views. Private gazebo with covered firepit and a dock over looking the large pond. Located on our 5 acre free range egg farm in Merville, BC. The pond is home to a family of beavers, bald eagles, blue heron and various birds. Private walking trail off the cottage and access to the One Spot Trail at the end of our private drive.",
-                            HouseRules = "Check-in after 3:00 PM,Checkout before 11:00 AM,2 guests maximum",
+                            Description = "Experience the tranquility of Heather Cottage, a charming small retreat on the edge of picturesque wetlands. Enjoy stunning views, a private gazebo with a covered firepit, and a dock overlooking a large pond. Located on our 5-acre free-range egg farm in Merville, BC, the pond is home to beavers, bald eagles, and blue herons. Explore a private walking trail and easy access to the One Spot Trail.",
+                            HouseRules = "Check-in after 3:00 PM, Checkout before 11:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 49.6876m,
@@ -3894,15 +3908,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 400m,
                             PropertyTypeId = 4,
-                            SafteyInfo = "Exterior security cameras on property ,Carbon monoxide alarm , Smoke alarm",
-                            Title = "Heather Cottage - Beautiful Wetland Views"
+                            SafteyInfo = "Exterior security cameras on property, Carbon monoxide alarm, Smoke alarm",
+                            Title = "Heather Cottage: Wetland Views, Firepit & Farm Charm!"
                         },
                         new
                         {
                             Id = "0bb50f31-e322-4b76-97dd-6a7fcf585d33",
                             CancellationPolicy = "Free cancellation before May 2, Cancel before check-in on May 3 for a partial refund.",
-                            Description = "With panoramic water views, Delta Hotels by Marriott Virginia Beach Waterfront is an oasis on the shores of the breathtaking Chesapeake Bay.Thrill your palate with fresh oysters, fish, and coastal cuisine at our distinctive hotel restaurant, featuring inspiring water views.",
-                            HouseRules = "Check-in: 4:00 PM - 12:00 AM , Checkout before 11:00 AM ,4 guests maximum",
+                            Description = "Indulge in an unforgettable escape at this beachfront oasis, the Delta Hotels by Marriott Virginia Beach Waterfront. Perched on the stunning shores of Chesapeake Bay, this distinctive hotel offers panoramic water views and a private beach. Savor fresh oysters, fish, and coastal cuisine at our restaurant, all while enjoying inspiring bay vistas.",
+                            HouseRules = "Check-in: 4:00 PM - 12:00 AM, Checkout before 11:00 AM, 4 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 37.5407m,
@@ -3912,14 +3926,14 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 90m,
                             PropertyTypeId = 3,
                             SafteyInfo = "Carbon monoxide alarm, Smoke alarm",
-                            Title = "Escape To Our Beachfront Oasis | Private Beach"
+                            Title = "Beachfront Oasis: Chesapeake Bay Views & Private Beach!"
                         },
                         new
                         {
                             Id = "a555515a-ff8a-4741-b0a4-db9be729198e",
                             CancellationPolicy = "Free cancellation before May 4. Cancel before check-in on May 5 for a partial refund.",
-                            Description = "Discover this luxury apartment in Gammarth, in the tourist area, with sea views and direct access to a private beach reserved for residents. The master suite includes a private bathroom, and a second bathroom is available",
-                            HouseRules = "Check-in after 3:00 PM,4 guests maximum,Pets allowed",
+                            Description = "Discover unparalleled luxury in this exquisite apartment in Gammarth's vibrant tourist area. Boasting breathtaking sea views and direct access to a private residents-only beach. The master suite features a private bathroom, with an additional second bathroom for convenience. Experience coastal living at its finest.",
+                            HouseRules = "Check-in after 3:00 PM, 4 guests maximum, Pets allowed",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 36.9475m,
@@ -3928,15 +3942,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 20m,
                             PropertyTypeId = 4,
-                            SafteyInfo = "Carbon monoxide alarm not reported , Smoke alarm not reported",
-                            Title = "Sea View S2: Waterfront, Private Beach"
+                            SafteyInfo = "Carbon monoxide alarm not reported, Smoke alarm not reported",
+                            Title = "Luxury Gammarth Apartment: Sea Views & Private Beach Access!"
                         },
                         new
                         {
                             Id = "c10d2d46-869a-46bc-a46d-90bdd958c252",
                             CancellationPolicy = "Free cancellation before May 9. Cancel before check-in on May 14 for a partial refund.",
-                            Description = "Warm and cosy cottage decorated with antique furniture, with a lovely garden. Perfect if you're looking for a relaxing stay in beautiful countryside. The bedroom windows have blackout blinds and the beds are very comfortable.",
-                            HouseRules = "Check-in: (4:00 PM - 10:00 PM) , Checkout before 11:00 AM , 4 guests maximum",
+                            Description = "Step into a warm and cozy English cottage, tastefully adorned with antique furniture and surrounded by a lovely garden. Perfect for a relaxing countryside escape. Enjoy comfortable beds with blackout blinds for a peaceful night's sleep. Immerse yourself in the beauty of the serene surroundings.",
+                            HouseRules = "Check-in: (4:00 PM - 10:00 PM), Checkout before 11:00 AM, 4 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 50.7236m,
@@ -3945,15 +3959,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 230m,
                             PropertyTypeId = 1,
-                            SafteyInfo = "No carbon monoxide alarm , Nearby lake- river- other body of water , Smoke alarm",
-                            Title = "Cosy English cottage with beautiful garden"
+                            SafteyInfo = "No carbon monoxide alarm, Nearby lake- river- other body of water, Smoke alarm",
+                            Title = "Charming English Cottage: Antiques & Beautiful Garden!"
                         },
                         new
                         {
                             Id = "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08",
                             CancellationPolicy = "Free cancellation before May 26. Cancel before check-in on May 14 for a partial refund.",
-                            Description = "Comfortable room, queen bed, bathroom in suite, with air conditioning. Excelent location, among Palermo and Recoleta neighborhoods, one block away from Santa Fe av and 2 blocks away from subway line D.",
-                            HouseRules = "Check-in brfore 4:00 Am , Checkout before 9:00 AM , 2 guests maximum",
+                            Description = "Experience comfort and style in this room featuring a queen bed, ensuite bathroom, and air conditioning. Enjoy an excellent location, nestled between the vibrant Palermo and Recoleta neighborhoods. Just one block from Santa Fe Ave and two blocks from subway line D, putting Buenos Aires at your fingertips.",
+                            HouseRules = "Check-in before 4:00 AM, Checkout before 9:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 34.6037m,
@@ -3962,15 +3976,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 190m,
                             PropertyTypeId = 2,
-                            SafteyInfo = "No carbon monoxide alarm  ,No Smoke alarm",
-                            Title = "Palermo/Recoleta. Stylish room w/ensuite-bath & AC"
+                            SafteyInfo = "No carbon monoxide alarm, No Smoke alarm",
+                            Title = "Palermo/Recoleta Chic: Stylish Room with Ensuite & AC!"
                         },
                         new
                         {
                             Id = "294e2751-203b-4beb-b21e-0bb96f082d7c",
                             CancellationPolicy = "Free cancellation before May 3. Cancel before check-in on May 14 for a full refund.",
-                            Description = "Charming industrial character and premium homely comfort in the most desirable location. A leisurely stroll away from the shopping, dining & nightlife of Admiralty Way, Lekki Phase 1.Relax in the swimming pool or enjoy movies on satellite, Netflix or Amazon. Superfast optic-fibre broadband wi-fi. Uninterrupted 24/7 generator power back-up.",
-                            HouseRules = "Check-in brfore 2:00 Am , Checkout before 9:00 AM , 3 guests maximum",
+                            Description = "Discover charming industrial character and premium comfort at The Foundry, ideally located near the vibrant shopping, dining, and nightlife of Admiralty Way, Lekki Phase 1. Relax by the swimming pool or enjoy endless entertainment with satellite TV, Netflix, and Amazon. Benefit from superfast fiber-optic Wi-Fi and uninterrupted 24/7 generator power back-up.",
+                            HouseRules = "Check-in before 2:00 AM, Checkout before 9:00 AM, 3 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 6.4367m,
@@ -3979,15 +3993,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 200m,
                             PropertyTypeId = 1,
-                            SafteyInfo = "carbon monoxide alarm  , Smoke alarm",
-                            Title = "The Foundry. Luxury 2BR w/pool"
+                            SafteyInfo = "Carbon monoxide alarm, Smoke alarm",
+                            Title = "The Foundry: Luxe 2BR, Pool & Lekki Phase 1 Prime Location!"
                         },
                         new
                         {
                             Id = "06dbae08-bc6b-4ca6-9162-3213784b9971",
                             CancellationPolicy = "Free cancellation before May 5. Cancel before check-in on May 9 for a full refund.",
-                            Description = "Xoi Farmstay is located in a green valley of Lam Thuong in the North of Vietnam, about 250km from Hanoi and near to Hagiang and Sapa.This is a place for those who love nature, watching rice fields, exotic mountains, spring and waterfall, authentic local culture, good food, especially non touristy",
-                            HouseRules = "Check-in brfore 1:00 Am , Checkout before 11:00 AM , 1 guests maximum",
+                            Description = "Escape to Xoi Farmstay, nestled in the lush green valley of Lam Thuong in Northern Vietnam, just 250km from Hanoi and close to Ha Giang and Sapa. This is a haven for nature lovers, offering stunning rice fields, exotic mountains, springs, and waterfalls. Experience authentic local culture and delicious food in a truly non-touristy setting.",
+                            HouseRules = "Check-in before 1:00 AM, Checkout before 11:00 AM, 1 guest maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 21.05m,
@@ -3996,15 +4010,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 100m,
                             PropertyTypeId = 4,
-                            SafteyInfo = "carbon monoxide alarm  ,No Smoke alarm",
-                            Title = "TXoi Farmstay- Homefarm in the valley of Lam Thuong"
+                            SafteyInfo = "Carbon monoxide alarm, No Smoke alarm",
+                            Title = "Xoi Farmstay: Authentic Valley Retreat near Hanoi!"
                         },
                         new
                         {
                             Id = "f1e8be41-4fd5-47e4-8960-12d8f4afc273",
                             CancellationPolicy = "Free cancellation before May 5. Cancel before check-in on May 9 for a full refund.",
-                            Description = "Welcome to our brand new one-bedroom flat offering incredible views of Business Bay canal and the iconic Burj Khalifa.",
-                            HouseRules = "Check-in brfore 1:00 Am , Checkout before 11:00 AM , 1 guests maximum",
+                            Description = "Welcome to our brand new, cozy one-bedroom flat in the heart of Dubai! Enjoy incredible views of the bustling Business Bay canal and the iconic Burj Khalifa. Perfectly situated for both leisure and business travelers seeking a prime location and stunning vistas.",
+                            HouseRules = "Check-in before 1:00 AM, Checkout before 11:00 AM, 1 guest maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 25.2769m,
@@ -4013,15 +4027,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 400m,
                             PropertyTypeId = 1,
-                            SafteyInfo = "carbon monoxide alarm  , Smoke alarm",
-                            Title = "Cosy flat in the heart of Dubai"
+                            SafteyInfo = "Carbon monoxide alarm, Smoke alarm",
+                            Title = "Central Dubai Flat: Burj Khalifa Views & Business Bay!"
                         },
                         new
                         {
                             Id = "763e6c5f-1ad1-4071-b0e6-55e924624198",
                             CancellationPolicy = "Free cancellation before May 5. Cancel before check-in on May 9 for a full refund.",
-                            Description = "Dar Ouassaggou's owner, Houssine, is a fluent English speaker and looks forward to welcoming you to his friendly guesthouse retreat in the Atlas Mountains, A Warm Welcome Awaits you at Dar Ouassaggou.It is a small comfortable guest house with 13 en suite rooms and balcony .",
-                            HouseRules = "Check-in brfore 11:00 Am , Checkout before 12:00 AM , 3 guests maximum",
+                            Description = "Experience a warm welcome at Dar Ouassaggou, a comfortable guesthouse retreat in the stunning Atlas Mountains. Owner Houssine, a fluent English speaker, looks forward to hosting you. This small, inviting guesthouse features 13 en-suite rooms, each with a balcony, offering a perfect escape into nature and local hospitality.",
+                            HouseRules = "Check-in before 11:00 AM, Checkout before 12:00 AM, 3 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 31.1333m,
@@ -4030,15 +4044,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 220m,
                             PropertyTypeId = 2,
-                            SafteyInfo = "No carbon monoxide alarm  , Smoke alarm",
-                            Title = "Atlas Mountains Riad Oussagou"
+                            SafteyInfo = "No carbon monoxide alarm, Smoke alarm",
+                            Title = "Atlas Mountains Riad: Oussagou Guest House Retreat!"
                         },
                         new
                         {
                             Id = "efd964ab-dceb-4b96-b113-665c5684a102",
                             CancellationPolicy = "Free cancellation before Apr 26. Cancel before check-in on May 1 for a partial refund.",
-                            Description = "Two hours from Bogotá on the Bogotá-Sasaima road, live the unique experience of staying in a tree eight meters high.Wake up to the chirping of birds and fall asleep to the sound of the stream below.Enjoy a five-star suite with all the amenities in the branches of the trees.The cabin has hot water, a mini-fridge, and the most spectacular view.",
-                            HouseRules = "Check-in brfore 3:00 PM , Checkout before 12:00 PM , 3 guests maximum",
+                            Description = "Just two hours from Bogotá, live an unparalleled experience in Colombia's most spectacular treehouse, perched eight meters high. Wake to birdsong, fall asleep to a gentle stream, and enjoy a five-star suite with hot water, a mini-fridge, and breathtaking views, all nestled within the tree branches. A truly unique natural retreat.",
+                            HouseRules = "Check-in before 3:00 PM, Checkout before 12:00 PM, 3 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 4.96705m,
@@ -4047,15 +4061,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 100m,
                             PropertyTypeId = 4,
-                            SafteyInfo = "carbon monoxide alarm  , No Smoke alarm , Nearby lake, river, other body of water",
-                            Title = "The most spectacular treehouse in Colombia."
+                            SafteyInfo = "Carbon monoxide alarm, No Smoke alarm, Nearby lake, river, other body of water",
+                            Title = "Colombia's Most Spectacular Treehouse: 5-Star Nature Escape!"
                         },
                         new
                         {
                             Id = "52a8df7d-c0b2-4ee3-8369-9daed4885f9f",
                             CancellationPolicy = "Free cancellation before Apr 26. Cancel before check-in on May 1 for a partial refund.",
-                            Description = "Chill in a quite and fresh area only 3 min drive to Ubud center.Our villa located in the middle of rice field , offered you great experience.Friendly owner will assist you 24 hours by call to make sure you can enjoy the stay .Stay for 3 nights and you will get Free Traditional Balinese massage for 1 person for 60 min to complete the lazy days",
-                            HouseRules = "Check-in brfore 3:00 PM , Checkout before 12:00 PM , 3 guests maximum",
+                            Description = "Unwind in a serene and fresh area, just a 3-minute drive from Ubud center. Our villa is nestled amidst lush rice fields, offering a truly authentic experience. Your friendly host is available 24/7 to ensure a delightful stay. Book for 3 nights and receive a complimentary 60-minute traditional Balinese massage for one person, perfect for completing your lazy days!",
+                            HouseRules = "Check-in before 3:00 PM, Checkout before 12:00 PM, 3 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = -8.5441m,
@@ -4064,15 +4078,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 110m,
                             PropertyTypeId = 1,
-                            SafteyInfo = "carbon monoxide alarm  , No Smoke alarm , Nearby lake, river, other body of water",
-                            Title = "Quite Get Away near by theCenter"
+                            SafteyInfo = "Carbon monoxide alarm, No Smoke alarm, Nearby lake, river, other body of water",
+                            Title = "Quiet Ubud Villa: Rice Fields & Balinese Massage!"
                         },
                         new
                         {
                             Id = "c150e428-1c9a-43a2-be07-f4366875f1ce",
                             CancellationPolicy = "Free cancellation before Apr 29. Cancel before check-in on May 1 for a partial refund.",
-                            Description = "Elegant and spacious apartment on the 4th floor, designed and realized for 6 people.Totally renovated in February 2025.,Composed of 2 double bedrooms, 1 single bedroom and a sofa bed in the dining room.,2 bathrooms of which one inside the double room.It is possible to access the terrace from each room.",
-                            HouseRules = "Check-in brfore 1:00 PM , Checkout before 10:00 PM , 2 guests maximum",
+                            Description = "Discover this elegant and spacious penthouse on the 4th floor, freshly renovated in February 2025 and designed to comfortably sleep 6 guests. Featuring two double bedrooms, one single bedroom, and a sofa bed in the dining room, plus two bathrooms (one en-suite). Enjoy direct terrace access from every room, and easy Metro C access for exploring Rome!",
+                            HouseRules = "Check-in before 1:00 PM, Checkout before 10:00 PM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 41.9028m,
@@ -4081,15 +4095,15 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 90m,
                             PropertyTypeId = 3,
-                            SafteyInfo = "carbon monoxide alarm  ,  Smoke alarm",
-                            Title = "[*Bright new Metro C penthouse*]."
+                            SafteyInfo = "Carbon monoxide alarm, Smoke alarm",
+                            Title = "Bright & New Rome Penthouse: Metro C Access, Sleeps 6!"
                         },
                         new
                         {
                             Id = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35",
                             CancellationPolicy = "Free cancellation before Apr 29. Cancel before check-in on May 1 for a partial refund.",
-                            Description = "You will feel special from the beginning to the end of your holiday at Inone Mucho Selection Hotel, located on the seafront with a private beach in one of the clearest bays of Asarlik.Our facility which is located 5 minutes drive away from Bodrum center and 5 minutes from Gumbet bar street by walk. You can have a pleasant time while sipping your cocktail at our Iconic Beach restaurant, accompanied by various events and DJ performances.",
-                            HouseRules = "Check-in brfore 1:00 PM , Checkout before 10:00 PM , 2 guests maximum",
+                            Description = "Feel special from arrival to departure at Inone Mucho Selection Hotel, a beachfront haven with a private beach in one of Asarlik's clearest bays. Just a 5-minute drive from Bodrum center and a 5-minute walk from Gumbet bar street. Sip cocktails at our Iconic Beach restaurant, accompanied by events and DJ performances, for an unforgettable holiday.",
+                            HouseRules = "Check-in before 1:00 PM, Checkout before 10:00 PM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
                             Latitude = 37.0383m,
@@ -4098,8 +4112,8 @@ namespace Travellin.Infrastructure.Migrations
                             OwnerId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             PricePerNight = 200m,
                             PropertyTypeId = 2,
-                            SafteyInfo = "carbon monoxide alarm  ,  Smoke alarm",
-                            Title = "Inone Mucho Selection Hotel Deluxe Room B&B"
+                            SafteyInfo = "Carbon monoxide alarm, Smoke alarm",
+                            Title = "Bodrum Beachfront Hotel: Private Beach & DJ Nights!"
                         });
                 });
 
@@ -4528,114 +4542,114 @@ namespace Travellin.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            EndDate = new DateTime(2025, 6, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
-                            StartDate = new DateTime(2025, 6, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
-                            EndDate = new DateTime(2025, 5, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
-                            StartDate = new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 3,
-                            EndDate = new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
-                            StartDate = new DateTime(2025, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 4,
-                            EndDate = new DateTime(2025, 5, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
-                            StartDate = new DateTime(2025, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 5,
-                            EndDate = new DateTime(2025, 5, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
-                            StartDate = new DateTime(2025, 5, 11, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 11, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 14,
-                            EndDate = new DateTime(2025, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
-                            StartDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 6,
-                            EndDate = new DateTime(2025, 6, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048",
-                            StartDate = new DateTime(2025, 6, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 7,
-                            EndDate = new DateTime(2025, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048",
-                            StartDate = new DateTime(2025, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 15,
-                            EndDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048",
-                            StartDate = new DateTime(2025, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 8,
-                            EndDate = new DateTime(2025, 9, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
-                            StartDate = new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 16,
-                            EndDate = new DateTime(2025, 10, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
                             StartDate = new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = 17,
-                            EndDate = new DateTime(2025, 11, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Id = 8,
+                            EndDate = new DateTime(2025, 12, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
-                            StartDate = new DateTime(2025, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 12, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 16,
+                            EndDate = new DateTime(2025, 12, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
+                            StartDate = new DateTime(2025, 12, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 17,
+                            EndDate = new DateTime(2025, 12, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
+                            StartDate = new DateTime(2025, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 9,
-                            EndDate = new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2",
-                            StartDate = new DateTime(2025, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 10,
-                            EndDate = new DateTime(2025, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2",
-                            StartDate = new DateTime(2025, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -4648,482 +4662,482 @@ namespace Travellin.Infrastructure.Migrations
                         new
                         {
                             Id = 11,
-                            EndDate = new DateTime(2025, 5, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
-                            StartDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 19,
-                            EndDate = new DateTime(2025, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
-                            StartDate = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 20,
-                            EndDate = new DateTime(2025, 7, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
-                            StartDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 12,
-                            EndDate = new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
-                            StartDate = new DateTime(2025, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 21,
-                            EndDate = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
                             StartDate = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = 22,
-                            EndDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Id = 19,
+                            EndDate = new DateTime(2025, 9, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
-                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
+                            PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
                             StartDate = new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
+                            Id = 20,
+                            EndDate = new DateTime(2025, 10, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
+                            StartDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 12,
+                            EndDate = new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
+                            StartDate = new DateTime(2025, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 21,
+                            EndDate = new DateTime(2025, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
+                            StartDate = new DateTime(2025, 11, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 22,
+                            EndDate = new DateTime(2025, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
+                            StartDate = new DateTime(2025, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
                             Id = 13,
-                            EndDate = new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
-                            StartDate = new DateTime(2025, 5, 18, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 23,
-                            EndDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 11, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
-                            StartDate = new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 24,
-                            EndDate = new DateTime(2025, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 12, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
-                            StartDate = new DateTime(2025, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 25,
-                            EndDate = new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "4b04a76a-1608-4a8f-b09c-8d9043b83e16",
-                            StartDate = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 26,
-                            EndDate = new DateTime(2025, 7, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "4b04a76a-1608-4a8f-b09c-8d9043b83e16",
-                            StartDate = new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 27,
-                            EndDate = new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "4b04a76a-1608-4a8f-b09c-8d9043b83e16",
-                            StartDate = new DateTime(2025, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 28,
-                            EndDate = new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1",
-                            StartDate = new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 29,
-                            EndDate = new DateTime(2025, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1",
-                            StartDate = new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 30,
-                            EndDate = new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1",
-                            StartDate = new DateTime(2025, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 31,
-                            EndDate = new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
-                            StartDate = new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 32,
-                            EndDate = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
-                            StartDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 33,
-                            EndDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
-                            StartDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 34,
-                            EndDate = new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
-                            StartDate = new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 35,
-                            EndDate = new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsAvailable = true,
-                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
-                            StartDate = new DateTime(2025, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 36,
                             EndDate = new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
-                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
+                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
                             StartDate = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
+                            Id = 32,
+                            EndDate = new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
+                            StartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 33,
+                            EndDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
+                            StartDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 34,
+                            EndDate = new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
+                            StartDate = new DateTime(2025, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 35,
+                            EndDate = new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
+                            StartDate = new DateTime(2025, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 36,
+                            EndDate = new DateTime(2025, 11, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsAvailable = true,
+                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
+                            StartDate = new DateTime(2025, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
                             Id = 37,
-                            EndDate = new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c5c0d4db-b048-4ee4-8835-344900fd35b2",
-                            StartDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 38,
-                            EndDate = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c5c0d4db-b048-4ee4-8835-344900fd35b2",
-                            StartDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 39,
-                            EndDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c5c0d4db-b048-4ee4-8835-344900fd35b2",
-                            StartDate = new DateTime(2025, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 40,
-                            EndDate = new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "0bb50f31-e322-4b76-97dd-6a7fcf585d33",
-                            StartDate = new DateTime(2025, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 41,
-                            EndDate = new DateTime(2025, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "0bb50f31-e322-4b76-97dd-6a7fcf585d33",
-                            StartDate = new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 42,
-                            EndDate = new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "0bb50f31-e322-4b76-97dd-6a7fcf585d33",
-                            StartDate = new DateTime(2025, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 43,
-                            EndDate = new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "a555515a-ff8a-4741-b0a4-db9be729198e",
-                            StartDate = new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 44,
-                            EndDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "a555515a-ff8a-4741-b0a4-db9be729198e",
-                            StartDate = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 45,
-                            EndDate = new DateTime(2025, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "a555515a-ff8a-4741-b0a4-db9be729198e",
-                            StartDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 46,
-                            EndDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c10d2d46-869a-46bc-a46d-90bdd958c252",
-                            StartDate = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 47,
-                            EndDate = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c10d2d46-869a-46bc-a46d-90bdd958c252",
-                            StartDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 48,
-                            EndDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c10d2d46-869a-46bc-a46d-90bdd958c252",
-                            StartDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 49,
-                            EndDate = new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08",
-                            StartDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 50,
-                            EndDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08",
-                            StartDate = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 51,
-                            EndDate = new DateTime(2025, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08",
-                            StartDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 52,
-                            EndDate = new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "294e2751-203b-4beb-b21e-0bb96f082d7c",
-                            StartDate = new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 53,
-                            EndDate = new DateTime(2025, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "294e2751-203b-4beb-b21e-0bb96f082d7c",
-                            StartDate = new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 54,
-                            EndDate = new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "294e2751-203b-4beb-b21e-0bb96f082d7c",
-                            StartDate = new DateTime(2025, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 55,
-                            EndDate = new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "06dbae08-bc6b-4ca6-9162-3213784b9971",
-                            StartDate = new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 56,
-                            EndDate = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "06dbae08-bc6b-4ca6-9162-3213784b9971",
-                            StartDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 57,
-                            EndDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "06dbae08-bc6b-4ca6-9162-3213784b9971",
-                            StartDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 58,
-                            EndDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "f1e8be41-4fd5-47e4-8960-12d8f4afc273",
-                            StartDate = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 59,
-                            EndDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "f1e8be41-4fd5-47e4-8960-12d8f4afc273",
-                            StartDate = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 60,
-                            EndDate = new DateTime(2025, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "f1e8be41-4fd5-47e4-8960-12d8f4afc273",
-                            StartDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 61,
-                            EndDate = new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198",
-                            StartDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 62,
-                            EndDate = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198",
-                            StartDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 63,
-                            EndDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198",
-                            StartDate = new DateTime(2025, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 64,
-                            EndDate = new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "efd964ab-dceb-4b96-b113-665c5684a102",
-                            StartDate = new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 65,
-                            EndDate = new DateTime(2025, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "efd964ab-dceb-4b96-b113-665c5684a102",
-                            StartDate = new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 66,
-                            EndDate = new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "efd964ab-dceb-4b96-b113-665c5684a102",
-                            StartDate = new DateTime(2025, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 67,
-                            EndDate = new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "52a8df7d-c0b2-4ee3-8369-9daed4885f9f",
-                            StartDate = new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 68,
-                            EndDate = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "52a8df7d-c0b2-4ee3-8369-9daed4885f9f",
-                            StartDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 69,
-                            EndDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "52a8df7d-c0b2-4ee3-8369-9daed4885f9f",
-                            StartDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 70,
-                            EndDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c150e428-1c9a-43a2-be07-f4366875f1ce",
-                            StartDate = new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 71,
-                            EndDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c150e428-1c9a-43a2-be07-f4366875f1ce",
-                            StartDate = new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 72,
-                            EndDate = new DateTime(2025, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "c150e428-1c9a-43a2-be07-f4366875f1ce",
-                            StartDate = new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 73,
-                            EndDate = new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35",
-                            StartDate = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 74,
-                            EndDate = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35",
-                            StartDate = new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 75,
-                            EndDate = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsAvailable = true,
                             PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35",
-                            StartDate = new DateTime(2025, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -5157,196 +5171,245 @@ namespace Travellin.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Amount = 1212.09m,
+                            Amount = 120.00m,
                             Name = "Cleaning Fee",
                             PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936"
                         },
                         new
                         {
                             Id = 2,
-                            Amount = 442.09m,
+                            Amount = 30.00m,
                             Name = "Extra Guest Fee",
                             PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936"
                         },
                         new
                         {
                             Id = 3,
-                            Amount = 600m,
+                            Amount = 50.00m,
                             Name = "Pet Fee",
                             PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936"
                         },
                         new
                         {
                             Id = 4,
-                            Amount = 1200m,
-                            Name = "Cleaning Fee",
-                            PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4"
+                            Amount = 25.00m,
+                            Name = "Service Fee",
+                            PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936"
                         },
                         new
                         {
                             Id = 5,
-                            Amount = 600m,
-                            Name = "Pet Fee",
+                            Amount = 100.00m,
+                            Name = "Cleaning Fee",
                             PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4"
                         },
                         new
                         {
                             Id = 6,
-                            Amount = 950.50m,
+                            Amount = 40.00m,
+                            Name = "Pet Fee",
+                            PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Amount = 20.00m,
+                            Name = "Service Fee",
+                            PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Amount = 80.00m,
                             Name = "Cleaning Fee",
                             PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048"
                         },
                         new
                         {
-                            Id = 7,
-                            Amount = 900.12m,
+                            Id = 9,
+                            Amount = 18.00m,
+                            Name = "Service Fee",
+                            PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Amount = 90.00m,
                             Name = "Cleaning Fee",
                             PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa"
                         },
                         new
                         {
-                            Id = 8,
-                            Amount = 330.00m,
+                            Id = 11,
+                            Amount = 25.00m,
+                            Name = "Extra Guest Fee",
+                            PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Amount = 20.00m,
                             Name = "Extra Guest Fee",
                             PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2"
                         },
                         new
                         {
-                            Id = 9,
-                            Amount = 442.09m,
+                            Id = 13,
+                            Amount = 15.00m,
+                            Name = "Service Fee",
+                            PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Amount = 35.00m,
                             Name = "Pet Fee",
                             PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3"
                         },
                         new
                         {
-                            Id = 10,
-                            Amount = 800.75m,
+                            Id = 15,
+                            Amount = 70.00m,
+                            Name = "Cleaning Fee",
+                            PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Amount = 110.00m,
                             Name = "Cleaning Fee",
                             PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7"
                         },
                         new
                         {
-                            Id = 11,
-                            Amount = 113.09m,
+                            Id = 17,
+                            Amount = 22.00m,
+                            Name = "Service Fee",
+                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Amount = 60.00m,
                             Name = "Cleaning Fee",
                             PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f"
                         },
                         new
                         {
-                            Id = 12,
-                            Amount = 510.00m,
+                            Id = 19,
+                            Amount = 75.00m,
                             Name = "Cleaning Fee",
                             PropertyId = "4b04a76a-1608-4a8f-b09c-8d9043b83e16"
                         },
                         new
                         {
-                            Id = 13,
-                            Amount = 250.00m,
+                            Id = 20,
+                            Amount = 30.00m,
                             Name = "Pet Fee",
                             PropertyId = "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1"
                         },
                         new
                         {
-                            Id = 14,
-                            Amount = 789.99m,
+                            Id = 21,
+                            Amount = 85.00m,
                             Name = "Cleaning Fee",
                             PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c"
                         },
                         new
                         {
-                            Id = 15,
-                            Amount = 199.99m,
+                            Id = 22,
+                            Amount = 18.00m,
                             Name = "Extra Guest Fee",
                             PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6"
                         },
                         new
                         {
-                            Id = 16,
-                            Amount = 450.00m,
+                            Id = 23,
+                            Amount = 65.00m,
                             Name = "Cleaning Fee",
                             PropertyId = "c5c0d4db-b048-4ee4-8835-344900fd35b2"
                         },
                         new
                         {
-                            Id = 17,
-                            Amount = 320.00m,
+                            Id = 24,
+                            Amount = 28.00m,
                             Name = "Pet Fee",
                             PropertyId = "0bb50f31-e322-4b76-97dd-6a7fcf585d33"
                         },
                         new
                         {
-                            Id = 18,
-                            Amount = 670.00m,
+                            Id = 25,
+                            Amount = 95.00m,
                             Name = "Cleaning Fee",
                             PropertyId = "a555515a-ff8a-4741-b0a4-db9be729198e"
                         },
                         new
                         {
-                            Id = 19,
-                            Amount = 275.50m,
+                            Id = 26,
+                            Amount = 22.00m,
                             Name = "Extra Guest Fee",
                             PropertyId = "c10d2d46-869a-46bc-a46d-90bdd958c252"
                         },
                         new
                         {
-                            Id = 20,
-                            Amount = 390.00m,
+                            Id = 27,
+                            Amount = 55.00m,
                             Name = "Cleaning Fee",
                             PropertyId = "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08"
                         },
                         new
                         {
-                            Id = 21,
-                            Amount = 425.99m,
+                            Id = 28,
+                            Amount = 58.00m,
                             Name = "Cleaning Fee",
                             PropertyId = "294e2751-203b-4beb-b21e-0bb96f082d7c"
                         },
                         new
                         {
-                            Id = 22,
-                            Amount = 515.49m,
+                            Id = 29,
+                            Amount = 32.00m,
                             Name = "Pet Fee",
                             PropertyId = "06dbae08-bc6b-4ca6-9162-3213784b9971"
                         },
                         new
                         {
-                            Id = 23,
-                            Amount = 398.89m,
+                            Id = 30,
+                            Amount = 19.00m,
                             Name = "Extra Guest Fee",
                             PropertyId = "f1e8be41-4fd5-47e4-8960-12d8f4afc273"
                         },
                         new
                         {
-                            Id = 24,
-                            Amount = 300.00m,
+                            Id = 31,
+                            Amount = 50.00m,
                             Name = "Cleaning Fee",
                             PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198"
                         },
                         new
                         {
-                            Id = 25,
-                            Amount = 345.00m,
+                            Id = 32,
+                            Amount = 52.00m,
                             Name = "Cleaning Fee",
                             PropertyId = "efd964ab-dceb-4b96-b113-665c5684a102"
                         },
                         new
                         {
-                            Id = 26,
-                            Amount = 410.00m,
+                            Id = 33,
+                            Amount = 27.00m,
                             Name = "Pet Fee",
                             PropertyId = "52a8df7d-c0b2-4ee3-8369-9daed4885f9f"
                         },
                         new
                         {
-                            Id = 27,
-                            Amount = 289.00m,
+                            Id = 34,
+                            Amount = 21.00m,
                             Name = "Extra Guest Fee",
                             PropertyId = "c150e428-1c9a-43a2-be07-f4366875f1ce"
                         },
                         new
                         {
-                            Id = 28,
-                            Amount = 378.00m,
+                            Id = 35,
+                            Amount = 54.00m,
                             Name = "Cleaning Fee",
                             PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35"
                         });
@@ -5379,19 +5442,19 @@ namespace Travellin.Infrastructure.Migrations
                         new
                         {
                             PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
-                            GuestTypeId = 1,
+                            GuestTypeId = 2,
                             GuestCount = 4
                         },
                         new
                         {
                             PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048",
-                            GuestTypeId = 1,
+                            GuestTypeId = 3,
                             GuestCount = 3
                         },
                         new
                         {
                             PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
-                            GuestTypeId = 1,
+                            GuestTypeId = 4,
                             GuestCount = 2
                         },
                         new
@@ -5403,19 +5466,19 @@ namespace Travellin.Infrastructure.Migrations
                         new
                         {
                             PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
-                            GuestTypeId = 1,
+                            GuestTypeId = 2,
                             GuestCount = 2
                         },
                         new
                         {
                             PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
-                            GuestTypeId = 1,
+                            GuestTypeId = 3,
                             GuestCount = 4
                         },
                         new
                         {
                             PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
-                            GuestTypeId = 1,
+                            GuestTypeId = 4,
                             GuestCount = 1
                         },
                         new
@@ -5427,19 +5490,19 @@ namespace Travellin.Infrastructure.Migrations
                         new
                         {
                             PropertyId = "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1",
-                            GuestTypeId = 1,
+                            GuestTypeId = 2,
                             GuestCount = 5
                         },
                         new
                         {
                             PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
-                            GuestTypeId = 1,
+                            GuestTypeId = 3,
                             GuestCount = 2
                         },
                         new
                         {
                             PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
-                            GuestTypeId = 1,
+                            GuestTypeId = 4,
                             GuestCount = 4
                         },
                         new
@@ -7163,6 +7226,10 @@ namespace Travellin.Infrastructure.Migrations
                     b.Property<string>("PhotoId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("StripeAccountId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.HasKey("UserId");
 
                     b.HasIndex("CountryId");
@@ -7364,6 +7431,11 @@ namespace Travellin.Infrastructure.Migrations
 
             modelBuilder.Entity("Travellin.Core.Entities.Conversation", b =>
                 {
+                    b.HasOne("Travellin.Core.Entities.Property", "Property")
+                        .WithMany()
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Travellin.Core.Entities.AppUser", "User1")
                         .WithMany()
                         .HasForeignKey("User1Id")
@@ -7375,6 +7447,8 @@ namespace Travellin.Infrastructure.Migrations
                         .HasForeignKey("User2Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Property");
 
                     b.Navigation("User1");
 

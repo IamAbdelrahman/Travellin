@@ -13,6 +13,7 @@ namespace Travellin.Core.Dtos.Bookings
 
         [Required]
         public DateTime Checkout { get; set; }
+        [Required]
         public List<CreateBookingGuestDto> Guests { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -24,6 +25,10 @@ namespace Travellin.Core.Dtos.Bookings
                 errors.Add(new ValidationResult("Invalid PropertyId format. Must be a valid GUID.", new[] { nameof(PropertyId) }));
             }
 
+            if (Guests == null || !Guests.Any())
+            {
+                errors.Add(new ValidationResult("At least one guest must be specified.", new[] { nameof(Guests) }));
+            }
 
             if (CheckIn <= DateTime.UtcNow)
             {

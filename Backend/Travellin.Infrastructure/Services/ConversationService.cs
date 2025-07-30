@@ -32,6 +32,37 @@ namespace Travellin.Infrastructure.Services
             return conversation;
         }
 
+        public async Task<Conversation> CreateOrGetConversationWithPropertyAsync(string user1Id, string user2Id, string? propertyId = null)
+        {
+            // Find existing conversation between these users
+            var existing = await _conversationRepo.GetBetweenUsersAsync(user1Id, user2Id);
+            
+            if (existing != null)
+            {
+                // Update existing conversation with property context if provided
+                if (!string.IsNullOrEmpty(propertyId) && existing.PropertyId != propertyId)
+                {
+                    existing.PropertyId = propertyId;
+                    await _unitOfWork.SaveChangesAsync();
+                }
+                return existing;
+            }
+
+            // Create new conversation
+            var conversation = new Conversation
+            {
+                User1Id = user1Id,
+                User2Id = user2Id,
+                PropertyId = propertyId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _conversationRepo.Create(conversation);
+            await _unitOfWork.SaveChangesAsync();
+
+            return conversation;
+        }
+
         public async Task<List<Conversation>> GetUserConversationsAsync(string userId)
         {
             return await _conversationRepo.GetUserConversationsAsync(userId);
@@ -70,10 +101,28 @@ namespace Travellin.Infrastructure.Services
                 var otherUserId = c.User1Id == userId ? c.User2Id : c.User1Id;
                 var lastMsg = c.Messages.OrderByDescending(m => m.SentAt).FirstOrDefault();
 
+                // Get the other user's information
+                var otherUser = c.User1Id == userId ? c.User2 : c.User1;
+                var participantName = otherUser?.UserName ?? $"User {otherUserId.Substring(0, 8)}";
+
+                // Try to get the user profile for better display name
+                if (otherUser?.UserProfile != null)
+                {
+                    var profile = otherUser.UserProfile;
+                    if (!string.IsNullOrEmpty(profile.FirstName) || !string.IsNullOrEmpty(profile.LastName))
+                    {
+                        var fullName = $"{profile.FirstName ?? ""} {profile.LastName ?? ""}".Trim();
+                        if (!string.IsNullOrEmpty(fullName))
+                        {
+                            participantName = fullName;
+                        }
+                    }
+                }
+
                 return new InboxDto
                 {
                     ConversationId = c.Id,
-                    Participant = otherUserId,
+                    Participant = participantName,
                     LastMessage = lastMsg?.Content,
                     SentAt = lastMsg?.SentAt ?? DateTime.MinValue,
                     IsUnread = c.Messages.Any(m => m.ReceiverId == userId && !m.IsRead)
@@ -111,6 +160,11 @@ namespace Travellin.Infrastructure.Services
                 return false;
 
             return conversation.User1Id == userId || conversation.User2Id == userId;
+        }
+
+        public async Task<List<Conversation>> GetAllConversationsAsync()
+        {
+            return await _conversationRepo.GetAllConversationsAsync();
         }
 
     }

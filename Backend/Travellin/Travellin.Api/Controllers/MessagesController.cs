@@ -14,20 +14,23 @@ namespace Travellin.Api.Controllers
     public class MessagesController : ControllerBase
     {
         private readonly IMessageService _messageService;
-        private string GetCurrentUserId() =>
-    User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+        private readonly IServiceFactory _serviceFactory;
+        
+        private string GetCurrentUserId()
+        {
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        }
 
-        public MessagesController(IMessageService messageService)
+        public MessagesController(IMessageService messageService, IServiceFactory serviceFactory)
         {
             _messageService = messageService;
+            _serviceFactory = serviceFactory;
         }
 
         /// <summary>
-        /// Send a new message from one user to another.
+        /// Send a new message between users.
         /// </summary>
-        /// <remarks>
-        /// Automatically creates a conversation between the sender and receiver if one doesn't exist.
-        /// </remarks>
+        /// <param name="dto">The message data</param>
         [HttpPost("send")]
         [Consumes("application/json")]
         [Produces("application/json")]
@@ -37,22 +40,36 @@ namespace Travellin.Api.Controllers
         [EndpointSummary("Send a new message between users")]
         public async Task<IActionResult> SendMessage([FromBody] CreateMessageDto dto)
         {
-            var currentUserId = GetCurrentUserId();
-
-            // Force sender to be the current user
-            if (dto.SenderId != currentUserId)
-                return Forbid();
-
-            var message = new Message
+            try
             {
-                SenderId = currentUserId,
-                ReceiverId = dto.ReceiverId,
-                Content = dto.Content,
-                IsRead = false,
-            };
+                var currentUserId = GetCurrentUserId();
+                if (currentUserId == null)
+                    return Unauthorized();
 
-            var savedMessage = await _messageService.SendMessageAsync(message);
-            return Ok(savedMessage);
+                if (dto.SenderId != currentUserId)
+                    return Forbid();
+
+                var message = new Message
+                {
+                    ConversationId = dto.ConversationId,
+                    SenderId = dto.SenderId,
+                    ReceiverId = dto.ReceiverId,
+                    Content = dto.Content,
+                    SentAt = DateTime.UtcNow,
+                    IsRead = false
+                };
+
+                var savedMessage = await _messageService.SendMessageAsync(message);
+                return Ok(savedMessage);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>

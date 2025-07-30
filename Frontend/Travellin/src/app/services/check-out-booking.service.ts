@@ -8,6 +8,7 @@ import {
 } from '../models/api/request/iget-bookings';
 import { PropertyDetails } from '../models/api/request/iget-propertiesDetails';
 import { IProperty } from '../models/domain/iproperty';
+import { ICheckoutBookingRequest } from '../models/api/request/ICheckoutBookingRequest';
 
 @Injectable({
   providedIn: 'root',
@@ -40,15 +41,17 @@ export class CheckOutBookingService {
       `${ApiConstant.baseUrl}/Properties`
     );
   }
-  checkOut(bookingId: string): Observable<any> {
-    return this.http.post<any>(
-      ApiConstant.Booking.checkout.replace('{bookingId}', bookingId),
-      {},
-      {
-        withCredentials: true,
-      }
-    );
-  }
+
+checkOut(data: ICheckoutBookingRequest): Observable<{ sessionUrl: string }> {
+  return this.http.post<{ sessionUrl: string }>(
+    `${ApiConstant.payment.createCheckoutSession}`, data,
+    {
+      withCredentials: true,
+    }
+  );
+}
+
+
   getUserRole(): Observable<HttpResponse<any>> {
     return this.http.get<any>(ApiConstant.UserProfile.User, {
       observe: 'response',

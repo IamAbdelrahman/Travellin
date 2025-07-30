@@ -46,4 +46,13 @@ export class UsersService {
       })
     );
   }
+  getUserById(userId: string): Observable<{ email: string }> {
+  return this.http.get<{ email: string }>(
+    `${environment.apiUrl}/User/${userId}`,
+    {
+      headers: this.getHttpHeaders()
+    }
+  );
+}
+
 }

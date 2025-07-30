@@ -27,6 +27,10 @@ namespace Travellin.Infrastructure.Data.Configurations
                 .IsRequired()
                 .HasMaxLength(450);
 
+            builder.Property(x => x.PropertyId)
+                .HasMaxLength(450)
+                .IsRequired(false); // Optional property context
+
             builder.HasOne(x => x.User1)
                 .WithMany()
                 .HasForeignKey(x => x.User1Id)
@@ -37,6 +41,11 @@ namespace Travellin.Infrastructure.Data.Configurations
                 .HasForeignKey(x => x.User2Id)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasOne(x => x.Property)
+                .WithMany()
+                .HasForeignKey(x => x.PropertyId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasMany(x => x.Messages)
                 .WithOne()
                 .HasForeignKey(m => m.ConversationId)
@@ -44,6 +53,7 @@ namespace Travellin.Infrastructure.Data.Configurations
 
             builder.HasIndex(x => x.User1Id);
             builder.HasIndex(x => x.User2Id);
+            builder.HasIndex(x => x.PropertyId);
 
             // Seed data
             builder.HasData(

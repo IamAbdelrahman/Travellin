@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Mail;
 using Travellin.Api.Utils;
 using Travellin.Core.Dtos.Accounts;
 using Travellin.Core.Entities;
 using Travellin.Core.Interfaces;
-using System.Net.Mail;
 
 namespace Travellin.Api.Controllers
 {
@@ -36,6 +37,12 @@ namespace Travellin.Api.Controllers
             {
                 UserName = username,
                 Email = dto.Email,
+                UserProfile = new UserProfile
+                {
+                    FirstName = dto.FirstName,
+                    LastName = dto.LastName,
+                    BirthDate = dto.BirthDate
+                }
             };
 
             var createdUser = await _identityFactory.UserManager.CreateAsync(appUser, dto.Password);
@@ -107,6 +114,70 @@ namespace Travellin.Api.Controllers
             }
 
             return Unauthorized("Invalid creditionals.");
+        }
+
+        [HttpPost("googleLogin")]
+        [EndpointSummary("Login user using his gmail.")]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(NewUserDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleUserDto dto)
+        {
+            var username = ExtractUsernameFromEmail(dto.Email);
+            var user = await _identityFactory.UserManager.Users
+                .FirstOrDefaultAsync(x => x.Email == dto.Email);
+            if (user == null)
+            {
+                var appUser = new AppUser
+                {
+                    UserName = username,
+                    Email = dto.Email,
+                    UserProfile = new UserProfile
+                    {
+                        FirstName = dto.FullName.Split(' ').FirstOrDefault() ?? string.Empty,
+                        LastName = dto.FullName.Split(" ").Skip(1).FirstOrDefault() ?? string.Empty,
+                        PhotoId = dto.PhotoUrl
+                    }
+                };
+                var createdUser = await _identityFactory.UserManager.CreateAsync(appUser, "!AK1234567890");
+
+                if (createdUser.Succeeded)
+                {
+                    var roleResult = await _identityFactory.UserManager.AddToRoleAsync(appUser, "Guest");
+
+                    if (roleResult.Succeeded)
+                    {
+                        var _user = await _identityFactory.UserManager.Users.Include(x => x.Roles)
+                            .FirstAsync(x => x.Id == appUser.Id);
+                        var token = _serviceFactory.AuthTokenService.CreateToken(_user);
+                        _serviceFactory.AuthTokenService.SetAccessTokenCookie(HttpContext, token);
+
+                        var roles = await _identityFactory.UserManager.GetRolesAsync(appUser);
+
+                        return StatusCode(201, new NewUserDto
+                        {
+                            Id = appUser.Id,
+                            UserName = appUser.UserName,
+                            Roles = roles.ToList(),
+                            Token = token,
+                        });
+                    }
+                    else
+                    {
+                        return StatusCode(500, roleResult.ToErrorList());
+                    }
+                }
+                return StatusCode(500, createdUser.ToErrorList());
+            }
+            return StatusCode(200, new NewUserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Roles = (await _identityFactory.UserManager.GetRolesAsync(user)).ToList(),
+                Token = _serviceFactory.AuthTokenService.CreateToken(user)
+            });
+
         }
 
         [HttpPost("logout")]

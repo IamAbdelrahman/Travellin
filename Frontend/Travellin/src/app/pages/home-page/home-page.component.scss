@@ -9,42 +9,29 @@ $breakpoint-sm: 576px;
   transition: all 0.5s ease;
 }
 
-.hero-section {
-  position: relative;
-  height: 150px;
-  background: linear-gradient(180deg, #f8f8f8 0%, #fff 100%);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-.ai-search-container {
-  position: absolute;
-  bottom: -30px; /* moves it slightly overlapping the hero */
-  width: 60%;
-  max-width: 850px;
-  z-index: 10;
-}
-
-.ai-search-bar {
-  border-radius: 50px;
-  background: #fff;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  padding: 5px 10px;
-}
-
 .search-bars-container {
-  top: 6vh;
+  top: 10vh;
+  background: linear-gradient(180deg, #f8f8f8 0%, #fff 100%);
 }
+
 
 .search-bars-container.minimized {
-  margin-top: 0;
-  padding: 1rem !important;
-  top: 1vh;
-  width: 59vw;
-  transform: translate(-200px, 0);
+  background: transparent !important;
+  box-shadow: none;
+  top: 0 !important;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  max-width: 800px;
+  padding: 0.5rem 1rem !important;
+  border-radius: 2rem;
 }
+.search-bars-container.minimized input {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 2rem;
+  padding: 0.5rem 1rem;
+}
+
 
 .btn-outline-primary {
   &.active,
@@ -161,6 +148,13 @@ $carousel-control-margin: 6px;
   background-color: var(--bs-light);
 }
 
+.searchBtn:hover {
+  background-color: #d50027;
+  color: var(--bs-light);
+}
+.searchBtn:active {
+  color: #ff385c;
+}
 // Favorite Heart
 .favorite-btn {
   z-index: 2;
@@ -173,7 +167,7 @@ $carousel-control-margin: 6px;
 
   &.active {
     ::ng-deep svg {
-      fill: var(--bs-primary);
+      fill: #d50027;
     }
   }
 
@@ -183,3 +177,4 @@ $carousel-control-margin: 6px;
     transform: scale(1.25);
   }
 }
+
