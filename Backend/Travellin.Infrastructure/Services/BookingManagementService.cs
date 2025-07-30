@@ -174,7 +174,7 @@ namespace Travellin.Infrastructure.Services
                 .Where(a => a.StartDate <= checkOut && a.EndDate >= checkIn && a.IsAvailable)
                 .OrderBy(a => a.StartDate)
                 .ToList();
-
+            var date = property.PropertyAvailabilities.Select(a => a.StartDate).ToList();
             //Anoother Guest books 4-->8 (Unavailable) but 1-->5 is available and 10 -->11 is available (overlaps)
             //Loop through each overlapping availability
             foreach (var availability in overlappingAvailabilities)
