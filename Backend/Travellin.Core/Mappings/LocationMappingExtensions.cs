@@ -7,6 +7,7 @@ namespace Travellin.Core.Mappings
     {
         public static LocationDto ToDto(this Location location)
         {
+            if (location == null) return null;
             return new LocationDto
             {
                 Id = location.Id,

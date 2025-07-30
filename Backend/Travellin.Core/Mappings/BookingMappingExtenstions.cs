@@ -20,7 +20,7 @@ namespace Travellin.Core.Mappings
                 CreatedAt = booking.CreatedAt,
                 UpdatedAt = booking.UpdatedAt,
                 BookingGuests = booking.BookingGuests.Select(x => x.ToDto()).ToList(),
-                Property = booking.Property.ToPropertyListItemDto()
+                Property = booking.Property?.ToPropertyListItemDto()
             };
         }
     }
