@@ -50,52 +50,6 @@
               </a>
             </li>
             
-            <!-- Host Dashboard Link -->
-            @if (isHost()) {
-              <li class="nav-item">
-                <a
-                  class="nav-link d-flex align-items-center gap-1 position-relative"
-                  routerLink="/host-dashboard"
-                  routerLinkActive="active">
-                  <lucide-icon
-                    [img]="icons.home"
-                    class="my-icon"
-                    size="18"></lucide-icon>
-                  <span>Host Dashboard</span>
-                  <!-- Pending Bookings Badge -->
-                  <span 
-                    *ngIf="pendingBookingsCount > 0" 
-                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning"
-                    style="font-size: 0.6rem; transform: translate(-50%, -50%);">
-                    {{ pendingBookingsCount > 99 ? '99+' : pendingBookingsCount }}
-                  </span>
-                </a>
-              </li>
-            }
-            
-            <!-- Admin Dashboard Link -->
-            @if (isAdmin()) {
-              <li class="nav-item">
-                <a
-                  class="nav-link d-flex align-items-center gap-1 position-relative"
-                  routerLink="/admin-dashboard"
-                  routerLinkActive="active">
-                  <lucide-icon
-                    [img]="icons.user"
-                    class="my-icon"
-                    size="18"></lucide-icon>
-                  <span>Admin Dashboard</span>
-                  <!-- Pending Bookings Badge -->
-                  <span 
-                    *ngIf="adminPendingBookingsCount > 0" 
-                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                    style="font-size: 0.6rem; transform: translate(-50%, -50%);">
-                    {{ adminPendingBookingsCount > 99 ? '99+' : adminPendingBookingsCount }}
-                  </span>
-                </a>
-              </li>
-            }
-            
             <li class="nav-item">
               <a
                 class="nav-link d-flex align-items-center gap-1 position-relative"

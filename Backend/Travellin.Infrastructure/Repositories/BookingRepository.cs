@@ -18,6 +18,15 @@ namespace Travellin.Infrastructure.Repositories
         {
             var query = _dbContext.Bookings
                 .Include(x => x.Property)
+                .ThenInclude(x => x.Owner)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.Location)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.PropertyType)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.PropertyPhotos)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.Bookings)
                 .Include(x => x.User)
                 .Include(x => x.BookingGuests)
                 .Where(x => x.UserId == userId);
@@ -31,6 +40,14 @@ namespace Travellin.Infrastructure.Repositories
             var query = _dbContext.Bookings
                 .Include(x => x.Property)
                 .ThenInclude(x => x.Owner)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.Location)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.PropertyType)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.PropertyPhotos)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.Bookings)
                 .Include(x => x.User)
                 .Include(x => x.BookingGuests)
                 .Where(x => x.Property != null && 
@@ -46,6 +63,14 @@ namespace Travellin.Infrastructure.Repositories
             var query = _dbContext.Bookings
                 .Include(x => x.Property)
                 .ThenInclude(x => x.Owner)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.Location)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.PropertyType)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.PropertyPhotos)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.Bookings)
                 .Include(x => x.User)
                 .Include(x => x.BookingGuests)
                 .Where(x => x.PropertyId == propertyId);
@@ -59,6 +84,14 @@ namespace Travellin.Infrastructure.Repositories
             var query = _dbContext.Bookings
                 .Include(x => x.Property)
                 .ThenInclude(x => x.Owner)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.Location)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.PropertyType)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.PropertyPhotos)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.Bookings)
                 .Include(x => x.User)
                 .Include(x => x.BookingGuests);
 
@@ -83,6 +116,14 @@ namespace Travellin.Infrastructure.Repositories
                 var query = _dbContext.Bookings
                     .Include(x => x.Property)
                     .ThenInclude(x => x.Owner)
+                    .Include(x => x.Property)
+                    .ThenInclude(x => x.Location)
+                    .Include(x => x.Property)
+                    .ThenInclude(x => x.PropertyType)
+                    .Include(x => x.Property)
+                    .ThenInclude(x => x.PropertyPhotos)
+                    .Include(x => x.Property)
+                    .ThenInclude(x => x.Bookings)
                     .Include(x => x.User)
                     .Include(x => x.BookingGuests)
                     .Where(x => x.Property != null && 
@@ -107,6 +148,14 @@ namespace Travellin.Infrastructure.Repositories
             var query = _dbContext.Bookings
                 .Include(x => x.Property)
                 .ThenInclude(x => x.Owner)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.Location)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.PropertyType)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.PropertyPhotos)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.Bookings)
                 .Include(x => x.User)
                 .Include(x => x.BookingGuests)
                 .Where(x => x.Status == BookingStatus.Pending);

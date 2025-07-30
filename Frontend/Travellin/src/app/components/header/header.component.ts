@@ -5,7 +5,6 @@ import { StickyNavDirective } from '../../directive/sticky-nav.directive';
 import { AuthService } from '../../core/services/auth.service';
 import { AccountService } from '../../services/account.service';
 import { ChatService } from '../../services/chat.service';
-import { BookingManagementService } from '../../services/booking-management.service';
 import { Subscription } from 'rxjs';
 import {
   LucideAngularModule,
@@ -42,15 +41,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   };
 
   unreadCount: number = 0;
-  pendingBookingsCount: number = 0;
-  adminPendingBookingsCount: number = 0;
   private subscription = new Subscription();
 
   constructor(
     private authService: AuthService,
     private accountService: AccountService,
     private chatService: ChatService,
-    private bookingManagementService: BookingManagementService,
     private router: Router
   ) {}
 
@@ -58,7 +54,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.isAuthenticated) {
       this.loadUnreadCount();
       this.setupUnreadCountSubscription();
-      this.loadPendingBookingsCount();
     }
     
     // Make component available globally for debugging
@@ -176,32 +171,5 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   isAdmin(): boolean {
     return this.authService.isAdmin();
-  }
-
-  // Load pending bookings count for hosts
-  private loadPendingBookingsCount(): void {
-    if (this.isHost()) {
-      this.bookingManagementService.getHostPendingCount().subscribe({
-        next: (count) => {
-          this.pendingBookingsCount = count;
-        },
-        error: (error) => {
-          console.error('Error loading host pending count:', error);
-          this.pendingBookingsCount = 0;
-        },
-      });
-    }
-
-    if (this.isAdmin()) {
-      this.bookingManagementService.getAdminPendingCount().subscribe({
-        next: (count) => {
-          this.adminPendingBookingsCount = count;
-        },
-        error: (error) => {
-          console.error('Error loading admin pending count:', error);
-          this.adminPendingBookingsCount = 0;
-        },
-      });
-    }
   }
 }
