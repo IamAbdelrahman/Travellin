@@ -43,6 +43,7 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
   searchQuery: string = '';
   messageStatus: Map<number, 'sending' | 'sent' | 'delivered' | 'read' | 'error'> = new Map();
   filteredInbox: InboxDto[] = [];
+  showMobileChat: boolean = false;
 
   constructor(
     private chatService: ChatService,
@@ -440,6 +441,11 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
     // Mark conversation as read
     console.log('Marking conversation as read:', conversation.id);
     this.markConversationAsRead(conversation.id);
+    
+    // Handle mobile navigation
+    if (window.innerWidth <= 768) {
+      this.showMobileChat = true;
+    }
   }
 
   selectConversationByInbox(inboxItem: InboxDto): void {
@@ -470,6 +476,11 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
           this.toastService.showError('Failed to load conversation');
         }
       });
+    }
+    
+    // Handle mobile navigation
+    if (window.innerWidth <= 768) {
+      this.showMobileChat = true;
     }
   }
 
@@ -685,22 +696,63 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (!sentAt) return '';
     
     const now = new Date();
-    const messageTime = new Date(sentAt);
-    const diffInHours = (now.getTime() - messageTime.getTime()) / (1000 * 60 * 60);
-
-    if (diffInHours < 1) {
-      const diffInMinutes = Math.floor((now.getTime() - messageTime.getTime()) / (1000 * 60));
-      return diffInMinutes < 1 ? 'Just now' : `${diffInMinutes}m ago`;
-    } else if (diffInHours < 24) {
-      return `${Math.floor(diffInHours)}h ago`;
-    } else if (diffInHours < 168) { // 7 days
-      return messageTime.toLocaleDateString('en-US', { weekday: 'short' });
-    } else {
-      return messageTime.toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric' 
+    const messageDate = new Date(sentAt);
+    const diffInHours = (now.getTime() - messageDate.getTime()) / (1000 * 60 * 60);
+    
+    // If message is from today, show only time
+    if (messageDate.toDateString() === now.toDateString()) {
+      return messageDate.toLocaleTimeString('en-US', { 
+        hour: 'numeric', 
+        minute: '2-digit',
+        hour12: true 
       });
     }
+    
+    // If message is from yesterday, show "Yesterday" and time
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    if (messageDate.toDateString() === yesterday.toDateString()) {
+      return `Yesterday ${messageDate.toLocaleTimeString('en-US', { 
+        hour: 'numeric', 
+        minute: '2-digit',
+        hour12: true 
+      })}`;
+    }
+    
+    // If message is from this week, show day name and time
+    if (diffInHours < 168) { // 7 days
+      return messageDate.toLocaleDateString('en-US', { 
+        weekday: 'short',
+        hour: 'numeric', 
+        minute: '2-digit',
+        hour12: true 
+      });
+    }
+    
+    // If message is older, show full date and time
+    return messageDate.toLocaleDateString('en-US', { 
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true 
+    });
+  }
+
+  formatMessageTimeForTooltip(sentAt: Date | undefined): string {
+    if (!sentAt) return '';
+    
+    const messageDate = new Date(sentAt);
+    return messageDate.toLocaleDateString('en-US', { 
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true 
+    });
   }
 
   private scrollToBottom(): void {
@@ -839,6 +891,18 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
   // New methods for message status
   getMessageStatus(messageId: number): 'sending' | 'sent' | 'delivered' | 'read' | 'error' {
     return this.messageStatus.get(messageId) || 'sent';
+  }
+
+  getMessageStatusFromMessage(message: MessageDto): string {
+    if (this.isMessageFromCurrentUser(message)) {
+      if (message.isRead) {
+        return 'Read';
+      } else {
+        return 'Delivered';
+      }
+    } else {
+      return 'Received';
+    }
   }
 
   getMessageStatusIcon(status: 'sending' | 'sent' | 'delivered' | 'read' | 'error'): string {
