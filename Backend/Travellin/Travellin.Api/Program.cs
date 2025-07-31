@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using OpenAI.Chat;
 using Stripe;
+using System.Security.Claims;
 using Travellin.Api.Filters;
 using Travellin.Api.Hubs;
 using Travellin.Api.Utils;
@@ -13,7 +15,6 @@ using Travellin.Core.Services;
 using Travellin.Infrastructure;
 using Travellin.Infrastructure.Repositories;
 using Travellin.Infrastructure.Services;
-using System.Security.Claims;
 
 namespace Travellin.Api
 {
@@ -73,7 +74,6 @@ namespace Travellin.Api
             StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretApiKey"];
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -96,6 +96,7 @@ namespace Travellin.Api
                 });
 
             });
+
 
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSignalR(options =>

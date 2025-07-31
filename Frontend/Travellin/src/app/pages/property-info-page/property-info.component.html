@@ -1,8 +1,6 @@
 
 <div *ngIf="loading" class="d-flex justify-content-center my-5">
-  <div class="spinner-border text-primary" role="status">
-    <span class="visually-hidden">Loading...</span>
-  </div>
+  <app-load-spinner></app-load-spinner>
 </div>
 
 <div *ngIf="error" class="alert alert-danger text-center my-5">
