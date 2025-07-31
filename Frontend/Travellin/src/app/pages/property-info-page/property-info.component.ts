@@ -34,6 +34,7 @@ import { ThingsToKnowComponent } from '../../components/PropertyDetails/things-t
 import { FavoriteButtonComponent } from '../../components/PropertyDetails/favorite-button/favorite-button.component';
 import { PropertyAvailabilityComponent } from '../../components/PropertyDetails/property-availability/property-availability.component';
 import { forkJoin } from 'rxjs';
+import {LoadSpinnerComponent} from '../../components/load-spinner/load-spinner';
 
 @Component({
   selector: 'app-property-info',
@@ -58,6 +59,7 @@ import { forkJoin } from 'rxjs';
     ThingsToKnowComponent,
     FavoriteButtonComponent,
     PropertyAvailabilityComponent,
+    LoadSpinnerComponent
   ],
   templateUrl: './property-info.component.html',
   styleUrls: ['./property-info.component.scss'],
