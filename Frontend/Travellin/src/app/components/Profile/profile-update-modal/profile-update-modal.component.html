@@ -86,12 +86,12 @@
     <div class="form-group" [class.invalid]="userForm.get('bio')?.invalid && userForm.get('bio')?.touched">
       <label for="bio">Bio</label>
       <textarea id="bio" formControlName="bio" rows="3"></textarea>
-      <div class="char-counter">{{ userForm.get('bio')?.value?.length || 0 }}/200</div>
+      <div class="char-counter">{{ userForm.get('bio')?.value?.length || 0 }}/500</div>
       <div class="error-message" *ngIf="userForm.get('bio')?.invalid && userForm.get('bio')?.touched">
         <svg viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
         </svg>
-        <span>Bio must be less than 200 characters</span>
+        <span>Bio must be less than 500 characters</span>
       </div>
     </div>
 
@@ -125,9 +125,16 @@
   </div>
 </div>
 
-    <div class="form-group">
+    <div class="form-group" [class.invalid]="userForm.get('birthday')?.invalid && userForm.get('birthday')?.touched">
       <label for="birthday">Birthday</label>
       <input id="birthday" type="date" formControlName="birthday" [max]="maxBirthDate | date:'yyyy-MM-dd'">
+      <p class="field-note">You must be at least 18 years old to use this service</p>
+      <div class="error-message" *ngIf="userForm.get('birthday')?.invalid && userForm.get('birthday')?.touched">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+        </svg>
+        <span *ngFor="let error of getFormErrors('birthday')">{{ error }}</span>
+      </div>
     </div>
 
     <div class="form-actions">
