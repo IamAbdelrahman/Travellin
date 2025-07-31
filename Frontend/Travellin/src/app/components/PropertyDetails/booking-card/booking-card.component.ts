@@ -29,7 +29,7 @@ export class BookingCardComponent implements OnInit {
     private bookingService: BookingService,
     private toaster: ToastService,
     private router: Router
-  ) {}
+  ) { }
   ngOnInit(): void {
     this.loadFees(this.property.id);
     this.loadGuestTypes();
@@ -205,7 +205,6 @@ export class BookingCardComponent implements OnInit {
       },
       error: error => {
         this.isBooking = false;
-        this.toaster.showError('Booking failed!');
 
         if (error.status === 409) {
           this.toaster.showError(error.error);
