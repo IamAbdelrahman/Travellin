@@ -26,67 +26,6 @@ namespace Travellin.Infrastructure.Services
             _successUrl = config["Stripe:SuccessUrl"];
             _cancelurl = config["Stripe:CancelUrl"];
         }
-
-        //public async Task<CreateCheckoutResult> CreateCheckoutSessionAsync(CheckoutOptions options)
-        //{
-        //    var sessionService = new SessionService(_stripeClient);
-
-        //    var sessionOptions = new SessionCreateOptions
-        //    {
-        //        CustomerEmail = options.Guest.Email,
-        //        PaymentMethodTypes = new List<string> { "card" },
-        //        LineItems = new List<SessionLineItemOptions>
-        //    {
-        //        new()
-        //        {
-        //            PriceData = new SessionLineItemPriceDataOptions
-        //            {
-        //                UnitAmount = (long)(options.Pricing.TotalAmount * 100),
-        //                Currency = "usd",
-        //                ProductData = new SessionLineItemPriceDataProductDataOptions
-        //                {
-        //                    Name = options.Property.Title,
-        //                    Description = $"Booking from {options.BookingPeriod.CheckInDate:d} to {options.BookingPeriod.CheckOutDate:d}",
-        //                    Images = !string.IsNullOrEmpty(options.Property.MainPhotoUrl)
-        //                        ? new List<string> { options.Property.MainPhotoUrl }
-        //                        : null
-        //                }
-        //            },
-        //            Quantity = 1
-        //        }
-        //    },
-        //        Mode = "payment",
-        //        SuccessUrl = _successUrl,
-        //        CancelUrl = _cancelurl,
-        //        ClientReferenceId = options.BookingId,
-        //        Metadata = options.Metadata
-        //    };
-
-        //    var session = await sessionService.CreateAsync(sessionOptions);
-
-        //    var newPayment = new Payment
-        //    {
-        //        BookingId = options.BookingId,
-        //        StripeSessionId = session.Id,
-        //        StripePaymentIntentId = session.PaymentIntentId,
-        //        Amount = session.AmountTotal.Value / 100m, // Convert from cents to dollars
-        //        Currency = session.Currency,
-        //        Status = PaymentStatus.Pending,
-        //        CreatedAt = DateTime.UtcNow,
-        //        UpdatedAt = DateTime.UtcNow
-        //    };
-
-        //    _unitOfWork.PaymentRepository.Create(newPayment);
-        //    await _unitOfWork.SaveChangesAsync();
-
-        //    return new CreateCheckoutResult
-        //    {
-        //        SessionId = session.Id,
-        //        SessionUrl = session.Url,
-        //        ExpiresAt = session.ExpiresAt
-        //    };
-        //}
-
         public async Task<CreateCheckoutResult> CreateCheckoutSessionAsync(CheckoutOptions options)
         {
             var sessionService = new SessionService(_stripeClient);

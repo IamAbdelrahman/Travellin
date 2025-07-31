@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Travellin.Core.Dtos.Reviews;
 
-namespace Travellin.Core.Services
+namespace Travellin.Core.Interfaces
 {
     public interface IReviewService
     {

@@ -11,6 +11,7 @@ using Stripe;
 using System.Text;
 using Travellin.Core.Entities;
 using Travellin.Core.Interfaces;
+using Travellin.Core.Services;
 using Travellin.Infrastructure.Data;
 using Travellin.Infrastructure.Repositories;
 using Travellin.Infrastructure.Services;
@@ -109,6 +110,8 @@ namespace Travellin.Infrastructure
             services.AddScoped<IBookingManagementService, BookingManagementService>();
             services.AddScoped<IStripeTransferService, StripeTransferService>();
             services.AddScoped<IPropertyFilterExtractorService, PropertyFilterExtractorService>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
+            services.AddScoped<IReviewService, ReviewsService>();
 
             return services;
         }
