@@ -29,7 +29,7 @@
   <!-- AI Search Bar (Simple Mode) -->
   <div *ngIf="searchMode === 'simple'" class="container-fluid w-75">
     <div class="text-center mb-3" [class.d-none]="scrollY > 50">
-      <h3>How can we help you find your perfect stay?</h3>
+      <h3>Find your dream getaway with just a few clicks!</h3>
       <p class="text-muted">
         Describe what you're looking for in natural language
       </p>
@@ -253,9 +253,7 @@
   [ngStyle]="{ 'margin-top': getMarginTop() + 'px' }">
   <!-- Loading Spinner -->
   @if (isLoadingProperties) {
-    <!-- <div class="d-flex justify-content-center align-items-center" style="height: 300px"> -->
       <app-load-spinner></app-load-spinner>
-    <!-- </div> -->
   } @else {
     <div
       class="container py-6"
