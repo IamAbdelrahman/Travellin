@@ -58,10 +58,9 @@ namespace Travellin.Infrastructure.Shared
                 _provider.GetRequiredService<ILogger<MessageService>>());
         public IPropertyFilterExtractorService PropertyFilterExtractorService =>
                 _propertyFilterExtractorService ??= new PropertyFilterExtractorService
-                (_provider.GetRequiredKeyedService<ChatClient>("MainOpenAIClient"), _provider.GetRequiredService<IUnitOfWork>());
+                (_provider.GetRequiredService<ChatClient>(), _provider.GetRequiredService<IUnitOfWork>());
         public ICancellationService CancellationService => _provider.GetRequiredService<ICancellationService>();
         public IPaymentRefundService PaymentRefundService => _provider.GetRequiredService<IPaymentRefundService>();
         public IStripeTransferService StripeTransferService => _provider.GetRequiredService<IStripeTransferService>();
-
     }
 }
