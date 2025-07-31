@@ -11,14 +11,14 @@ using Travellin.Core.Mappings;
 using Travellin.Infrastructure.Data;
 using Travellin.Travellin.Core.Shared;
 
-namespace Travellin.Core.Services
+namespace Travellin.Infrastructure.Services
 {
-    public class ReviewService : IReviewService
+    public class ReviewsService : IReviewService
     {
         private readonly IReviewRepository _reviewRepository;
         private readonly TravellinDbContext _dbContext;
 
-        public ReviewService(IReviewRepository reviewRepository, TravellinDbContext dbContext)
+        public ReviewsService(IReviewRepository reviewRepository, TravellinDbContext dbContext)
         {
             _reviewRepository = reviewRepository;
             _dbContext = dbContext;
