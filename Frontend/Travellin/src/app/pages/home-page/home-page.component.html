@@ -1,10 +1,10 @@
-
 <div
   class="container-fluid search-bars-container fixed-top p-5 transition-all"
   [class.minimized]="scrollY > 50"
   tabindex="0"
   (focus)="onFocus()"
   (blur)="onBlur()">
+
   <!-- Search Mode Toggle -->
   <div class="d-flex justify-content-center mb-3" [class.d-none]="scrollY > 50">
     <div class="btn-group" role="group">
@@ -253,13 +253,9 @@
   [ngStyle]="{ 'margin-top': getMarginTop() + 'px' }">
   <!-- Loading Spinner -->
   @if (isLoadingProperties) {
-    <div
-      class="d-flex justify-content-center align-items-center"
-      style="height: 300px">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
+    <!-- <div class="d-flex justify-content-center align-items-center" style="height: 300px"> -->
+      <app-load-spinner></app-load-spinner>
+    <!-- </div> -->
   } @else {
     <div
       class="container py-6"
@@ -391,7 +387,6 @@
       </div>
     </div>
 
-    <!-- Pagination -->
     <!-- Pagination -->
     @if (totalItems > itemsPerPage && !isLoadingProperties) {
       <div class="pagination-container d-flex justify-content-center mt-4">

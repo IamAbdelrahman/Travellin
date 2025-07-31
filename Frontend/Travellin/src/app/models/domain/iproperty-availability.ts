@@ -3,4 +3,5 @@ export interface IPropertyAvailability {
   startDate: Date;
   endDate: Date;
   propertyId: string;
+  isAvailable: boolean;
 }

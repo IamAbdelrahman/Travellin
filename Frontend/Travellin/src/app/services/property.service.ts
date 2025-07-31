@@ -73,7 +73,7 @@ export class PropertyService {
 
   smartSearch(query: string): Observable<HttpResponse<any>> {
     return this.http.post(
-      `${ApiConstant.PropertiesApi.smartSearch}`,
+      `${ApiConstant.SearchApi.smartSearch}`,
       JSON.stringify(query),
       {
         observe: 'response',

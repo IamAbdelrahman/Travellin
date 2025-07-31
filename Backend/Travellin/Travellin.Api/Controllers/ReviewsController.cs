@@ -2,6 +2,7 @@
 using Stripe;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Travellin.Core.Dtos.Reviews;
 using Travellin.Core.Entities;
@@ -15,10 +16,11 @@ namespace Travellin.Travellin.Api.Controllers
     public class ReviewsController : ControllerBase
     {
         private readonly IReviewService _reviewService;
-
-        public ReviewsController(IReviewService reviewService)
+        private readonly IUnitOfWork _unitOfWork;
+        public ReviewsController(IReviewService reviewService, IUnitOfWork unitOfWork)
         {
             _reviewService = reviewService;
+            _unitOfWork=unitOfWork;
         }
 
         [HttpGet]
@@ -26,7 +28,8 @@ namespace Travellin.Travellin.Api.Controllers
         {
             try
             {
-                var reviews = await _reviewService.GetAllAsync();
+                //var reviews = await _reviewService.GetAllAsync();
+                var reviews = await _unitOfWork.ReviewRepository.GetAll();
                 return Ok(reviews);
             }
             catch (Exception ex)
@@ -40,7 +43,8 @@ namespace Travellin.Travellin.Api.Controllers
         {
             try
             {
-                var review = await _reviewService.GetByIdAsync(id);
+                //var review = await _reviewService.GetByIdAsync(id);
+                var review = await _unitOfWork.ReviewRepository.GetByIdAsync(id);
                 if (review == null)
                 {
                     return NotFound();

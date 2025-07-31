@@ -42,7 +42,7 @@ export class ProfileUpdateModalComponent implements OnInit {
   saveSuccess = false;
   errorMessage = '';
   showPasswordModal = false;
-  maxBirthDate = new Date();
+  maxBirthDate = new Date(new Date().getFullYear() - 18, new Date().getMonth(), new Date().getDate());
 
   // Validation patterns
   readonly namePattern = /^[a-zA-ZÀ-ÿ '-]{3,}$/;
@@ -66,6 +66,10 @@ export class ProfileUpdateModalComponent implements OnInit {
   // File upload
   selectedFile: File | null = null;
   previewUrl: string | null = null;
+  
+  // Track form changes
+  private originalFormValues: any = {};
+  formHasChanges = false;
 
   constructor(
     private fb: FormBuilder,
@@ -102,10 +106,10 @@ export class ProfileUpdateModalComponent implements OnInit {
           Validators.pattern(/^[a-zA-Z0-9_]+$/),
         ],
       ],
-      bio: ['', [Validators.maxLength(200)]],
+      bio: ['', [Validators.maxLength(500)]],
       country: [''],
       phoneNumber: [null],
-      birthday: [''],
+      birthday: [null, [this.validateBirthDate.bind(this)]],
     });
 
     this.passwordForm = this.fb.group(
@@ -126,36 +130,76 @@ export class ProfileUpdateModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('ProfileUpdateModalComponent initialized');
     this.loadUserData();
   }
 
+
+
   loadUserData(): void {
+    console.log('Loading user data...');
     this.isLoading = true;
     this.errorMessage = '';
 
     this.userProfileService.getUserProfile().subscribe({
       next: (response: any) => {
+        console.log('User profile response:', response);
         if (response.body) {
           this.user = response.body;
-          this.userForm.patchValue({
-            firstName: this.user?.firstName,
-            lastName: this.user?.lastName,
-            email: this.user?.email,
-            username: this.user?.userName,
-            bio: this.user?.bio,
-            country: this.user?.country,
-            phoneNumber: this.user?.phoneNumber,
-            birthday: this.user?.birthDate
-              ? new Date(this.user.birthDate)
-              : null,
+                                // Handle birthdate properly - convert to YYYY-MM-DD format for HTML date input
+                      let birthDate = null;
+                      if (this.user?.birthDate) {
+                        let dateObj: Date;
+                        // If it's already a Date object, use it directly
+                        if (typeof this.user.birthDate === 'object' && this.user.birthDate && (this.user.birthDate as any) instanceof Date) {
+                          dateObj = this.user.birthDate;
+                        } else {
+                          // If it's a string, convert to Date
+                          dateObj = new Date(this.user.birthDate as string);
+                        }
+                        // Format as YYYY-MM-DD for HTML date input
+                        birthDate = dateObj.toISOString().split('T')[0];
+                      }
+
+                      this.userForm.patchValue({
+                        firstName: this.user?.firstName,
+                        lastName: this.user?.lastName,
+                        email: this.user?.email,
+                        username: this.user?.userName,
+                        bio: this.user?.bio,
+                        country: this.user?.country,
+                        phoneNumber: this.user?.phoneNumber,
+                        birthday: birthDate,
+                      });
+          
+          // Store original values for change detection
+          this.originalFormValues = {
+            firstName: this.user?.firstName || '',
+            lastName: this.user?.lastName || '',
+            email: this.user?.email || '',
+            username: this.user?.userName || '',
+            bio: this.user?.bio || '',
+            country: this.user?.country || '',
+            phoneNumber: this.user?.phoneNumber || null,
+            birthday: birthDate
+          };
+          
+
+          
+          // Set up form change detection
+          this.userForm.valueChanges.subscribe(() => {
+            this.checkFormChanges();
           });
+          
+          // Initial change detection check
+          this.checkFormChanges();
         }
         this.isLoading = false;
       },
       error: err => {
+        console.error('Error loading user data:', err);
         this.errorMessage = err.error || 'Failed to load profile data';
         this.isLoading = false;
-        console.error(err);
 
         if (err.status === 401) {
           this.authService.unsetAuthData();
@@ -165,68 +209,7 @@ export class ProfileUpdateModalComponent implements OnInit {
     });
   }
 
-  // onSubmitProfile(): void {
-  //   if (this.userForm.invalid || !this.user) return;
 
-  //   this.isSaving = true;
-  //   this.saveSuccess = false;
-  //   this.errorMessage = '';
-
-  //   const updatedUser: IUserProfile = {
-  //     ...this.user,
-  //     firstName: this.userForm.value.firstName,
-  //     lastName: this.userForm.value.lastName,
-  //     userName: this.userForm.value.username,
-  //     bio: this.userForm.value.bio,
-  //     country: this.userForm.value.country,
-  //     phoneNumber: this.userForm.value.phoneNumber,
-  //     birthDate: this.userForm.value.birthday
-  //   };
-
-  //   // If we have a file, convert to FormData
-  //   const payload = this.selectedFile ? this.createFormData(updatedUser) : updatedUser;
-
-  //   this.userProfileService.UpdateUserProfile(payload).subscribe({
-  //     next: (response: any) => {
-  //       if (response.body) {
-  //         this.user = response.body;
-  //         this.saveSuccess = true;
-  //         this.selectedFile = null;
-  //         this.previewUrl = null;
-  //         setTimeout(() => this.saveSuccess = false, 3000);
-  //       }
-  //       this.isSaving = false;
-  //     },
-  //     error: (err) => {
-  //       this.errorMessage = 'Failed to save changes';
-  //       this.isSaving = false;
-  //       console.error(err);
-
-  //       if (err.status === 401) {
-  //         this.authService.unsetAuthData();
-  //         this.router.navigate(['/login']);
-  //       }
-  //     }
-  //   });
-  // }
-
-  // private createFormData(userData: IUserProfile): FormData {
-  //   const formData = new FormData();
-  //   formData.append('firstName', userData.firstName);
-  //   formData.append('lastName', userData.lastName);
-  //   formData.append('username', userData.userName);
-  //   if (userData.bio) formData.append('bio', userData.bio);
-  //   if (userData.country) {
-  //     formData.append('country', JSON.stringify(userData.country));
-
-  //   }
-  //   if (userData.phoneNumber) formData.append('phoneNumber', userData.phoneNumber);
-  //   if (userData.birthDate) formData.append('birthday', userData.birthDate.toString());
-  //   if (this.selectedFile) {
-  //     formData.append('photo', this.selectedFile, this.selectedFile.name);
-  //   }
-  //   return formData;
-  // }
 
   // In ProfileUpdateModalComponent
 
@@ -248,16 +231,13 @@ export class ProfileUpdateModalComponent implements OnInit {
         this.userForm.value.phoneNumber?.e164Number ||
         this.userForm.value.phoneNumber,
       bio: this.userForm.value.bio,
-      // birthDate: this.userForm.value.birthday ? new Date(this.userForm.value.birthday): new Date(),
-      birthDate: '2025-04-26',
+      birthDate: this.userForm.value.birthday || null,
       country: this.userForm.value.country,
       photo: this.user.photo,
     };
 
-    // Create payload (FormData if file selected, otherwise plain object)
-    const payload = this.selectedFile
-      ? this.createFormData(requestData)
-      : requestData;
+    // Always send FormData since the API expects multipart/form-data
+    const payload = this.createFormData(requestData);
 
     this.userProfileService.UpdateUserProfile(payload).subscribe({
       next: updatedProfile => {
@@ -267,6 +247,18 @@ export class ProfileUpdateModalComponent implements OnInit {
         this.previewUrl = updatedProfile.photo.photoUrl || null;
 
         // Update form with normalized data
+        let birthDate = null;
+        if (updatedProfile.birthDate) {
+          let dateObj: Date;
+          if (typeof updatedProfile.birthDate === 'object' && updatedProfile.birthDate && (updatedProfile.birthDate as any) instanceof Date) {
+            dateObj = updatedProfile.birthDate;
+          } else {
+            dateObj = new Date(updatedProfile.birthDate as string);
+          }
+          // Format as YYYY-MM-DD for HTML date input
+          birthDate = dateObj.toISOString().split('T')[0];
+        }
+
         this.userForm.patchValue({
           firstName: updatedProfile.firstName,
           lastName: updatedProfile.lastName,
@@ -274,17 +266,30 @@ export class ProfileUpdateModalComponent implements OnInit {
           bio: updatedProfile.bio,
           country: updatedProfile.country,
           phoneNumber: updatedProfile.phoneNumber,
-          // birthday: updatedProfile.birthDate ? new Date(updatedProfile.birthDate) : null
-          birthday: '2025-04-26',
+          birthday: birthDate,
         });
 
-        // setTimeout(() => this.saveSuccess = false, 3000);
+        // Reset change detection
+        this.originalFormValues = {
+          firstName: updatedProfile.firstName || '',
+          lastName: updatedProfile.lastName || '',
+          email: updatedProfile.email || '',
+          username: updatedProfile.userName || '',
+          bio: updatedProfile.bio || '',
+          country: updatedProfile.country || '',
+          phoneNumber: updatedProfile.phoneNumber || null,
+          birthday: birthDate
+        };
+        this.formHasChanges = false;
+        
+        console.log('Form reset after save:', this.originalFormValues);
+
+        setTimeout(() => this.saveSuccess = false, 3000);
         this.isSaving = false;
       },
       error: err => {
         this.errorMessage = err.error || 'Failed to save changes';
         this.isSaving = false;
-        // this.toaster.showError(err.error);
 
         if (err.status === 401) {
           this.authService.unsetAuthData();
@@ -294,34 +299,65 @@ export class ProfileUpdateModalComponent implements OnInit {
     });
   }
 
+  private checkFormChanges(): void {
+    const currentValues = this.userForm.value;
+    const hasFileChanges = this.selectedFile !== null;
+    
+    // Simple comparison - check if any field has changed
+    let formChanged = false;
+    
+    if (this.originalFormValues) {
+      // Compare phone number properly - handle both string and object formats
+      let phoneChanged = false;
+      if (currentValues.phoneNumber && this.originalFormValues.phoneNumber) {
+        const currentPhone = typeof currentValues.phoneNumber === 'string' 
+          ? currentValues.phoneNumber 
+          : currentValues.phoneNumber.e164Number;
+        const originalPhone = typeof this.originalFormValues.phoneNumber === 'string'
+          ? this.originalFormValues.phoneNumber
+          : this.originalFormValues.phoneNumber?.e164Number;
+        phoneChanged = currentPhone !== originalPhone;
+      } else {
+        phoneChanged = currentValues.phoneNumber !== this.originalFormValues.phoneNumber;
+      }
+      
+      formChanged = 
+        currentValues.firstName !== this.originalFormValues.firstName ||
+        currentValues.lastName !== this.originalFormValues.lastName ||
+        currentValues.username !== this.originalFormValues.username ||
+        currentValues.bio !== this.originalFormValues.bio ||
+        currentValues.country !== this.originalFormValues.country ||
+        phoneChanged ||
+        currentValues.birthday !== this.originalFormValues.birthday;
+    }
+    
+    this.formHasChanges = formChanged || hasFileChanges;
+  }
+
   private createFormData(requestData: ApiUserProfileRequest): FormData {
     const formData = new FormData();
 
-    if (requestData.country) {
-      // Match the server's expected structure
-      formData.append('country[id]', requestData.country.id.toString());
-      formData.append('country[name]', requestData.country.name);
-      formData.append(
-        'country[regionId]',
-        requestData.country.regionId.toString()
-      );
-    }
-    // Append all fields including undefined ones (API might handle them)
+    // Append all fields
     formData.append('userId', requestData.userId ?? '');
     formData.append('userName', requestData.userName ?? '');
     formData.append('email', requestData.email ?? '');
-    if (requestData.firstName)
-      formData.append('firstName', requestData.firstName);
-    if (requestData.lastName) formData.append('lastName', requestData.lastName);
-    if (requestData.phoneNumber)
-      formData.append('phoneNumber', requestData.phoneNumber);
-    if (requestData.bio) formData.append('bio', requestData.bio);
-    // if (requestData.birthDate) formData.append('birthDate', requestData.birthDate);
-    if (requestData.birthDate) formData.append('birthDate', '2025-04-26');
-    if (requestData.country)
-      formData.append('country', JSON.stringify(requestData.country));
-    if (this.selectedFile)
+    formData.append('firstName', requestData.firstName ?? '');
+    formData.append('lastName', requestData.lastName ?? '');
+    formData.append('phoneNumber', requestData.phoneNumber ?? '');
+    formData.append('bio', requestData.bio ?? '');
+    formData.append('birthDate', requestData.birthDate ?? '');
+    
+    // Handle country object
+    if (requestData.country) {
+      formData.append('country[id]', requestData.country.id.toString());
+      formData.append('country[name]', requestData.country.name);
+      formData.append('country[regionId]', requestData.country.regionId.toString());
+    }
+    
+    // Handle photo file
+    if (this.selectedFile) {
       formData.append('photo', this.selectedFile, this.selectedFile.name);
+    }
 
     return formData;
   }
@@ -336,6 +372,9 @@ export class ProfileUpdateModalComponent implements OnInit {
         this.previewUrl = reader.result as string;
       };
       reader.readAsDataURL(file);
+      
+      // Trigger change detection for file changes
+      this.checkFormChanges();
     }
   }
 
@@ -386,6 +425,22 @@ export class ProfileUpdateModalComponent implements OnInit {
     return valid ? null : { invalidName: true };
   }
 
+  validateBirthDate(control: AbstractControl): { [key: string]: any } | null {
+    if (!control.value) return null;
+    
+    const selectedDate = new Date(control.value);
+    const today = new Date();
+    const minAgeDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+    
+    if (selectedDate > minAgeDate) {
+      return { underAge: true };
+    }
+    
+    return null;
+  }
+
+
+
   passwordMatchValidator(form: FormGroup) {
     return form.get('newPassword')?.value === form.get('confirmPassword')?.value
       ? null
@@ -411,6 +466,9 @@ export class ProfileUpdateModalComponent implements OnInit {
     }
     if (control.errors['invalidName']) {
       errors.push('Only letters, spaces, hyphens and apostrophes are allowed');
+    }
+    if (control.errors['underAge']) {
+      errors.push('You must be at least 18 years old');
     }
     if (control.errors['pattern']) {
       if (controlName.includes('password')) {

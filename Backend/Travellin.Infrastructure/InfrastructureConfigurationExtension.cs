@@ -6,10 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using OpenAI.Chat;
 using Stripe;
 using System.Text;
 using Travellin.Core.Entities;
 using Travellin.Core.Interfaces;
+using Travellin.Core.Services;
 using Travellin.Infrastructure.Data;
 using Travellin.Infrastructure.Repositories;
 using Travellin.Infrastructure.Services;
@@ -79,8 +81,14 @@ namespace Travellin.Infrastructure
             // OpenAI configuration
             services.AddHttpClient();
 
-                // Configure StripeOptions binding and register a singleton StripeClient
-                services.Configure<StripeOptions>(configuration.GetSection("Stripe"));
+            services.Configure<OpenAIOptions>(configuration.GetSection("OpenAI"));
+            services.AddSingleton<ChatClient>(sp =>
+            {
+                var openAiOptions = sp.GetRequiredService<IOptions<OpenAIOptions>>().Value;
+                return new ChatClient(openAiOptions.ChatModel, openAiOptions.ApiKey);
+            });
+            // Configure StripeOptions binding and register a singleton StripeClient
+            services.Configure<StripeOptions>(configuration.GetSection("Stripe"));
                 services.AddSingleton<StripeClient>(sp =>
                 {
                     var stripeOptions = sp.GetRequiredService<IOptions<StripeOptions>>().Value;
@@ -96,7 +104,15 @@ namespace Travellin.Infrastructure
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IConversationService, ConversationService>();
-            //Messaging Services
+            services.AddScoped<ICheckoutManagementService, StripeCheckoutService>();
+            services.AddScoped<ICancellationService, CancellationService>();
+            services.AddScoped<IPaymentRefundService, StripeRefundService>();
+            services.AddScoped<IBookingManagementService, BookingManagementService>();
+            services.AddScoped<IStripeTransferService, StripeTransferService>();
+            services.AddScoped<IPropertyFilterExtractorService, PropertyFilterExtractorService>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
+            services.AddScoped<IReviewService, ReviewsService>();
+
             return services;
         }
     }

@@ -1,0 +1,102 @@
+// Admin Dashboard Styles
+.container {
+  max-width: 1200px;
+}
+
+// Stats Cards
+.stats-card {
+  transition: transform 0.2s ease-in-out;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+// Table Styles
+.table-container {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+// Status Badge Styles
+.status-badge {
+  &.status-pending {
+    @apply text-yellow-600 bg-yellow-100;
+  }
+  
+  &.status-confirmed {
+    @apply text-green-600 bg-green-100;
+  }
+  
+  &.status-cancelled {
+    @apply text-red-600 bg-red-100;
+  }
+  
+  &.status-declined {
+    @apply text-red-600 bg-red-100;
+  }
+  
+  &.status-completed {
+    @apply text-blue-600 bg-blue-100;
+  }
+}
+
+// Action Button Styles
+.action-button {
+  transition: all 0.2s ease-in-out;
+  
+  &:hover {
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Loading Spinner
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .table-responsive {
+    font-size: 0.875rem;
+  }
+}
+
+// Filter Styles
+.filter-select {
+  &:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #3b82f6;
+  }
+}
+
+// Pagination Styles
+.pagination-button {
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  &:not(:disabled):hover {
+    background-color: #f3f4f6;
+  }
+} 

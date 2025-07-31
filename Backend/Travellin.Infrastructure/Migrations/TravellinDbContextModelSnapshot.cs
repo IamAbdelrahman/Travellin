@@ -3588,6 +3588,10 @@ namespace Travellin.Infrastructure.Migrations
                         .HasColumnType("nvarchar(10)")
                         .HasDefaultValue("usd");
 
+                    b.Property<string>("HostStripeAccountId")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -7221,6 +7225,10 @@ namespace Travellin.Infrastructure.Migrations
 
                     b.Property<string>("PhotoId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("StripeAccountId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("UserId");
 

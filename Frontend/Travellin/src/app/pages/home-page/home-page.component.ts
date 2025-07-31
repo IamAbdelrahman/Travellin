@@ -11,7 +11,7 @@ import { IPropertyWithDistance } from '../../models/domain/iproperty-with-distan
 import { Heart, LucideAngularModule } from 'lucide-angular';
 import { ToastContainerComponent } from '../../components/toast-container/toast-container.component';
 import { ToastService } from '../../services/toast.service'; // Adjust the path as needed
-
+import {LoadSpinnerComponent} from '../../components/load-spinner/load-spinner';
 import {
   faHouse,
   faBed,
@@ -46,6 +46,7 @@ import { IFavoriteProperty } from '../../models/domain/ifaviorate-property';
     FontAwesomeModule,
     LucideAngularModule,
     RouterModule,
+    LoadSpinnerComponent
   ],
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.scss'],
@@ -146,7 +147,7 @@ export class HomePageComponent implements OnInit {
   }
 
   @HostListener('window:scroll')
-  onWindowScroll() {
+    onWindowScroll() {
     this.scrollY = window.scrollY;
   }
 

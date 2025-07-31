@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using OpenAI.Chat;
 using Stripe;
 using Travellin.Core.Interfaces;
+using Travellin.Core.Services;
 using Travellin.Infrastructure.Services;
 
 namespace Travellin.Infrastructure.Shared
@@ -21,7 +23,10 @@ namespace Travellin.Infrastructure.Shared
         private IConversationService? _conversationService;
         private IMessageService? _messageService;
         private IPropertyFilterExtractorService _propertyFilterExtractorService;
+        //private IReviewService _reviewService;
+        private IStripeTransferService _stripeTransferService; 
         private readonly ILogger<StripeCheckoutService> _logger;
+        private readonly ILogger<StripeTransferService> _loggerTransfer;
 
         public ServiceFactory(IServiceProvider provider, IConfiguration config)
         {
@@ -33,6 +38,7 @@ namespace Travellin.Infrastructure.Shared
 
 
         public IAuthTokenService AuthTokenService => _authTokenService ??= new AuthTokenService(_config, _unitOfWork, _currentUserService);
+        //public IReviewService ReviewService => _reviewService ??= new ReviewsService(_provider.GetRequiredService<IReviewRepository>());
         public IFileUploadManagementService FileUploadManagementService => _fileUploadManagementService ??= new FileUploadManagementService(_provider.GetRequiredService<IUnitOfWork>(), _provider.GetRequiredService<IFileStorageService>());
         public IBookingManagementService BookingManagementService =>
             _bookingManagementService ??= new BookingManagementService(_provider.GetRequiredService<IUnitOfWork>());
@@ -55,7 +61,10 @@ namespace Travellin.Infrastructure.Shared
                 _provider.GetRequiredService<ILogger<MessageService>>());
         public IPropertyFilterExtractorService PropertyFilterExtractorService =>
                 _propertyFilterExtractorService ??= new PropertyFilterExtractorService
-                (_provider.GetRequiredKeyedService<ChatClient>("MainOpenAIClient"), _provider.GetRequiredService<IUnitOfWork>());
-
+                (_provider.GetRequiredService<ChatClient>(), _provider.GetRequiredService<IUnitOfWork>());
+        public ICancellationService CancellationService => _provider.GetRequiredService<ICancellationService>();
+        public IPaymentRefundService PaymentRefundService => _provider.GetRequiredService<IPaymentRefundService>();
+        public IStripeTransferService StripeTransferService => _provider.GetRequiredService<IStripeTransferService>();
+        //public IReviewService ReviewsService => _provider.GetRequiredService<IReviewService>();
     }
 }

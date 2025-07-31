@@ -35,9 +35,9 @@ export class PropertyAvailabilityComponent implements OnInit {
     },
     events: [],
     eventDisplay: 'block',
-    eventBackgroundColor: '#EF7768',
-    eventColor: '#EF7768',
-    eventTextColor: '#EF7768',
+    eventBackgroundColor: '#FF385C',
+    eventColor: '#FF385C',
+    eventTextColor: '#FF385C',
     eventDidMount: function (info) {
       console.log('Event rendered:', info.event);
     },
@@ -49,7 +49,7 @@ export class PropertyAvailabilityComponent implements OnInit {
     },
   };
 
-  constructor(private propertyService: PropertyService) {}
+  constructor(private propertyService: PropertyService) { }
 
   ngOnInit(): void {
     this.fetchAvailability();
@@ -84,13 +84,15 @@ export class PropertyAvailabilityComponent implements OnInit {
   }
 
   private transformBookingsToEvents(bookings: IPropertyAvailability[]): any[] {
-    return bookings.map(booking => ({
-      title: 'Available',
-      start: booking.startDate,
-      end: booking.endDate,
-      color: '#EF7768',
-      textColor: '#ffffff',
-      display: 'auto',
-    }));
+    return bookings
+      .filter(booking => booking.isAvailable)
+      .map(booking => ({
+        title: 'Available',
+        start: booking.startDate,
+        end: booking.endDate,
+        color: '#FF385C',
+        textColor: '#ffffff',
+        display: 'auto',
+      }));
   }
 }
