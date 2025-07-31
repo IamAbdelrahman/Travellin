@@ -1,20 +1,18 @@
-
 :host ::ng-deep .fc .fc-button {
-  background-color: #ef7768 !important;
+  background-color: #FF385C !important;
   border: none !important;
   color: white !important;
   border-radius: 4px !important;
   font-weight: 500 !important;
-  padding: 6px 12px !important;
   text-transform: capitalize !important;
 }
 
 :host ::ng-deep .fc .fc-button:hover {
-  background-color: #e06a5a !important;
+  background-color: #FF234C !important;
 }
 
 :host ::ng-deep .fc .fc-button-active {
-  background-color: #ef7768 !important;
+  background-color: #FF7A92 !important;
   box-shadow: none !important;
 }
 
@@ -37,7 +35,7 @@
 }
 
 :host ::ng-deep .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
-  color: #ef7768 !important;
+  color: #FF385C !important;
   font-weight: bold !important;
 }
 
