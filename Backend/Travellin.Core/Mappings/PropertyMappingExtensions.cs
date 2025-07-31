@@ -81,7 +81,7 @@ namespace Travellin.Core.Mappings
                 Longitude = property.Longitude,
                 Owner = property.Owner.ToDto(),
                 Location = property.Location?.ToDto(),
-                PropertyType = property.PropertyType.ToDto(),
+                PropertyType = property.PropertyType?.ToDto(),
                 Photos = property.PropertyPhotos.OrderBy(x => x.TouchedAt).Select(photo => photo.ToDto()).ToList(),
                 AverageRating = averageRating,
                 ReviewCount = reviewCount,

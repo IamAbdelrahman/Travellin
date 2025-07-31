@@ -12,7 +12,9 @@ namespace Travellin.Core.Mappings
                 Id = propertyAvailability.Id,
                 StartDate = propertyAvailability.StartDate,
                 EndDate = propertyAvailability.EndDate,
-                PropertyId = propertyAvailability.PropertyId
+                PropertyId = propertyAvailability.PropertyId,
+                IsAvailable = propertyAvailability.IsAvailable
+
             };
         }
         public static PropertyAvailability ToEntity (this PropertyAvailabilityCreateDto dto)
