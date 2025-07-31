@@ -19,10 +19,21 @@ export class UserProfileService {
   constructor(private http: HttpClient) {}
 
   getUserProfile(): Observable<any> {
+    // Get the access token from localStorage
+    const accessToken = localStorage.getItem('accessToken');
+
+    // Create headers object
+    const headers: { [key: string]: string } = {};
+
+    // Add Authorization header if token exists
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+
     return this.http.get<IUserProfile>(ApiConstant.UserProfile.User, {
       observe: 'response',
-
       withCredentials: true,
+      headers: new HttpHeaders(headers)
     });
   }
 

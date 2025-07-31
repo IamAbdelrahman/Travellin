@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { routes } from './app.routes';
 import { TokenStorageService } from './services/token-storage.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -13,6 +14,7 @@ import { RoleGuard } from './core/guards/role.guard';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
@@ -22,6 +24,7 @@ export const appConfig: ApplicationConfig = {
       multi: true
     },
     provideRouter(routes),
+    provideAnimations(),
     AuthGuard,
     RoleGuard,
     provideBrowserGlobalErrorListeners(),
