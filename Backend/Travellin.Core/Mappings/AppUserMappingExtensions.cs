@@ -7,6 +7,8 @@ namespace Travellin.Core.Mappings
     {
         public static PropertyOwnerDto ToDto(this AppUser user)
         {
+            if (user == null)
+                return null;
             return new PropertyOwnerDto
             {
                 Id = user.Id,
