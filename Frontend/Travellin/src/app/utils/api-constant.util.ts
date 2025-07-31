@@ -15,12 +15,16 @@ export class ApiConstant {
   public static PropertiesApi = {
     getAll: `${ApiConstant.baseUrl}/Properties`,
     getById: `${ApiConstant.baseUrl}/Properties/{id}`,
-    smartSearch: `${ApiConstant.baseUrl}/Properties/search`,
     getAllPropertyTypes: `${ApiConstant.baseUrl}/PropertyType`,
     getPropertyAmenities: `${ApiConstant.baseUrl}/Properties/{id}/Amenities`,
     getPropertyAvailability: `${ApiConstant.baseUrl}/Properties/{id}/Availabilities`,
     getPropertyFees: `${ApiConstant.baseUrl}/Properties/{id}/Fees`,
   };
+
+  public static SearchApi = {
+    smartSearch: `${ApiConstant.baseUrl}/search`,
+  }
+  
   public static AmenitiesApi = {
     getAllAmenities: `${ApiConstant.baseUrl}/Amenities`,
     getAllAmenitiesCategories: `${ApiConstant.baseUrl}/AmenitiesCategories`,
