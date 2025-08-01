@@ -559,6 +559,40 @@ export class HomePageComponent implements OnInit {
       this.toastService.showError('Payment canceled, please try again');
     }
   }
+  handleAdvancedSearch(searchParams: any): void {
+    this.isLoadingProperties = true;
+    this.currentPage = 1; // Reset to first page for new search
+
+    this.propertyService.searchProperty(searchParams).subscribe({
+      next: (response: HttpResponse<IpropertyRes>) => {
+        this.isLoadingProperties = false;
+        if (response.status === 200 && response.body) {
+          this.property = response.body.items.map(prop => ({
+            ...prop,
+            distanceFromMe: this.getDistanceFromLatLonInKm(
+              this.userLat,
+              this.userLon,
+              prop.latitude,
+              prop.longitude
+            ).toFixed(1),
+          }));
+          this.totalItems = response.body.metaData.total;
+          this.currentPage = response.body.metaData.page;
+          
+          // Scroll to results
+          this.scrollToResults();
+        } else {
+          this.handlePropertyerror('Invalid search result');
+        }
+      },
+      error: error => {
+        this.isLoadingProperties = false;
+        console.error('Advanced search error:', error);
+        this.handlePropertyerror('Failed to search properties');
+      },
+    });
+  }
+
   onFilterChange() {
     const queryParams: any = {
       page: this.currentPage,

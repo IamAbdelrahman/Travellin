@@ -267,6 +267,11 @@ namespace Travellin.Infrastructure.Repositories
                 }
             };
         }
+
+        Task<BookingDto> IBookingRepository.GetBookingDetailsAsync(string bookingId)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

@@ -81,6 +81,7 @@ export class ApiConstant {
   public static UserProfile = {
     Users: `${ApiConstant.baseUrl}/UserProfiles`,
     User: `${ApiConstant.baseUrl}/UserProfiles/me`,
+    ChatUsers: `${ApiConstant.baseUrl}/UserProfiles/chat-users`,
   };
   public static GuestType = {
     GuestType: `${ApiConstant.baseUrl}/GuestTypes`,

@@ -64,4 +64,8 @@ export class TokenStorageService {
     const token = this.getToken();
     return token !== null && token !== '';
   }
+
+  public getUserRole(): string | null {
+    return this.getRole();
+  }
 }

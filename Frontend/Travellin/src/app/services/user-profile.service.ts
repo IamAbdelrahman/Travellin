@@ -37,6 +37,29 @@ export class UserProfileService {
     });
   }
 
+  getUserProfilesByUserIds(userIds: string[]): Observable<any> {
+    // Get the access token from localStorage
+    const accessToken = localStorage.getItem('accessToken');
+
+    // Create headers object
+    const headers: { [key: string]: string } = {};
+
+    // Add Authorization header if token exists
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+
+    // Create query parameters for user IDs
+    const params = userIds.map(id => `userIds=${id}`).join('&');
+    const url = `${ApiConstant.UserProfile.ChatUsers}?${params}`;
+
+    return this.http.get<any>(url, {
+      observe: 'response',
+      withCredentials: true,
+      headers: new HttpHeaders(headers)
+    });
+  }
+
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An unknown error occurred';
     if (error.error instanceof ErrorEvent) {
