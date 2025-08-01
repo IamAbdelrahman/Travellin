@@ -76,6 +76,7 @@ namespace Travellin.Travellin.Api.Controllers
         {
             var result = await _unitOfWork.BookingRepository.GetAllAsync(queryDto);
             return Ok(result);
+        }
 
         // New enhanced cancellation endpoint
         [Authorize]
