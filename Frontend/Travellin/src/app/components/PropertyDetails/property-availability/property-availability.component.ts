@@ -41,6 +41,9 @@ export class PropertyAvailabilityComponent implements OnInit {
     eventDidMount: function (info) {
       console.log('Event rendered:', info.event);
     },
+    validRange: {
+      start: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+    },
     buttonText: {
       today: 'Today',
       month: 'Month',
