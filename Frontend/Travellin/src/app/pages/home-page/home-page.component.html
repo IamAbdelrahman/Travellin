@@ -6,7 +6,7 @@
   (blur)="onBlur()">
 
   <!-- Search Mode Toggle -->
-  <div class="d-flex justify-content-center mb-3" [class.d-none]="scrollY > 50">
+  <!-- <div class="d-flex justify-content-center mb-3" [class.d-none]="scrollY > 50">
     <div class="btn-group" role="group">
       <button
         type="button"
@@ -24,7 +24,7 @@
         Advanced Search
       </button>
     </div>
-  </div>
+  </div> -->
 
   <!-- AI Search Bar (Simple Mode) -->
   <div *ngIf="searchMode === 'simple'" class="container-fluid w-75">
@@ -59,192 +59,8 @@
     </div>
   </div>
 
-  <!-- Advanced Search -->
-  <div *ngIf="searchMode === 'advanced'" class="container-fluid Advanced">
-    <div class="d-flex justify-content-center">
-      <div
-        class="search-bar d-flex flex-wrap justify-content-between align-items-center p-3 rounded-pill shadow bg-white w-100 transition-all"
-        [class.p-2]="scrollY > 50"
-        style="max-width: 1000px">
-        <!-- Location -->
-        <div class="px-3 border-end flex-grow-1 search-section">
-          <label
-            class="form-label mb-0 text-muted small transition-all"
-            [class.d-none]="scrollY > 50"
-            >Where</label
-          >
-          <div class="position-relative w-100">
-            <input
-              type="text"
-              class="form-control border-0 p-0 bg-transparent transition-all"
-              [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'"
-              placeholder="Search destination"
-              [(ngModel)]="LocationName" />
-          </div>
-        </div>
+  <app-advanced-search></app-advanced-search>
 
-        <!-- Check in -->
-        <div class="px-3 border-end search-section disapear">
-          <label
-            class="form-label mb-1 text-muted small transition-all"
-            [class.d-none]="scrollY > 50"
-            >Check in</label
-          >
-          <input
-            type="date"
-            class="form-control border-0 p-0 bg-transparent transition-all"
-            [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'"
-            [(ngModel)]="checkInDate" />
-        </div>
-
-        <!-- Check out -->
-        <div class="px-3 border-end search-section disapear">
-          <label
-            class="form-label mb-1 text-muted small transition-all"
-            [class.d-none]="scrollY > 50"
-            >Check out</label
-          >
-          <input
-            type="date"
-            class="form-control border-0 p-0 bg-transparent transition-all"
-            [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'"
-            [(ngModel)]="checkOutDate" />
-        </div>
-
-        <!-- Guests -->
-        <div class="position-relative px-3 flex-grow-1 search-section disapear">
-          <div class="d-flex align-items-center justify-between w-100 h-100">
-            <button
-              type="button"
-              class="btn p-0 border-0 bg-transparent text-start w-100"
-              (click)="toggleGuestMenu()">
-              <label
-                class="form-label mb-0 text-muted small transition-all"
-                [class.d-none]="scrollY > 50"></label>
-              <h6
-                class="mb-0 fw-semibold transition-all"
-                [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'">
-                <input
-                  type="text"
-                  class="form-control border-0 p-0 bg-transparent transition-all"
-                  [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'"
-                  placeholder="Guest Numbers"
-                  [(ngModel)]="guestsCount" />
-              </h6>
-            </button>
-
-            <!-- Search button -->
-            <button
-              type="button"
-              class="btn btn-primary rounded-pill ms-2 d-flex align-items-center justify-content-center px-4 fw-semibold transition-all"
-              [style.height]="scrollY > 50 ? '40px' : '48px'"
-              (click)="searchProperties()">
-              <fa-icon [icon]="icons['search']" class="me-2"></fa-icon>
-              <span [class.d-none]="scrollY > 50">Search</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Property Type Bar and Filters - Hidden when scrolled -->
-    <div [class.d-none]="scrollY > 50">
-      <div
-        class="property-type-bar d-flex overflow-auto gap-3 py-3 px-4 justify-content-center">
-        <div
-          *ngFor="let type of propertyTypes"
-          class="d-flex flex-column align-items-center cursor-pointer px-3 py-2 rounded border"
-          [class.bg-primary]="selectedPropertyType === type.id"
-          [class.text-white]="selectedPropertyType === type.id"
-          (click)="selectPropertyType(type.id)">
-          <fa-icon
-            [icon]="icons[type.icon]"
-            [class.text-primary]="selectedPropertyType !== type.id"></fa-icon>
-          <span class="fw-semibold small mt-1">{{ type.name }}</span>
-        </div>
-      </div>
-
-      <!-- Additional Filters Button -->
-      <div class="text-center mt-3">
-        <button class="btn btn-outline-primary" (click)="toggleFilters()">
-          <fa-icon [icon]="icons['sliders']" class="me-2"></fa-icon>
-          {{ showFilters ? 'Hide Filters' : 'More Filters' }}
-        </button>
-      </div>
-
-      <!-- Additional Filters Panel -->
-      <div
-        *ngIf="showFilters"
-        class="filters-panel mt-3 w-75 p-4 border rounded bg-light m-auto">
-        <div class="row justify-content-center">
-          <div class="col-md-4 d-flex">
-            <div class="container pe-5">
-              <h6>Price Range</h6>
-
-              <div class="container d-flex gap-2">
-                <span> min</span>
-                <input
-                  type="range"
-                  class="form-range"
-                  min="0"
-                  max="1000"
-                  step="10"
-                  [(ngModel)]="minPrice" 
-                  (ngModelChange)="onFilterChange()"/>
-              </div>
-              <div class="d-flex justify-content-between">
-                <span>$0</span>
-                <span>$1000</span>
-              </div>
-              <div class="container d-flex gap-2">
-                <span>max</span>
-                <input
-                  type="range"
-                  class="form-range"
-                  min="0"
-                  max="1000"
-                  step="10"
-                  [(ngModel)]="maxPrice" 
-                  (ngModelChange)="onFilterChange()"/>
-              </div>
-
-              <div class="d-flex justify-content-between">
-                <span>$0</span>
-                <span>$1000</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <h6>Property Rating</h6>
-            <div *ngFor="let rating of [4, 3, 2, 1]" class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="rating"
-                [id]="'rating-' + rating"
-                [(ngModel)]="selectedRating"
-                [value]="rating" 
-                (ngModelChange)="onFilterChange()"/>
-              <label class="form-check-label" [for]="'rating-' + rating">
-                <span
-                  class="text-secondary"
-                  *ngFor="let star of [1, 2, 3, 4, 5]">
-                  <fa-icon
-                    [icon]="
-                      star <= rating ? icons['star'] : icons['star-half-alt']
-                    "
-                    [class.text-primary]="star <= rating"></fa-icon>
-                </span>
-                {{ rating }}+ Stars
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- End of filters -->
-    </div>
-  </div>
 </div>
 
 <div
