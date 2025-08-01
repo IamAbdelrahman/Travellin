@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Travellin.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Travellin.Infrastructure.Data;
 namespace Travellin.Infrastructure.Migrations
 {
     [DbContext(typeof(TravellinDbContext))]
-    partial class TravellinDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250801073545_UpdateUserProfile")]
+    partial class UpdateUserProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -7232,7 +7235,6 @@ namespace Travellin.Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasMaxLength(7)
                         .HasColumnType("nvarchar(7)");
 

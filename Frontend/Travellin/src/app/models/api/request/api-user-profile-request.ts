@@ -9,6 +9,7 @@ export interface ApiUserProfileRequest {
   firstName?: string;
   lastName?: string;
   phoneNumber?: string;
+  status?: 'Active' | 'Blocked';
   bio?: string;
   birthDate?: string;
   country?: ICountry;

@@ -1,231 +1,380 @@
-<div class="container mx-auto px-4 py-8">
-  <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-800 mb-2">Admin Dashboard</h1>
-    <p class="text-gray-600">Manage all bookings across the platform</p>
+<!-- admin-dashboard.component.html -->
+<div class="admin-dashboard">
+  <!-- Sidebar -->
+  <div class="sidebar" [class.sidebar-collapsed]="!sidebarOpen">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon"></div>
+        <span *ngIf="sidebarOpen" class="logo-text">Admin Panel</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-item" [class.active]="activeTab === 'overview'" (click)="setActiveTab('overview')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        <span *ngIf="sidebarOpen">Overview</span>
+      </a>
+
+      <a class="nav-item" [class.active]="activeTab === 'users'" (click)="setActiveTab('users')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <span *ngIf="sidebarOpen">Users</span>
+      </a>
+
+      <a class="nav-item" [class.active]="activeTab === 'properties'" (click)="setActiveTab('properties')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9,22 9,12 15,12 15,22"></polyline>
+        </svg>
+        <span *ngIf="sidebarOpen">Properties</span>
+      </a>
+
+      <a class="nav-item" [class.active]="activeTab === 'bookings'" (click)="setActiveTab('bookings')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <span *ngIf="sidebarOpen">Bookings</span>
+      </a>
+
+      <a class="nav-item"  [class.active]="activeTab === 'payments'" (click)="setActiveTab('payments')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+          <line x1="1" y1="10" x2="23" y2="10"></line>
+        </svg>
+        <span *ngIf="sidebarOpen">Payments</span>
+      </a>
+
+      <a class="nav-item"  [class.active]="activeTab === 'reviews'" (click)="setActiveTab('reviews')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span *ngIf="sidebarOpen">Reviews</span>
+      </a>
+    </nav>
   </div>
 
-  <!-- Stats Cards -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    <div class="bg-white rounded-lg shadow p-6">
-      <div class="flex items-center">
-        <div class="p-3 rounded-full bg-red-100 text-red-600">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+  <!-- Main Content -->
+  <div class="main-content" [class.main-content-expanded]="!sidebarOpen">
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <button class="menu-button" (click)="toggleSidebar()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
           </svg>
-        </div>
-        <div class="ml-4">
-          <p class="text-sm font-medium text-gray-600">Pending Bookings</p>
-          <p class="text-2xl font-semibold text-gray-900">{{ pendingBookingsCount }}</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="bg-white rounded-lg shadow p-6">
-      <div class="flex items-center">
-        <div class="p-3 rounded-full bg-green-100 text-green-600">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </button>
+        
+        <div class="search-bar">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
           </svg>
-        </div>
-        <div class="ml-4">
-          <p class="text-sm font-medium text-gray-600">Confirmed Bookings</p>
-          <p class="text-2xl font-semibold text-gray-900">{{ confirmedBookingsCount }}</p>
+          <input type="text" placeholder="Search..." [(ngModel)]="searchTerm">
         </div>
       </div>
-    </div>
 
-    <div class="bg-white rounded-lg shadow p-6">
-      <div class="flex items-center">
-        <div class="p-3 rounded-full bg-blue-100 text-blue-600">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-          </svg>
-        </div>
-        <div class="ml-4">
-          <p class="text-sm font-medium text-gray-600">Total Bookings</p>
-          <p class="text-2xl font-semibold text-gray-900">{{ totalBookingsCount }}</p>
-        </div>
-      </div>
-    </div>
-  </div>
+      <div class="top-bar-right">
+        <div class="notification-container">
+          <button class="notification-button" (click)="toggleNotifications()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <!-- <span class="notification-badge" *ngIf="getUnreadNotificationsCount() > 0">
+              {{ getUnreadNotificationsCount() }}
+            </span> -->
+          </button>
 
-  <!-- Filters -->
-  <div class="bg-white rounded-lg shadow mb-6">
-    <div class="p-6 border-b border-gray-200">
-      <h2 class="text-lg font-semibold text-gray-800 mb-4">Booking Management</h2>
-      
-      <div class="flex flex-wrap gap-4">
-        <div class="flex items-center space-x-2">
-          <label class="text-sm font-medium text-gray-700">Filter:</label>
-          <select 
-            [(ngModel)]="selectedFilter" 
-            (change)="onFilterChange()"
-            class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="all">All Bookings</option>
-            <option value="pending">Pending</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="cancelled">Cancelled</option>
-            <option value="completed">Completed</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bookings Table -->
-    <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Guest</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Host</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dates</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr *ngIf="loading" class="text-center">
-            <td colspan="7" class="px-6 py-4">
-              <div class="flex justify-center">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              </div>
-            </td>
-          </tr>
-          
-          <tr *ngFor="let booking of bookings" class="hover:bg-gray-50">
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="flex items-center">
-                <div class="flex-shrink-0 h-10 w-10">
-                  <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-                    <span class="text-sm font-medium text-gray-700">
-                      {{ booking.user?.firstName?.charAt(0) }}{{ booking.user?.lastName?.charAt(0) }}
-                    </span>
-                  </div>
-                </div>
-                <div class="ml-4">
-                  <div class="text-sm font-medium text-gray-900">
-                    {{ booking.user?.firstName }} {{ booking.user?.lastName }}
-                  </div>
-                  <div class="text-sm text-gray-500">{{ booking.user?.email }}</div>
+          <!-- Notifications Dropdown -->
+          <!-- <div class="notifications-dropdown" *ngIf="showNotifications">
+            <div class="notifications-header">
+              <h3>Notifications</h3>
+            </div>
+            <div class="notifications-list">
+              <div *ngFor="let notification of notifications" 
+                   class="notification-item" 
+                   [class.unread]="!notification.read"
+                   (click)="markNotificationAsRead(notification)">
+                <div class="notification-content">
+                  <p>{{ notification.message }}</p>
+                  <span class="notification-date">{{ notification.date }}</span>
                 </div>
               </div>
-            </td>
-            
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm font-medium text-gray-900">{{ booking.property?.title }}</div>
-              <div class="text-sm text-gray-500">{{ booking.property?.location?.name }}</div>
-            </td>
-            
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm font-medium text-gray-900">{{ booking.property?.owner?.userName }}</div>
-            </td>
-            
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">
-                {{ booking.checkIn | date:'MMM dd' }} - {{ booking.checkOut | date:'MMM dd, yyyy' }}
+            </div>
+          </div> -->
+        </div>
+
+        <div class="profile-menu">
+          <img [src]="adminPhoto" alt="Profile" class="profile-avatar">
+          <span>Admin</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <main class="content-area">
+      <!-- Overview Tab -->
+      <div *ngIf="activeTab === 'overview'" class="tab-content">
+        <h1 class="page-title">Dashboard Overview</h1>
+        
+        <!-- Analytics Cards -->
+        <div class="analytics-grid">
+          <div *ngFor="let card of analyticsCards" class="analytics-card">
+            <div class="card-header">
+              <h3>{{ card.title }}</h3>
+              <div class="card-icon" [ngClass]="'icon-' + card.icon"></div>
+            </div>
+            <div class="card-value">{{ card.value }}</div>
+            <div class="card-change" [ngClass]="card.changeType">
+              {{ card.change }} from last month
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section">
+          <div class="chart-card">
+            <h3>Monthly Bookings Trend</h3>
+            <div class="chart-placeholder">
+              <div class="chart-bars">
+                <div *ngFor="let data of monthlyData" class="chart-bar">
+                  <div class="bar" [style.height.px]="data.bookings / 2"></div>
+                  <span class="bar-label">{{ data.month }}</span>
+                </div>
               </div>
-              <div class="text-sm text-gray-500">
-                {{ calculateNumberOfNights(booking.checkIn, booking.checkOut) }} nights
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h3>Revenue Trend</h3>
+            <div class="chart-placeholder">
+              <div class="revenue-line">
+                <div *ngFor="let data of monthlyData; let i = index" class="revenue-point"
+                     [style.left.%]="(i / (monthlyData.length - 1)) * 100"
+                     [style.bottom.%]="(data.revenue / 150000) * 100">
+                </div>
               </div>
-            </td>
-            
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm font-medium text-gray-900">
-                ${{ calculateTotalWithFees(booking).toFixed(2) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Users Tab -->
+       <div *ngIf="activeTab === 'users'" class="tab-content">
+        <app-users-admin (adminPhotoEvent)="receiveAdminPhoto($event)"></app-users-admin>
+       </div>
+        <!-- [routerLink]="'/admin/users'" routerLinkActive="active"></div> -->
+      <!-- Properties Tab -->
+      <!-- <div *ngIf="activeTab === 'properties'" class="tab-content">
+        <div class="page-header">
+          <h1 class="page-title">Property Management</h1>
+          <div class="page-actions">
+            <select [(ngModel)]="selectedFilter" class="filter-select">
+              <option value="all">All Properties</option>
+              <option value="approved">Approved</option>
+              <option value="pending">Pending</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>Host</th>
+                <th>Location</th>
+                <th>Price</th>
+                <th>Rating</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let property of getFilteredProperties()">
+                <td>
+                  <div class="property-info">
+                    <img src="https://via.placeholder.com/60x40" alt="Property" class="property-image">
+                    <div class="property-title">{{ property.title }}</div>
+                  </div>
+                </td>
+                <td>{{ property.host }}</td>
+                <td>{{ property.location }}</td>
+                <td>${{ property.price }}/night</td>
+                <td>
+                  <div class="rating" *ngIf="property.rating > 0">
+                    <span class="star">★</span>
+                    {{ property.rating }}
+                  </div>
+                  <span *ngIf="property.rating === 0">-</span>
+                </td>
+                <td>
+                  <span class="status-badge" [ngClass]="getStatusColor(property.status)">
+                    {{ property.status }}
+                  </span>
+                </td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="btn-secondary btn-sm">View</button>
+                    <button *ngIf="property.status === 'Pending'" 
+                            class="btn-success btn-sm" 
+                            (click)="approveProperty(property)">Approve</button>
+                    <button *ngIf="property.status === 'Pending'" 
+                            class="btn-danger btn-sm" 
+                            (click)="rejectProperty(property)">Reject</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div> -->
+
+      <!-- Bookings Tab -->
+      <!-- <div *ngIf="activeTab === 'bookings'" class="tab-content">
+        <h1 class="page-title">Booking Management</h1>
+
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Guest</th>
+                <th>Host</th>
+                <th>Property</th>
+                <th>Dates</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let booking of bookings">
+                <td>#{{ booking.id }}</td>
+                <td>{{ booking.guest }}</td>
+                <td>{{ booking.host }}</td>
+                <td>{{ booking.property }}</td>
+                <td>
+                  <div class="date-range">
+                    {{ booking.checkIn }} - {{ booking.checkOut }}
+                  </div>
+                </td>
+                <td>${{ booking.amount }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="getStatusColor(booking.status)">
+                    {{ booking.status }}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn-secondary btn-sm">View Details</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div> -->
+
+      <!-- Payments Tab -->
+      <!-- <div *ngIf="activeTab === 'payments'" class="tab-content">
+        <h1 class="page-title">Payments & Payouts</h1>
+
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Transaction ID</th>
+                <th>Type</th>
+                <th>User</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let payment of payments">
+                <td>{{ payment.transactionId }}</td>
+                <td>
+                  <span class="type-badge" [ngClass]="payment.type === 'Payout' ? 'payout' : 'payment'">
+                    {{ payment.type }}
+                  </span>
+                </td>
+                <td>{{ payment.user }}</td>
+                <td>${{ payment.amount }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="getStatusColor(payment.status)">
+                    {{ payment.status }}
+                  </span>
+                </td>
+                <td>{{ payment.date }}</td>
+                <td>
+                  <button class="btn-secondary btn-sm">View</button>
+                  <button *ngIf="payment.status === 'Failed'" class="btn-primary btn-sm">Retry</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div> -->
+
+      <!-- Reviews Tab -->
+      <!-- <div *ngIf="activeTab === 'reviews'" class="tab-content">
+        <h1 class="page-title">Review Moderation</h1>
+
+        <div class="reviews-grid">
+          <div *ngFor="let review of reviews" class="review-card">
+            <div class="review-header">
+              <div class="reviewer-info">
+                <img src="https://via.placeholder.com/40x40" alt="Reviewer" class="reviewer-avatar">
+                <div>
+                  <div class="reviewer-name">{{ review.reviewer }}</div>
+                  <div class="review-date">{{ review.date }}</div>
+                </div>
               </div>
-            </td>
+              <div class="review-rating">
+                <div class="stars">
+                  <span *ngFor="let star of [1,2,3,4,5]" 
+                        class="star" 
+                        [class.filled]="star <= review.rating">★</span>
+                </div>
+              </div>
+            </div>
             
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ getStatusColor(booking.status) }}">
-                {{ booking.status }}
+            <div class="review-content">
+              <div class="review-property">{{ review.property }}</div>
+              <p class="review-comment">{{ review.comment }}</p>
+            </div>
+            
+            <div class="review-status">
+              <span class="status-badge" [ngClass]="getStatusColor(review.status)">
+                {{ review.status }}
               </span>
-            </td>
+            </div>
             
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-              <div class="flex space-x-2">
-                <!-- Accept/Decline for pending bookings -->
-                <button 
-                  *ngIf="booking.status === 'Pending'"
-                  (click)="acceptBooking(booking)"
-                  class="text-green-600 hover:text-green-900 bg-green-100 hover:bg-green-200 px-3 py-1 rounded-md text-xs font-medium">
-                  Accept
-                </button>
-                
-                <button 
-                  *ngIf="booking.status === 'Pending'"
-                  (click)="declineBooking(booking)"
-                  class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-3 py-1 rounded-md text-xs font-medium">
-                  Decline
-                </button>
-                
-                <!-- Cancel for confirmed bookings -->
-                <button 
-                  *ngIf="booking.status === 'Confirmed'"
-                  (click)="cancelBookingAsAdmin(booking)"
-                  class="text-orange-600 hover:text-orange-900 bg-orange-100 hover:bg-orange-200 px-3 py-1 rounded-md text-xs font-medium">
-                  Cancel
-                </button>
-                
-                <!-- View details for all bookings -->
-                <button 
-                  (click)="viewBooking(booking)"
-                  class="text-blue-600 hover:text-blue-900 bg-blue-100 hover:bg-blue-200 px-3 py-1 rounded-md text-xs font-medium">
-                  View
-                </button>
-              </div>
-            </td>
-          </tr>
-          
-          <tr *ngIf="!loading && bookings.length === 0">
-            <td colspan="7" class="px-6 py-4 text-center text-gray-500">
-              No bookings found
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Pagination -->
-    <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-      <div class="flex-1 flex justify-between sm:hidden">
-        <button 
-          (click)="previousPage()" 
-          [disabled]="currentPage === 1"
-          class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-          Previous
-        </button>
-        <button 
-          (click)="nextPage()" 
-          [disabled]="currentPage >= totalPages"
-          class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-          Next
-        </button>
-      </div>
-      <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-        <div>
-          <p class="text-sm text-gray-700">
-            Showing page <span class="font-medium">{{ currentPage }}</span> of <span class="font-medium">{{ totalPages }}</span>
-          </p>
+            <div class="review-actions" *ngIf="review.status === 'Pending'">
+              <button class="btn-success btn-sm" (click)="approveReview(review)">Approve</button>
+              <button class="btn-warning btn-sm" (click)="hideReview(review)">Hide</button>
+              <button class="btn-danger btn-sm" (click)="deleteReview(review.id)">Delete</button>
+            </div>
+          </div>
         </div>
-        <div>
-          <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-            <button 
-              (click)="previousPage()" 
-              [disabled]="currentPage === 1"
-              class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-              Previous
-            </button>
-            <button 
-              (click)="nextPage()" 
-              [disabled]="currentPage >= totalPages"
-              class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-              Next
-            </button>
-          </nav>
-        </div>
-      </div>
-    </div>
+      </div> -->
+    </main>
   </div>
-</div> 
+</div>

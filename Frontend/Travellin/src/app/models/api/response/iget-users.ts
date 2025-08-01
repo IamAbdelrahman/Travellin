@@ -8,6 +8,7 @@ export interface User {
   phoneNumber: string;
   bio: string;
   birthDate: string;
+  status: 'Active' | 'Blocked';
   country: {
     id: number;
     name: string;

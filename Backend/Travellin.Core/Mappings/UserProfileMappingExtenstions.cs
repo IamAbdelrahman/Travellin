@@ -19,7 +19,8 @@ namespace Travellin.Core.Mappings
                 Bio = userProfile.Bio,
                 BirthDate = userProfile.BirthDate,
                 Country = userProfile?.Country?.ToDto(),
-                Photo = MapProfilePhoto(userProfile)
+                Photo = MapProfilePhoto(userProfile),
+                Status = userProfile.Status
             };
         }
         public static void ToEntity(this UpdateUserProfileDto dto, UserProfile userProfile)

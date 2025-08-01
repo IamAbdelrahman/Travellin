@@ -163,7 +163,8 @@ namespace Travellin.Api.Controllers
                 return NotFoundResponse();
 
             var user = await _identityFactory.UserManager.FindByIdAsync(request.UserId);
-            var roleResult = await _identityFactory.UserManager.AddToRoleAsync(user, "Host");
+            var roleResult = await _identityFactory.UserManager.RemoveFromRoleAsync(user, "Guest");
+            roleResult = await _identityFactory.UserManager.AddToRoleAsync(user, "Host");
             if (!roleResult.Succeeded)
             {
                 throw new BadHttpRequestException($"Failed to add user to Host role: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");

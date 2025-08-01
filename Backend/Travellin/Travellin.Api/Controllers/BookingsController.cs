@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Graph.IdentityGovernance.AccessReviews.Definitions.FilterByCurrentUserWithOn;
-using Microsoft.Graph.Models;
 using System.Security.Claims;
 using Travellin.Core.Dtos;
 using Travellin.Core.Dtos.Bookings;
@@ -76,6 +74,7 @@ namespace Travellin.Travellin.Api.Controllers
         {
             var result = await _unitOfWork.BookingRepository.GetAllAsync(queryDto);
             return Ok(result);
+        }
 
         // New enhanced cancellation endpoint
         [Authorize]

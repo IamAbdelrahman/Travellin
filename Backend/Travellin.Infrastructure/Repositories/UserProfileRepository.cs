@@ -20,6 +20,8 @@ namespace Travellin.Infrastructure.Repositories
                   .Include(u => u.Country)
                   .Include(u => u.AppUser)
                   .Include(u => u.Photo)
+                  .Include(u => u.AppUser.Properties)
+                  .Include(u => u.AppUser.Bookings)
                   .Where(x => x.UserId == userId);
 
             var user = await query.FirstOrDefaultAsync();
@@ -39,6 +41,8 @@ namespace Travellin.Infrastructure.Repositories
                 .Include(u => u.AppUser)
                 .ThenInclude(u => u.Roles)
                 .Include(u => u.Photo)
+                .Include(u => u.AppUser.Properties)
+                .Include(u => u.AppUser.Bookings)
                 .Where(u => u.UserId == userId)
                 .Select(u => u.ToDto()); 
 
@@ -89,7 +93,10 @@ namespace Travellin.Infrastructure.Repositories
             {
                 query = query.Where(x => x.AppUser.UserName == queryDto.UserName);
             }
-
+            else if (!string.IsNullOrEmpty(queryDto.Status))
+            {
+                query = query.Where(x => x.Status == queryDto.Status);
+            }
             if (!string.IsNullOrEmpty(queryDto.Role))
             {
                 query = query.Where(x => x.AppUser.Roles.Any(r => r.Name == queryDto.Role));

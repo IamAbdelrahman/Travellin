@@ -7,6 +7,8 @@ namespace Travellin.Core.Entities
     {
         public virtual ICollection<IdentityRole> Roles { get; set; } = new HashSet<IdentityRole>();
         public virtual ICollection<Property> Properties { get; set; } = new HashSet<Property>();
+        public virtual ICollection<Booking> Bookings { get; set; } = new HashSet<Booking>();
         public virtual UserProfile? UserProfile { get; set; }
+
     }
 }
