@@ -163,8 +163,6 @@ namespace Travellin.Travellin.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}Get")]
-
 
         // New endpoint for hosts to see their property bookings
         [Authorize(Roles = "Host")]
