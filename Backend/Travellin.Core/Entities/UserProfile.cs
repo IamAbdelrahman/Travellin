@@ -1,4 +1,6 @@
-﻿namespace Travellin.Core.Entities
+﻿using Travellin.Core.Enums;
+
+namespace Travellin.Core.Entities
 {
     public class UserProfile
     {
@@ -7,6 +9,7 @@
         public string? LastName { get; set; }
         public string? Bio { get; set; }
         public int? CountryId { get; set; }
+        public string Status { get; set; } = UserStatus.Active.ToString();
         public string? StripeAccountId { get; set; }
         public DateOnly? BirthDate { get; set; }
         public string? PhotoId { get; set; }

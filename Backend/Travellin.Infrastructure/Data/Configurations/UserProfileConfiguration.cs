@@ -14,6 +14,8 @@ namespace Travellin.Infrastructure.Data.Configurations
             builder.Property(x => x.UserId)
                 .IsRequired();
 
+            builder.Property(x => x.Status).HasMaxLength(7);
+
             builder.Property(x => x.FirstName)
                 .IsRequired(false)
                 .HasMaxLength(100);
