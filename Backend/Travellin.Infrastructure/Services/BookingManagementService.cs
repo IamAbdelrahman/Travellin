@@ -26,7 +26,7 @@ namespace Travellin.Infrastructure.Services
             var property = await _unitOfWork.PropertyRepository.GetByIdAsync(dto.PropertyId);
 
             if (property is null)
-                throw new NotFoundException($"Property with id [{dto.PropertyId}] not found");
+                throw new NotFoundException($"Property with id [{dto.PropertyId}] not found.");
 
 
             // Validate guest counts 
@@ -36,7 +36,7 @@ namespace Travellin.Infrastructure.Services
             var isAvailable = await IsPropertyAvailable(property, dto.CheckIn, dto.Checkout);
             if (!isAvailable)
             {
-                throw new ConflictException("Property is not available for the selected dates");
+                throw new ConflictException("Property is not available for the selected dates.");
             }
 
 
@@ -112,8 +112,8 @@ namespace Travellin.Infrastructure.Services
         {
             var propertyGuests = await _unitOfWork.PropertyGuestRepository.GetAllPropertyGuests(property.Id);
 
-            if (property.PropertyGuests == null || !property.PropertyGuests.Any())
-                return;
+            if (guests == null || !guests.Any())
+                throw new ConflictException("Please select at least one guest.");
 
             foreach (var guestDto in guests)
             {
@@ -137,7 +137,7 @@ namespace Travellin.Infrastructure.Services
                         : "none";
 
                     throw new ConflictException(
-                        $"Guest type '{guestTypeName}' is not allowed for this property. Allowed guest types: {allowedListStr}");
+                        $"Allowed guest types: {allowedListStr}");
                 }
 
                 if (guestDto.GuestCount > propertyGuest.GuestCount)
