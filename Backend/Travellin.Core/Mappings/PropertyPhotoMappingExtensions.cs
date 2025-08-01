@@ -5,8 +5,12 @@ namespace Travellin.Core.Mappings
 {
     public static class PropertyPhotoMappingExtensions
     {
+
         public static PropertyPhotoDto ToDto(this PropertyPhoto propertyPhoto)
         {
+            if (propertyPhoto == null)
+                return null;
+
             return new PropertyPhotoDto
             {
                 Id = propertyPhoto.PhotoId,

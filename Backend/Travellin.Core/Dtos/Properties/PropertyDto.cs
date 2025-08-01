@@ -1,4 +1,6 @@
-﻿namespace Travellin.Core.Dtos.Properties
+﻿using Travellin.Core.Dtos.PropertyPhotos;
+
+namespace Travellin.Core.Dtos.Properties
 {
     public class PropertyDto
     {
@@ -16,5 +18,6 @@
         public string? CancellationPolicy { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
+        public List<PropertyPhotoDto> Photos { get; set; }  = new List<PropertyPhotoDto>();
     }
 }
