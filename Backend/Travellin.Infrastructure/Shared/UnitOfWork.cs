@@ -33,7 +33,7 @@ namespace Travellin.Infrastructure.Shared
         private IReviewRepository? _reviewRepository;
         private IConversationRepository? _conversationRepository;
         private IMessageRepository? _messageRepository;
-
+        private IRecommendationRepository? _recommendationRepository;
         public UnitOfWork(TravellinDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -66,7 +66,7 @@ namespace Travellin.Infrastructure.Shared
         public IReviewRepository ReviewRepository => _reviewRepository ??= new ReviewRepository(_dbContext);
         public IConversationRepository ConversationRepository => _conversationRepository ??= new ConversationRepository(_dbContext);
         public IMessageRepository MessageRepository => _messageRepository ??= new MessageRepository(_dbContext);
-
+        public IRecommendationRepository RecommendationRepository => _recommendationRepository ?? new RecommendationRepository(_dbContext);
         public async Task SaveChangesAsync()
         {
             await _dbContext.SaveChangesAsync();

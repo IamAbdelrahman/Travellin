@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Travellin.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Travellin.Infrastructure.Data;
 namespace Travellin.Infrastructure.Migrations
 {
     [DbContext(typeof(TravellinDbContext))]
-    partial class TravellinDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250801204829_FixConversationCreatedAtDefault")]
+    partial class FixConversationCreatedAtDefault
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -6985,40 +6988,6 @@ namespace Travellin.Infrastructure.Migrations
                             Icon = "sun-moon",
                             Name = "Unique & Themed Stays"
                         });
-                });
-
-            modelBuilder.Entity("Travellin.Core.Entities.Recommendations", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<string>("PropertyId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Query")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<decimal>("Score")
-                        .HasColumnType("decimal(5,2)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Recommendations");
                 });
 
             modelBuilder.Entity("Travellin.Core.Entities.Region", b =>

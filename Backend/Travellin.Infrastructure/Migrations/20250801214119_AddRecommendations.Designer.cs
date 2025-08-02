@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Travellin.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Travellin.Infrastructure.Data;
 namespace Travellin.Infrastructure.Migrations
 {
     [DbContext(typeof(TravellinDbContext))]
-    partial class TravellinDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250801214119_AddRecommendations")]
+    partial class AddRecommendations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1170,9 +1173,7 @@ namespace Travellin.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PropertyId")
                         .HasMaxLength(450)
@@ -1197,6 +1198,15 @@ namespace Travellin.Infrastructure.Migrations
                     b.HasIndex("User2Id");
 
                     b.ToTable("Conversations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            User1Id = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
+                            User2Id = "4dacdb51-fee9-4479-904c-cafe7dca22a8"
+                        });
                 });
 
             modelBuilder.Entity("Travellin.Core.Entities.Country", b =>

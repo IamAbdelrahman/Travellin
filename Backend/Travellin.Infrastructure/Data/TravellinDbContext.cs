@@ -45,5 +45,7 @@ namespace Travellin.Infrastructure.Data
         public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<Conversation> Conversations { get; set; }
+        public virtual DbSet<Recommendations> Recommendations { get; set; }
+
     }
 }

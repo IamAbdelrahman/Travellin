@@ -1,31 +1,212 @@
-<!-- search-bar.component.html -->
-<div class="search-container">
+<!-- Airbnb-like Search Bar -->
+<div class="search-wrapper">
+    <div class="search-container" [class.compact]="isCompact" [class.expanded]="isExpanded">
     <!-- Main Search Bar -->
-    <div class="search-bar">
+        <div class="search-bar" #searchBar>
+            <!-- Compact Mode Display -->
+            <div class="compact-display" *ngIf="isCompact && !isExpanded" (click)="expandSearch()">
+                <div class="compact-text">{{ getCompactDisplayText() }}</div>
+                <div class="compact-search-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </div>
+            </div>
 
+            <!-- Expanded Mode -->
+            <div class="expanded-content" *ngIf="!isCompact || isExpanded">
         <!-- Where - Destination -->
-        <div class="search-field border-right">
+                <div class="search-field destination-field" [class.active]="activeField === 'destination'">
             <label class="field-label">Where</label>
-            <input type="text" placeholder="Search destinations" [(ngModel)]="searchData.destination"
+                    <div class="input-container" (click)="onDestinationClick()">
+                        <input 
+                            type="text" 
+                            placeholder="Search destinations" 
+                            [(ngModel)]="searchData.destination"
+                            (input)="onDestinationInput($event)"
+                            (focus)="onDestinationFocus()"
                 class="field-input" />
+                        <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"></polyline>
+                        </svg>
+                    </div>
+                    
+                    <!-- Countries Dropdown -->
+                    <div *ngIf="showDestinationDropdown" class="dropdown-menu countries-dropdown">
+                        <div class="dropdown-header">
+                            <h4>Popular destinations ({{ filteredCountries.length }} countries)</h4>
+                        </div>
+                        <div class="dropdown-list">
+                            <div 
+                                *ngFor="let country of filteredCountries; trackBy: trackByCountry" 
+                                class="dropdown-item"
+                                (click)="selectCountry(country)">
+                                <div class="item-content">
+                                    <div class="item-name">{{ country.name }}</div>
+                                    <div class="item-subtitle">Country</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
         </div>
 
         <!-- Check in -->
-        <div class="search-field border-right">
+                <div class="search-field" [class.active]="activeField === 'dates'">
             <label class="field-label">Check in</label>
-            <input type="date" [(ngModel)]="searchData.checkIn" class="field-input date-input" />
+                    <input 
+                        type="date" 
+                        [(ngModel)]="searchData.checkIn" 
+                        (focus)="onDateFocus()"
+                        class="field-input date-input" />
         </div>
 
         <!-- Check out -->
-        <div class="search-field border-right">
+                <div class="search-field" [class.active]="activeField === 'dates'">
             <label class="field-label">Check out</label>
-            <input type="date" [(ngModel)]="searchData.checkOut" class="field-input date-input" />
+                    <input 
+                        type="date" 
+                        [(ngModel)]="searchData.checkOut" 
+                        (focus)="onDateFocus()"
+                        class="field-input date-input" />
         </div>
 
         <!-- Who - Guests -->
-        <div class="search-field">
+                <div class="search-field guests-field" [class.active]="activeField === 'guests'">
             <label class="field-label">Who</label>
-            <input type="text" placeholder="Add guests" [(ngModel)]="searchData.guests" class="field-input" />
+                    <div class="input-container" (click)="onGuestsClick()">
+                        <input 
+                            type="text" 
+                            [placeholder]="searchData.guests || 'Add guests'" 
+                            [value]="searchData.guests"
+                            (focus)="onGuestsFocus()"
+                            readonly
+                            class="field-input" />
+                        <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"></polyline>
+                        </svg>
+                    </div>
+                    
+                    <!-- Guests Dropdown -->
+                    <div *ngIf="showGuestsDropdown" class="dropdown-menu guests-dropdown">
+                        <div class="guests-selection">
+                            <!-- Adults -->
+                            <div class="guest-type">
+                                <div class="guest-info">
+                                    <div class="guest-label">Adults</div>
+                                    <div class="guest-subtitle">Ages 13 or above</div>
+                                </div>
+                                <div class="guest-counter">
+                                    <button 
+                                        type="button" 
+                                        class="counter-btn"
+                                        (click)="updateGuestCount('adults', false)"
+                                        [disabled]="guestCounts.adults <= 0">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                    </button>
+                                    <span class="counter-value">{{ guestCounts.adults }}</span>
+                                    <button 
+                                        type="button" 
+                                        class="counter-btn"
+                                        (click)="updateGuestCount('adults', true)">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Children -->
+                            <div class="guest-type">
+                                <div class="guest-info">
+                                    <div class="guest-label">Children</div>
+                                    <div class="guest-subtitle">Ages 2-12</div>
+                                </div>
+                                <div class="guest-counter">
+                                    <button 
+                                        type="button" 
+                                        class="counter-btn"
+                                        (click)="updateGuestCount('children', false)"
+                                        [disabled]="guestCounts.children <= 0">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                    </button>
+                                    <span class="counter-value">{{ guestCounts.children }}</span>
+                                    <button 
+                                        type="button" 
+                                        class="counter-btn"
+                                        (click)="updateGuestCount('children', true)">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Infants -->
+                            <div class="guest-type">
+                                <div class="guest-info">
+                                    <div class="guest-label">Infants</div>
+                                    <div class="guest-subtitle">Under 2</div>
+                                </div>
+                                <div class="guest-counter">
+                                    <button 
+                                        type="button" 
+                                        class="counter-btn"
+                                        (click)="updateGuestCount('infants', false)"
+                                        [disabled]="guestCounts.infants <= 0">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                    </button>
+                                    <span class="counter-value">{{ guestCounts.infants }}</span>
+                                    <button 
+                                        type="button" 
+                                        class="counter-btn"
+                                        (click)="updateGuestCount('infants', true)">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Pets -->
+                            <div class="guest-type">
+                                <div class="guest-info">
+                                    <div class="guest-label">Pets</div>
+                                    <div class="guest-subtitle">Service animals allowed</div>
+                                </div>
+                                <div class="guest-counter">
+                                    <button 
+                                        type="button" 
+                                        class="counter-btn"
+                                        (click)="updateGuestCount('pets', false)"
+                                        [disabled]="guestCounts.pets <= 0">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                    </button>
+                                    <span class="counter-value">{{ guestCounts.pets }}</span>
+                                    <button 
+                                        type="button" 
+                                        class="counter-btn"
+                                        (click)="updateGuestCount('pets', true)">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
         </div>
 
         <!-- Search Button -->
@@ -37,11 +218,12 @@
                     <path d="m21 21-4.35-4.35"></path>
                 </svg>
             </button>
+                </div>
         </div>
     </div>
 
     <!-- Filters Button -->
-    <div class="filters-button-container">
+        <div class="filters-button-container" *ngIf="!isCompact">
         <button (click)="toggleFilters()" class="filters-button">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
@@ -104,6 +286,7 @@
             <button (click)="applyFilters()" class="apply-button">
                 Apply filters
             </button>
+            </div>
         </div>
     </div>
 </div>

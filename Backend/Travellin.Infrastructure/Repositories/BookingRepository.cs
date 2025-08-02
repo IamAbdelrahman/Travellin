@@ -18,6 +18,8 @@ namespace Travellin.Infrastructure.Repositories
         {
             var query = _dbContext.Bookings
                 .Include(x => x.Property)
+                   .ThenInclude(p=> p.PropertyPhotos)
+                     .ThenInclude(p => p.FileUpload)
                 .Include(x => x.User)
                 .Include(x => x.BookingGuests)
                 .Where(x => x.UserId == userId);
@@ -266,6 +268,11 @@ namespace Travellin.Infrastructure.Repositories
                     Total = total
                 }
             };
+        }
+
+        Task<BookingDto> IBookingRepository.GetBookingDetailsAsync(string bookingId)
+        {
+            throw new NotImplementedException();
         }
     }
 
