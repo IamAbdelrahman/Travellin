@@ -1,4 +1,5 @@
 ﻿using Travellin.Core.Dtos.Properties;
+using Travellin.Core.Dtos.PropertyPhotos;
 using Travellin.Core.Dtos.PropertySpaceItemTypes;
 using Travellin.Core.Dtos.PropertySpaceTypes;
 using Travellin.Core.Dtos.UserProfilesDto;
@@ -24,7 +25,14 @@ namespace Travellin.Core.Mappings
                 HouseRules = entity.HouseRules,
                 CancellationPolicy = entity.CancellationPolicy,
                 IsActive = entity.IsActive,
-                IsDeleted = entity.IsDeleted
+                IsDeleted = entity.IsDeleted,
+                Photos = entity.PropertyPhotos?
+                        .Where(photo => photo != null)
+                        .OrderBy(x => x.TouchedAt)
+                        .Select(photo => photo.ToDto())
+                        .Where(dto => dto != null)
+                        .ToList() ?? new List<PropertyPhotoDto>()
+
             };
         }
 
