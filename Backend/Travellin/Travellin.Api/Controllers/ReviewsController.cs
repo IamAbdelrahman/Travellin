@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Travellin.Core.Dtos.Reviews;
 using Travellin.Core.Entities;
 using Travellin.Core.Interfaces;
+using Travellin.Core.Mappings;
 using Travellin.Core.Services;
 
 namespace Travellin.Travellin.Api.Controllers
@@ -72,7 +73,7 @@ namespace Travellin.Travellin.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ReviewDto>> CreateReview([FromBody] CreateReviewDto createReviewDto)
+        public async Task<ActionResult<ReviewDto>> CreateReview([FromBody] ReviewDto dto)
         {
             try
             {
@@ -80,9 +81,10 @@ namespace Travellin.Travellin.Api.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-
-                var createdReview = await _reviewService.CreateAsync(createReviewDto);
-                return CreatedAtAction(nameof(GetReviewById), new { id = createdReview.Id }, createdReview);
+                var reviewEntity = dto.ToEntity();
+                await _unitOfWork.ReviewRepository.AddAsync(reviewEntity);
+                await _unitOfWork.SaveChangesAsync();
+                return new ObjectResult(reviewEntity) { StatusCode = 201 };
             }
             catch (Exception ex)
             {
