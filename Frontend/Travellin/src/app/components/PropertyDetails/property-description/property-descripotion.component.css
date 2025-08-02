@@ -1,69 +1,69 @@
 .description-section {
-    padding: 24px 0;
-    border-bottom: 1px solid #ebebeb;
-  }
-  
-  .description-content.collapsed {
-    max-height: 150px;
-    overflow: hidden;
-    mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
-  }
-  
-  .guest-access {
-    margin-top: 20px;
-  }
-  
-  .guest-access h3 {
-    font-weight: 600;
-    margin-bottom: 8px;
-  }
-  
-  .show-more-btn {
-    background: none;
-    border: none;
-    color: #222;
-    font-weight: 600;
-    padding: 8px 0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-  }
-  
-  .chevron {
-    margin-left: 6px;
-    font-size: 18px;
-  }
-  
-  /* Modal Styles */
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.5);
-    z-index:2000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .modal-content {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    max-width: 600px;
-    max-height: 80vh;
-    overflow-y: auto;
-    position: relative;
-  }
-  
-  .close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-  }
+  padding: 24px 0;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.description-content.collapsed {
+  max-height: 150px;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+}
+
+.guest-access {
+  margin-top: 20px;
+}
+
+.guest-access h3 {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.show-more-btn {
+  background: none;
+  border: none;
+  color: #222;
+  font-weight: 600;
+  padding: 8px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.chevron {
+  margin-left: 6px;
+  font-size: 18px;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}

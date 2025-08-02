@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Travellin.Core.Dtos.Properties;
+using Travellin.Core.Entities;
 using Travellin.Core.Interfaces;
+using Travellin.Infrastructure.Shared;
 
 namespace Travellin.Api.Controllers
 {
@@ -14,7 +16,7 @@ namespace Travellin.Api.Controllers
         {
             _serviceFactory = serviceFactory;
         }
-        [HttpPost("search")]
+        [HttpPost("smartSearch")]
         [EndpointSummary("Smart search for properity.")]
         [Consumes("application/json")]
         [Produces("application/json")]
@@ -27,6 +29,17 @@ namespace Travellin.Api.Controllers
             dto.PropertyTypeId = null;
 
             var propertiesResult = await _unitOfWork.PropertyRepository.GetFilteredPropertiesAsync(dto, CurrentUser);
+            foreach (var property in propertiesResult.Items)
+            {
+                _unitOfWork.RecommendationRepository.Create(new Recommendations
+                {
+                    UserId = CurrentUser.Id,   
+                    Query = query,
+                    PropertyId = property.Id,
+                    Score = 1.0
+                });
+            }
+            await _unitOfWork.SaveChangesAsync();
 
             var result = new PropertySearchResultDto
             {
@@ -37,5 +50,27 @@ namespace Travellin.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("recommendations")]
+        public async Task<IActionResult> GetRecommendations()
+        {
+            var recommendations = await _unitOfWork.RecommendationRepository
+                .GetUserRecommendationsAsync(CurrentUser.Id);
+
+
+            var propertyIds = recommendations.Select(r => r.PropertyId).Distinct();
+            List<PropertyDetailsDto> properties = new List<PropertyDetailsDto>();
+            foreach (var id in propertyIds)
+            {
+                var p = await _unitOfWork.PropertyRepository.GetPropertyDetailsAsync(id, CurrentUser);
+                properties.Add(p);
+            }
+
+            return Ok(properties);
+        }
+
     }
+
 }
+
+

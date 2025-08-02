@@ -82,9 +82,9 @@ namespace Travellin.Infrastructure.Data.Seeds
             new FileUpload { Id = "2f50cb6f-8aeb-4428-8279-7c3a11d18232", Path = "images/Turk2.avif" },
             new FileUpload { Id = "fbb7ade9-39b8-4b3b-abb5-b38fc1f70471", Path = "images/Turk3.avif" },
             //userPhotos
-            new FileUpload { Id = "c3d1f440-7e0e-4f38-8b5d-34ea8d12e801", Path = "images/admin.jpg" },
-            new FileUpload { Id = "98b7dcb6-7c53-4216-9f7a-259f40371fd4", Path = "images/host.jpg" },
-            new FileUpload { Id = "4ae9e354-5eac-4f3a-a4b3-7c84c5b31d89", Path = "images/guest.jpg" }
+            new FileUpload { Id = "c3d1f440-7e0e-4f38-8b5d-34ea8d12e801", Path = "images/Admin.jpg" },
+            new FileUpload { Id = "98b7dcb6-7c53-4216-9f7a-259f40371fd4", Path = "images/Host.jpg" },
+            new FileUpload { Id = "4ae9e354-5eac-4f3a-a4b3-7c84c5b31d89", Path = "images/Guest.jpg" }
 
 
 

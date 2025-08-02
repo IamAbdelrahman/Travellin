@@ -16,6 +16,7 @@ namespace Travellin.Core.Dtos.Conversation
         public string? User2Name { get; set; } // Added for user display
         public string? PropertyId { get; set; } // Added for property context
         public string? PropertyTitle { get; set; } // Added for property context
+        public DateTime CreatedAt { get; set; }
         public List<MessageDto> Messages { get; set; }
     }
 }

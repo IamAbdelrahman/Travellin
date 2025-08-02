@@ -18,6 +18,8 @@ namespace Travellin.Infrastructure.Repositories
         {
             var query = _dbContext.Bookings
                 .Include(x => x.Property)
+                   .ThenInclude(p=> p.PropertyPhotos)
+                     .ThenInclude(p => p.FileUpload)
                 .Include(x => x.User)
                 .Include(x => x.BookingGuests)
                 .Where(x => x.UserId == userId);
@@ -143,30 +145,30 @@ namespace Travellin.Infrastructure.Repositories
                 .CountAsync();
         }
 
-        public async Task<BookingDto> GetBookingDetailsAsync(string bookingId)
-        {
-            var query = _dbContext.Bookings
-               .Include(x => x.BookingGuests)
-               .Include(x => x.Property)
-               .ThenInclude(x => x.Bookings)
-                .ThenInclude(x => x.Review)
-                .Include(x => x.Property)
-                .ThenInclude(x => x.PropertyPhotos)
-                .ThenInclude(x => x.FileUpload)
-                .Include(x => x.Property)
-                .ThenInclude(x => x.Owner)
-                .Include(x => x.Property)
-                .ThenInclude(x => x.Location)
-                .Include(x => x.Property)
-                .ThenInclude(x => x.PropertyType)
-               .Where(x => x.Id == bookingId)
-               .AsQueryable();
+        //public async Task<BookingDto> GetBookingDetailsAsync(string bookingId)
+        //{
+        //    var query = _dbContext.Bookings
+        //       .Include(x => x.BookingGuests)
+        //       .Include(x => x.Property)
+        //       .ThenInclude(x => x.Bookings)
+        //        .ThenInclude(x => x.Review)
+        //        .Include(x => x.Property)
+        //        .ThenInclude(x => x.PropertyPhotos)
+        //        .ThenInclude(x => x.FileUpload)
+        //        .Include(x => x.Property)
+        //        .ThenInclude(x => x.Owner)
+        //        .Include(x => x.Property)
+        //        .ThenInclude(x => x.Location)
+        //        .Include(x => x.Property)
+        //        .ThenInclude(x => x.PropertyType)
+        //       .Where(x => x.Id == bookingId)
+        //       .AsQueryable();
 
-            var booking = await query
-                                .Select(x => x.ToDto())
-                                .FirstOrDefaultAsync();
-            return booking;
-        }
+        //    var booking = await query
+        //                        .Select(x => x.ToDto())
+        //                        .FirstOrDefaultAsync();
+        //    return booking;
+        //}
 
         // Helper method for paginated booking queries
         private async Task<PaginatedResult<BookingDto>> GetPaginatedBookingsAsync(IQueryable<Booking> query, GetAllBookingsQueryParamsDto queryDto)
@@ -200,5 +202,79 @@ namespace Travellin.Infrastructure.Repositories
                 }
             };
         }
+
+
+        public async Task<BookingDto> GetBookingDetailsAsync(string bookingId)
+        {
+            var query = _dbContext.Bookings
+               .Include(x => x.BookingGuests)
+               .Include(x => x.Property)
+               .ThenInclude(x => x.Bookings)
+                .ThenInclude(x => x.Review)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.PropertyPhotos)
+                .ThenInclude(x => x.FileUpload)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.Owner)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.Location)
+                .Include(x => x.Property)
+                .ThenInclude(x => x.PropertyType)
+               .Where(x => x.Id == bookingId)
+               .AsQueryable();
+
+            var booking = await query
+                                .Select(x => x.ToDto())
+                                .FirstOrDefaultAsync();
+            return booking;
+        }
+
+        public async Task<PaginatedResult<BookingDto>> GetAllAsync(GetAllBookingsQueryParamsDto queryDto)
+        {
+            var query = _dbContext.Bookings
+                       .AsNoTracking()
+                       .Include(b => b.User) 
+                       .Include(b => b.Property)
+                       .Include(b => b.BookingGuests)
+                         .ThenInclude(bg => bg.GuestType)
+                       .AsQueryable();
+
+            if (queryDto.Status is not null)
+                query = query.Where(x => x.Status == queryDto.GetStatusAsEnum());
+
+            if (queryDto.CheckIn is not null)
+                query = query.Where(x => x.CheckIn == queryDto.CheckIn);
+
+            if (queryDto.CheckOut is not null)
+                query = query.Where(x => x.CheckOut == queryDto.CheckOut);
+
+            var total = await query.CountAsync();
+
+            var bookings = await query
+                .Where(b => b.User != null) 
+                .OrderByDescending(b => b.CreatedAt)
+                .Skip(queryDto.CalcSkippedItems())
+                .Take(queryDto.PageSize)
+                .Select(x => x.ToDto())
+                .ToListAsync();
+
+            return new PaginatedResult<BookingDto>
+            {
+                Items = bookings,
+                MetaData = new PaginationMetaData
+                {
+                    Page = queryDto.Page,
+                    PageSize = queryDto.PageSize,
+                    Total = total
+                }
+            };
+        }
+
+        //Task<BookingDto> IBookingRepository.GetBookingDetailsAsync(string bookingId)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
+
 }
+

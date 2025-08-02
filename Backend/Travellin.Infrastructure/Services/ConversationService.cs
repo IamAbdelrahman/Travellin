@@ -34,33 +34,47 @@ namespace Travellin.Infrastructure.Services
 
         public async Task<Conversation> CreateOrGetConversationWithPropertyAsync(string user1Id, string user2Id, string? propertyId = null)
         {
-            // Find existing conversation between these users
-            var existing = await _conversationRepo.GetBetweenUsersAsync(user1Id, user2Id);
-            
-            if (existing != null)
+            try
             {
-                // Update existing conversation with property context if provided
-                if (!string.IsNullOrEmpty(propertyId) && existing.PropertyId != propertyId)
+                Console.WriteLine($"CreateOrGetConversationWithPropertyAsync called with user1Id: {user1Id}, user2Id: {user2Id}, propertyId: {propertyId}");
+                
+                // Find existing conversation between these users
+                var existing = await _conversationRepo.GetBetweenUsersAsync(user1Id, user2Id);
+                Console.WriteLine($"Existing conversation found: {(existing != null ? existing.Id.ToString() : "null")}");
+                
+                if (existing != null)
                 {
-                    existing.PropertyId = propertyId;
-                    await _unitOfWork.SaveChangesAsync();
+                    Console.WriteLine($"Returning existing conversation with ID: {existing.Id}");
+                    // Load the conversation with proper includes
+                    return await _conversationRepo.GetByIdWithMessagesAsync(existing.Id);
                 }
-                return existing;
+                
+                Console.WriteLine("No existing conversation found, creating new one...");
+                
+                // Create new conversation
+                var conversation = new Conversation
+                {
+                    User1Id = user1Id,
+                    User2Id = user2Id,
+                    PropertyId = propertyId,
+                    CreatedAt = DateTime.UtcNow
+                };
+                
+                Console.WriteLine($"Created conversation object: User1Id: {conversation.User1Id}, User2Id: {conversation.User2Id}, PropertyId: {conversation.PropertyId}");
+                
+                await _conversationRepo.AddAsync(conversation);
+                await _unitOfWork.SaveChangesAsync();
+                Console.WriteLine($"Conversation saved with ID: {conversation.Id}");
+                
+                // Load the conversation with proper includes
+                return await _conversationRepo.GetByIdWithMessagesAsync(conversation.Id);
             }
-
-            // Create new conversation
-            var conversation = new Conversation
+            catch (Exception ex)
             {
-                User1Id = user1Id,
-                User2Id = user2Id,
-                PropertyId = propertyId,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            _conversationRepo.Create(conversation);
-            await _unitOfWork.SaveChangesAsync();
-
-            return conversation;
+                Console.WriteLine($"Error in CreateOrGetConversationWithPropertyAsync: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                throw;
+            }
         }
 
         public async Task<List<Conversation>> GetUserConversationsAsync(string userId)

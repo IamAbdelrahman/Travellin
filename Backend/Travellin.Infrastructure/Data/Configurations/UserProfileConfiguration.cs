@@ -14,6 +14,8 @@ namespace Travellin.Infrastructure.Data.Configurations
             builder.Property(x => x.UserId)
                 .IsRequired();
 
+            builder.Property(x => x.Status).HasMaxLength(7);
+
             builder.Property(x => x.FirstName)
                 .IsRequired(false)
                 .HasMaxLength(100);
@@ -43,11 +45,6 @@ namespace Travellin.Infrastructure.Data.Configurations
                 .WithOne(x => x.UserProfile)
                 .HasForeignKey<UserProfile>(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasOne(x => x.Photo)
-                .WithOne()
-                .HasForeignKey<UserProfile>(x => x.PhotoId)
-                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(x => x.Photo)
                 .WithOne()

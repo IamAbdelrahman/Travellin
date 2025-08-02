@@ -157,7 +157,7 @@ export class PropertyAminitiesComponent implements OnInit {
   constructor(
     private propertyService: PropertyService,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.propertyId = this.route.snapshot.paramMap.get('id') || '';

@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Graph.IdentityGovernance.AccessReviews.Definitions.FilterByCurrentUserWithOn;
-using Microsoft.Graph.Models;
 using System.Security.Claims;
 using Travellin.Core.Dtos;
 using Travellin.Core.Dtos.Bookings;
@@ -68,6 +66,14 @@ namespace Travellin.Travellin.Api.Controllers
             await ServiceFactory.BookingManagementService.CancelBookingAsync(id, userId, isAdmin);
 
             return Ok(new { Message = "Booking cancelled and availability restored." });
+        }
+
+
+        [HttpGet("GetAllBookings")]
+        public async Task<IActionResult> GetAllBookings([FromQuery] GetAllBookingsQueryParamsDto queryDto)
+        {
+            var result = await _unitOfWork.BookingRepository.GetAllAsync(queryDto);
+            return Ok(result);
         }
 
         // New enhanced cancellation endpoint
@@ -143,10 +149,11 @@ namespace Travellin.Travellin.Api.Controllers
             {
                 return BadRequest(new { Message = result.Message });
             }
+
         }
 
         [Authorize]
-        [HttpGet("HistoryBooking")]
+        [HttpGet("HistoryBookingOfUser")]
         public async Task<ActionResult<PaginatedResult<BookingDto>>> GetMyBookings([FromQuery] GetAllBookingsQueryParamsDto queryDto)
         {
             var userId = GetCurrentUserId();
@@ -155,6 +162,7 @@ namespace Travellin.Travellin.Api.Controllers
             var result = await _unitOfWork.BookingRepository.GetByUserIdAsync(userId, queryDto);
             return Ok(result);
         }
+
 
         // New endpoint for hosts to see their property bookings
         [Authorize(Roles = "Host")]

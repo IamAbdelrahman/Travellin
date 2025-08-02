@@ -1,6 +1,6 @@
 /* Custom styles to complement Bootstrap */
 :host {
-  --airbnb-red: #ef7768;
+  --airbnb-red: #FF385C;
 }
 
 .bg-danger {
@@ -13,8 +13,8 @@
 }
 
 .btn-danger:hover {
-  background-color: #e06a5a !important;
-  border-color: #e06a5a !important;
+  background-color: #FF385C !important;
+  border-color: #FF7A92 !important;
 }
 
 .object-fit-cover {
@@ -24,4 +24,3 @@
 lucide-icon {
   vertical-align: middle;
 }
-

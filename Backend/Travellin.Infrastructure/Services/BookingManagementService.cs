@@ -21,11 +21,12 @@ namespace Travellin.Infrastructure.Services
         //////////////////////////////////Create Booking////////////////////////////////////
         public async Task<Booking> CreateBookingAsync(string userId, CreateBookingDto dto)
         {
+           
             //Fetch Property user select
             var property = await _unitOfWork.PropertyRepository.GetByIdAsync(dto.PropertyId);
 
             if (property is null)
-                throw new NotFoundException($"Property with id [{dto.PropertyId}] not found");
+                throw new NotFoundException($"Property with id [{dto.PropertyId}] not found.");
 
 
             // Validate guest counts 
@@ -35,7 +36,7 @@ namespace Travellin.Infrastructure.Services
             var isAvailable = await IsPropertyAvailable(property, dto.CheckIn, dto.Checkout);
             if (!isAvailable)
             {
-                throw new ConflictException("Property is not available for the selected dates");
+                throw new ConflictException("Property is not available for the selected dates.");
             }
 
 
@@ -111,8 +112,8 @@ namespace Travellin.Infrastructure.Services
         {
             var propertyGuests = await _unitOfWork.PropertyGuestRepository.GetAllPropertyGuests(property.Id);
 
-            if (property.PropertyGuests == null || !property.PropertyGuests.Any())
-                return;
+            if (guests == null || !guests.Any())
+                throw new ConflictException("Please select at least one guest.");
 
             foreach (var guestDto in guests)
             {
@@ -121,13 +122,28 @@ namespace Travellin.Infrastructure.Services
 
                 if (propertyGuest == null)
                 {
-                    throw new ConflictException($"Guest type {guestDto.GuestTypeId} is not allowed for this property");
+                    // Get the name of the rejected guest type
+                    var guestType = await _unitOfWork.GuestTypeReposiotry.GetByIdAsync(guestDto.GuestTypeId);
+                    var guestTypeName = guestType?.Name ?? $"ID [{guestDto.GuestTypeId}]";
+
+                    // Build list of allowed guest type names
+                    var allowedGuestTypeNames = propertyGuests
+                        .Where(pg => pg.GuestType != null)
+                        .Select(pg => $"'{pg.GuestType.Name}'")
+                        .ToList();
+
+                    var allowedListStr = allowedGuestTypeNames.Any()
+                        ? string.Join(", ", allowedGuestTypeNames)
+                        : "none";
+
+                    throw new ConflictException(
+                        $"Allowed guest types: {allowedListStr}");
                 }
 
                 if (guestDto.GuestCount > propertyGuest.GuestCount)
                 {
                     throw new ConflictException(
-                        $"Maximum {propertyGuest.GuestCount} guests of type {propertyGuest.GuestType?.Name} allowed, but {guestDto.GuestCount} exceeded");
+                        $"Maximum '{propertyGuest.GuestCount}' guests of type '{propertyGuest.GuestType?.Name}' allowed, but '{guestDto.GuestCount}' exceeded");
                 }
             }
         }
@@ -169,7 +185,7 @@ namespace Travellin.Infrastructure.Services
             //Property may be available during multiple date periods.
             //We need to find all availability records that overlap with the booking dates
             //Available 1-->11 and books 5-->10 (Available)
-            //Anoother Guest books 4-->8 (Unavailable) but 1-->5 is available and 10 -->11 is available (overlaps)
+            //Anoother Guest books 4-->8 (Unavailable) but 1-->5  is available as mean 1,2,3,4 and 5 checkout excluded and 10 -->11 is available (overlaps)
             var overlappingAvailabilities = property.PropertyAvailabilities
                 .Where(a => a.StartDate <= checkOut && a.EndDate >= checkIn && a.IsAvailable)
                 .OrderBy(a => a.StartDate)
@@ -313,6 +329,8 @@ namespace Travellin.Infrastructure.Services
             }
 
         }
+
+        ////////////////////////////////////////Host to accept or decline booking////////////////////////////////////
         public async Task AcceptBookingAsync(string bookingId)
         {
             var booking = await _unitOfWork.BookingRepository.GetByIdAsync(bookingId);

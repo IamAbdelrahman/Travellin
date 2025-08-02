@@ -8,6 +8,7 @@ export interface IUserProfile {
   firstName: string;
   lastName: string;
   roles?: string[];
+  status: 'Active' | 'Blocked';
   phoneNumber: string;
   bio: string;
   birthDate: string;
