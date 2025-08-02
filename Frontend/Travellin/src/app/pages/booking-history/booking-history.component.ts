@@ -167,26 +167,31 @@ export class BookingHistoryComponent implements OnInit {
     }
   }
 
+  // checkinBooking Method
+  checkinBooking(booking: Bookings) {
+    if (booking.status.toLowerCase() === 'confirmed') {
+      this.checkOutService.checkinBooking(booking.id).subscribe({
+        next: () => {
+          this.toastService.showSuccess('Checked in successfully!');
+          this.loadBookings();
+        },
+        error: () => {
+          this.toastService.showError('Check-in is only allowed on the exact check-in date.');
+        },
+      });
+    } else {
+      this.toastService.showWarning('Only confirmed bookings can be checked in.');
+    }
+  }
+
+
+
   // Get guest count for display
   getGuestCount(booking: Bookings): number {
     if (!booking.bookingGuests || booking.bookingGuests.length === 0) {
       return 0;
     }
     return booking.bookingGuests.reduce((total, guest) => total + guest.guestCount, 0);
-  }
-
-  calculateNumberOfNights(checkIn: string, checkOut: string): number {
-    const checkInDate = new Date(checkIn);
-    const checkOutDate = new Date(checkOut);
-    const timeDiff = checkOutDate.getTime() - checkInDate.getTime();
-    return Math.ceil(timeDiff / (1000 * 3600 * 24));
-  }
-
-  calculateTotalWithFees(booking: Bookings): number {
-    const nights = this.calculateNumberOfNights(booking.checkIn, booking.checkOut);
-    const basePrice = booking.property?.pricePerNight || 0;
-    const fees = booking.totalFees || 0;
-    return (basePrice * nights) + fees;
   }
 
   getStatusColor(status: string): string {

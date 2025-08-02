@@ -174,7 +174,7 @@
             <div>
               <p class="text-sm text-gray-600">Total Amount</p>
               <p class="text-xl font-bold text-primary-600">
-                ${{ calculateTotalWithFees(booking) | number: '1.2-2' }}
+                ${{ booking.totalAmount| number: '1.2-2' }}
               </p>
             </div>
             <div class="space-x-2">
@@ -185,7 +185,7 @@
               </button>
               <button *ngIf="booking.status === 'Confirmed'"
                 class="px-4 py-2 border border-red-500 text-primary-600 rounded-lg hover:bg-red-50 transition-colors"
-                (click)="cancelBooking(booking)">
+                (click)="checkinBooking(booking)">
                 Complete
               </button>
             </div>

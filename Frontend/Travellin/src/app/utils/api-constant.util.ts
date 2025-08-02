@@ -43,6 +43,7 @@ export class ApiConstant {
     cancelEnhanced: `${ApiConstant.baseUrl}/Bookings/{id}/cancel-enhanced`,
     canCancel: `${ApiConstant.baseUrl}/Bookings/{id}/can-cancel`,
     refund: `${ApiConstant.baseUrl}/Bookings/{id}/refund`,
+    checkin: `${ApiConstant.baseUrl}/Bookings/{id}/checkin`,
 
     // Host booking management
     hostBookings: `${ApiConstant.baseUrl}/Bookings/host/bookings`,
