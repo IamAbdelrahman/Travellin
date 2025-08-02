@@ -23,6 +23,7 @@ export class ApiConstant {
 
   public static SearchApi = {
     smartSearch: `${ApiConstant.baseUrl}/search/search`,
+    // recommendations
   }
 
   public static AmenitiesApi = {
@@ -82,6 +83,7 @@ export class ApiConstant {
     Users: `${ApiConstant.baseUrl}/UserProfiles`,
     User: `${ApiConstant.baseUrl}/UserProfiles/me`,
     ChatUsers: `${ApiConstant.baseUrl}/UserProfiles/chat-users`,
+    deleteUser: `${ApiConstant.baseUrl}/UserProfiles`,
   };
   public static GuestType = {
     GuestType: `${ApiConstant.baseUrl}/GuestTypes`,

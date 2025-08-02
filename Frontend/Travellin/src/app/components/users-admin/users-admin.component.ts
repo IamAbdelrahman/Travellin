@@ -5,6 +5,16 @@ import { UsersService } from '../../services/users.service';
 import { UserProfiles, User } from '../../models/api/response/iget-users';
 import { HttpResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../../services/toast.service'; // Adjust the path as needed
+import {
+  faChevronLeft,
+  faChevronRight,
+  faTrash,
+  faThumbtack,
+  faCheck,
+  faTimes,
+  faCheckCircle,
+} from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'app-users-admin',
   imports: [CommonModule, RouterModule, FormsModule],
@@ -17,7 +27,7 @@ export class UsersAdminComponent implements OnInit {
   adminPhoto:string = '';
   selectedFilter = 'all';
   searchTerm = '';
-  constructor(private userService: UsersService) {}
+  constructor(private userService: UsersService, private toastService: ToastService) {}
   ngOnInit(): void {
     this.loadUsers();
   }
@@ -82,5 +92,28 @@ export class UsersAdminComponent implements OnInit {
       else continue;
     }
     return '';
+  }
+    onDelete(id: string): void {
+    const userToDelete = this.users.find(u => u.userId === id);
+    if (!userToDelete) return;
+    if (userToDelete.status) {
+      this.toastService.showWarning('This user is already deleted.');
+      return;
+    }
+
+    if (confirm('Are you sure you want to delete this property?')) {
+      this.propertyService.deleteProperty(propertyId).subscribe({
+        next: () => {
+          console.log('Trying to delete property with ID:', propertyId); // to test
+          this.property = this.property.filter(p => p.id !== propertyId);
+          //show toast
+          this.toastService.showSuccess('Property deleted successfully');
+        },
+        error: err => {
+          console.error('Error deleting property', err);
+          this.toastService.showError('Failed to delete property');
+        },
+      });
+    }
   }
 }

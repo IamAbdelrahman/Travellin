@@ -20,8 +20,6 @@
               <th>Email</th>
               <th>Roles</th>
               <th>Activities</th>
-              <th>Bookings</th>
-              <th>Properties</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -52,9 +50,18 @@
                 <span class="status-badge" [ngClass]="getStatusColor(user.status)">
                   {{ user.status }}</span>
               </td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <td>
+                <button 
+                class="btn p-1 shadow-sm border-0 bg-transparent dltBtn"
+                 (click)="onDelete(user.userId)"
+                  title="Delete">
+                <fa-icon 
+                [icon]="user ? icons['trash'] : icons['trash']"
+                [ngClass]="user.isDeleted ? 'text-danger' : 'text-success'"
+                [title]="user.isDeleted ? 'This property is already deleted' : 'You can delete this property'"
+                ></fa-icon>
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
