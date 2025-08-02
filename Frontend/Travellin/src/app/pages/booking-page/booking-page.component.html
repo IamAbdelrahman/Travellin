@@ -75,7 +75,7 @@
     <button type="button" class="confirm-btn" (click)="onCheckOut()" [disabled]="isCheckingOut">
       <span *ngIf="isCheckingOut" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
       <span *ngIf="isCheckingOut">Processing...</span>
-      <span *ngIf="!isCheckingOut">Confirm & Pay</span>
+      <span *ngIf="!isCheckingOut">Pay</span>
     </button>
     }
   </div>
