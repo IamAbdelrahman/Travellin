@@ -28,7 +28,7 @@
         public IReviewRepository ReviewRepository { get; }
         IConversationRepository ConversationRepository { get; }
         IMessageRepository MessageRepository { get; }
-
+        public IRecommendationRepository RecommendationRepository { get; }
         public Task SaveChangesAsync();
         public void SaveChanges();
     }
