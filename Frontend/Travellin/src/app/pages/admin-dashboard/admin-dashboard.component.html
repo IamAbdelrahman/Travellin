@@ -186,8 +186,11 @@
        <div *ngIf="activeTab === 'users'" class="tab-content">
         <app-users-admin (adminPhotoEvent)="receiveAdminPhoto($event)"></app-users-admin>
        </div>
-        <!-- [routerLink]="'/admin/users'" routerLinkActive="active"></div> -->
+
       <!-- Properties Tab -->
+       <div *ngIf="activeTab === 'properties'" class="tab-content">
+        <app-property-admin></app-property-admin>
+       </div>
       <!-- <div *ngIf="activeTab === 'properties'" class="tab-content">
         <div class="page-header">
           <h1 class="page-title">Property Management</h1>

@@ -23,7 +23,7 @@ namespace Travellin.Core.Dtos.UserProfilesDto
 
         [MaxLength(500, ErrorMessage = "Bio cannot exceed 500 characters.")]
         public string? Bio { get; set; }
-
+        public string? Status { get; set; }
         public DateOnly? BirthDate { get; set; }
 
         public int? CountryId { get; set; }

@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph.Models;
 using Travellin.Api.Controllers;
 using Travellin.Core.Dtos.UserProfilesDto;
+using Travellin.Core.Entities;
 using Travellin.Core.Interfaces;
-using Travellin.Travellin.Core.Shared;
 using Travellin.Core.Mappings;
+using Travellin.Travellin.Core.Shared;
 namespace Travellin.Travellin.Api.Controllers
 {
     [Authorize]
@@ -95,6 +97,29 @@ namespace Travellin.Travellin.Api.Controllers
             // Return updated profile details
             var updatedProfile = await _unitOfWork.UserProfileRepository.GetProfileDetailsByUserId(userId);
             return Ok(updatedProfile);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        [EndpointSummary("delete an existing user.")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesErrorResponseType(typeof(List<string>))]
+        public async Task<IActionResult> Delete([FromRoute] string id)
+        {
+            var userProfileDto = await _unitOfWork.UserProfileRepository.GetProfileDetailsByUserId(id);
+
+            if (userProfileDto is null)
+            {
+                return NotFoundResponse();
+            }
+
+            userProfileDto.Status = "Blocked";
+            var user = userProfileDto.ToUser();
+            _unitOfWork.UserProfileRepository.Update(user);
+            await _unitOfWork.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
