@@ -120,3 +120,4 @@ logs/
 Thumbs.db
 .DS_Store
 Backend/Travellin/Travellin.Api/appsettings.json
+Backend/Travellin/Travellin.Api/appsettings.json
