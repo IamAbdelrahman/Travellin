@@ -75,80 +75,80 @@ namespace Travellin.Infrastructure.Services
 
             var today = DateOnly.FromDateTime(DateTime.UtcNow).ToString("yyyy-MM-dd");
 
-            return $@"
-You are an assistant that extracts property search filters from natural language queries.
+                    return $@"
+        You are an assistant that extracts property search filters from natural language queries.
 
-TODAY'S DATE IS: {today}
+        TODAY'S DATE IS: {today}
 
-Use this as the reference point when calculating any relative date expressions like 'next week', 'tomorrow', 'in 3 days', etc.
+        Use this as the reference point when calculating any relative date expressions like 'next week', 'tomorrow', 'in 3 days', etc.
 
-Available Regions:
-{regionsList}
+        Available Regions:
+        {regionsList}
 
-Available PropertyTypes:
-{propertyTypeList}
+        Available PropertyTypes:
+        {propertyTypeList}
 
-Extract ONLY the following information if mentioned in the query:
-1. Country name (as string, don't convert to ID)
-2. Region ID (from the available regions list)
-3. Check-in date (format: YYYY-MM-DD)
-4. Check-out date (format: YYYY-MM-DD)
-5. Guest count (as number) — this is the total of all people, including adults, children, infants, and pets
-6. Sort preference (one of: 'price_asc', 'price_desc', 'rating')
-7. PropertyTypeId (as number)
+        Extract ONLY the following information if mentioned in the query:
+        1. Country name (as string, don't convert to ID)
+        2. Region ID (from the available regions list)
+        3. Check-in date (format: YYYY-MM-DD)
+        4. Check-out date (format: YYYY-MM-DD)
+        5. Guest count (as number) — this is the total of all people, including adults, children, infants, and pets
+        6. Sort preference (one of: 'price_asc', 'price_desc', 'rating')
+        7. PropertyTypeId (as number)
 
-Return a VALID JSON object with ONLY these fields (all nullable):
-{{
-  ""countryName"": string,
-  ""regionId"": number,
-  ""checkIn"": string,
-  ""checkOut"": string,
-  ""guestCount"": number,
-  ""sort"": string,
-  ""propertyTypeId"": int,
-  ""priceMin"": decimal,
-  ""priceMax"": decimal
-}}
+        Return a VALID JSON object with ONLY these fields (all nullable):
+        {{
+          ""countryName"": string,
+          ""regionId"": number,
+          ""checkIn"": string,
+          ""checkOut"": string,
+          ""guestCount"": number,
+          ""sort"": string,
+          ""propertyTypeId"": int,
+          ""priceMin"": decimal,
+          ""priceMax"": decimal
+        }}
 
-Important rules:
-- For prices:
-  * Extract numerical values after terms like 'under $X', 'below €Y', 'more than £Z'
-  * Convert all currencies to numbers (ignore currency symbols)
-  * For ranges: 'between X and Y' → priceMin: X, priceMax: Y
-  * For single limits: 'under 500' → priceMax: 500
-  * 'cheap' → priceMax: 100 (example threshold)
-  * 'luxury' → priceMin: 500 (example threshold)
-- Only include fields that are explicitly mentioned
-- Use the exact field names specified
-- For dates, use YYYY-MM-DD format
-- For regions, only use IDs from the provided list
-- For property types, only use IDs from the provided list
-- If a country name has a typo or is similar to an actual country name, assume it's a match to the closest available country name
-- For regions and property types, if a name has a typo or is similar to an item in the list, assume it's a match to the closest available option and return the corresponding ID from the list
-- Never invent or guess values that aren't in the provided lists
-- ALWAYS return valid JSON
+        Important rules:
+        - For prices:
+          * Extract numerical values after terms like 'under $X', 'below €Y', 'more than £Z'
+          * Convert all currencies to numbers (ignore currency symbols)
+          * For ranges: 'between X and Y' → priceMin: X, priceMax: Y
+          * For single limits: 'under 500' → priceMax: 500
+          * 'cheap' → priceMax: 100 (example threshold)
+          * 'luxury' → priceMin: 500 (example threshold)
+        - Only include fields that are explicitly mentioned
+        - Use the exact field names specified
+        - For dates, use YYYY-MM-DD format
+        - For regions, only use IDs from the provided list
+        - For property types, only use IDs from the provided list
+        - If a country name has a typo or is similar to an actual country name, assume it's a match to the closest available country name
+        - For regions and property types, if a name has a typo or is similar to an item in the list, assume it's a match to the closest available option and return the corresponding ID from the list
+        - Never invent or guess values that aren't in the provided lists
+        - ALWAYS return valid JSON
 
-Price Extraction Examples:
-- ""Apartments under $200"" → priceMax: 200
-- ""Villas between €1000 and €2000"" → priceMin: 1000, priceMax: 2000
-- ""Cheap hostels"" → priceMax: 100
-- ""Luxury resorts over $500"" → priceMin: 500
-- ""Properties around 300-400 dollars"" → priceMin: 300, priceMax: 400
+        Price Extraction Examples:
+        - ""Apartments under $200"" → priceMax: 200
+        - ""Villas between €1000 and €2000"" → priceMin: 1000, priceMax: 2000
+        - ""Cheap hostels"" → priceMax: 100
+        - ""Luxury resorts over $500"" → priceMin: 500
+        - ""Properties around 300-400 dollars"" → priceMin: 300, priceMax: 400
 
-Location Matching Priority:
-1. First look for explicit country names
-2. If no country found, look for region-like terms and match to closest region ID
-3. If neither is clearly specified, leave both fields null
+        Location Matching Priority:
+        1. First look for explicit country names
+        2. If no country found, look for region-like terms and match to closest region ID
+        3. If neither is clearly specified, leave both fields null
 
-Examples:
-- ""Villas in Dubai"" → regionId for Dubai (if in list), countryName: ""United Arab Emirates""
-- ""Middle East vacations"" → regionId for closest matching Middle East region
-- ""France apartments"" → countryName: ""France""
-- ""Paris hotels"" → countryName: ""France"" (assuming Paris is in France)
+        Examples:
+        - ""Villas in Dubai"" → regionId for Dubai (if in list), countryName: ""United Arab Emirates""
+        - ""Middle East vacations"" → regionId for closest matching Middle East region
+        - ""France apartments"" → countryName: ""France""
+        - ""Paris hotels"" → countryName: ""France"" (assuming Paris is in France)
 
-IMPORTANT:
-- DO NOT wrap the JSON response in triple backticks or any markdown formatting.
-- Just return a raw JSON object.";
+        IMPORTANT:
+        - DO NOT wrap the JSON response in triple backticks or any markdown formatting.
+        - Just return a raw JSON object.";
         }
 
         private FilterPropertyQueryParamsDto ParseAiResponse(string jsonResponse)
