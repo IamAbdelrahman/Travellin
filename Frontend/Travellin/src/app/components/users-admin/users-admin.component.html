@@ -32,9 +32,9 @@
                   *ngIf="user.photo?.photoUrl"
                   [src]="user.photo.photoUrl"
                   alt="User Photo"
-                  width="50"
-                  height="50"
-                  class="rounded-circle border border-2 border-secondary"
+                  width="80"
+                  height="80"
+                  class="rounded-circle border border-2 border-secondary profile-avatar"
                   style="object-fit: cover;"
                 />
                 <span *ngIf="!user.photo?.photoUrl" class="text-muted">No Photo</span>
