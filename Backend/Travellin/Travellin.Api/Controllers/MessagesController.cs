@@ -135,5 +135,42 @@ namespace Travellin.Api.Controllers
             await _messageService.MarkMessagesAsReadAsync(conversationId, currentUserId);
             return NoContent();
         }
+
+        /// <summary>
+        /// Retrieve all messages in a conversation for admin access.
+        /// </summary>
+        /// <param name="conversationId">The ID of the conversation</param>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin/conversation/{conversationId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(List<MessageDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [EndpointSummary("Get all messages in a conversation (Admin only)")]
+        public async Task<IActionResult> GetMessagesByConversationIdForAdmin(int conversationId)
+        {
+            var messages = await _messageService.GetMessagesByConversationIdAsync(conversationId);
+            return Ok(messages);
+        }
+
+        /// <summary>
+        /// Mark all messages in a conversation as read for admin access.
+        /// </summary>
+        /// <param name="conversationId">The ID of the conversation</param>
+        [Authorize(Roles = "Admin")]
+        [HttpPut("admin/mark-read/{conversationId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [EndpointSummary("Mark all messages in a conversation as read (Admin only)")]
+        public async Task<IActionResult> MarkAllMessagesAsReadForAdmin(int conversationId)
+        {
+            // For admin, mark all messages in the conversation as read
+            var messages = await _messageService.GetMessagesByConversationIdAsync(conversationId);
+            foreach (var message in messages)
+            {
+                await _messageService.MarkMessageAsReadAsync(message.Id);
+            }
+            return NoContent();
+        }
     }
 }

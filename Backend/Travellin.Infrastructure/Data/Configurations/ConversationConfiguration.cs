@@ -31,6 +31,10 @@ namespace Travellin.Infrastructure.Data.Configurations
                 .HasMaxLength(450)
                 .IsRequired(false); // Optional property context
 
+            builder.Property(x => x.CreatedAt)
+                .IsRequired()
+                .HasDefaultValueSql("GETUTCDATE()");
+
             builder.HasOne(x => x.User1)
                 .WithMany()
                 .HasForeignKey(x => x.User1Id)
@@ -61,7 +65,8 @@ namespace Travellin.Infrastructure.Data.Configurations
                 {
                     Id = 1,
                     User1Id = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
-                    User2Id = "4dacdb51-fee9-4479-904c-cafe7dca22a8"
+                    User2Id = "4dacdb51-fee9-4479-904c-cafe7dca22a8",
+                    CreatedAt = DateTime.UtcNow
                 }
             );
         }

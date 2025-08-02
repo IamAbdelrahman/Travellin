@@ -1,10 +1,22 @@
+/* Simple Clean Design - Using Your Existing Colors */
 :host ::ng-deep .fc .fc-button {
   background-color: #FF385C !important;
   border: none !important;
   color: white !important;
-  border-radius: 4px !important;
+  border-radius: 5px !important;
   font-weight: 500 !important;
   text-transform: capitalize !important;
+  font-size: 14px !important;
+
+}
+
+/* Hide ghost/empty buttons if any */
+:host ::ng-deep .fc .fc-button-group .fc-button:empty {
+  display: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 0 !important;
 }
 
 :host ::ng-deep .fc .fc-button:hover {
@@ -24,6 +36,7 @@
   background-color: #006c70 !important;
 }
 
+/* Keep your existing day number and header styles */
 :host ::ng-deep .fc-daygrid-day-number {
   color: #484848 !important;
   font-weight: 500 !important;

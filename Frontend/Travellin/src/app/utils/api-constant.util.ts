@@ -1,5 +1,5 @@
 import { transformation } from 'leaflet';
-import {environment} from '../../environments/environment';
+import { environment } from '../../environments/environment';
 export class ApiConstant {
   private static domainUrl = environment.apiUrl; // Replace with your domain URL
   public static baseUrl = `${ApiConstant.domainUrl}/api/v1`;
@@ -24,7 +24,7 @@ export class ApiConstant {
   public static SearchApi = {
     smartSearch: `${ApiConstant.baseUrl}/search/search`,
   }
-  
+
   public static AmenitiesApi = {
     getAllAmenities: `${ApiConstant.baseUrl}/Amenities`,
     getAllAmenitiesCategories: `${ApiConstant.baseUrl}/AmenitiesCategories`,
@@ -36,25 +36,25 @@ export class ApiConstant {
     add: `${ApiConstant.baseUrl}/FavoriteProperties`,
   };
   public static booking = {
-    getAllBookings: `${ApiConstant.baseUrl}/Bookings/HistoryBooking`,
+    getAllBookings: `${ApiConstant.baseUrl}/Bookings/HistoryBookingOfUser`,
     getBookingById: `${ApiConstant.baseUrl}/Bookings/{id}`,
     createBooking: `${ApiConstant.baseUrl}/Bookings/Reserve`,
     cancelBooking: `${ApiConstant.baseUrl}/Bookings/{id}/cancel`,
     cancelEnhanced: `${ApiConstant.baseUrl}/Bookings/{id}/cancel-enhanced`,
     canCancel: `${ApiConstant.baseUrl}/Bookings/{id}/can-cancel`,
     refund: `${ApiConstant.baseUrl}/Bookings/{id}/refund`,
-    
+
     // Host booking management
     hostBookings: `${ApiConstant.baseUrl}/Bookings/host/bookings`,
     hostPendingBookings: `${ApiConstant.baseUrl}/Bookings/host/pending-bookings`,
     hostPendingCount: `${ApiConstant.baseUrl}/Bookings/host/pending-count`,
     propertyBookings: `${ApiConstant.baseUrl}/Bookings/host/property/{propertyId}/bookings`,
-    
+
     // Admin booking management
     adminAllBookings: `${ApiConstant.baseUrl}/Bookings/admin/all-bookings`,
     adminPendingBookings: `${ApiConstant.baseUrl}/Bookings/admin/pending-bookings`,
     adminPendingCount: `${ApiConstant.baseUrl}/Bookings/admin/pending-count`,
-    
+
     // Booking actions
     acceptBooking: `${ApiConstant.baseUrl}/Bookings/{bookingId}/accept`,
     declineBooking: `${ApiConstant.baseUrl}/Bookings/{bookingId}/decline`,
@@ -81,6 +81,7 @@ export class ApiConstant {
   public static UserProfile = {
     Users: `${ApiConstant.baseUrl}/UserProfiles`,
     User: `${ApiConstant.baseUrl}/UserProfiles/me`,
+    ChatUsers: `${ApiConstant.baseUrl}/UserProfiles/chat-users`,
   };
   public static GuestType = {
     GuestType: `${ApiConstant.baseUrl}/GuestTypes`,
