@@ -16,6 +16,8 @@ import { Bookings } from '../../models/api/request/iget-bookings';
 import { IPayment } from '../../models/domain/ipayment';
 import { UsersAdminComponent } from '../../components/users-admin/users-admin.component';
 import { AdminChatComponent } from '../../components/admin-chat/admin-chat.component';
+import { PropertyAdminComponent } from './../../components/property-admin/property-admin.component';
+import { BookingAdminComponet } from '../../components/booking-admin/booking-admin.component';
 export interface AnalyticsCard {
   title: string;
   value: string;
@@ -26,7 +28,8 @@ export interface AnalyticsCard {
 
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [CommonModule, FormsModule, RouterModule, UsersAdminComponent, AdminChatComponent],
+  imports: [CommonModule, FormsModule, RouterModule, UsersAdminComponent, 
+    AdminChatComponent, PropertyAdminComponent, BookingAdminComponet],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
 })

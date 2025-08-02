@@ -23,6 +23,19 @@ namespace Travellin.Core.Mappings
                 Status = userProfile.Status
             };
         }
+
+        public static UserProfile ToUser(this UserProfileDto dto)
+        {
+            return new UserProfile
+            {
+                UserId = dto.UserId,
+                FirstName = dto?.FirstName,
+                LastName = dto?.LastName,
+                Bio = dto?.Bio,
+                BirthDate = dto?.BirthDate,
+                Status = dto?.Status
+            };
+        }
         public static void ToEntity(this UpdateUserProfileDto dto, UserProfile userProfile)
         {
             userProfile.FirstName = dto?.FirstName ?? userProfile.FirstName;

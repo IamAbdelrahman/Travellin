@@ -12,8 +12,8 @@ using Travellin.Infrastructure.Data;
 namespace Travellin.Infrastructure.Migrations
 {
     [DbContext(typeof(TravellinDbContext))]
-    [Migration("20250730050508_PayoutSeed")]
-    partial class PayoutSeed
+    [Migration("20250802035611_LastMigration")]
+    partial class LastMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -866,7 +866,7 @@ namespace Travellin.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC7spMPg5RTE/+JwhaFMZ9D4qe125yj/pgHQRdpqvzZn/yUZ56sxPK6NYZ+WPproog==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEO/q6OSHKyNTnPIucWSWuAmTqfZHsqAMA+fnMfFPz28zoy4gwyv9Qy1QTjaAOCnJYg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "2O776OTQMPGHNUKGKGVD7EK56EWEHWJ4",
                             TwoFactorEnabled = false,
@@ -882,7 +882,7 @@ namespace Travellin.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "HOST@EMAIL.COM",
                             NormalizedUserName = "HOST",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC7spMPg5RTE/+JwhaFMZ9D4qe125yj/pgHQRdpqvzZn/yUZ56sxPK6NYZ+WPproog==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKPhsE1ZH2ywRVcOxNIhAIIfbvEEEUx9a0cKblC7AG3bUp7kBN57YBS6h4eiSpcieg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "HOSTSTAMP",
                             TwoFactorEnabled = false,
@@ -898,7 +898,7 @@ namespace Travellin.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "GUEST@EMAIL.COM",
                             NormalizedUserName = "GUEST",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC7spMPg5RTE/+JwhaFMZ9D4qe125yj/pgHQRdpqvzZn/yUZ56sxPK6NYZ+WPproog==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMWTZVZgAJ/EsUyRjvSvhzLikb2SaCnhIAP7KuZmp8g7Gofn24rv/MdjHEUgNyB68w==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "GUESTSTAMP",
                             TwoFactorEnabled = false,
@@ -912,6 +912,9 @@ namespace Travellin.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)")
                         .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CheckIn")
                         .HasColumnType("datetime2");
@@ -948,6 +951,8 @@ namespace Travellin.Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
 
                     b.HasIndex("CheckIn");
 
@@ -1168,7 +1173,9 @@ namespace Travellin.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("PropertyId")
                         .HasMaxLength(450)
@@ -1198,7 +1205,7 @@ namespace Travellin.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2024, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             User1Id = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
                             User2Id = "4dacdb51-fee9-4479-904c-cafe7dca22a8"
                         });
@@ -3139,17 +3146,17 @@ namespace Travellin.Infrastructure.Migrations
                         new
                         {
                             Id = "c3d1f440-7e0e-4f38-8b5d-34ea8d12e801",
-                            Path = "images/admin.jpg"
+                            Path = "images/Admin.jpg"
                         },
                         new
                         {
                             Id = "98b7dcb6-7c53-4216-9f7a-259f40371fd4",
-                            Path = "images/host.jpg"
+                            Path = "images/Host.jpg"
                         },
                         new
                         {
                             Id = "4ae9e354-5eac-4f3a-a4b3-7c84c5b31d89",
-                            Path = "images/guest.jpg"
+                            Path = "images/Guest.jpg"
                         });
                 });
 
@@ -3655,6 +3662,11 @@ namespace Travellin.Infrastructure.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<bool>("IsInstantBook")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<decimal>("Latitude")
                         .HasColumnType("decimal(9,6)");
 
@@ -3701,6 +3713,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in after 2:00 PM, Checkout before 11:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = false,
                             Latitude = 29.98333m,
                             LocationId = 1,
                             Longitude = 31.13333m,
@@ -3708,7 +3721,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 100m,
                             PropertyTypeId = 1,
                             SafteyInfo = "No Carbon monoxide alarm, No Smoke alarm",
-                            Title = "Pyramid View Oasis: Jacuzzi & 10-Min Walk to Giza!"
+                            Title = "Stunning Apartment in Giza, Egypt"
                         },
                         new
                         {
@@ -3718,6 +3731,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in: 3:00 PM - 11:00PM, Checkout before 11:00 AM, 4 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = true,
                             Latitude = 45.46427m,
                             LocationId = 2,
                             Longitude = 9.18951m,
@@ -3725,7 +3739,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 250m,
                             PropertyTypeId = 3,
                             SafteyInfo = "Carbon monoxide alarm, Smoke alarm installed",
-                            Title = "Milan Castle Apartment: Duomo 10 Mins, Central Hub!"
+                            Title = "Elegant Hotel in Milan, Italy"
                         },
                         new
                         {
@@ -3735,6 +3749,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in after 3:00 PM, Checkout before 12:00 PM, 7 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = false,
                             Latitude = 21.4266m,
                             LocationId = 3,
                             Longitude = 39.8256m,
@@ -3742,7 +3757,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 90m,
                             PropertyTypeId = 1,
                             SafteyInfo = "Carbon monoxide alarm, Smoke alarm installed",
-                            Title = "Peaceful Mecca Retreat: Haram Views, 10-Min Walk!"
+                            Title = "Peaceful Apartment in Mecca, Saudi Arabia"
                         },
                         new
                         {
@@ -3752,6 +3767,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in after 3:00 PM, Checkout before 12:00 PM, 7 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = true,
                             Latitude = 34.114174m,
                             LocationId = 4,
                             Longitude = -116.432236m,
@@ -3759,7 +3775,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 110m,
                             PropertyTypeId = 2,
                             SafteyInfo = "Carbon monoxide alarm, Smoke alarm installed",
-                            Title = "Hawkeye Dome: Epic Glamping with New Pool & Spa!"
+                            Title = "Epic Glamping House in California, USA"
                         },
                         new
                         {
@@ -3769,6 +3785,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "3 guests maximum, Pets allowed",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = false,
                             Latitude = -12.9711m,
                             LocationId = 5,
                             Longitude = -38.5108m,
@@ -3776,7 +3793,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 130m,
                             PropertyTypeId = 1,
                             SafteyInfo = "Carbon monoxide alarm not reported, Smoke alarm not reported, Exterior security cameras on property",
-                            Title = "Charming Oceanfront Loft: Salvador Sunset Views!"
+                            Title = "Charming Oceanfront Apartment in Salvador, Brazil"
                         },
                         new
                         {
@@ -3786,6 +3803,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in: 3:00 PM - 5:00 PM, Checkout before 10:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = true,
                             Latitude = 41.3888m,
                             LocationId = 6,
                             Longitude = 2.159m,
@@ -3793,7 +3811,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 310m,
                             PropertyTypeId = 1,
                             SafteyInfo = "No carbon monoxide alarm, No smoke alarm, Heights without rails or protection",
-                            Title = "Sunny Sagrada Familia Apartment: Modern Barcelona Gem!"
+                            Title = "Modern Apartment in Barcelona, Spain"
                         },
                         new
                         {
@@ -3803,6 +3821,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in: 3:00 PM - 5:00 PM, Checkout before 10:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = false,
                             Latitude = 29.5726m,
                             LocationId = 7,
                             Longitude = 35.4186m,
@@ -3810,7 +3829,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 220m,
                             PropertyTypeId = 1,
                             SafteyInfo = "No carbon monoxide alarm, No smoke alarm, Heights without rails or protection",
-                            Title = "Wadi Rum Sunset Cave: Authentic Bedouin Stargazing!"
+                            Title = "Authentic Cave Apartment in Wadi Rum, Jordan"
                         },
                         new
                         {
@@ -3820,6 +3839,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in: 3:00 PM - 5:00 PM, Checkout before 10:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = true,
                             Latitude = 43.5914m,
                             LocationId = 8,
                             Longitude = 6.8761m,
@@ -3827,7 +3847,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 132m,
                             PropertyTypeId = 1,
                             SafteyInfo = "No carbon monoxide alarm, No smoke alarm, Heights without rails or protection",
-                            Title = "The View: Designer Guesthouse with Pool & Mountain Vistas!"
+                            Title = "Designer House in French Alps"
                         },
                         new
                         {
@@ -3837,6 +3857,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in: 3:00 PM - 5:00 PM, Checkout before 10:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = false,
                             Latitude = 37.7428m,
                             LocationId = 9,
                             Longitude = 25.6806m,
@@ -3844,7 +3865,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 200m,
                             PropertyTypeId = 4,
                             SafteyInfo = "Climbing or play structure, Carbon monoxide alarm, Smoke alarm",
-                            Title = "The Mill House: Romantic 19th-Century Sea View Retreat!"
+                            Title = "Romantic Cottage in Azores, Portugal"
                         },
                         new
                         {
@@ -3854,6 +3875,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in: 3:00 PM - 12:00 AM, Checkout before 11:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = true,
                             Latitude = 37.3154m,
                             LocationId = 10,
                             Longitude = 127.4052m,
@@ -3861,7 +3883,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 180m,
                             PropertyTypeId = 1,
                             SafteyInfo = "Carbon monoxide alarm not reported, Smoke alarm, Must climb stairs",
-                            Title = "Unique Guitar House: Emotional Healing in Icheon-si, Korea!"
+                            Title = "Unique House near Icheon-si, South Korea"
                         },
                         new
                         {
@@ -3871,6 +3893,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in: 3:00 PM - 12:00 AM, Checkout before 11:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = false,
                             Latitude = 33.9249m,
                             LocationId = 11,
                             Longitude = 18.4241m,
@@ -3878,7 +3901,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 210m,
                             PropertyTypeId = 1,
                             SafteyInfo = "Carbon monoxide alarm not reported, Smoke alarm, Must climb stairs",
-                            Title = "Kai Cottage: Serene Getaway with Nature Views!"
+                            Title = "Serene Cottage in Cape Town, South Africa"
                         },
                         new
                         {
@@ -3888,6 +3911,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Flexible check-in, 2 guests maximum, No pets",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = true,
                             Latitude = 29.9617m,
                             LocationId = 12,
                             Longitude = 31.2667m,
@@ -3895,7 +3919,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 100m,
                             PropertyTypeId = 2,
                             SafteyInfo = "No carbon monoxide alarm, No smoke alarm, Nearby lake, river, other body of water",
-                            Title = "Sunny Maadi Room: Cairo Charm, Steps from Cafes!"
+                            Title = "Charming House in Maadi, Cairo, Egypt"
                         },
                         new
                         {
@@ -3905,6 +3929,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in after 3:00 PM, Checkout before 11:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = false,
                             Latitude = 49.6876m,
                             LocationId = 13,
                             Longitude = 124.9936m,
@@ -3912,7 +3937,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 400m,
                             PropertyTypeId = 4,
                             SafteyInfo = "Exterior security cameras on property, Carbon monoxide alarm, Smoke alarm",
-                            Title = "Heather Cottage: Wetland Views, Firepit & Farm Charm!"
+                            Title = "Beautiful Cottage in Merville, BC, Canada"
                         },
                         new
                         {
@@ -3922,6 +3947,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in: 4:00 PM - 12:00 AM, Checkout before 11:00 AM, 4 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = true,
                             Latitude = 37.5407m,
                             LocationId = 14,
                             Longitude = 77.436m,
@@ -3929,7 +3955,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 90m,
                             PropertyTypeId = 3,
                             SafteyInfo = "Carbon monoxide alarm, Smoke alarm",
-                            Title = "Beachfront Oasis: Chesapeake Bay Views & Private Beach!"
+                            Title = "Beachfront Hotel in Virginia Beach, USA"
                         },
                         new
                         {
@@ -3939,6 +3965,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in after 3:00 PM, 4 guests maximum, Pets allowed",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = false,
                             Latitude = 36.9475m,
                             LocationId = 15,
                             Longitude = 10.3036m,
@@ -3946,7 +3973,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 20m,
                             PropertyTypeId = 4,
                             SafteyInfo = "Carbon monoxide alarm not reported, Smoke alarm not reported",
-                            Title = "Luxury Gammarth Apartment: Sea Views & Private Beach Access!"
+                            Title = "Luxury Apartment in Gammarth, Tunisia"
                         },
                         new
                         {
@@ -3956,6 +3983,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in: (4:00 PM - 10:00 PM), Checkout before 11:00 AM, 4 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = true,
                             Latitude = 50.7236m,
                             LocationId = 16,
                             Longitude = 4.8694m,
@@ -3963,7 +3991,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 230m,
                             PropertyTypeId = 1,
                             SafteyInfo = "No carbon monoxide alarm, Nearby lake- river- other body of water, Smoke alarm",
-                            Title = "Charming English Cottage: Antiques & Beautiful Garden!"
+                            Title = "Charming Cottage in English Countryside"
                         },
                         new
                         {
@@ -3973,6 +4001,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in before 4:00 AM, Checkout before 9:00 AM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = false,
                             Latitude = 34.6037m,
                             LocationId = 17,
                             Longitude = 58.3816m,
@@ -3980,7 +4009,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 190m,
                             PropertyTypeId = 2,
                             SafteyInfo = "No carbon monoxide alarm, No Smoke alarm",
-                            Title = "Palermo/Recoleta Chic: Stylish Room with Ensuite & AC!"
+                            Title = "Stylish House in Buenos Aires, Argentina"
                         },
                         new
                         {
@@ -3990,6 +4019,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in before 2:00 AM, Checkout before 9:00 AM, 3 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = true,
                             Latitude = 6.4367m,
                             LocationId = 18,
                             Longitude = 3.5244m,
@@ -3997,7 +4027,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 200m,
                             PropertyTypeId = 1,
                             SafteyInfo = "Carbon monoxide alarm, Smoke alarm",
-                            Title = "The Foundry: Luxe 2BR, Pool & Lekki Phase 1 Prime Location!"
+                            Title = "Luxe Apartment in Lekki Phase 1, Nigeria"
                         },
                         new
                         {
@@ -4007,6 +4037,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in before 1:00 AM, Checkout before 11:00 AM, 1 guest maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = false,
                             Latitude = 21.05m,
                             LocationId = 19,
                             Longitude = 105.4333m,
@@ -4014,7 +4045,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 100m,
                             PropertyTypeId = 4,
                             SafteyInfo = "Carbon monoxide alarm, No Smoke alarm",
-                            Title = "Xoi Farmstay: Authentic Valley Retreat near Hanoi!"
+                            Title = "Authentic Cottage in Lam Thuong, Vietnam"
                         },
                         new
                         {
@@ -4024,6 +4055,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in before 1:00 AM, Checkout before 11:00 AM, 1 guest maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = true,
                             Latitude = 25.2769m,
                             LocationId = 20,
                             Longitude = 55.2962m,
@@ -4031,7 +4063,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 400m,
                             PropertyTypeId = 1,
                             SafteyInfo = "Carbon monoxide alarm, Smoke alarm",
-                            Title = "Central Dubai Flat: Burj Khalifa Views & Business Bay!"
+                            Title = "Modern Apartment in Dubai, UAE"
                         },
                         new
                         {
@@ -4041,6 +4073,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in before 11:00 AM, Checkout before 12:00 AM, 3 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = false,
                             Latitude = 31.1333m,
                             LocationId = 21,
                             Longitude = 7.9167m,
@@ -4048,7 +4081,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 220m,
                             PropertyTypeId = 2,
                             SafteyInfo = "No carbon monoxide alarm, Smoke alarm",
-                            Title = "Atlas Mountains Riad: Oussagou Guest House Retreat!"
+                            Title = "Comfortable House in Atlas Mountains, Morocco"
                         },
                         new
                         {
@@ -4058,6 +4091,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in before 3:00 PM, Checkout before 12:00 PM, 3 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = true,
                             Latitude = 4.96705m,
                             LocationId = 22,
                             Longitude = -74.43512m,
@@ -4065,7 +4099,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 100m,
                             PropertyTypeId = 4,
                             SafteyInfo = "Carbon monoxide alarm, No Smoke alarm, Nearby lake, river, other body of water",
-                            Title = "Colombia's Most Spectacular Treehouse: 5-Star Nature Escape!"
+                            Title = "Spectacular Cottage in Bogotá, Colombia"
                         },
                         new
                         {
@@ -4075,6 +4109,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in before 3:00 PM, Checkout before 12:00 PM, 3 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = false,
                             Latitude = -8.5441m,
                             LocationId = 23,
                             Longitude = 115.3255m,
@@ -4082,7 +4117,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 110m,
                             PropertyTypeId = 1,
                             SafteyInfo = "Carbon monoxide alarm, No Smoke alarm, Nearby lake, river, other body of water",
-                            Title = "Quiet Ubud Villa: Rice Fields & Balinese Massage!"
+                            Title = "Peaceful House in Ubud, Bali, Indonesia"
                         },
                         new
                         {
@@ -4092,6 +4127,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in before 1:00 PM, Checkout before 10:00 PM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = true,
                             Latitude = 41.9028m,
                             LocationId = 24,
                             Longitude = 12.4964m,
@@ -4099,7 +4135,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 90m,
                             PropertyTypeId = 3,
                             SafteyInfo = "Carbon monoxide alarm, Smoke alarm",
-                            Title = "Bright & New Rome Penthouse: Metro C Access, Sleeps 6!"
+                            Title = "Modern Hotel in Rome, Italy"
                         },
                         new
                         {
@@ -4109,6 +4145,7 @@ namespace Travellin.Infrastructure.Migrations
                             HouseRules = "Check-in before 1:00 PM, Checkout before 10:00 PM, 2 guests maximum",
                             IsActive = true,
                             IsDeleted = false,
+                            IsInstantBook = false,
                             Latitude = 37.0383m,
                             LocationId = 25,
                             Longitude = 27.4292m,
@@ -4116,7 +4153,7 @@ namespace Travellin.Infrastructure.Migrations
                             PricePerNight = 200m,
                             PropertyTypeId = 2,
                             SafteyInfo = "Carbon monoxide alarm, Smoke alarm",
-                            Title = "Bodrum Beachfront Hotel: Private Beach & DJ Nights!"
+                            Title = "Beachfront Hotel in Bodrum, Turkey"
                         });
                 });
 
@@ -5438,51 +5475,93 @@ namespace Travellin.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
+                            PropertyId = "06dbae08-bc6b-4ca6-9162-3213784b9971",
                             GuestTypeId = 1,
+                            GuestCount = 2
+                        },
+                        new
+                        {
+                            PropertyId = "06dbae08-bc6b-4ca6-9162-3213784b9971",
+                            GuestTypeId = 4,
+                            GuestCount = 3
+                        },
+                        new
+                        {
+                            PropertyId = "06dbae08-bc6b-4ca6-9162-3213784b9971",
+                            GuestTypeId = 2,
+                            GuestCount = 2
+                        },
+                        new
+                        {
+                            PropertyId = "0bb50f31-e322-4b76-97dd-6a7fcf585d33",
+                            GuestTypeId = 1,
+                            GuestCount = 4
+                        },
+                        new
+                        {
+                            PropertyId = "0bb50f31-e322-4b76-97dd-6a7fcf585d33",
+                            GuestTypeId = 2,
+                            GuestCount = 2
+                        },
+                        new
+                        {
+                            PropertyId = "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08",
+                            GuestTypeId = 1,
+                            GuestCount = 2
+                        },
+                        new
+                        {
+                            PropertyId = "294e2751-203b-4beb-b21e-0bb96f082d7c",
+                            GuestTypeId = 1,
+                            GuestCount = 2
+                        },
+                        new
+                        {
+                            PropertyId = "294e2751-203b-4beb-b21e-0bb96f082d7c",
+                            GuestTypeId = 3,
                             GuestCount = 1
                         },
                         new
                         {
-                            PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
+                            PropertyId = "294e2751-203b-4beb-b21e-0bb96f082d7c",
+                            GuestTypeId = 4,
+                            GuestCount = 1
+                        },
+                        new
+                        {
+                            PropertyId = "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1",
+                            GuestTypeId = 1,
+                            GuestCount = 4
+                        },
+                        new
+                        {
+                            PropertyId = "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1",
+                            GuestTypeId = 3,
+                            GuestCount = 2
+                        },
+                        new
+                        {
+                            PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35",
+                            GuestTypeId = 1,
+                            GuestCount = 2
+                        },
+                        new
+                        {
+                            PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35",
                             GuestTypeId = 2,
+                            GuestCount = 1
+                        },
+                        new
+                        {
+                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
+                            GuestTypeId = 1,
                             GuestCount = 4
                         },
                         new
                         {
                             PropertyId = "3e7f99ab-228a-4d90-91c4-6adf8c12e048",
-                            GuestTypeId = 3,
-                            GuestCount = 3
-                        },
-                        new
-                        {
-                            PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
-                            GuestTypeId = 4,
-                            GuestCount = 2
-                        },
-                        new
-                        {
-                            PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2",
                             GuestTypeId = 1,
-                            GuestCount = 5
-                        },
-                        new
-                        {
-                            PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
-                            GuestTypeId = 2,
-                            GuestCount = 2
-                        },
-                        new
-                        {
-                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
-                            GuestTypeId = 3,
-                            GuestCount = 4
-                        },
-                        new
-                        {
-                            PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
-                            GuestTypeId = 4,
-                            GuestCount = 1
+                            GuestCount = 3
                         },
                         new
                         {
@@ -5492,33 +5571,57 @@ namespace Travellin.Infrastructure.Migrations
                         },
                         new
                         {
-                            PropertyId = "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1",
-                            GuestTypeId = 2,
-                            GuestCount = 5
-                        },
-                        new
-                        {
-                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
+                            PropertyId = "4b04a76a-1608-4a8f-b09c-8d9043b83e16",
                             GuestTypeId = 3,
                             GuestCount = 2
                         },
                         new
                         {
-                            PropertyId = "3c0e361a-51df-4e03-b8d0-2d7601aa60f6",
+                            PropertyId = "4b04a76a-1608-4a8f-b09c-8d9043b83e16",
                             GuestTypeId = 4,
-                            GuestCount = 4
+                            GuestCount = 1
                         },
                         new
                         {
-                            PropertyId = "c5c0d4db-b048-4ee4-8835-344900fd35b2",
+                            PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2",
+                            GuestTypeId = 1,
+                            GuestCount = 3
+                        },
+                        new
+                        {
+                            PropertyId = "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2",
+                            GuestTypeId = 2,
+                            GuestCount = 1
+                        },
+                        new
+                        {
+                            PropertyId = "52a8df7d-c0b2-4ee3-8369-9daed4885f9f",
+                            GuestTypeId = 3,
+                            GuestCount = 2
+                        },
+                        new
+                        {
+                            PropertyId = "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa",
                             GuestTypeId = 1,
                             GuestCount = 2
                         },
                         new
                         {
-                            PropertyId = "0bb50f31-e322-4b76-97dd-6a7fcf585d33",
-                            GuestTypeId = 2,
+                            PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198",
+                            GuestTypeId = 1,
+                            GuestCount = 3
+                        },
+                        new
+                        {
+                            PropertyId = "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4",
+                            GuestTypeId = 1,
                             GuestCount = 4
+                        },
+                        new
+                        {
+                            PropertyId = "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3",
+                            GuestTypeId = 1,
+                            GuestCount = 2
                         },
                         new
                         {
@@ -5534,33 +5637,39 @@ namespace Travellin.Infrastructure.Migrations
                         },
                         new
                         {
-                            PropertyId = "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08",
-                            GuestTypeId = 1,
-                            GuestCount = 5
-                        },
-                        new
-                        {
-                            PropertyId = "294e2751-203b-4beb-b21e-0bb96f082d7c",
-                            GuestTypeId = 2,
-                            GuestCount = 2
-                        },
-                        new
-                        {
-                            PropertyId = "06dbae08-bc6b-4ca6-9162-3213784b9971",
-                            GuestTypeId = 3,
+                            PropertyId = "c150e428-1c9a-43a2-be07-f4366875f1ce",
+                            GuestTypeId = 4,
                             GuestCount = 4
                         },
                         new
                         {
-                            PropertyId = "f1e8be41-4fd5-47e4-8960-12d8f4afc273",
+                            PropertyId = "c5c0d4db-b048-4ee4-8835-344900fd35b2",
+                            GuestTypeId = 1,
+                            GuestCount = 2
+                        },
+                        new
+                        {
+                            PropertyId = "cc4e48ea-ca54-4d32-a448-3c2c9d14f936",
+                            GuestTypeId = 1,
+                            GuestCount = 1
+                        },
+                        new
+                        {
+                            PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
+                            GuestTypeId = 1,
+                            GuestCount = 1
+                        },
+                        new
+                        {
+                            PropertyId = "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f",
                             GuestTypeId = 4,
                             GuestCount = 2
                         },
                         new
                         {
-                            PropertyId = "763e6c5f-1ad1-4071-b0e6-55e924624198",
+                            PropertyId = "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c",
                             GuestTypeId = 1,
-                            GuestCount = 3
+                            GuestCount = 2
                         },
                         new
                         {
@@ -5570,20 +5679,26 @@ namespace Travellin.Infrastructure.Migrations
                         },
                         new
                         {
-                            PropertyId = "52a8df7d-c0b2-4ee3-8369-9daed4885f9f",
-                            GuestTypeId = 3,
+                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
+                            GuestTypeId = 1,
                             GuestCount = 2
                         },
                         new
                         {
-                            PropertyId = "c150e428-1c9a-43a2-be07-f4366875f1ce",
-                            GuestTypeId = 4,
-                            GuestCount = 4
+                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
+                            GuestTypeId = 2,
+                            GuestCount = 2
                         },
                         new
                         {
-                            PropertyId = "2e3ed231-a2a6-4961-a1ba-f232d56c6f35",
-                            GuestTypeId = 1,
+                            PropertyId = "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7",
+                            GuestTypeId = 4,
+                            GuestCount = 1
+                        },
+                        new
+                        {
+                            PropertyId = "f1e8be41-4fd5-47e4-8960-12d8f4afc273",
+                            GuestTypeId = 4,
                             GuestCount = 2
                         });
                 });
@@ -6992,6 +7107,40 @@ namespace Travellin.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Travellin.Core.Entities.Recommendations", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("PropertyId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Query")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<decimal>("Score")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Recommendations");
+                });
+
             modelBuilder.Entity("Travellin.Core.Entities.Region", b =>
                 {
                     b.Property<int>("Id")
@@ -7229,6 +7378,11 @@ namespace Travellin.Infrastructure.Migrations
                     b.Property<string>("PhotoId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
+
                     b.Property<string>("StripeAccountId")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -7247,32 +7401,35 @@ namespace Travellin.Infrastructure.Migrations
                         new
                         {
                             UserId = "2dacdb51-fee9-4479-904c-cafe7dca22a6",
-                            Bio = "As the system administrator, I ensure that our platform runs smoothly, securely, and efficiently. From managing users and listings to maintaining system integrity, I'm here to support both guests and hosts for a seamless experience.",
-                            BirthDate = new DateOnly(1995, 5, 2),
-                            CountryId = 64,
-                            FirstName = "Marcus",
-                            LastName = "Dou",
-                            PhotoId = "c3d1f440-7e0e-4f38-8b5d-34ea8d12e801"
+                            Bio = "Hello, I'm John, the platform administrator. My role is to ensure all operations run smoothly and securely. I'm dedicated to providing a safe and reliable environment for our community. Feel free to reach out to our support team if you need any assistance!",
+                            BirthDate = new DateOnly(1988, 11, 15),
+                            CountryId = 100,
+                            FirstName = "John",
+                            LastName = "Doe",
+                            PhotoId = "c3d1f440-7e0e-4f38-8b5d-34ea8d12e801",
+                            Status = "Active"
                         },
                         new
                         {
                             UserId = "3dacdb51-fee9-4479-904c-cafe7dca22a7",
-                            Bio = "Hi, I’m Pavel! I’ve been hosting guests from around the world for over 3 years. I love sharing my cozy home and local tips to help you experience the best of the city. Your comfort and privacy are my top priorities—feel free to reach out with any questions before or during your stay!",
-                            BirthDate = new DateOnly(1999, 12, 2),
-                            CountryId = 64,
-                            FirstName = "Pavel",
-                            LastName = "Elmo",
-                            PhotoId = "98b7dcb6-7c53-4216-9f7a-259f40371fd4"
+                            Bio = "Welcome to my home! I'm David, a passionate traveler and host. I've been sharing my space for five years and love meeting people from all over. My goal is to make your stay as comfortable and memorable as possible. Don't hesitate to ask for recommendations on local cafes and hidden gems!",
+                            BirthDate = new DateOnly(1992, 7, 21),
+                            CountryId = 87,
+                            FirstName = "David",
+                            LastName = "Lee",
+                            PhotoId = "98b7dcb6-7c53-4216-9f7a-259f40371fd4",
+                            Status = "Active"
                         },
                         new
                         {
                             UserId = "4dacdb51-fee9-4479-904c-cafe7dca22a8",
-                            Bio = "Hi, I’m Lucas! I enjoy exploring new cities, meeting new people, and experiencing different cultures. I’m a respectful guest who values comfort and cleanliness. Looking forward to staying in your wonderful property and making the most of my travels!",
-                            BirthDate = new DateOnly(2001, 2, 2),
-                            CountryId = 64,
-                            FirstName = "lucas",
-                            LastName = "Martin",
-                            PhotoId = "4ae9e354-5eac-4f3a-a4b3-7c84c5b31d89"
+                            Bio = "Hi! I'm Emily, a digital nomad who loves exploring new places. I am a tidy and considerate guest who respects local culture and hospitality. I'm excited to experience the unique charm of your property and the surrounding area. Happy to connect with other travelers!",
+                            BirthDate = new DateOnly(1998, 4, 10),
+                            CountryId = 231,
+                            FirstName = "Emily",
+                            LastName = "Jones",
+                            PhotoId = "4ae9e354-5eac-4f3a-a4b3-7c84c5b31d89",
+                            Status = "Active"
                         });
                 });
 
@@ -7396,6 +7553,10 @@ namespace Travellin.Infrastructure.Migrations
 
             modelBuilder.Entity("Travellin.Core.Entities.Booking", b =>
                 {
+                    b.HasOne("Travellin.Core.Entities.AppUser", null)
+                        .WithMany("Bookings")
+                        .HasForeignKey("AppUserId");
+
                     b.HasOne("Travellin.Core.Entities.Property", "Property")
                         .WithMany("Bookings")
                         .HasForeignKey("PropertyId")
@@ -7801,6 +7962,8 @@ namespace Travellin.Infrastructure.Migrations
 
             modelBuilder.Entity("Travellin.Core.Entities.AppUser", b =>
                 {
+                    b.Navigation("Bookings");
+
                     b.Navigation("Properties");
 
                     b.Navigation("UserProfile");

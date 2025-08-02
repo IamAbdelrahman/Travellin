@@ -5,19 +5,29 @@ import { UsersService } from '../../services/users.service';
 import { UserProfiles, User } from '../../models/api/response/iget-users';
 import { HttpResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../../services/toast.service'; // Adjust the path as needed
+import {
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 @Component({
   selector: 'app-users-admin',
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FontAwesomeModule, FormsModule],
   templateUrl: './users-admin.component.html',
   styleUrl: './users-admin.component.scss',
 })
 export class UsersAdminComponent implements OnInit {
   users: User[] = [];
+  filtered: User[] = [];
   @Output() adminPhotoEvent = new EventEmitter<string>();
   adminPhoto:string = '';
+  loading: boolean = false;
   selectedFilter = 'all';
   searchTerm = '';
-  constructor(private userService: UsersService) {}
+  icons: { [key: string]: any } = {
+    trash: faTrash,
+  };
+  constructor(private userService: UsersService, private toastService: ToastService) {}
   ngOnInit(): void {
     this.loadUsers();
   }
@@ -27,9 +37,8 @@ export class UsersAdminComponent implements OnInit {
         this.users = response?.body?.items || [];
         this.adminPhoto = this.getAdminPhoto();
         this.adminPhotoEvent.emit(this.adminPhoto);
-        console.log(response, 'no response');
-        console.log("adminPhoto:", this.adminPhoto);
-        console.log("photoid", this.users[0].photo.id);
+        this.getFilteredUsers();
+        console.log("Bio", this.users[0].bio)
       },
       error: err => {
         console.error('Error loading data', err);
@@ -41,20 +50,20 @@ export class UsersAdminComponent implements OnInit {
     users.status = users.status === 'Active' ? 'Blocked' : 'Active';
   }
   getFilteredUsers(): User[] {
-    let filtered = this.users;
+     this.filtered = this.users;
     
     if (this.selectedFilter !== 'all') {
-      filtered = filtered.filter(user => user.roles[0].toLowerCase() === this.selectedFilter);
+      this.filtered = this.filtered.filter(user => user.roles[0].toLowerCase() === this.selectedFilter);
     }
     
     if (this.searchTerm) {
-      filtered = filtered.filter(users => 
+      this.filtered = this.filtered.filter(users => 
         users.userName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         users.email.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
     }
     
-    return filtered;
+    return this.filtered;
   }
   getStatusColor(status: string): string {
       switch (status.toLowerCase()) {
@@ -82,5 +91,28 @@ export class UsersAdminComponent implements OnInit {
       else continue;
     }
     return '';
+  }
+  onDelete(id: string): void {
+    const userToDelete = this.users.find(u => u.userId === id);
+    if (!userToDelete) return;
+    if (userToDelete.status === "Blocked") {
+      userToDelete.status = "Active";
+      return;
+    }
+
+    if (confirm('Are you sure you want to block this user?')) {
+      this.userService.deleteUser(id).subscribe({
+        next: () => {
+          console.log('Trying to block user with ID:', id); // to test
+          this.users = this.users.filter(u => u.userId !== id);
+          this.toastService.showSuccess('User blocked successfully');
+          window.location.reload();
+        },
+        error: err => {
+          console.error('Error blocking user', err);
+          this.toastService.showError('Failed to block user');
+        },
+      });
+    }
   }
 }

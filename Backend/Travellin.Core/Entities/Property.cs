@@ -15,6 +15,7 @@
         public string? CancellationPolicy { get; set; }
         public bool IsActive { get; set; } = true;
         public bool IsDeleted { get; set; } = false;
+        public bool IsInstantBook { get; set; } = false;
         public virtual AppUser Owner { get; set; }
         public virtual Location Location { get; set; }
         public virtual PropertyType PropertyType { get; set; }

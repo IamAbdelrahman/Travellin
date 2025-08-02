@@ -23,6 +23,7 @@ export class ApiConstant {
 
   public static SearchApi = {
     smartSearch: `${ApiConstant.baseUrl}/search/search`,
+    // recommendations
   }
 
   public static AmenitiesApi = {
@@ -43,8 +44,12 @@ export class ApiConstant {
     cancelEnhanced: `${ApiConstant.baseUrl}/Bookings/{id}/cancel-enhanced`,
     canCancel: `${ApiConstant.baseUrl}/Bookings/{id}/can-cancel`,
     refund: `${ApiConstant.baseUrl}/Bookings/{id}/refund`,
+<<<<<<< HEAD
     checkin: `${ApiConstant.baseUrl}/Bookings/{id}/checkin`,
 
+=======
+    getAll:  `${ApiConstant.baseUrl}/Bookings/GetAllBookings`,
+>>>>>>> c69fed42ff02f7c076fcaff3e0550b12cdee7c2a
     // Host booking management
     hostBookings: `${ApiConstant.baseUrl}/Bookings/host/bookings`,
     hostPendingBookings: `${ApiConstant.baseUrl}/Bookings/host/pending-bookings`,
@@ -83,6 +88,8 @@ export class ApiConstant {
     Users: `${ApiConstant.baseUrl}/UserProfiles`,
     User: `${ApiConstant.baseUrl}/UserProfiles/me`,
     ChatUsers: `${ApiConstant.baseUrl}/UserProfiles/chat-users`,
+    Delete: `${ApiConstant.baseUrl}/UserProfiles`,
+    GetUser: `${ApiConstant.baseUrl}/UserProfiles`
   };
   public static GuestType = {
     GuestType: `${ApiConstant.baseUrl}/GuestTypes`,

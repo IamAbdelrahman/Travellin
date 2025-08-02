@@ -60,6 +60,7 @@ namespace Travellin.Infrastructure.Data.Configurations
                 .IsRequired()
                 .HasDefaultValue(false);
 
+            builder.Property(x => x.IsInstantBook).IsRequired().HasDefaultValue(false);
             builder.HasOne(x => x.Owner)
                 .WithMany(x => x.Properties)
                 .HasForeignKey(x => x.OwnerId);

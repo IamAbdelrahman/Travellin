@@ -54,5 +54,9 @@ export class UsersService {
     }
   );
 }
+  deleteUser(id: string): Observable<any> {
+    const url = `${ApiConstant.UserProfile.Delete}/${id}`;
+    return this.http.delete(url, { withCredentials: true });
+  }
 
 }

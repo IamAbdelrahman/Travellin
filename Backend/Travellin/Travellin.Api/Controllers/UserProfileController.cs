@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph.Models;
 using Travellin.Api.Controllers;
 using Travellin.Core.Dtos.UserProfilesDto;
+using Travellin.Core.Entities;
 using Travellin.Core.Interfaces;
-using Travellin.Travellin.Core.Shared;
 using Travellin.Core.Mappings;
+using Travellin.Travellin.Core.Shared;
 namespace Travellin.Travellin.Api.Controllers
 {
     [Authorize]
@@ -35,6 +37,19 @@ namespace Travellin.Travellin.Api.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpGet("getMe")]
+        [EndpointSummary("Get user profile (For Admins only).")]
+        [Produces("application/json")]
+        public async Task<IActionResult> GetById(string id)
+        {
+            var user = await _unitOfWork.UserProfileRepository.GetByUserId(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
         [HttpGet("chat-users")]
         [EndpointSummary("Get users for chat purposes (For all authenticated users).")]
         [Produces("application/json")]
@@ -95,6 +110,28 @@ namespace Travellin.Travellin.Api.Controllers
             // Return updated profile details
             var updatedProfile = await _unitOfWork.UserProfileRepository.GetProfileDetailsByUserId(userId);
             return Ok(updatedProfile);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        [EndpointSummary("delete an existing user.")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesErrorResponseType(typeof(List<string>))]
+        public async Task<IActionResult> Delete([FromRoute] string id)
+        {
+            var userProfile = await _unitOfWork.UserProfileRepository.GetByUserId(id);
+
+            if (userProfile is null)
+            {
+                return NotFoundResponse();
+            }
+
+            userProfile.Status = "Blocked";
+            _unitOfWork.UserProfileRepository.Update(userProfile);
+            await _unitOfWork.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

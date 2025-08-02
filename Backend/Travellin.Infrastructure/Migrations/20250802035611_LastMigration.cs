@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Travellin.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitiateDB : Migration
+    public partial class LastMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -118,6 +118,23 @@ namespace Travellin.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Recommendations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Query = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    PropertyId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Score = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Recommendations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Regions",
                 columns: table => new
                 {
@@ -148,7 +165,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.CategoryId,
                         principalTable: "AmenityCategories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -169,7 +186,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -190,7 +207,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -210,7 +227,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -228,13 +245,13 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -254,33 +271,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Conversations",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    User1Id = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    User2Id = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Conversations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Conversations_AspNetUsers_User1Id",
-                        column: x => x.User1Id,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Conversations_AspNetUsers_User2Id",
-                        column: x => x.User2Id,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -368,7 +359,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.PropertySpaceTypeId,
                         principalTable: "PropertySpaceTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -388,44 +379,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.RegionId,
                         principalTable: "Regions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Messages",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ConversationId = table.Column<int>(type: "int", nullable: false),
-                    SenderId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    ReceiverId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    TranslatedContent = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    IsRead = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Messages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Messages_AspNetUsers_ReceiverId",
-                        column: x => x.ReceiverId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Messages_AspNetUsers_SenderId",
-                        column: x => x.SenderId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Messages_Conversations_ConversationId",
-                        column: x => x.ConversationId,
-                        principalTable: "Conversations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -445,7 +399,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.CountryId,
                         principalTable: "Countries",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -457,6 +411,8 @@ namespace Travellin.Infrastructure.Migrations
                     LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CountryId = table.Column<int>(type: "int", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(7)", maxLength: 7, nullable: false),
+                    StripeAccountId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     BirthDate = table.Column<DateOnly>(type: "date", nullable: true),
                     PhotoId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
@@ -468,7 +424,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserProfiles_Countries_CountryId",
                         column: x => x.CountryId,
@@ -499,7 +455,8 @@ namespace Travellin.Infrastructure.Migrations
                     HouseRules = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CancellationPolicy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    IsInstantBook = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -509,19 +466,19 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Properties_Locations_LocationId",
                         column: x => x.LocationId,
                         principalTable: "Locations",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Properties_PropertyTypes_PropertyTypeId",
                         column: x => x.PropertyTypeId,
                         principalTable: "PropertyTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -537,11 +494,17 @@ namespace Travellin.Infrastructure.Migrations
                     TotalFees = table.Column<decimal>(type: "decimal(16,2)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Bookings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Bookings_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Bookings_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -550,6 +513,40 @@ namespace Travellin.Infrastructure.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Bookings_Properties_PropertyId",
+                        column: x => x.PropertyId,
+                        principalTable: "Properties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Conversations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    User1Id = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    User2Id = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    PropertyId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Conversations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Conversations_AspNetUsers_User1Id",
+                        column: x => x.User1Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Conversations_AspNetUsers_User2Id",
+                        column: x => x.User2Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Conversations_Properties_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Properties",
                         principalColumn: "Id",
@@ -595,13 +592,13 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.AmenityId,
                         principalTable: "Amenities",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PropertyAmenities_Properties_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Properties",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -623,7 +620,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.PropertyId,
                         principalTable: "Properties",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -644,7 +641,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.PropertyId,
                         principalTable: "Properties",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -663,13 +660,13 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.GuestTypeId,
                         principalTable: "GuestTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PropertyGuests_Properties_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Properties",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -688,13 +685,13 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.PhotoId,
                         principalTable: "FileUploads",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PropertyPhotos_Properties_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Properties",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -715,13 +712,13 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.PropertyId,
                         principalTable: "Properties",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PropertySpaces_PropertySpaceTypes_PropertySpaceTypeId",
                         column: x => x.PropertySpaceTypeId,
                         principalTable: "PropertySpaceTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -750,7 +747,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.ReportedById1,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Violations_AspNetUsers_ReportedUserId1",
                         column: x => x.ReportedUserId1,
@@ -779,7 +776,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.BookingId,
                         principalTable: "Bookings",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_BookingGuests_GuestTypes_GuestTypeId",
                         column: x => x.GuestTypeId,
@@ -796,6 +793,7 @@ namespace Travellin.Infrastructure.Migrations
                     BookingId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     StripeSessionId = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     StripePaymentIntentId = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    HostStripeAccountId = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Amount = table.Column<decimal>(type: "decimal(16,2)", nullable: false),
                     Currency = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false, defaultValue: "usd"),
                     Status = table.Column<string>(type: "nvarchar(450)", nullable: false, defaultValue: "Pending"),
@@ -837,7 +835,44 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.BookingId,
                         principalTable: "Bookings",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ConversationId = table.Column<int>(type: "int", nullable: false),
+                    SenderId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    ReceiverId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    TranslatedContent = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Messages_AspNetUsers_ReceiverId",
+                        column: x => x.ReceiverId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Messages_AspNetUsers_SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Messages_Conversations_ConversationId",
+                        column: x => x.ConversationId,
+                        principalTable: "Conversations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -863,7 +898,7 @@ namespace Travellin.Infrastructure.Migrations
                         column: x => x.PropertySpaceId,
                         principalTable: "PropertySpaces",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -901,9 +936,9 @@ namespace Travellin.Infrastructure.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "2dacdb51-fee9-4479-904c-cafe7dca22a6", 0, "2bc5ed7c-f23c-41b2-8f24-6cde1379cf70", "admin@email.com", true, false, null, "ADMIN@EMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEC7spMPg5RTE/+JwhaFMZ9D4qe125yj/pgHQRdpqvzZn/yUZ56sxPK6NYZ+WPproog==", null, false, "2O776OTQMPGHNUKGKGVD7EK56EWEHWJ4", false, "admin" },
-                    { "3dacdb51-fee9-4479-904c-cafe7dca22a7", 0, "3bc5ed7c-f23c-41b2-8f24-6cde1379cf70", "host@email.com", true, false, null, "HOST@EMAIL.COM", "HOST", "AQAAAAIAAYagAAAAEC7spMPg5RTE/+JwhaFMZ9D4qe125yj/pgHQRdpqvzZn/yUZ56sxPK6NYZ+WPproog==", null, false, "HOSTSTAMP", false, "host" },
-                    { "4dacdb51-fee9-4479-904c-cafe7dca22a8", 0, "4bc5ed7c-f23c-41b2-8f24-6cde1379cf70", "guest@email.com", true, false, null, "GUEST@EMAIL.COM", "GUEST", "AQAAAAIAAYagAAAAEC7spMPg5RTE/+JwhaFMZ9D4qe125yj/pgHQRdpqvzZn/yUZ56sxPK6NYZ+WPproog==", null, false, "GUESTSTAMP", false, "guest" }
+                    { "2dacdb51-fee9-4479-904c-cafe7dca22a6", 0, "2bc5ed7c-f23c-41b2-8f24-6cde1379cf70", "admin@email.com", true, false, null, "ADMIN@EMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEO/q6OSHKyNTnPIucWSWuAmTqfZHsqAMA+fnMfFPz28zoy4gwyv9Qy1QTjaAOCnJYg==", null, false, "2O776OTQMPGHNUKGKGVD7EK56EWEHWJ4", false, "admin" },
+                    { "3dacdb51-fee9-4479-904c-cafe7dca22a7", 0, "3bc5ed7c-f23c-41b2-8f24-6cde1379cf70", "host@email.com", true, false, null, "HOST@EMAIL.COM", "HOST", "AQAAAAIAAYagAAAAEKPhsE1ZH2ywRVcOxNIhAIIfbvEEEUx9a0cKblC7AG3bUp7kBN57YBS6h4eiSpcieg==", null, false, "HOSTSTAMP", false, "host" },
+                    { "4dacdb51-fee9-4479-904c-cafe7dca22a8", 0, "4bc5ed7c-f23c-41b2-8f24-6cde1379cf70", "guest@email.com", true, false, null, "GUEST@EMAIL.COM", "GUEST", "AQAAAAIAAYagAAAAEMWTZVZgAJ/EsUyRjvSvhzLikb2SaCnhIAP7KuZmp8g7Gofn24rv/MdjHEUgNyB68w==", null, false, "GUESTSTAMP", false, "guest" }
                 });
 
             migrationBuilder.InsertData(
@@ -929,7 +964,7 @@ namespace Travellin.Infrastructure.Migrations
                     { "3588517b-0a71-4d29-ad8c-906a8e545d00", "images/Belg2.avif" },
                     { "3777d149-0028-4ea1-ba62-db41d33939f5", "images/Colm3.avif" },
                     { "3cb5e765-921f-4e0e-97be-b6d1e4c762cf", "images/Rom3.avif" },
-                    { "4ae9e354-5eac-4f3a-a4b3-7c84c5b31d89", "images/guest.jpg" },
+                    { "4ae9e354-5eac-4f3a-a4b3-7c84c5b31d89", "images/Guest.jpg" },
                     { "4b0f81f1-9bc0-45c6-988e-1a4fd270b3e0", "images/egy3.avif" },
                     { "4c376b94-d74f-4472-b1a5-4c3d51df56d8", "images/Arg2.jpg" },
                     { "4dfe3d56-2d34-4a6b-9cb5-f7a5a2dd8c28", "images/makkah2.avif" },
@@ -954,7 +989,7 @@ namespace Travellin.Infrastructure.Migrations
                     { "9201fad7-d63f-4dbf-84f1-adb25c451e9e", "images/Nig2.avif" },
                     { "95cde2b1-305e-4c13-9293-8c4c8f7c8b9f", "images/italy3.avif" },
                     { "98a76538-918f-4e60-9c01-b364e0e1891f", "images/france2.avif" },
-                    { "98b7dcb6-7c53-4216-9f7a-259f40371fd4", "images/host.jpg" },
+                    { "98b7dcb6-7c53-4216-9f7a-259f40371fd4", "images/Host.jpg" },
                     { "9b0d97e4-6dad-4e5b-893c-38aaff4a50e2", "images/Nig1.avif" },
                     { "9ea371c2-fefe-423f-953c-c744a33d5fb9", "images/Arg1.avif" },
                     { "9f90c24f-0a95-46a3-a2e2-a0688c460a23", "images/canada3.avif" },
@@ -970,7 +1005,7 @@ namespace Travellin.Infrastructure.Migrations
                     { "b21f8f4f-6d95-4f60-81b4-56d2ef017a08", "images/brazil1.avif" },
                     { "b455bb0a-69a3-4024-b5fa-5a49323e58fd", "images/egy1.avif" },
                     { "ba47797b-da79-47a0-8014-48e5422f0500", "images/indon2.jpeg" },
-                    { "c3d1f440-7e0e-4f38-8b5d-34ea8d12e801", "images/admin.jpg" },
+                    { "c3d1f440-7e0e-4f38-8b5d-34ea8d12e801", "images/Admin.jpg" },
                     { "caf5622f-99a6-4927-a913-48d66437de5d", "images/vg3.avif" },
                     { "ce9e31d6-6553-4214-8b94-fb9c8f3065ed", "images/barcelona2.avif" },
                     { "da2afaf9-b1df-4daf-bb44-3d6a79be4a17", "images/portugal1.avif" },
@@ -1136,8 +1171,8 @@ namespace Travellin.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Conversations",
-                columns: new[] { "Id", "User1Id", "User2Id" },
-                values: new object[] { 1, "3dacdb51-fee9-4479-904c-cafe7dca22a7", "4dacdb51-fee9-4479-904c-cafe7dca22a8" });
+                columns: new[] { "Id", "CreatedAt", "PropertyId", "User1Id", "User2Id" },
+                values: new object[] { 1, new DateTime(2024, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "3dacdb51-fee9-4479-904c-cafe7dca22a7", "4dacdb51-fee9-4479-904c-cafe7dca22a8" });
 
             migrationBuilder.InsertData(
                 table: "Countries",
@@ -1496,12 +1531,90 @@ namespace Travellin.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "UserProfiles",
-                columns: new[] { "UserId", "Bio", "BirthDate", "CountryId", "FirstName", "LastName", "PhotoId" },
+                columns: new[] { "UserId", "Bio", "BirthDate", "CountryId", "FirstName", "LastName", "PhotoId", "Status", "StripeAccountId" },
                 values: new object[,]
                 {
-                    { "2dacdb51-fee9-4479-904c-cafe7dca22a6", "As the system administrator, I ensure that our platform runs smoothly, securely, and efficiently. From managing users and listings to maintaining system integrity, I'm here to support both guests and hosts for a seamless experience.", new DateOnly(1995, 5, 2), 64, "Marcus", "Dou", "c3d1f440-7e0e-4f38-8b5d-34ea8d12e801" },
-                    { "3dacdb51-fee9-4479-904c-cafe7dca22a7", "Hi, I’m Pavel! I’ve been hosting guests from around the world for over 3 years. I love sharing my cozy home and local tips to help you experience the best of the city. Your comfort and privacy are my top priorities—feel free to reach out with any questions before or during your stay!", new DateOnly(1999, 12, 2), 64, "Pavel", "Elmo", "98b7dcb6-7c53-4216-9f7a-259f40371fd4" },
-                    { "4dacdb51-fee9-4479-904c-cafe7dca22a8", "Hi, I’m Lucas! I enjoy exploring new cities, meeting new people, and experiencing different cultures. I’m a respectful guest who values comfort and cleanliness. Looking forward to staying in your wonderful property and making the most of my travels!", new DateOnly(2001, 2, 2), 64, "lucas", "Martin", "4ae9e354-5eac-4f3a-a4b3-7c84c5b31d89" }
+                    { "2dacdb51-fee9-4479-904c-cafe7dca22a6", "Hello, I'm John, the platform administrator. My role is to ensure all operations run smoothly and securely. I'm dedicated to providing a safe and reliable environment for our community. Feel free to reach out to our support team if you need any assistance!", new DateOnly(1988, 11, 15), 100, "John", "Doe", "c3d1f440-7e0e-4f38-8b5d-34ea8d12e801", "Active", null },
+                    { "3dacdb51-fee9-4479-904c-cafe7dca22a7", "Welcome to my home! I'm David, a passionate traveler and host. I've been sharing my space for five years and love meeting people from all over. My goal is to make your stay as comfortable and memorable as possible. Don't hesitate to ask for recommendations on local cafes and hidden gems!", new DateOnly(1992, 7, 21), 87, "David", "Lee", "98b7dcb6-7c53-4216-9f7a-259f40371fd4", "Active", null },
+                    { "4dacdb51-fee9-4479-904c-cafe7dca22a8", "Hi! I'm Emily, a digital nomad who loves exploring new places. I am a tidy and considerate guest who respects local culture and hospitality. I'm excited to experience the unique charm of your property and the surrounding area. Happy to connect with other travelers!", new DateOnly(1998, 4, 10), 231, "Emily", "Jones", "4ae9e354-5eac-4f3a-a4b3-7c84c5b31d89", "Active", null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[] { "06dbae08-bc6b-4ca6-9162-3213784b9971", "Free cancellation before May 5. Cancel before check-in on May 9 for a full refund.", "Escape to Xoi Farmstay, nestled in the lush green valley of Lam Thuong in Northern Vietnam, just 250km from Hanoi and close to Ha Giang and Sapa. This is a haven for nature lovers, offering stunning rice fields, exotic mountains, springs, and waterfalls. Experience authentic local culture and delicious food in a truly non-touristy setting.", "Check-in before 1:00 AM, Checkout before 11:00 AM, 1 guest maximum", true, 21.05m, 19, 105.4333m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 100m, 4, "Carbon monoxide alarm, No Smoke alarm", "Authentic Cottage in Lam Thuong, Vietnam" });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "IsInstantBook", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[] { "0bb50f31-e322-4b76-97dd-6a7fcf585d33", "Free cancellation before May 2, Cancel before check-in on May 3 for a partial refund.", "Indulge in an unforgettable escape at this beachfront oasis, the Delta Hotels by Marriott Virginia Beach Waterfront. Perched on the stunning shores of Chesapeake Bay, this distinctive hotel offers panoramic water views and a private beach. Savor fresh oysters, fish, and coastal cuisine at our restaurant, all while enjoying inspiring bay vistas.", "Check-in: 4:00 PM - 12:00 AM, Checkout before 11:00 AM, 4 guests maximum", true, true, 37.5407m, 14, 77.436m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 90m, 3, "Carbon monoxide alarm, Smoke alarm", "Beachfront Hotel in Virginia Beach, USA" });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[] { "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08", "Free cancellation before May 26. Cancel before check-in on May 14 for a partial refund.", "Experience comfort and style in this room featuring a queen bed, ensuite bathroom, and air conditioning. Enjoy an excellent location, nestled between the vibrant Palermo and Recoleta neighborhoods. Just one block from Santa Fe Ave and two blocks from subway line D, putting Buenos Aires at your fingertips.", "Check-in before 4:00 AM, Checkout before 9:00 AM, 2 guests maximum", true, 34.6037m, 17, 58.3816m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 190m, 2, "No carbon monoxide alarm, No Smoke alarm", "Stylish House in Buenos Aires, Argentina" });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "IsInstantBook", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[,]
+                {
+                    { "294e2751-203b-4beb-b21e-0bb96f082d7c", "Free cancellation before May 3. Cancel before check-in on May 14 for a full refund.", "Discover charming industrial character and premium comfort at The Foundry, ideally located near the vibrant shopping, dining, and nightlife of Admiralty Way, Lekki Phase 1. Relax by the swimming pool or enjoy endless entertainment with satellite TV, Netflix, and Amazon. Benefit from superfast fiber-optic Wi-Fi and uninterrupted 24/7 generator power back-up.", "Check-in before 2:00 AM, Checkout before 9:00 AM, 3 guests maximum", true, true, 6.4367m, 18, 3.5244m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 200m, 1, "Carbon monoxide alarm, Smoke alarm", "Luxe Apartment in Lekki Phase 1, Nigeria" },
+                    { "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1", "Free cancellation before May 19. Cancel before check-in on May 24 for a partial refund.", "Discover a truly unique stay at this guitar-shaped country house in Icheon, a renowned ceramic art village. This private retreat, featuring a spacious terrace on the 3rd floor of the Sera Guitar Culture Center, blends seamlessly with nature. Perfect for emotional healing and a memorable escape near Seoul.", "Check-in: 3:00 PM - 12:00 AM, Checkout before 11:00 AM, 2 guests maximum", true, true, 37.3154m, 10, 127.4052m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 180m, 1, "Carbon monoxide alarm not reported, Smoke alarm, Must climb stairs", "Unique House near Icheon-si, South Korea" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[] { "2e3ed231-a2a6-4961-a1ba-f232d56c6f35", "Free cancellation before Apr 29. Cancel before check-in on May 1 for a partial refund.", "Feel special from arrival to departure at Inone Mucho Selection Hotel, a beachfront haven with a private beach in one of Asarlik's clearest bays. Just a 5-minute drive from Bodrum center and a 5-minute walk from Gumbet bar street. Sip cocktails at our Iconic Beach restaurant, accompanied by events and DJ performances, for an unforgettable holiday.", "Check-in before 1:00 PM, Checkout before 10:00 PM, 2 guests maximum", true, 37.0383m, 25, 27.4292m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 200m, 2, "Carbon monoxide alarm, Smoke alarm", "Beachfront Hotel in Bodrum, Turkey" });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "IsInstantBook", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[] { "3c0e361a-51df-4e03-b8d0-2d7601aa60f6", "Free cancellation before Jun 18. Cancel before check-in on Jun 23 for a partial refund.", "Discover a sunny, spacious, and clean room in the heart of Maadi, Cairo's upscale, green suburb. Nestled in a quiet area, this five-story building is just minutes from Road 9, offering an abundance of shops, cafes, and restaurants. Enjoy the perfect blend of tranquility and urban convenience, with downtown just a 15-minute ride away.", "Flexible check-in, 2 guests maximum, No pets", true, true, 29.9617m, 12, 31.2667m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 100m, 2, "No carbon monoxide alarm, No smoke alarm, Nearby lake, river, other body of water", "Charming House in Maadi, Cairo, Egypt" });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[,]
+                {
+                    { "3e7f99ab-228a-4d90-91c4-6adf8c12e048", "Free cancellation before May 17, Cancel before check-in on May 18 for a partial refund.", "Find serenity in this cozy 2-room apartment, a 10-12 minute walk from Al-Haram Al-Makkah. Listen to the call to prayer from your window, which offers a glimpse of Al-Haram Al-Sharif. Equipped with a surface kitchen (tea/coffee, mini-fridge, microwave, kettle), washing machine, and toiletries. Wheelchair accessible and free Wi-Fi. Located on the 17th floor of a high tower for a truly unique and pleasant stay.", "Check-in after 3:00 PM, Checkout before 12:00 PM, 7 guests maximum", true, 21.4266m, 3, 39.8256m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 90m, 1, "Carbon monoxide alarm, Smoke alarm installed", "Peaceful Apartment in Mecca, Saudi Arabia" },
+                    { "4b04a76a-1608-4a8f-b09c-8d9043b83e16", "Free cancellation for 48 hours, Cancel before Jan 13 for a partial refund.", "Step back in time at Moinho das Feteiras, a beautifully restored 19th-century mill house with a 360-degree sea and surrounding view from the top floor. This charming retreat features a cozy bedroom, a well-decorated living room with a kitchenette, and a WC. Enjoy modern comforts with free WiFi, air conditioning, LED TV, and DVD player. Private parking offers extra security. Perfect for an unforgettable honeymoon!", "Check-in: 3:00 PM - 5:00 PM, Checkout before 10:00 AM, 2 guests maximum", true, 37.7428m, 9, 25.6806m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 200m, 4, "Climbing or play structure, Carbon monoxide alarm, Smoke alarm", "Romantic Cottage in Azores, Portugal" },
+                    { "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2", "Free cancellation before Oct 22, Cancel before check-in on Oct 23 for a partial refund.", "Discover this romantic loft featuring a mezzanine and a large, 180-degree oceanfront balcony. Enjoy a double bed, single bed, TV, Wi-Fi, and fan, all within a modernly decorated space. The equipped kitchen and private bathroom offer total comfort. Located on the fourth floor (no elevator) in a noble quarter, 5 minutes from the carnival circuit, between Surf and Paciencia beaches. Experience the most beautiful sunsets in Salvador with total security.", "3 guests maximum, Pets allowed", true, -12.9711m, 5, -38.5108m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 130m, 1, "Carbon monoxide alarm not reported, Smoke alarm not reported, Exterior security cameras on property", "Charming Oceanfront Apartment in Salvador, Brazil" },
+                    { "52a8df7d-c0b2-4ee3-8369-9daed4885f9f", "Free cancellation before Apr 26. Cancel before check-in on May 1 for a partial refund.", "Unwind in a serene and fresh area, just a 3-minute drive from Ubud center. Our villa is nestled amidst lush rice fields, offering a truly authentic experience. Your friendly host is available 24/7 to ensure a delightful stay. Book for 3 nights and receive a complimentary 60-minute traditional Balinese massage for one person, perfect for completing your lazy days!", "Check-in before 3:00 PM, Checkout before 12:00 PM, 3 guests maximum", true, -8.5441m, 23, 115.3255m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 110m, 1, "Carbon monoxide alarm, No Smoke alarm, Nearby lake, river, other body of water", "Peaceful House in Ubud, Bali, Indonesia" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "IsInstantBook", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[] { "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa", "Free cancellation before May 17, Cancel before check-in on May 18 for a partial refund.", "Featured on Dwell Magazine's cover, the Hawkeye Dome offers an extraordinary off-grid experience on 100 sprawling acres. Immerse yourself in nature with an updated 40-foot pool and hot tub that are truly spectacular. This unique, fully remodeled geodesic dome blends modern design with ultimate comfort. Endless hiking and complete privacy await. You'll never want to leave!", "Check-in after 3:00 PM, Checkout before 12:00 PM, 7 guests maximum", true, true, 34.114174m, 4, -116.432236m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 110m, 2, "Carbon monoxide alarm, Smoke alarm installed", "Epic Glamping House in California, USA" });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[] { "763e6c5f-1ad1-4071-b0e6-55e924624198", "Free cancellation before May 5. Cancel before check-in on May 9 for a full refund.", "Experience a warm welcome at Dar Ouassaggou, a comfortable guesthouse retreat in the stunning Atlas Mountains. Owner Houssine, a fluent English speaker, looks forward to hosting you. This small, inviting guesthouse features 13 en-suite rooms, each with a balcony, offering a perfect escape into nature and local hospitality.", "Check-in before 11:00 AM, Checkout before 12:00 AM, 3 guests maximum", true, 31.1333m, 21, 7.9167m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 220m, 2, "No carbon monoxide alarm, Smoke alarm", "Comfortable House in Atlas Mountains, Morocco" });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "IsInstantBook", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[,]
+                {
+                    { "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4", "Free cancellation before May 17, Cancel before check-in on May 18 for a partial refund.", "Live like royalty in this elegant apartment within a famous Milanese castle! Located in vibrant Nolo, you're just steps from the M1 metro (10 mins to Duomo) and a 10-minute walk to Central Station. Excellent connections via trains, trams, and buses. Enjoy a neighborhood rich with restaurants, supermarkets, and nightlife. Featuring an 82\" Smart TV with Netflix/Prime, Wi-Fi, dishwasher, full kitchen, and coffee machine. Includes complete reception service for a comfortable stay.", "Check-in: 3:00 PM - 11:00PM, Checkout before 11:00 AM, 4 guests maximum", true, true, 45.46427m, 2, 9.18951m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 250m, 3, "Carbon monoxide alarm, Smoke alarm installed", "Elegant Hotel in Milan, Italy" },
+                    { "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3", "Free cancellation before Jun 3. Cancel before check-in on Jun 4 for a partial refund", "Stay in a prize-winning architectural building with this stunning modern Barcelona apartment. Impressive details abound, from ceiling-to-floor sloped windows to rich wood floors and designer textures. This space is cozy yet boasts a very hip, urban edge. Perfect for design enthusiasts and those seeking a modern Barcelona experience. High comfort and proximity to Sagrada Familia make it ideal for all guests.", "Check-in: 3:00 PM - 5:00 PM, Checkout before 10:00 AM, 2 guests maximum", true, true, 41.3888m, 6, 2.159m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 310m, 1, "No carbon monoxide alarm, No smoke alarm, Heights without rails or protection", "Modern Apartment in Barcelona, Spain" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[] { "a555515a-ff8a-4741-b0a4-db9be729198e", "Free cancellation before May 4. Cancel before check-in on May 5 for a partial refund.", "Discover unparalleled luxury in this exquisite apartment in Gammarth's vibrant tourist area. Boasting breathtaking sea views and direct access to a private residents-only beach. The master suite features a private bathroom, with an additional second bathroom for convenience. Experience coastal living at its finest.", "Check-in after 3:00 PM, 4 guests maximum, Pets allowed", true, 36.9475m, 15, 10.3036m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 20m, 4, "Carbon monoxide alarm not reported, Smoke alarm not reported", "Luxury Apartment in Gammarth, Tunisia" });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "IsInstantBook", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[,]
+                {
+                    { "c10d2d46-869a-46bc-a46d-90bdd958c252", "Free cancellation before May 9. Cancel before check-in on May 14 for a partial refund.", "Step into a warm and cozy English cottage, tastefully adorned with antique furniture and surrounded by a lovely garden. Perfect for a relaxing countryside escape. Enjoy comfortable beds with blackout blinds for a peaceful night's sleep. Immerse yourself in the beauty of the serene surroundings.", "Check-in: (4:00 PM - 10:00 PM), Checkout before 11:00 AM, 4 guests maximum", true, true, 50.7236m, 16, 4.8694m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 230m, 1, "No carbon monoxide alarm, Nearby lake- river- other body of water, Smoke alarm", "Charming Cottage in English Countryside" },
+                    { "c150e428-1c9a-43a2-be07-f4366875f1ce", "Free cancellation before Apr 29. Cancel before check-in on May 1 for a partial refund.", "Discover this elegant and spacious penthouse on the 4th floor, freshly renovated in February 2025 and designed to comfortably sleep 6 guests. Featuring two double bedrooms, one single bedroom, and a sofa bed in the dining room, plus two bathrooms (one en-suite). Enjoy direct terrace access from every room, and easy Metro C access for exploring Rome!", "Check-in before 1:00 PM, Checkout before 10:00 PM, 2 guests maximum", true, true, 41.9028m, 24, 12.4964m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 90m, 3, "Carbon monoxide alarm, Smoke alarm", "Modern Hotel in Rome, Italy" }
                 });
 
             migrationBuilder.InsertData(
@@ -1509,47 +1622,49 @@ namespace Travellin.Infrastructure.Migrations
                 columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
                 values: new object[,]
                 {
-                    { "06dbae08-bc6b-4ca6-9162-3213784b9971", "Free cancellation before May 5. Cancel before check-in on May 9 for a full refund.", "Xoi Farmstay is located in a green valley of Lam Thuong in the North of Vietnam, about 250km from Hanoi and near to Hagiang and Sapa.This is a place for those who love nature, watching rice fields, exotic mountains, spring and waterfall, authentic local culture, good food, especially non touristy", "Check-in brfore 1:00 Am , Checkout before 11:00 AM , 1 guests maximum", true, 21.05m, 19, 105.4333m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 100m, 4, "carbon monoxide alarm  ,No Smoke alarm", "TXoi Farmstay- Homefarm in the valley of Lam Thuong" },
-                    { "0bb50f31-e322-4b76-97dd-6a7fcf585d33", "Free cancellation before May 2, Cancel before check-in on May 3 for a partial refund.", "With panoramic water views, Delta Hotels by Marriott Virginia Beach Waterfront is an oasis on the shores of the breathtaking Chesapeake Bay.Thrill your palate with fresh oysters, fish, and coastal cuisine at our distinctive hotel restaurant, featuring inspiring water views.", "Check-in: 4:00 PM - 12:00 AM , Checkout before 11:00 AM ,4 guests maximum", true, 37.5407m, 14, 77.436m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 90m, 3, "Carbon monoxide alarm, Smoke alarm", "Escape To Our Beachfront Oasis | Private Beach" },
-                    { "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08", "Free cancellation before May 26. Cancel before check-in on May 14 for a partial refund.", "Comfortable room, queen bed, bathroom in suite, with air conditioning. Excelent location, among Palermo and Recoleta neighborhoods, one block away from Santa Fe av and 2 blocks away from subway line D.", "Check-in brfore 4:00 Am , Checkout before 9:00 AM , 2 guests maximum", true, 34.6037m, 17, 58.3816m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 190m, 2, "No carbon monoxide alarm  ,No Smoke alarm", "Palermo/Recoleta. Stylish room w/ensuite-bath & AC" },
-                    { "294e2751-203b-4beb-b21e-0bb96f082d7c", "Free cancellation before May 3. Cancel before check-in on May 14 for a full refund.", "Charming industrial character and premium homely comfort in the most desirable location. A leisurely stroll away from the shopping, dining & nightlife of Admiralty Way, Lekki Phase 1.Relax in the swimming pool or enjoy movies on satellite, Netflix or Amazon. Superfast optic-fibre broadband wi-fi. Uninterrupted 24/7 generator power back-up.", "Check-in brfore 2:00 Am , Checkout before 9:00 AM , 3 guests maximum", true, 6.4367m, 18, 3.5244m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 200m, 1, "carbon monoxide alarm  , Smoke alarm", "The Foundry. Luxury 2BR w/pool" },
-                    { "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1", "Free cancellation before May 19. Cancel before check-in on May 24 for a partial refund.", "This is a guitar-shaped country house located in Icheon, a ceramic art village. It is a private house with a spacious terrace on the 3rd floor of the Sera Guitar Culture Center, famous for its unique appearance in the Icheon Ceramic Art Village, which blends in very well with nature.", "Check-in: 3:00 PM - 12:00 AM  , Checkout before 11:00  AM , 2 guests maximum", true, 37.3154m, 10, 127.4052m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 180m, 1, "Carbon monoxide alarm not reported , Smoke alarm , Must climb stairs", "Emotional healing accommodation in Icheon-si, near Seoul" },
-                    { "2e3ed231-a2a6-4961-a1ba-f232d56c6f35", "Free cancellation before Apr 29. Cancel before check-in on May 1 for a partial refund.", "You will feel special from the beginning to the end of your holiday at Inone Mucho Selection Hotel, located on the seafront with a private beach in one of the clearest bays of Asarlik.Our facility which is located 5 minutes drive away from Bodrum center and 5 minutes from Gumbet bar street by walk. You can have a pleasant time while sipping your cocktail at our Iconic Beach restaurant, accompanied by various events and DJ performances.", "Check-in brfore 1:00 PM , Checkout before 10:00 PM , 2 guests maximum", true, 37.0383m, 25, 27.4292m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 200m, 2, "carbon monoxide alarm  ,  Smoke alarm", "Inone Mucho Selection Hotel Deluxe Room B&B" },
-                    { "3c0e361a-51df-4e03-b8d0-2d7601aa60f6", "Free cancellation before Jun 18. Cancel before check-in on Jun 23 for a partial refund.", "Maadi is an uptown , green suburb with villas and gardens. My building is a five storey building . It is in a quiet area but a few minutes-walk away from Rd 9 where there are shops, cafes and restaurants. Everything you need is right here yet in 15 mins u can be in center of town.", "Flexible check-in , 2 guests maximum , No pets", true, 29.9617m, 12, 31.2667m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 100m, 2, "No carbon monoxide alarm , No smoke alarm ,Nearby lake, river, other body of water", "sunny, spacious, clean room in maadi, cairo.." },
-                    { "3e7f99ab-228a-4d90-91c4-6adf8c12e048", "Free cancellation before May 17 , Cancel before check-in on May 18 for a partial refund.", "Relax with this listing Small 2-room 7-bed apartment near Alharam Al Makkah with a maximum of 10 to 12 minutes' walk away The ears and prayer are also heard inside the rooms and the window appears from the window of the Haram Al-Sharif .We offer a Surface kitchen with tea and coffee supplies, a mini fridge, a microwave, a water kettle and more A washing machine is available and we provide toiletries from towels, shampoo, lotion, soap, and more We provide a wheelchair ,wi-fi .This place is in a high tower where the apartment is located on the 17th floor Wish you a unique and pleasant stay", "Check-in after 3:00 PM , Checkout before 12:00 PM , 7 guests maximum", true, 21.4266m, 3, 39.8256m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 90m, 1, "Carbon monoxide alarm ,Smoke alarm installed", "Rent an apartment near Alhar Mecca" },
-                    { "4b04a76a-1608-4a8f-b09c-8d9043b83e16", "Free cancellation for 48 hours , Cancel before Jan 13 for a partial refund.", "Built in the 19th century, with a 360 degrees view over the sea and surroundings on the top floor.It features a Bedroom, a very well-decorated living room with kitchenette, and a WC.Free WiFi, air conditioning, Led TV and DVD player.Private parking inside the premises, providing extra security.Perfect for an unforgettable honeymoon experience.", "Check-in: 3:00 PM - 5:00 PM ,Checkout before 10:00 AM ,2 guests maximum", true, 37.7428m, 9, 25.6806m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 200m, 4, "Climbing or play structure , Carbon monoxide alarmSmoke alarm", "Moinho das Feteiras | The Mill House" },
-                    { "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2", "Free cancellation before Oct 22 , Cancel before check-in on Oct 23 for a partial refund.", "Romantic Loft with mezzanine and large balcony in front of the sea, double bed and 1 single bed, tv, wi-fi, fan, cabinet modern decoration, 180 degree terrace to the sea, equipped kitchen, bathroom, total comfort and privacy, fourth floor without elevator, 5 minutes from the carnival circuit, Noble Quarter of the city. Between the Surf and Paciencia beaches. Total security. The most beautiful sunset in Salvador", "3 guests maximum , Pets allowed", true, -12.9711m, 5, -38.5108m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 130m, 1, "Carbon monoxide alarm not reported , Smoke alarm not reported , Exterior security cameras on property", "(4) charming oceanfront loft!" },
-                    { "52a8df7d-c0b2-4ee3-8369-9daed4885f9f", "Free cancellation before Apr 26. Cancel before check-in on May 1 for a partial refund.", "Chill in a quite and fresh area only 3 min drive to Ubud center.Our villa located in the middle of rice field , offered you great experience.Friendly owner will assist you 24 hours by call to make sure you can enjoy the stay .Stay for 3 nights and you will get Free Traditional Balinese massage for 1 person for 60 min to complete the lazy days", "Check-in brfore 3:00 PM , Checkout before 12:00 PM , 3 guests maximum", true, -8.5441m, 23, 115.3255m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 110m, 1, "carbon monoxide alarm  , No Smoke alarm , Nearby lake, river, other body of water", "Quite Get Away near by theCenter" },
-                    { "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa", "Free cancellation before May 17 , Cancel before check-in on May 18 for a partial refund.", "Updated pool and spa! Sitting on 100 acres, Hawkeye House, featured on the cover of the May 2019 issue of Dwell Magazine, is an off grid Geodesic Dome. It has a 40 foot pool and hot tub that you will have to see to believe. This unique and modern home has been fully remodeled with an attention to both comfort and detail. Amazing hikes and privacy are abundant here. Most people never want to leave the property", "Check-in after 3:00 PM , Checkout before 12:00 PM , 7 guests maximum", true, 34.114174m, 4, -116.432236m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 110m, 2, "Carbon monoxide alarm ,Smoke alarm installed", "Hawkeye Dome - New Pool and Spa" },
-                    { "763e6c5f-1ad1-4071-b0e6-55e924624198", "Free cancellation before May 5. Cancel before check-in on May 9 for a full refund.", "Dar Ouassaggou's owner, Houssine, is a fluent English speaker and looks forward to welcoming you to his friendly guesthouse retreat in the Atlas Mountains, A Warm Welcome Awaits you at Dar Ouassaggou.It is a small comfortable guest house with 13 en suite rooms and balcony .", "Check-in brfore 11:00 Am , Checkout before 12:00 AM , 3 guests maximum", true, 31.1333m, 21, 7.9167m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 220m, 2, "No carbon monoxide alarm  , Smoke alarm", "Atlas Mountains Riad Oussagou" },
-                    { "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4", "Free cancellation before May 17 , Cancel before check-in on May 18 for a partial refund.", "Elegant apartment inside the famous castle in Nolo, a royal choice right in the center of Milan A few steps away is the metro (M1 red for the Duomo 10 min), 10 minutes' walk for the central station. The apartment is well connected by trains, trams and buses The area is well supplied with restaurants, supermarkets, bars, clubs, etc. Complete comfort:82 Smart TV, Netflix, prime, wifi, dishwasher, kitchen, coffee machine The stay is included with a complete reception service", "Check-in: 3:00 PM - 11:00PM ,Checkout before 11:00 AM ,4 guests maximum", true, 45.46427m, 2, 9.18951m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 250m, 3, "Carbon monoxide alarm ,Smoke alarm installed", "Milano Duomo center 10 min Flat inside a castle" },
-                    { "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3", "Free cancellation before Jun 3. Cancel before check-in on Jun 4 for a partial refund", "Set in an architectural prize-winning building, this modern Barcelona apartment beauty has impressive detail throughout. Ceiling-to-floor sloped windows, wood floor, and other soft designer textures accentuate this spectacular space. It is cozy and welcoming but with a very hip, urban edge.Design enthusiasts and those looking for that modern Barcelona feel will love the apartment. However, high-comfort and proximity to the Sagrada Familia suits all tastes.", "Check-in: 3:00 PM - 5:00 PM ,Checkout before 10:00 AM ,2 guests maximum", true, 41.3888m, 6, 2.159m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 310m, 1, "No carbon monoxide alarm , No smoke alarm , Heights without rails or protectio", "Sunny and cozy Apartment Sagrada Familia" },
-                    { "a555515a-ff8a-4741-b0a4-db9be729198e", "Free cancellation before May 4. Cancel before check-in on May 5 for a partial refund.", "Discover this luxury apartment in Gammarth, in the tourist area, with sea views and direct access to a private beach reserved for residents. The master suite includes a private bathroom, and a second bathroom is available", "Check-in after 3:00 PM,4 guests maximum,Pets allowed", true, 36.9475m, 15, 10.3036m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 20m, 4, "Carbon monoxide alarm not reported , Smoke alarm not reported", "Sea View S2: Waterfront, Private Beach" },
-                    { "c10d2d46-869a-46bc-a46d-90bdd958c252", "Free cancellation before May 9. Cancel before check-in on May 14 for a partial refund.", "Warm and cosy cottage decorated with antique furniture, with a lovely garden. Perfect if you're looking for a relaxing stay in beautiful countryside. The bedroom windows have blackout blinds and the beds are very comfortable.", "Check-in: (4:00 PM - 10:00 PM) , Checkout before 11:00 AM , 4 guests maximum", true, 50.7236m, 16, 4.8694m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 230m, 1, "No carbon monoxide alarm , Nearby lake- river- other body of water , Smoke alarm", "Cosy English cottage with beautiful garden" },
-                    { "c150e428-1c9a-43a2-be07-f4366875f1ce", "Free cancellation before Apr 29. Cancel before check-in on May 1 for a partial refund.", "Elegant and spacious apartment on the 4th floor, designed and realized for 6 people.Totally renovated in February 2025.,Composed of 2 double bedrooms, 1 single bedroom and a sofa bed in the dining room.,2 bathrooms of which one inside the double room.It is possible to access the terrace from each room.", "Check-in brfore 1:00 PM , Checkout before 10:00 PM , 2 guests maximum", true, 41.9028m, 24, 12.4964m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 90m, 3, "carbon monoxide alarm  ,  Smoke alarm", "[*Bright new Metro C penthouse*]." },
-                    { "c5c0d4db-b048-4ee4-8835-344900fd35b2", "Add your trip dates to get the cancellation details for this stay.", "Charming small cottage situated on the edge of wetlands with beautiful views. Private gazebo with covered firepit and a dock over looking the large pond. Located on our 5 acre free range egg farm in Merville, BC. The pond is home to a family of beavers, bald eagles, blue heron and various birds. Private walking trail off the cottage and access to the One Spot Trail at the end of our private drive.", "Check-in after 3:00 PM,Checkout before 11:00 AM,2 guests maximum", true, 49.6876m, 13, 124.9936m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 400m, 4, "Exterior security cameras on property ,Carbon monoxide alarm , Smoke alarm", "Heather Cottage - Beautiful Wetland Views" },
-                    { "cc4e48ea-ca54-4d32-a448-3c2c9d14f936", "Free cancellation before May 28 , Cancel before check-in on Jun 2 for a partial refund.", "Enjoy your stay with Panoramic View of the giza pyramids and sphinx .Yes! view and pictures are all 100% real. (Be sure to check out our other listings too) Indulge in a stunning view of all the Giza Pyramids from anywhere within this contemporary oriental studio or while relaxing in the Jacuzzi. It is also a 10 min walk from the Pyramids entrance gate. To make the most of your trip, make sure to check out our experiences!We're committed to providing our guests the magical hospitality", "Check-in after 2:00 PM , Checkout before 11:00 AM , 2 guests maximum", true, 29.98333m, 1, 31.13333m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 100m, 1, "No Carbon monoxide alarm , No Smoke alarm ", "Entire rental unit in Nazlet El-Semman, Egypt" },
-                    { "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f", "Free cancellation before Jun 3. Cancel before check-in on Jun 4 for a partial refund", "Interior designer's own guesthouse, this unique place has a style all its own. Escape the ordinary and immerse yourself in comfort, calm and luxury at our charming bergerie, a conversion from a shepherd's old stone house! Nestled in the heart of the largest mimosa forest in Europe, overlooking the Cotes d'Azur and lower Alps, our tastefully designed retreat offers everything you need for an unforgettable tranquillity.We welcome up to 4 adults and have a small mezzanine for children.", "Check-in: 3:00 PM - 5:00 PM ,Checkout before 10:00 AM ,2 guests maximum", true, 43.5914m, 8, 6.8761m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 132m, 1, "No carbon monoxide alarm , No smoke alarm , Heights without rails or protectio", "New! The View: See to Mouintain (with pool)" },
-                    { "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c", "Free cancellation before May 19. Cancel before check-in on May 24 for a partial refund.", "This is a guitar-shaped country house located in Icheon, a ceramic art village. It is a private house with a spacious terrace on the 3rd floor of the Sera Guitar Culture Center, famous for its unique appearance in the Icheon Ceramic Art Village, which blends in very well with nature.", "Check-in: 3:00 PM - 12:00 AM  , Checkout before 11:00  AM , 2 guests maximum", true, 33.9249m, 11, 18.4241m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 210m, 1, "Carbon monoxide alarm not reported , Smoke alarm , Must climb stairs", "Kai Cottage" },
-                    { "efd964ab-dceb-4b96-b113-665c5684a102", "Free cancellation before Apr 26. Cancel before check-in on May 1 for a partial refund.", "Two hours from Bogotá on the Bogotá-Sasaima road, live the unique experience of staying in a tree eight meters high.Wake up to the chirping of birds and fall asleep to the sound of the stream below.Enjoy a five-star suite with all the amenities in the branches of the trees.The cabin has hot water, a mini-fridge, and the most spectacular view.", "Check-in brfore 3:00 PM , Checkout before 12:00 PM , 3 guests maximum", true, 4.96705m, 22, -74.43512m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 100m, 4, "carbon monoxide alarm  , No Smoke alarm , Nearby lake, river, other body of water", "The most spectacular treehouse in Colombia." },
-                    { "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7", "Free cancellation before Jun 3. Cancel before check-in on Jun 4 for a partial refund", "To give you the best experience of the authentic Bedouin life style, we will gather around the fire, cook our traditional food and tell you stories of our ancestors, while looking at the sky full of stars.Without a lie, this experience will be very special, if you used to cities and crowd in your everyday life.We created the space in a very simple, traditional and nomadic way. The Cave is inside the red rocks, waterproof and safe from all sides. Here you will have the whole Desert for yourself to get away from normal life, to relax, be in a quiet environment and meditate.", "Check-in: 3:00 PM - 5:00 PM ,Checkout before 10:00 AM ,2 guests maximum", true, 29.5726m, 7, 35.4186m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 220m, 1, "No carbon monoxide alarm , No smoke alarm , Heights without rails or protectio", "Wadi Rum Sunset Cave" },
-                    { "f1e8be41-4fd5-47e4-8960-12d8f4afc273", "Free cancellation before May 5. Cancel before check-in on May 9 for a full refund.", "Welcome to our brand new one-bedroom flat offering incredible views of Business Bay canal and the iconic Burj Khalifa.", "Check-in brfore 1:00 Am , Checkout before 11:00 AM , 1 guests maximum", true, 25.2769m, 20, 55.2962m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 400m, 1, "carbon monoxide alarm  , Smoke alarm", "Cosy flat in the heart of Dubai" }
+                    { "c5c0d4db-b048-4ee4-8835-344900fd35b2", "Add your trip dates to get the cancellation details for this stay.", "Experience the tranquility of Heather Cottage, a charming small retreat on the edge of picturesque wetlands. Enjoy stunning views, a private gazebo with a covered firepit, and a dock overlooking a large pond. Located on our 5-acre free-range egg farm in Merville, BC, the pond is home to beavers, bald eagles, and blue herons. Explore a private walking trail and easy access to the One Spot Trail.", "Check-in after 3:00 PM, Checkout before 11:00 AM, 2 guests maximum", true, 49.6876m, 13, 124.9936m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 400m, 4, "Exterior security cameras on property, Carbon monoxide alarm, Smoke alarm", "Beautiful Cottage in Merville, BC, Canada" },
+                    { "cc4e48ea-ca54-4d32-a448-3c2c9d14f936", "Free cancellation before May 28, Cancel before check-in on Jun 2 for a partial refund.", "Experience the magic of ancient Egypt from your private oasis! This contemporary oriental studio boasts breathtaking panoramic views of the Giza Pyramids and Sphinx, 100% real and as stunning as the pictures. Relax in your private jacuzzi with iconic vistas. Just a 10-minute walk to the Pyramids entrance. Explore our unique experiences to enhance your trip. We're dedicated to providing magical hospitality!", "Check-in after 2:00 PM, Checkout before 11:00 AM, 2 guests maximum", true, 29.98333m, 1, 31.13333m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 100m, 1, "No Carbon monoxide alarm, No Smoke alarm", "Stunning Apartment in Giza, Egypt" }
                 });
 
             migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "IsInstantBook", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[] { "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f", "Free cancellation before Jun 3. Cancel before check-in on Jun 4 for a partial refund", "Escape to 'The View,' an interior designer's guesthouse offering style and tranquility. This unique bergerie, a converted old stone shepherd's house, is nestled in Europe's largest mimosa forest with stunning views of the Cotes d'Azur and lower Alps. Tastefully designed for comfort and luxury, it provides everything for an unforgettable, tranquil escape. Accommodates up to 4 adults, with a small mezzanine for children.", "Check-in: 3:00 PM - 5:00 PM, Checkout before 10:00 AM, 2 guests maximum", true, true, 43.5914m, 8, 6.8761m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 132m, 1, "No carbon monoxide alarm, No smoke alarm, Heights without rails or protection", "Designer House in French Alps" });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[] { "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c", "Free cancellation before May 19. Cancel before check-in on May 24 for a partial refund.", "Unwind at Kai Cottage, a tranquil escape perfectly situated to offer stunning nature views. This private haven provides a spacious terrace and a serene atmosphere, ideal for relaxation and rejuvenation. Experience peace and quiet in a beautiful setting.", "Check-in: 3:00 PM - 12:00 AM, Checkout before 11:00 AM, 2 guests maximum", true, 33.9249m, 11, 18.4241m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 210m, 1, "Carbon monoxide alarm not reported, Smoke alarm, Must climb stairs", "Serene Cottage in Cape Town, South Africa" });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "IsInstantBook", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[] { "efd964ab-dceb-4b96-b113-665c5684a102", "Free cancellation before Apr 26. Cancel before check-in on May 1 for a partial refund.", "Just two hours from Bogotá, live an unparalleled experience in Colombia's most spectacular treehouse, perched eight meters high. Wake to birdsong, fall asleep to a gentle stream, and enjoy a five-star suite with hot water, a mini-fridge, and breathtaking views, all nestled within the tree branches. A truly unique natural retreat.", "Check-in before 3:00 PM, Checkout before 12:00 PM, 3 guests maximum", true, true, 4.96705m, 22, -74.43512m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 100m, 4, "Carbon monoxide alarm, No Smoke alarm, Nearby lake, river, other body of water", "Spectacular Cottage in Bogotá, Colombia" });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[] { "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7", "Free cancellation before Jun 3. Cancel before check-in on Jun 4 for a partial refund", "Immerse yourself in authentic Bedouin life at our unique Wadi Rum Sunset Cave. Gather around the fire, enjoy traditional food, and hear ancestral stories under a sky full of stars. A truly special escape from city life, offering a quiet environment for relaxation and meditation. This simple, traditional cave, built into the red rocks, is waterproof and safe, providing you with the entire desert to yourself.", "Check-in: 3:00 PM - 5:00 PM, Checkout before 10:00 AM, 2 guests maximum", true, 29.5726m, 7, 35.4186m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 220m, 1, "No carbon monoxide alarm, No smoke alarm, Heights without rails or protection", "Authentic Cave Apartment in Wadi Rum, Jordan" });
+
+            migrationBuilder.InsertData(
+                table: "Properties",
+                columns: new[] { "Id", "CancellationPolicy", "Description", "HouseRules", "IsActive", "IsInstantBook", "Latitude", "LocationId", "Longitude", "OwnerId", "PricePerNight", "PropertyTypeId", "SafteyInfo", "Title" },
+                values: new object[] { "f1e8be41-4fd5-47e4-8960-12d8f4afc273", "Free cancellation before May 5. Cancel before check-in on May 9 for a full refund.", "Welcome to our brand new, cozy one-bedroom flat in the heart of Dubai! Enjoy incredible views of the bustling Business Bay canal and the iconic Burj Khalifa. Perfectly situated for both leisure and business travelers seeking a prime location and stunning vistas.", "Check-in before 1:00 AM, Checkout before 11:00 AM, 1 guest maximum", true, true, 25.2769m, 20, 55.2962m, "3dacdb51-fee9-4479-904c-cafe7dca22a7", 400m, 1, "Carbon monoxide alarm, Smoke alarm", "Modern Apartment in Dubai, UAE" });
+
+            migrationBuilder.InsertData(
                 table: "Bookings",
-                columns: new[] { "Id", "CheckIn", "CheckOut", "CreatedAt", "PricePerNight", "PropertyId", "Status", "TotalFees", "UserId" },
+                columns: new[] { "Id", "AppUserId", "CheckIn", "CheckOut", "CreatedAt", "PricePerNight", "PropertyId", "Status", "TotalFees", "UserId" },
                 values: new object[,]
                 {
-                    { "0fe8f9f5-7751-460b-b39f-dab6946c0ba2", new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 2120m, "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3", "Confirmed", 1900m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" },
-                    { "438d19e1-66fc-4219-9e3d-0519c9c27332", new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 5000m, "3e7f99ab-228a-4d90-91c4-6adf8c12e048", "Confirmed", 1200m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" },
-                    { "49b69c8a-8b4b-4021-85f4-ff273b70c85d", new DateTime(2025, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 5000m, "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4", "Confirmed", 1200m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" },
-                    { "7b479ff7-22c5-46ad-85a3-204b502e5d0b", new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 3000m, "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7", "Pending", 1900m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" },
-                    { "7f6b0bb5-e99e-47c7-8d75-b5d46284e241", new DateTime(2025, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 3000m, "cc4e48ea-ca54-4d32-a448-3c2c9d14f936", "Pending", 89981m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" },
-                    { "8a45a4b6-24ab-4a5b-8ef3-17b7de41295a", new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 3000m, "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f", "Cancelled", 1900m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" },
-                    { "b6d7b477-9b64-4a79-b7a3-b01c45378d5e", new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 1000m, "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2", "Cancelled", 1200m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" },
-                    { "d2bc71b9-d703-43fc-a90f-bf22f29a7b4e", new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 3000m, "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f", "Confirmed", 2000m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" },
-                    { "e42b9075-d67c-4b5f-8316-bde33ef7272a", new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 5000m, "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa", "Confirmed", 1200m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" }
+                    { "0fe8f9f5-7751-460b-b39f-dab6946c0ba2", null, new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 2120m, "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3", "Confirmed", 1900m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" },
+                    { "438d19e1-66fc-4219-9e3d-0519c9c27332", null, new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 5000m, "3e7f99ab-228a-4d90-91c4-6adf8c12e048", "Confirmed", 1200m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" },
+                    { "49b69c8a-8b4b-4021-85f4-ff273b70c85d", null, new DateTime(2025, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 5000m, "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4", "Confirmed", 1200m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" },
+                    { "7b479ff7-22c5-46ad-85a3-204b502e5d0b", null, new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 3000m, "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7", "Pending", 1900m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" },
+                    { "7f6b0bb5-e99e-47c7-8d75-b5d46284e241", null, new DateTime(2025, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 3000m, "cc4e48ea-ca54-4d32-a448-3c2c9d14f936", "Pending", 89981m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" },
+                    { "8a45a4b6-24ab-4a5b-8ef3-17b7de41295a", null, new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 3000m, "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f", "Cancelled", 1900m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" },
+                    { "b6d7b477-9b64-4a79-b7a3-b01c45378d5e", null, new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 1000m, "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2", "Cancelled", 1200m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" },
+                    { "d2bc71b9-d703-43fc-a90f-bf22f29a7b4e", null, new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 3000m, "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f", "Confirmed", 2000m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" },
+                    { "e42b9075-d67c-4b5f-8316-bde33ef7272a", null, new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 5000m, "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa", "Confirmed", 1200m, "4dacdb51-fee9-4479-904c-cafe7dca22a8" }
                 });
 
             migrationBuilder.InsertData(
@@ -1654,81 +1769,81 @@ namespace Travellin.Infrastructure.Migrations
                 columns: new[] { "Id", "EndDate", "IsAvailable", "PropertyId", "StartDate" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 6, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "cc4e48ea-ca54-4d32-a448-3c2c9d14f936", new DateTime(2025, 6, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, new DateTime(2025, 5, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "cc4e48ea-ca54-4d32-a448-3c2c9d14f936", new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "cc4e48ea-ca54-4d32-a448-3c2c9d14f936", new DateTime(2025, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 4, new DateTime(2025, 5, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4", new DateTime(2025, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 5, new DateTime(2025, 5, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4", new DateTime(2025, 5, 11, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 6, new DateTime(2025, 6, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "3e7f99ab-228a-4d90-91c4-6adf8c12e048", new DateTime(2025, 6, 22, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 7, new DateTime(2025, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "3e7f99ab-228a-4d90-91c4-6adf8c12e048", new DateTime(2025, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 8, new DateTime(2025, 9, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa", new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 9, new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2", new DateTime(2025, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 10, new DateTime(2025, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2", new DateTime(2025, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 11, new DateTime(2025, 5, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3", new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 12, new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7", new DateTime(2025, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 13, new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f", new DateTime(2025, 5, 18, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 14, new DateTime(2025, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4", new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 15, new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "3e7f99ab-228a-4d90-91c4-6adf8c12e048", new DateTime(2025, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 16, new DateTime(2025, 10, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa", new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 17, new DateTime(2025, 11, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa", new DateTime(2025, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 1, new DateTime(2025, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "cc4e48ea-ca54-4d32-a448-3c2c9d14f936", new DateTime(2025, 9, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, new DateTime(2025, 8, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "cc4e48ea-ca54-4d32-a448-3c2c9d14f936", new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "cc4e48ea-ca54-4d32-a448-3c2c9d14f936", new DateTime(2025, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 4, new DateTime(2025, 8, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4", new DateTime(2025, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 5, new DateTime(2025, 8, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4", new DateTime(2025, 8, 11, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 6, new DateTime(2025, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "3e7f99ab-228a-4d90-91c4-6adf8c12e048", new DateTime(2025, 9, 22, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 7, new DateTime(2025, 8, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "3e7f99ab-228a-4d90-91c4-6adf8c12e048", new DateTime(2025, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 8, new DateTime(2025, 12, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa", new DateTime(2025, 12, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 9, new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2", new DateTime(2025, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 10, new DateTime(2025, 8, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2", new DateTime(2025, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 11, new DateTime(2025, 8, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3", new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 12, new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7", new DateTime(2025, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 13, new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f", new DateTime(2025, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 14, new DateTime(2025, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4", new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 15, new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "3e7f99ab-228a-4d90-91c4-6adf8c12e048", new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 16, new DateTime(2025, 12, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa", new DateTime(2025, 12, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 17, new DateTime(2025, 12, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa", new DateTime(2025, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 18, new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2", new DateTime(2025, 12, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 19, new DateTime(2025, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3", new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 20, new DateTime(2025, 7, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3", new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 21, new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7", new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 22, new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7", new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 23, new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f", new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 24, new DateTime(2025, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f", new DateTime(2025, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 25, new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "4b04a76a-1608-4a8f-b09c-8d9043b83e16", new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 26, new DateTime(2025, 7, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "4b04a76a-1608-4a8f-b09c-8d9043b83e16", new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 27, new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "4b04a76a-1608-4a8f-b09c-8d9043b83e16", new DateTime(2025, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 28, new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1", new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 29, new DateTime(2025, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1", new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 30, new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1", new DateTime(2025, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 31, new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c", new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 32, new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c", new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 33, new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c", new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 34, new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "3c0e361a-51df-4e03-b8d0-2d7601aa60f6", new DateTime(2025, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 35, new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "3c0e361a-51df-4e03-b8d0-2d7601aa60f6", new DateTime(2025, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 36, new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "3c0e361a-51df-4e03-b8d0-2d7601aa60f6", new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 37, new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c5c0d4db-b048-4ee4-8835-344900fd35b2", new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 38, new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c5c0d4db-b048-4ee4-8835-344900fd35b2", new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 39, new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c5c0d4db-b048-4ee4-8835-344900fd35b2", new DateTime(2025, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 40, new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "0bb50f31-e322-4b76-97dd-6a7fcf585d33", new DateTime(2025, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 41, new DateTime(2025, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "0bb50f31-e322-4b76-97dd-6a7fcf585d33", new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 42, new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "0bb50f31-e322-4b76-97dd-6a7fcf585d33", new DateTime(2025, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 43, new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "a555515a-ff8a-4741-b0a4-db9be729198e", new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 44, new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "a555515a-ff8a-4741-b0a4-db9be729198e", new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 45, new DateTime(2025, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "a555515a-ff8a-4741-b0a4-db9be729198e", new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 46, new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c10d2d46-869a-46bc-a46d-90bdd958c252", new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 47, new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c10d2d46-869a-46bc-a46d-90bdd958c252", new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 48, new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c10d2d46-869a-46bc-a46d-90bdd958c252", new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 49, new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08", new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 50, new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08", new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 51, new DateTime(2025, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08", new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 52, new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "294e2751-203b-4beb-b21e-0bb96f082d7c", new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 53, new DateTime(2025, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "294e2751-203b-4beb-b21e-0bb96f082d7c", new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 54, new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "294e2751-203b-4beb-b21e-0bb96f082d7c", new DateTime(2025, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 55, new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "06dbae08-bc6b-4ca6-9162-3213784b9971", new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 56, new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "06dbae08-bc6b-4ca6-9162-3213784b9971", new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 57, new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "06dbae08-bc6b-4ca6-9162-3213784b9971", new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 58, new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "f1e8be41-4fd5-47e4-8960-12d8f4afc273", new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 59, new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "f1e8be41-4fd5-47e4-8960-12d8f4afc273", new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 60, new DateTime(2025, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "f1e8be41-4fd5-47e4-8960-12d8f4afc273", new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 61, new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "763e6c5f-1ad1-4071-b0e6-55e924624198", new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 62, new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "763e6c5f-1ad1-4071-b0e6-55e924624198", new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 63, new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "763e6c5f-1ad1-4071-b0e6-55e924624198", new DateTime(2025, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 64, new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "efd964ab-dceb-4b96-b113-665c5684a102", new DateTime(2025, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 65, new DateTime(2025, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "efd964ab-dceb-4b96-b113-665c5684a102", new DateTime(2025, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 66, new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "efd964ab-dceb-4b96-b113-665c5684a102", new DateTime(2025, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 67, new DateTime(2025, 5, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "52a8df7d-c0b2-4ee3-8369-9daed4885f9f", new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 68, new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "52a8df7d-c0b2-4ee3-8369-9daed4885f9f", new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 69, new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "52a8df7d-c0b2-4ee3-8369-9daed4885f9f", new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 70, new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c150e428-1c9a-43a2-be07-f4366875f1ce", new DateTime(2025, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 71, new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c150e428-1c9a-43a2-be07-f4366875f1ce", new DateTime(2025, 6, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 72, new DateTime(2025, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c150e428-1c9a-43a2-be07-f4366875f1ce", new DateTime(2025, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 73, new DateTime(2025, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "2e3ed231-a2a6-4961-a1ba-f232d56c6f35", new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 74, new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "2e3ed231-a2a6-4961-a1ba-f232d56c6f35", new DateTime(2025, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 75, new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "2e3ed231-a2a6-4961-a1ba-f232d56c6f35", new DateTime(2025, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 19, new DateTime(2025, 9, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3", new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 20, new DateTime(2025, 10, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3", new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 21, new DateTime(2025, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7", new DateTime(2025, 11, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 22, new DateTime(2025, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7", new DateTime(2025, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 23, new DateTime(2025, 11, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f", new DateTime(2025, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 24, new DateTime(2025, 12, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f", new DateTime(2025, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 25, new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "4b04a76a-1608-4a8f-b09c-8d9043b83e16", new DateTime(2025, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 26, new DateTime(2025, 10, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "4b04a76a-1608-4a8f-b09c-8d9043b83e16", new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 27, new DateTime(2025, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "4b04a76a-1608-4a8f-b09c-8d9043b83e16", new DateTime(2025, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 28, new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1", new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 29, new DateTime(2025, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1", new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 30, new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1", new DateTime(2025, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 31, new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c", new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 32, new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c", new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 33, new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c", new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 34, new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "3c0e361a-51df-4e03-b8d0-2d7601aa60f6", new DateTime(2025, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 35, new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "3c0e361a-51df-4e03-b8d0-2d7601aa60f6", new DateTime(2025, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 36, new DateTime(2025, 11, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "3c0e361a-51df-4e03-b8d0-2d7601aa60f6", new DateTime(2025, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 37, new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c5c0d4db-b048-4ee4-8835-344900fd35b2", new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 38, new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c5c0d4db-b048-4ee4-8835-344900fd35b2", new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 39, new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c5c0d4db-b048-4ee4-8835-344900fd35b2", new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 40, new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "0bb50f31-e322-4b76-97dd-6a7fcf585d33", new DateTime(2025, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 41, new DateTime(2025, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "0bb50f31-e322-4b76-97dd-6a7fcf585d33", new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 42, new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "0bb50f31-e322-4b76-97dd-6a7fcf585d33", new DateTime(2025, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 43, new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "a555515a-ff8a-4741-b0a4-db9be729198e", new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 44, new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "a555515a-ff8a-4741-b0a4-db9be729198e", new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 45, new DateTime(2025, 10, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "a555515a-ff8a-4741-b0a4-db9be729198e", new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 46, new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c10d2d46-869a-46bc-a46d-90bdd958c252", new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 47, new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c10d2d46-869a-46bc-a46d-90bdd958c252", new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 48, new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c10d2d46-869a-46bc-a46d-90bdd958c252", new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 49, new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08", new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 50, new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08", new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 51, new DateTime(2025, 10, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08", new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 52, new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "294e2751-203b-4beb-b21e-0bb96f082d7c", new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 53, new DateTime(2025, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "294e2751-203b-4beb-b21e-0bb96f082d7c", new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 54, new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "294e2751-203b-4beb-b21e-0bb96f082d7c", new DateTime(2025, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 55, new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "06dbae08-bc6b-4ca6-9162-3213784b9971", new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 56, new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "06dbae08-bc6b-4ca6-9162-3213784b9971", new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 57, new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "06dbae08-bc6b-4ca6-9162-3213784b9971", new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 58, new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "f1e8be41-4fd5-47e4-8960-12d8f4afc273", new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 59, new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "f1e8be41-4fd5-47e4-8960-12d8f4afc273", new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 60, new DateTime(2025, 10, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "f1e8be41-4fd5-47e4-8960-12d8f4afc273", new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 61, new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "763e6c5f-1ad1-4071-b0e6-55e924624198", new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 62, new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "763e6c5f-1ad1-4071-b0e6-55e924624198", new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 63, new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "763e6c5f-1ad1-4071-b0e6-55e924624198", new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 64, new DateTime(2025, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "efd964ab-dceb-4b96-b113-665c5684a102", new DateTime(2025, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 65, new DateTime(2025, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "efd964ab-dceb-4b96-b113-665c5684a102", new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 66, new DateTime(2025, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "efd964ab-dceb-4b96-b113-665c5684a102", new DateTime(2025, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 67, new DateTime(2025, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "52a8df7d-c0b2-4ee3-8369-9daed4885f9f", new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 68, new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "52a8df7d-c0b2-4ee3-8369-9daed4885f9f", new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 69, new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "52a8df7d-c0b2-4ee3-8369-9daed4885f9f", new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 70, new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c150e428-1c9a-43a2-be07-f4366875f1ce", new DateTime(2025, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 71, new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c150e428-1c9a-43a2-be07-f4366875f1ce", new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 72, new DateTime(2025, 10, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "c150e428-1c9a-43a2-be07-f4366875f1ce", new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 73, new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "2e3ed231-a2a6-4961-a1ba-f232d56c6f35", new DateTime(2025, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 74, new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "2e3ed231-a2a6-4961-a1ba-f232d56c6f35", new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 75, new DateTime(2025, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "2e3ed231-a2a6-4961-a1ba-f232d56c6f35", new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
@@ -1736,34 +1851,41 @@ namespace Travellin.Infrastructure.Migrations
                 columns: new[] { "Id", "Amount", "Name", "PropertyId" },
                 values: new object[,]
                 {
-                    { 1, 1212.09m, "Cleaning Fee", "cc4e48ea-ca54-4d32-a448-3c2c9d14f936" },
-                    { 2, 442.09m, "Extra Guest Fee", "cc4e48ea-ca54-4d32-a448-3c2c9d14f936" },
-                    { 3, 600m, "Pet Fee", "cc4e48ea-ca54-4d32-a448-3c2c9d14f936" },
-                    { 4, 1200m, "Cleaning Fee", "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4" },
-                    { 5, 600m, "Pet Fee", "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4" },
-                    { 6, 950.50m, "Cleaning Fee", "3e7f99ab-228a-4d90-91c4-6adf8c12e048" },
-                    { 7, 900.12m, "Cleaning Fee", "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa" },
-                    { 8, 330.00m, "Extra Guest Fee", "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2" },
-                    { 9, 442.09m, "Pet Fee", "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3" },
-                    { 10, 800.75m, "Cleaning Fee", "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7" },
-                    { 11, 113.09m, "Cleaning Fee", "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f" },
-                    { 12, 510.00m, "Cleaning Fee", "4b04a76a-1608-4a8f-b09c-8d9043b83e16" },
-                    { 13, 250.00m, "Pet Fee", "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1" },
-                    { 14, 789.99m, "Cleaning Fee", "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c" },
-                    { 15, 199.99m, "Extra Guest Fee", "3c0e361a-51df-4e03-b8d0-2d7601aa60f6" },
-                    { 16, 450.00m, "Cleaning Fee", "c5c0d4db-b048-4ee4-8835-344900fd35b2" },
-                    { 17, 320.00m, "Pet Fee", "0bb50f31-e322-4b76-97dd-6a7fcf585d33" },
-                    { 18, 670.00m, "Cleaning Fee", "a555515a-ff8a-4741-b0a4-db9be729198e" },
-                    { 19, 275.50m, "Extra Guest Fee", "c10d2d46-869a-46bc-a46d-90bdd958c252" },
-                    { 20, 390.00m, "Cleaning Fee", "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08" },
-                    { 21, 425.99m, "Cleaning Fee", "294e2751-203b-4beb-b21e-0bb96f082d7c" },
-                    { 22, 515.49m, "Pet Fee", "06dbae08-bc6b-4ca6-9162-3213784b9971" },
-                    { 23, 398.89m, "Extra Guest Fee", "f1e8be41-4fd5-47e4-8960-12d8f4afc273" },
-                    { 24, 300.00m, "Cleaning Fee", "763e6c5f-1ad1-4071-b0e6-55e924624198" },
-                    { 25, 345.00m, "Cleaning Fee", "efd964ab-dceb-4b96-b113-665c5684a102" },
-                    { 26, 410.00m, "Pet Fee", "52a8df7d-c0b2-4ee3-8369-9daed4885f9f" },
-                    { 27, 289.00m, "Extra Guest Fee", "c150e428-1c9a-43a2-be07-f4366875f1ce" },
-                    { 28, 378.00m, "Cleaning Fee", "2e3ed231-a2a6-4961-a1ba-f232d56c6f35" }
+                    { 1, 120.00m, "Cleaning Fee", "cc4e48ea-ca54-4d32-a448-3c2c9d14f936" },
+                    { 2, 30.00m, "Extra Guest Fee", "cc4e48ea-ca54-4d32-a448-3c2c9d14f936" },
+                    { 3, 50.00m, "Pet Fee", "cc4e48ea-ca54-4d32-a448-3c2c9d14f936" },
+                    { 4, 25.00m, "Service Fee", "cc4e48ea-ca54-4d32-a448-3c2c9d14f936" },
+                    { 5, 100.00m, "Cleaning Fee", "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4" },
+                    { 6, 40.00m, "Pet Fee", "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4" },
+                    { 7, 20.00m, "Service Fee", "8e95f4b1-dc1d-4b4d-8102-09b7fbb88ec4" },
+                    { 8, 80.00m, "Cleaning Fee", "3e7f99ab-228a-4d90-91c4-6adf8c12e048" },
+                    { 9, 18.00m, "Service Fee", "3e7f99ab-228a-4d90-91c4-6adf8c12e048" },
+                    { 10, 90.00m, "Cleaning Fee", "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa" },
+                    { 11, 25.00m, "Extra Guest Fee", "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa" },
+                    { 12, 20.00m, "Extra Guest Fee", "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2" },
+                    { 13, 15.00m, "Service Fee", "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2" },
+                    { 14, 35.00m, "Pet Fee", "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3" },
+                    { 15, 70.00m, "Cleaning Fee", "a43ecbfa-7b0a-4f6b-9c88-987be3c4e3d3" },
+                    { 16, 110.00m, "Cleaning Fee", "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7" },
+                    { 17, 22.00m, "Service Fee", "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7" },
+                    { 18, 60.00m, "Cleaning Fee", "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f" },
+                    { 19, 75.00m, "Cleaning Fee", "4b04a76a-1608-4a8f-b09c-8d9043b83e16" },
+                    { 20, 30.00m, "Pet Fee", "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1" },
+                    { 21, 85.00m, "Cleaning Fee", "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c" },
+                    { 22, 18.00m, "Extra Guest Fee", "3c0e361a-51df-4e03-b8d0-2d7601aa60f6" },
+                    { 23, 65.00m, "Cleaning Fee", "c5c0d4db-b048-4ee4-8835-344900fd35b2" },
+                    { 24, 28.00m, "Pet Fee", "0bb50f31-e322-4b76-97dd-6a7fcf585d33" },
+                    { 25, 95.00m, "Cleaning Fee", "a555515a-ff8a-4741-b0a4-db9be729198e" },
+                    { 26, 22.00m, "Extra Guest Fee", "c10d2d46-869a-46bc-a46d-90bdd958c252" },
+                    { 27, 55.00m, "Cleaning Fee", "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08" },
+                    { 28, 58.00m, "Cleaning Fee", "294e2751-203b-4beb-b21e-0bb96f082d7c" },
+                    { 29, 32.00m, "Pet Fee", "06dbae08-bc6b-4ca6-9162-3213784b9971" },
+                    { 30, 19.00m, "Extra Guest Fee", "f1e8be41-4fd5-47e4-8960-12d8f4afc273" },
+                    { 31, 50.00m, "Cleaning Fee", "763e6c5f-1ad1-4071-b0e6-55e924624198" },
+                    { 32, 52.00m, "Cleaning Fee", "efd964ab-dceb-4b96-b113-665c5684a102" },
+                    { 33, 27.00m, "Pet Fee", "52a8df7d-c0b2-4ee3-8369-9daed4885f9f" },
+                    { 34, 21.00m, "Extra Guest Fee", "c150e428-1c9a-43a2-be07-f4366875f1ce" },
+                    { 35, 54.00m, "Cleaning Fee", "2e3ed231-a2a6-4961-a1ba-f232d56c6f35" }
                 });
 
             migrationBuilder.InsertData(
@@ -1771,16 +1893,26 @@ namespace Travellin.Infrastructure.Migrations
                 columns: new[] { "GuestTypeId", "PropertyId", "GuestCount" },
                 values: new object[,]
                 {
-                    { 3, "06dbae08-bc6b-4ca6-9162-3213784b9971", 4 },
-                    { 2, "0bb50f31-e322-4b76-97dd-6a7fcf585d33", 4 },
-                    { 1, "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08", 5 },
-                    { 2, "294e2751-203b-4beb-b21e-0bb96f082d7c", 2 },
-                    { 1, "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1", 5 },
+                    { 1, "06dbae08-bc6b-4ca6-9162-3213784b9971", 2 },
+                    { 2, "06dbae08-bc6b-4ca6-9162-3213784b9971", 2 },
+                    { 4, "06dbae08-bc6b-4ca6-9162-3213784b9971", 3 },
+                    { 1, "0bb50f31-e322-4b76-97dd-6a7fcf585d33", 4 },
+                    { 2, "0bb50f31-e322-4b76-97dd-6a7fcf585d33", 2 },
+                    { 1, "1adca40b-b8ff-4cea-b6e4-8e5f40d29c08", 2 },
+                    { 1, "294e2751-203b-4beb-b21e-0bb96f082d7c", 2 },
+                    { 3, "294e2751-203b-4beb-b21e-0bb96f082d7c", 1 },
+                    { 4, "294e2751-203b-4beb-b21e-0bb96f082d7c", 1 },
+                    { 1, "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1", 4 },
+                    { 3, "2ab6e4d1-79b9-4dba-9109-22ef75a29ff1", 2 },
                     { 1, "2e3ed231-a2a6-4961-a1ba-f232d56c6f35", 2 },
+                    { 2, "2e3ed231-a2a6-4961-a1ba-f232d56c6f35", 1 },
                     { 1, "3c0e361a-51df-4e03-b8d0-2d7601aa60f6", 4 },
                     { 1, "3e7f99ab-228a-4d90-91c4-6adf8c12e048", 3 },
                     { 1, "4b04a76a-1608-4a8f-b09c-8d9043b83e16", 3 },
-                    { 1, "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2", 5 },
+                    { 3, "4b04a76a-1608-4a8f-b09c-8d9043b83e16", 2 },
+                    { 4, "4b04a76a-1608-4a8f-b09c-8d9043b83e16", 1 },
+                    { 1, "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2", 3 },
+                    { 2, "4e3d342-8e8d-4f1d-8123-2d09cb92b6a2", 1 },
                     { 3, "52a8df7d-c0b2-4ee3-8369-9daed4885f9f", 2 },
                     { 1, "5ca2f710-3c1f-4966-a924-7bcdf5ce57aa", 2 },
                     { 1, "763e6c5f-1ad1-4071-b0e6-55e924624198", 3 },
@@ -1792,9 +1924,12 @@ namespace Travellin.Infrastructure.Migrations
                     { 1, "c5c0d4db-b048-4ee4-8835-344900fd35b2", 2 },
                     { 1, "cc4e48ea-ca54-4d32-a448-3c2c9d14f936", 1 },
                     { 1, "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f", 1 },
+                    { 4, "d8eecb1f-5583-4d64-a7dc-5aef5e2c498f", 2 },
                     { 1, "ef3b2df2-e539-4cb9-8eb6-4eeb833e694c", 2 },
                     { 2, "efd964ab-dceb-4b96-b113-665c5684a102", 1 },
-                    { 1, "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7", 4 },
+                    { 1, "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7", 2 },
+                    { 2, "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7", 2 },
+                    { 4, "f1cc1b4c-b674-4a1a-89ee-5f7b4d44d2f7", 1 },
                     { 4, "f1e8be41-4fd5-47e4-8960-12d8f4afc273", 2 }
                 });
 
@@ -2091,6 +2226,11 @@ namespace Travellin.Infrastructure.Migrations
                 column: "GuestTypeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Bookings_AppUserId",
+                table: "Bookings",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Bookings_CheckIn",
                 table: "Bookings",
                 column: "CheckIn");
@@ -2114,6 +2254,11 @@ namespace Travellin.Infrastructure.Migrations
                 name: "IX_Bookings_UserId",
                 table: "Bookings",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Conversations_PropertyId",
+                table: "Conversations",
+                column: "PropertyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Conversations_User1Id",
@@ -2370,6 +2515,9 @@ namespace Travellin.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "PropertySpaceItems");
+
+            migrationBuilder.DropTable(
+                name: "Recommendations");
 
             migrationBuilder.DropTable(
                 name: "Reviews");

@@ -44,7 +44,6 @@ export class BookingHistoryComponent implements OnInit {
         this.totalPages = response.body?.metaData?.total ? Math.ceil(response.body.metaData.total / this.pageSize) : 1;
         this.filteredBookings = [...this.bookings];
         this.loading = false;
-
       },
       error: (error: any) => {
         console.error('Error loading bookings:', error);

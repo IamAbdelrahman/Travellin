@@ -51,11 +51,6 @@ namespace Travellin.Infrastructure.Data.Configurations
                 .HasForeignKey<UserProfile>(x => x.PhotoId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            builder.HasOne(x => x.Photo)
-                .WithOne()
-                .HasForeignKey<UserProfile>(x => x.PhotoId)
-                .OnDelete(DeleteBehavior.SetNull);
-
             builder.HasData(UserProfileSeed.Data);
         }
     }
