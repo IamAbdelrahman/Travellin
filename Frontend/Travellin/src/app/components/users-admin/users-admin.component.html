@@ -2,13 +2,13 @@
         <div class="page-header">
           <h1 class="page-title">User Management</h1>
           <div class="page-actions">
-            <select [(ngModel)]="selectedFilter" class="filter-select">
+            <select [(ngModel)]="selectedFilter" (change)="getFilteredUsers()"  class="filter-select">
               <option value="all">All Users</option>
               <option value="host">Hosts</option>
               <option value="guest">Guests</option>
             </select>
           </div>
-        </div>
+      </div>
       <div class="data-table">
       <div class="table-responsive shadow-sm rounded-4 overflow-hidden">
         <table class="table align-middle table-hover mb-0">
@@ -25,7 +25,7 @@
           </thead>
     
           <tbody class="table-light">
-            <tr *ngFor="let user of users; let i = index">
+            <tr *ngFor="let user of filtered; let i = index">
               <td class="fw-semibold">{{ i + 1 }}</td>
               <td>
                 <img
@@ -56,9 +56,9 @@
                  (click)="onDelete(user.userId)"
                   title="Delete">
                 <fa-icon 
-                [icon]="user ? icons['trash'] : icons['trash']"
-                [ngClass]="user.isDeleted ? 'text-danger' : 'text-success'"
-                [title]="user.isDeleted ? 'This property is already deleted' : 'You can delete this property'"
+                [icon]="user.status === 'Active' ? icons['trash'] : icons['trash']"
+                [ngClass]="user.status === 'Active' ? 'text-danger' : 'text-success'"
+                [title]="user.status === 'Active' ? 'This property is already deleted' : 'You can delete this property'"
                 ></fa-icon>
                 </button>
               </td>

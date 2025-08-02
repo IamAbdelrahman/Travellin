@@ -1,5 +1,6 @@
 ﻿using Travellin.Core.Dtos.BookingGuests;
 using Travellin.Core.Dtos.Properties;
+using Travellin.Core.Dtos.UserProfilesDto;
 
 namespace Travellin.Core.Dtos.Bookings
 {
@@ -17,5 +18,7 @@ namespace Travellin.Core.Dtos.Bookings
         public DateTime UpdatedAt { get; set; }
         public List<BookingGuestDto> BookingGuests { get; set; }
         public PropertyListItemDto Property { get; set; }
+        public UserProfileDto User { get; set; }
+
     }
 }

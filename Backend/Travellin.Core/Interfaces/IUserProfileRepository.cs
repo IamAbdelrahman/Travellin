@@ -4,7 +4,7 @@ using Travellin.Travellin.Core.Shared;
 
 namespace Travellin.Core.Interfaces
 {
-    public interface IUserProfileRepository : IBaseRepository
+    public interface IUserProfileRepository : IBaseRepository  
     {
         public Task<PaginatedResult<UserProfileDto>> GetFilteredProfilesAsync(UserProfileQueryParamsDto queryDto);
         public Task<UserProfile> GetByUserId(string userId);
