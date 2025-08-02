@@ -36,15 +36,68 @@ public class ConversationsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> StartConversation([FromBody] StartConversationDto dto)
     {
-        var currentUserId = GetCurrentUserId();
-        if (currentUserId == null)
-            return Unauthorized();
+        Console.WriteLine("=== StartConversation method called ===");
+        Console.WriteLine($"Received DTO: User1Id={dto?.User1Id}, User2Id={dto?.User2Id}, PropertyId={dto?.PropertyId}");
+        
+        try
+        {
+            var currentUserId = GetCurrentUserId();
+            Console.WriteLine($"Current user ID: {currentUserId}");
+            
+            if (currentUserId == null)
+            {
+                Console.WriteLine("Current user ID is null - unauthorized");
+                return Unauthorized();
+            }
 
-        var conversation = await _conversationService.CreateOrGetConversationWithPropertyAsync(
-            dto.User1Id, dto.User2Id, dto.PropertyId);
+            // Validate that the current user is one of the participants
+            if (currentUserId != dto.User1Id && currentUserId != dto.User2Id)
+            {
+                Console.WriteLine($"Current user {currentUserId} is not a participant in the conversation");
+                return BadRequest("You can only start conversations where you are a participant");
+            }
 
-        var result = await _unitOfWork.ConversationRepository.GetByIdWithMessagesAsync(conversation.Id);
-        return Ok(result);
+            Console.WriteLine($"Starting conversation between {dto.User1Id} and {dto.User2Id} with property {dto.PropertyId}");
+
+            var conversation = await _conversationService.CreateOrGetConversationWithPropertyAsync(
+                dto.User1Id, dto.User2Id, dto.PropertyId);
+
+            Console.WriteLine($"Conversation created/retrieved with ID: {conversation.Id}");
+
+            // Create a proper DTO without circular references
+            var result = new ConversationDto
+            {
+                Id = conversation.Id,
+                User1Id = conversation.User1Id,
+                User2Id = conversation.User2Id,
+                User1Name = conversation.User1?.UserName ?? $"User {conversation.User1Id.Substring(0, 8)}",
+                User2Name = conversation.User2?.UserName ?? $"User {conversation.User2Id.Substring(0, 8)}",
+                PropertyId = conversation.PropertyId,
+                PropertyTitle = conversation.Property?.Title,
+                CreatedAt = conversation.CreatedAt,
+                Messages = conversation.Messages?.Select(m => new MessageDto
+                {
+                    Id = m.Id,
+                    Content = m.Content,
+                    SenderId = m.SenderId,
+                    ReceiverId = m.ReceiverId,
+                    ConversationId = m.ConversationId,
+                    IsRead = m.IsRead,
+                    SentAt = m.SentAt,
+                    TranslatedContent = m.TranslatedContent
+                }).ToList() ?? new List<MessageDto>()
+            };
+            
+            Console.WriteLine($"Created DTO with {result.Messages.Count} messages");
+            
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in StartConversation: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+            return StatusCode(500, new { error = ex.Message, details = ex.StackTrace });
+        }
     }
 
     [HttpGet("by-user/{userId}")]
@@ -73,12 +126,14 @@ public class ConversationsController : ControllerBase
             User2Name = c.User2?.UserName ?? $"User {c.User2Id.Substring(0, 8)}",
             PropertyId = c.PropertyId,
             PropertyTitle = c.Property?.Title,
+            CreatedAt = c.CreatedAt,
             Messages = c.Messages.Select(m => new MessageDto
             {
                 Id = m.Id,
                 Content = m.Content,
                 SenderId = m.SenderId,
                 ReceiverId = m.ReceiverId,
+                ConversationId = m.ConversationId,
                 IsRead = m.IsRead,
                 SentAt = m.SentAt,
                 TranslatedContent = m.TranslatedContent
@@ -111,12 +166,14 @@ public class ConversationsController : ControllerBase
             User2Name = conversation.User2?.UserName ?? $"User {conversation.User2Id.Substring(0, 8)}",
             PropertyId = conversation.PropertyId,
             PropertyTitle = conversation.Property?.Title,
+            CreatedAt = conversation.CreatedAt,
             Messages = conversation.Messages.Select(m => new MessageDto
             {
                 Id = m.Id,
                 Content = m.Content,
                 SenderId = m.SenderId,
                 ReceiverId = m.ReceiverId,
+                ConversationId = m.ConversationId,
                 IsRead = m.IsRead,
                 SentAt = m.SentAt,
                 TranslatedContent = m.TranslatedContent
@@ -124,6 +181,20 @@ public class ConversationsController : ControllerBase
         };
 
         return Ok(result);
+    }
+
+    [HttpDelete("admin/{id:int}")]
+    [Authorize(Roles = "Admin")]
+    [EndpointSummary("Deletes a conversation by its ID (Admin only).")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> DeleteConversationAsAdmin(int id)
+    {
+        var deleted = await _conversationService.DeleteConversationAsync(id);
+        if (!deleted) return NotFound();
+
+        return NoContent();
     }
 
     [HttpDelete("{id:int}")]
@@ -184,12 +255,14 @@ public class ConversationsController : ControllerBase
             User2Name = c.User2?.UserName ?? $"User {c.User2Id.Substring(0, 8)}",
             PropertyId = c.PropertyId,
             PropertyTitle = c.Property?.Title,
+            CreatedAt = c.CreatedAt,
             Messages = c.Messages.Select(m => new MessageDto
             {
                 Id = m.Id,
                 Content = m.Content,
                 SenderId = m.SenderId,
                 ReceiverId = m.ReceiverId,
+                ConversationId = m.ConversationId,
                 IsRead = m.IsRead,
                 SentAt = m.SentAt,
                 TranslatedContent = m.TranslatedContent

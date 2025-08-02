@@ -15,6 +15,7 @@ import { IReview } from '../../models/domain/ireview';
 import { Bookings } from '../../models/api/request/iget-bookings';
 import { IPayment } from '../../models/domain/ipayment';
 import { UsersAdminComponent } from '../../components/users-admin/users-admin.component';
+import { AdminChatComponent } from '../../components/admin-chat/admin-chat.component';
 export interface AnalyticsCard {
   title: string;
   value: string;
@@ -25,7 +26,7 @@ export interface AnalyticsCard {
 
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [CommonModule, FormsModule, RouterModule, UsersAdminComponent],
+  imports: [CommonModule, FormsModule, RouterModule, UsersAdminComponent, AdminChatComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
 })

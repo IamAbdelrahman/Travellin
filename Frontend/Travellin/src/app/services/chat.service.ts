@@ -292,6 +292,14 @@ export class ChatService {
     return this.http.get<MessageDto[]>(`${this.baseUrl}/messages/conversation/${conversationId}`, { headers: this.getHttpHeaders() });
   }
 
+  public getMessagesByConversationIdForAdmin(conversationId: number): Observable<MessageDto[]> {
+    return this.http.get<MessageDto[]>(`${this.baseUrl}/messages/admin/conversation/${conversationId}`, { headers: this.getHttpHeaders() });
+  }
+
+  public markConversationAsReadForAdmin(conversationId: number): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/messages/admin/mark-read/${conversationId}`, {}, { headers: this.getHttpHeaders() });
+  }
+
   public markMessageAsRead(messageId: number): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/messages/${messageId}/mark-as-read`, {}, { headers: this.getHttpHeaders() });
   }
@@ -322,6 +330,10 @@ export class ChatService {
 
   public deleteConversation(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/conversations/${id}`, { headers: this.getHttpHeaders() });
+  }
+
+  public deleteConversationAsAdmin(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/conversations/admin/${id}`, { headers: this.getHttpHeaders() });
   }
 
   // State Management Methods

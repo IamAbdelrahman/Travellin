@@ -52,12 +52,18 @@
 
       <!-- Conversations List -->
       <div class="conversations-list">
-        <div *ngIf="isLoading" class="loading-state">
+        <div *ngIf="isLoadingConversations" class="loading-state">
           <div class="spinner"></div>
           <p>Loading conversations...</p>
         </div>
 
-        <div *ngIf="!isLoading && filteredInbox.length === 0" class="empty-state">
+        <div *ngIf="hasError" class="error-state">
+          <div class="error-icon">⚠️</div>
+          <div class="error-text">{{ errorMessage || 'Failed to load conversations' }}</div>
+          <button class="retry-button" (click)="retryLoadData()">Retry</button>
+        </div>
+
+        <div *ngIf="!isLoadingConversations && !hasError && filteredInbox.length === 0" class="empty-state">
           <div class="empty-icon">
             <i class="fas fa-comments"></i>
           </div>
@@ -117,7 +123,7 @@
           <div class="chat-user-info">
             <div class="user-avatar">
               <div class="avatar-circle">
-                {{ getOtherUserName(activeConversation).charAt(0).toUpperCase() }}
+                {{ getOtherUserInitial(activeConversation) }}
               </div>
             </div>
             <div class="user-details">
@@ -154,15 +160,44 @@
       <!-- Messages Area -->
       <div *ngIf="activeConversation" class="messages-area">
         <div class="messages-container" #messagesContainer>
+          <!-- Messages -->
           <div *ngFor="let message of activeConversation.messages; trackBy: trackByMessageId" 
                class="message-wrapper"
-               [class.own-message]="isMessageFromCurrentUser(message)">
+               [class.own-message]="isMessageFromCurrentUser(message)"
+               [class.admin-message]="isAdminMessage(message)">
             
+            <!-- Avatar for received messages -->
+            <div class="message-avatar" *ngIf="!isMessageFromCurrentUser(message)">
+              <img 
+                *ngIf="shouldShowProfileImage(message.senderId)" 
+                [src]="getUserProfileImage(message.senderId)" 
+                [alt]="getUserName(message.senderId)"
+                class="profile-image">
+              <div *ngIf="!shouldShowProfileImage(message.senderId)" class="profile-initial">
+                {{ getUserInitial(message.senderId) }}
+              </div>
+            </div>
+
+            <!-- Message bubble -->
             <div class="message-bubble" 
                  [class.message-hover]="true"
                  [attr.data-send-time]="formatMessageTimeForTooltip(message.sentAt)"
                  [attr.data-read-status]="getMessageStatusFromMessage(message)">
+              
               <div class="message-content">
+                <div class="message-header">
+                  <span class="sender-name">
+                    {{ getUserName(message.senderId) }}
+                    <span *ngIf="isAdminMessage(message)" class="admin-badge">Admin</span>
+                    <span *ngIf="!isAdminMessage(message)" class="role-badge" [class]="getUserRole(message.senderId, activeConversation).toLowerCase() + '-badge'">
+                      {{ getUserRole(message.senderId, activeConversation) }}
+                    </span>
+                  </span>
+                  <span class="message-time" [title]="formatMessageTimeForTooltip(message.sentAt)">
+                    {{ formatMessageTime(message.sentAt) }}
+                  </span>
+                </div>
+                
                 <p>{{ message.content }}</p>
                 
                 <!-- Translated Content -->
@@ -177,11 +212,11 @@
               </div>
               
               <div class="message-meta">
-                <span class="message-time">{{ formatMessageTime(message.sentAt) }}</span>
-                
-                <!-- Message Status -->
+                <!-- Message Status for own messages -->
                 <div *ngIf="isMessageFromCurrentUser(message)" class="message-status">
-                  <i class="fas" [class]="message.isRead ? 'fa-check-double read' : 'fa-check'"></i>
+                  <span class="status-indicator" [class.status-read]="message.isRead">
+                    {{ getMessageStatusFromMessage(message) }}
+                  </span>
                 </div>
                 
                 <!-- Unread indicator for received messages -->

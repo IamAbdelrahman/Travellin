@@ -42,29 +42,44 @@ export class PropertyHostComponent implements OnInit {
   };
 
   ngOnInit() {
-    this.propertyService
-      .getPropertyById(this.property?.id)
-      .subscribe(property => {
-        property.body.owner = {
-          ...property.body.owner,
-          firstName: property.body.owner.firstName || 'Host',
-          photo: {
-            id: 'default',
-            photoUrl: property.body.owner.photo?.photoUrl || 'logo.png',
-          },
+    console.log('Property Host Component - Initial property:', this.property);
+    console.log('Property Host Component - Owner from input:', this.property.owner);
+    
+    // Check if the owner data needs to be mapped to IUserProfile structure
+    if (this.property.owner) {
+      console.log('Property Host Component - Owner keys:', Object.keys(this.property.owner));
+      
+      // Check if we have backend structure (with id/userName) that needs mapping to frontend structure (with userId/userName)
+      const backendOwner = this.property.owner as any;
+      if (backendOwner.id && !this.property.owner.userId) {
+        console.log('Property Host Component - Mapping from backend structure to frontend IUserProfile');
+        
+        // Map the backend structure to frontend IUserProfile
+        this.property.owner = {
+          userId: backendOwner.id, // Backend id -> Frontend userId
+          userName: backendOwner.userName, // Backend userName -> Frontend userName
+          firstName: backendOwner.userName?.split(' ')[0] || 'Host',
+          lastName: backendOwner.userName?.split(' ').slice(1).join(' ') || '',
           email: '',
-          lastName: property.body.owner.lastName,
           phoneNumber: '',
           bio: '',
           birthDate: '',
-          userId: property.body.owner.userId,
+          status: 'Active',
+          country: { id: 1, name: 'Unknown', regionId: 1 },
+          photo: {
+            id: 'default',
+            photoUrl: 'logo.png',
+          },
+          roles: ['Host']
         };
-        this.property = property.body;
-      });
+        
+        console.log('Property Host Component - Mapped owner:', this.property.owner);
+      }
+    }
   }
 
   get hostName(): string {
-    return `${this.property.owner?.firstName || ''} ${this.property.owner?.lastName || ''}`.trim();
+    return this.property.owner?.userName || 'Host';
   }
 
   get isSuperhost(): boolean {
@@ -78,8 +93,14 @@ export class PropertyHostComponent implements OnInit {
   }
 
   contactHost(): void {
+    console.log('Contact Host clicked - Property:', this.property);
+    console.log('Contact Host clicked - Owner:', this.property.owner);
+    
     const currentUserId = this.tokenStorage.getUserId();
-    const hostId = this.property.owner?.userId;
+    const hostId = this.property.owner?.userId; // Use userId from IUserProfile interface
+    
+    console.log('Contact Host clicked - Current user ID:', currentUserId);
+    console.log('Contact Host clicked - Host ID:', hostId);
     
     if (!currentUserId) {
       this.toastService.showError('Please log in to contact the host');
@@ -97,14 +118,17 @@ export class PropertyHostComponent implements OnInit {
     }
 
     // Start conversation with property context
+    // Ensure current user is always user1Id for consistency
     this.chatService.startConversation({
       user1Id: currentUserId,
       user2Id: hostId,
       propertyId: this.property.id
     }).subscribe({
       next: (conversation) => {
+        console.log('Conversation started successfully:', conversation);
+        
         // Send initial message about the property
-        const initialMessage = `Hi! I'm interested in your property "${this.property.title}". Could you tell me more about it?`;
+        const initialMessage = `Hi! I'm interested in your property "${this.property.title}". Is this unit available for booking? Could you tell me more about it?`;
         
         this.chatService.sendMessage({
           senderId: currentUserId,
@@ -112,7 +136,8 @@ export class PropertyHostComponent implements OnInit {
           content: initialMessage,
           conversationId: conversation.id
         }).subscribe({
-          next: () => {
+          next: (message) => {
+            console.log('Initial message sent successfully:', message);
             this.toastService.showSuccess('Message sent to host!');
             this.router.navigate(['/chat'], { 
               queryParams: { conversationId: conversation.id } 
@@ -130,6 +155,12 @@ export class PropertyHostComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error starting conversation:', error);
+        console.error('Error details:', {
+          status: error.status,
+          statusText: error.statusText,
+          error: error.error,
+          message: error.message
+        });
         this.toastService.showError('Failed to start conversation with host');
       }
     });

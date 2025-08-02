@@ -1,0 +1,229 @@
+<div class="admin-chat-container">
+  <div class="chat-header">
+    <h2>Admin Chat</h2>
+    <div class="connection-status" [class.connected]="isConnected" [class.disconnected]="!isConnected">
+      {{ isConnected ? 'Connected' : 'Disconnected' }}
+    </div>
+  </div>
+
+  <div class="chat-content-wrapper">
+    <!-- Conversations Sidebar -->
+    <div class="conversations-sidebar">
+      <div class="sidebar-header">
+        <h3>Conversations ({{ conversations.length }})</h3>
+        <div class="search-container">
+          <input 
+            type="text" 
+            placeholder="Search conversations..." 
+            class="search-input"
+            [(ngModel)]="searchQuery">
+        </div>
+      </div>
+
+      <div class="conversations-list">
+        <div *ngIf="isLoading" class="loading-indicator">
+          <div class="loading-spinner"></div>
+          Loading conversations...
+        </div>
+        
+        <div *ngIf="hasError" class="error-message">
+          <div class="error-icon">⚠️</div>
+          <div class="error-text">{{ errorMessage || 'Failed to load conversations' }}</div>
+          <button class="retry-button" (click)="loadAllConversations()">Retry</button>
+        </div>
+        
+        <div *ngIf="!isLoading && !hasError && filterConversations().length === 0" class="no-conversations">
+          <div class="no-conversations-icon">💬</div>
+          <div class="no-conversations-text">No conversations found</div>
+        </div>
+
+        <div 
+          *ngFor="let conversation of filterConversations()" 
+          class="conversation-item"
+          [class.active]="activeConversation?.id === conversation.id">
+          
+          <div class="conversation-content" (click)="selectConversation(conversation)">
+            <div class="conversation-avatar">
+              <img 
+                *ngIf="shouldShowProfileImage(conversation.user1Id)" 
+                [src]="getUserProfileImage(conversation.user1Id)" 
+                [alt]="getOtherUserName(conversation)"
+                class="profile-image">
+              <div *ngIf="!shouldShowProfileImage(conversation.user1Id)" class="profile-initial">
+                {{ getOtherUserInitial(conversation) }}
+              </div>
+            </div>
+
+            <div class="conversation-details">
+              <div class="conversation-header">
+                <span class="participant-name">{{ getOtherUserName(conversation) }}</span>
+                <span class="message-time">{{ getLastMessageTime(conversation) }}</span>
+              </div>
+              
+              <div class="conversation-preview">
+                <span class="last-message">{{ getLastMessage(conversation) }}</span>
+                <span *ngIf="getUnreadCount(conversation) > 0" class="unread-badge">
+                  {{ getUnreadCount(conversation) }}
+                </span>
+              </div>
+
+              <div class="conversation-participants">
+                <small class="participant-info">
+                  <span class="host-label">Host: {{ conversation.user1Name || `User ${conversation.user1Id.substring(0, 8)}` }}</span>
+                  <span class="guest-label">Guest: {{ conversation.user2Name || `User ${conversation.user2Id.substring(0, 8)}` }}</span>
+                </small>
+              </div>
+
+              <div *ngIf="conversation.propertyTitle" class="property-context">
+                <small>Property: {{ conversation.propertyTitle }}</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="conversation-actions" *ngIf="canDeleteConversation()">
+            <button 
+              class="delete-btn" 
+              title="Delete conversation"
+              (click)="deleteConversation(conversation.id); $event.stopPropagation()">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Area -->
+    <div class="chat-area" *ngIf="activeConversation">
+      <div class="chat-messages">
+        <!-- Chat Header -->
+        <div class="chat-header">
+          <div class="chat-participant">
+            <div class="participant-avatar">
+              <img 
+                *ngIf="shouldShowProfileImage(activeConversation.user1Id)" 
+                [src]="getUserProfileImage(activeConversation.user1Id)" 
+                [alt]="getOtherUserName(activeConversation)"
+                class="profile-image">
+              <div *ngIf="!shouldShowProfileImage(activeConversation.user1Id)" class="profile-initial">
+                {{ getOtherUserInitial(activeConversation) }}
+              </div>
+            </div>
+            <div class="participant-info">
+              <h3>{{ getOtherUserName(activeConversation) }}</h3>
+              <div class="participant-roles">
+                <span class="role-badge host-badge">Host: {{ activeConversation.user1Name || `User ${activeConversation.user1Id.substring(0, 8)}` }}</span>
+                <span class="role-badge guest-badge">Guest: {{ activeConversation.user2Name || `User ${activeConversation.user2Id.substring(0, 8)}` }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-actions">
+            <button 
+              *ngIf="canDeleteConversation()"
+              class="action-btn delete-btn" 
+              title="Delete conversation"
+              (click)="deleteConversation(activeConversation.id)">
+              <i class="fas fa-trash"></i>
+            </button>
+            <button class="action-btn" title="More options">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="1"></circle>
+                <circle cx="19" cy="12" r="1"></circle>
+                <circle cx="5" cy="12" r="1"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Messages Container -->
+        <div class="messages-container">
+          <div *ngIf="messages.length === 0" class="no-messages">
+            No messages yet. Start the conversation!
+          </div>
+
+          <div 
+            *ngFor="let message of messages" 
+            class="message-wrapper"
+            [class.own-message]="isOwnMessage(message)"
+            [class.admin-message]="isAdminMessage(message)">
+            
+            <div class="message-avatar" *ngIf="!isOwnMessage(message)">
+              <img 
+                *ngIf="shouldShowProfileImage(message.senderId)" 
+                [src]="getUserProfileImage(message.senderId)" 
+                [alt]="getUserName(message.senderId)"
+                class="profile-image">
+              <div *ngIf="!shouldShowProfileImage(message.senderId)" class="profile-initial">
+                {{ getUserInitial(message.senderId) }}
+              </div>
+            </div>
+
+            <div class="message-content">
+              <div class="message-header">
+                <span class="sender-name">
+                  {{ getUserName(message.senderId) }}
+                  <span *ngIf="isAdminMessage(message)" class="admin-badge">Admin</span>
+                  <span *ngIf="!isAdminMessage(message)" class="role-badge" [class]="getUserRole(message.senderId, activeConversation).toLowerCase() + '-badge'">
+                    {{ getUserRole(message.senderId, activeConversation) }}
+                  </span>
+                </span>
+                <span class="message-time" [title]="formatMessageTimeForTooltip(message.sentAt)">
+                  {{ formatMessageTime(message.sentAt) }}
+                </span>
+              </div>
+              
+              <div class="message-text">
+                {{ message.content }}
+              </div>
+              
+              <div class="message-status" *ngIf="isOwnMessage(message)">
+                <span class="status-indicator" [class.status-read]="message.isRead">
+                  {{ getMessageStatusFromMessage(message) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Message Input -->
+        <div class="message-input-container">
+          <div class="input-wrapper">
+            <textarea
+              placeholder="Type your message as admin..."
+              class="message-input"
+              [(ngModel)]="messageText"
+              (keydown)="onKeyDown($event)"
+              rows="1"
+              [disabled]="isSending">
+            </textarea>
+            
+            <button 
+              class="send-button" 
+              (click)="sendMessage()"
+              [disabled]="!messageText.trim() || isSending">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22,2 15,22 11,13 2,9"></polygon>
+              </svg>
+            </button>
+          </div>
+          
+          <div class="admin-indicator">
+            <span class="admin-badge">Sending as Admin</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Conversation Selected -->
+    <div class="no-conversation-selected" *ngIf="!activeConversation">
+      <div class="no-conversation-content">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="no-conversation-icon">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <h3>Select a conversation</h3>
+        <p>Choose a conversation from the sidebar to start chatting as admin.</p>
+      </div>
+    </div>
+  </div>
+</div> 

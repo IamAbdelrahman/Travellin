@@ -85,6 +85,10 @@ namespace Travellin.Infrastructure.Repositories
             {
                 query = query.Where(x => x.UserId == queryDto.UserId);
             }
+            else if (queryDto.UserIds != null && queryDto.UserIds.Any())
+            {
+                query = query.Where(x => queryDto.UserIds.Contains(x.UserId));
+            }
             else if (!string.IsNullOrEmpty(queryDto.Email))
             {
                 query = query.Where(x => x.AppUser.Email == queryDto.Email);

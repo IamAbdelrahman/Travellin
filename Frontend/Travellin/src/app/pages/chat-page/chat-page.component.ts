@@ -7,11 +7,14 @@ import { Subject, takeUntil, Observable } from 'rxjs';
 import { ChatService } from '../../services/chat.service';
 import { ToastService } from '../../services/toast.service';
 import { AuthService } from '../../core/services/auth.service';
+import { UserProfileService } from '../../services/user-profile.service';
+import { TokenStorageService } from '../../services/token-storage.service';
 import { 
   MessageDto, 
   CreateMessageDto, 
 } from '../../models/chat/message.model';
 import { ConversationDto, InboxDto , ConversationSearchResultDto  } from '../../models/chat/conversation.model';
+import { IUserProfile } from '../../models/domain/iuser-profile';
 
 @Component({
   selector: 'app-chat-page',
@@ -45,10 +48,21 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
   filteredInbox: InboxDto[] = [];
   showMobileChat: boolean = false;
 
+  // Enhanced error handling and loading states
+  hasError: boolean = false;
+  errorMessage: string = '';
+  isLoadingConversations: boolean = false;
+  isLoadingMessages: boolean = false;
+  
+  // User profile cache for profile images
+  private userProfilesCache: Map<string, IUserProfile> = new Map();
+
   constructor(
     private chatService: ChatService,
     private toastService: ToastService,
     private authService: AuthService,
+    private userProfileService: UserProfileService,
+    private tokenStorage: TokenStorageService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -86,9 +100,8 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 
-  // Debug method to check refresh status
   private logRefreshStatus(): void {
-    // Debug information removed for clean console
+    // Removed console.log statements
   }
 
   ngOnDestroy(): void {
@@ -102,7 +115,7 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
   private startSilentRefresh(): void {
     this.refreshInterval = setInterval(() => {
       this.silentRefreshData();
-    }, 5000);
+    }, 30000); // Refresh every 30 seconds
   }
 
   private stopSilentRefresh(): void {
@@ -114,29 +127,32 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   private async silentRefreshData(): Promise<void> {
     try {
+      this.lastRefreshTime = new Date();
+      
+      // Refresh conversations and inbox
       const userId = this.authService.getUserId();
       if (!userId) return;
 
-      const conversations = await this.chatService.getUserConversations(userId).toPromise();
-      const inbox = await this.chatService.getInboxPreview(userId).toPromise();
+      const [conversations, inbox] = await Promise.all([
+        this.chatService.getAllConversations().toPromise(),
+        this.chatService.getInboxPreview(userId).toPromise()
+      ]);
 
-      if (conversations && conversations.length !== this.conversations.length) {
-        this.conversations = conversations;
+      if (conversations) {
+        this.updateConversationsSilently(conversations);
       }
 
-      if (inbox && inbox.length !== this.inbox.length) {
-        this.inbox = inbox;
+      if (inbox) {
+        this.updateInboxSilently(inbox);
       }
 
-      // Update active conversation messages if needed
+      // Refresh active conversation messages if needed
       if (this.activeConversation) {
-        const updatedConversation = conversations?.find(c => c.id === this.activeConversation?.id);
-        if (updatedConversation && updatedConversation.messages.length !== this.activeConversation.messages.length) {
-          this.activeConversation = updatedConversation;
-        }
+        this.refreshActiveConversationMessages();
       }
+
     } catch (error) {
-      // Silent error handling
+      // Silent refresh failed, but don't show error to user
     }
   }
 
@@ -287,232 +303,161 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   private loadInitialData(): void {
-    const userId = this.authService.getUserId();
-    if (!userId) {
-      console.error('No user ID available');
-      return;
-    }
+    this.isLoading = true;
+    this.hasError = false;
 
-    // Load conversations based on user role
+    // Load user role and conversations based on role
+    this.isAdmin = this.authService.isAdmin();
+
     if (this.isAdmin) {
-      // Admin can see all conversations
-      this.chatService.getAllConversations().subscribe({
-        next: (conversations) => {
-          this.conversations = conversations;
-          console.log('Loaded all conversations (admin):', conversations);
-        },
-        error: (error) => {
-          console.error('Error loading all conversations:', error);
-          this.toastService.showError('Failed to load conversations');
-        }
-      });
+      // Admin loads all conversations
+      this.loadAllConversations();
     } else {
-      // Regular users see only their conversations
-      this.chatService.getUserConversations(userId).subscribe({
-        next: (conversations) => {
-          this.conversations = conversations;
-          console.log('Loaded conversations:', conversations);
-        },
-        error: (error) => {
-          console.error('Error loading conversations:', error);
-          this.toastService.showError('Failed to load conversations');
-        }
-      });
+      // Regular user loads their conversations
+      const userId = this.authService.getUserId();
+      if (userId) {
+        this.chatService.getUserConversations(userId)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: (conversations) => {
+              this.conversations = conversations;
+              this.isLoading = false;
+            },
+            error: (error) => {
+              this.handleError('Failed to load conversations', error);
+            }
+          });
+      }
     }
 
-    // Load inbox preview
-    this.chatService.getInboxPreview(userId).subscribe({
-      next: (inbox) => {
-        this.inbox = inbox;
-        this.filteredInbox = inbox;
-        console.log('Loaded inbox:', inbox);
-        
-        // Initialize unread counts after loading inbox
-        this.updateTotalUnreadCount();
-      },
-      error: (error) => {
-        console.error('Error loading inbox:', error);
-        this.toastService.showError('Failed to load inbox');
-      }
-    });
+    // Load inbox for all users
+    const userId = this.authService.getUserId();
+    if (userId) {
+      this.chatService.getInboxPreview(userId)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (inbox) => {
+            this.inbox = inbox;
+            this.filteredInbox = inbox;
+            this.updateTotalUnreadCount();
+          },
+          error: (error) => {
+            this.handleError('Failed to load inbox', error);
+          }
+        });
+    }
+  }
+
+  private handleError(message: string, error: any): void {
+    this.hasError = true;
+    this.errorMessage = error.error?.message || error.message || message;
+    this.isLoading = false;
+    this.toastService.showError(this.errorMessage);
   }
 
   async sendMessage(): Promise<void> {
-    if (!this.newMessageContent.trim() || !this.activeConversation || this.isSendingMessage) {
-      console.log('SendMessage validation failed:', {
-        hasContent: !!this.newMessageContent.trim(),
-        hasActiveConversation: !!this.activeConversation,
-        isSending: this.isSendingMessage
-      });
+    if (!this.activeConversation || !this.newMessageContent.trim()) {
       return;
     }
 
-    if (!this.currentUserId) {
-      console.error('Cannot send message: currentUserId is not set');
-      this.toastService.showError('User not authenticated');
-      return;
-    }
-
+    const messageContent = this.newMessageContent.trim();
+    this.newMessageContent = '';
     this.isSendingMessage = true;
+
     const receiverId = this.activeConversation.user1Id === this.currentUserId ? 
         this.activeConversation.user2Id : this.activeConversation.user1Id;
-    
-    console.log('Sending message:', {
-      currentUserId: this.currentUserId,
-      receiverId: receiverId,
-      activeConversation: this.activeConversation,
-      content: this.newMessageContent.trim(),
-      isAdmin: this.isAdmin
-    });
-    
-    let messageContent = this.newMessageContent.trim();
-    if (this.isAdmin) {
-      messageContent = `[ADMIN] ${messageContent}`;
-    }
-    
+
     const createMessageDto: CreateMessageDto = {
-      senderId: this.currentUserId,
-      receiverId: receiverId,
+      conversationId: this.activeConversation.id,
       content: messageContent,
-      conversationId: this.activeConversation.id
+      senderId: this.currentUserId,
+      receiverId: receiverId
     };
 
     try {
-      let messageObservable: Observable<MessageDto>;
+      const message = await this.chatService.sendMessage(createMessageDto).toPromise();
       
-      if (this.isAdmin) {
-        // Admin sends message using admin endpoint
-        messageObservable = this.chatService.sendMessageAsAdmin(createMessageDto);
-      } else {
-        // Regular user sends message using normal endpoint
-        messageObservable = this.chatService.sendMessage(createMessageDto);
+      if (message) {
+        // Add message to active conversation
+        this.activeConversation.messages.push(message);
+        this.shouldScrollToBottom = true;
+        
+        // Update message status
+        this.messageStatus.set(message.id, 'sent');
+        
+        // Update unread count for other participants
+        this.handleMessageSent(message);
       }
-
-      messageObservable.subscribe({
-        next: (message) => {
-          console.log('Message sent successfully:', message);
-          this.newMessageContent = '';
-          this.isSendingMessage = false;
-          
-          // Add message to active conversation
-          if (this.activeConversation) {
-            this.activeConversation.messages.push(message);
-            this.shouldScrollToBottom = true;
-          }
-          
-          this.toastService.showSuccess('Message sent!');
-        },
-        error: (error) => {
-          console.error('Error sending message:', error);
-          this.isSendingMessage = false;
-          this.toastService.showError('Failed to send message');
-        }
-      });
     } catch (error) {
-      console.error('Exception in sendMessage:', error);
-      this.isSendingMessage = false;
       this.toastService.showError('Failed to send message');
+      this.newMessageContent = messageContent; // Restore the message content
+    } finally {
+      this.isSendingMessage = false;
     }
   }
 
   selectConversation(conversation: ConversationDto): void {
-    console.log('Selecting conversation:', conversation);
-    console.log('Current active conversation:', this.activeConversation);
-    
     if (this.activeConversation?.id === conversation.id) {
-      console.log('Conversation already active, returning');
       return;
     }
 
     // Leave current conversation group
     if (this.activeConversation) {
-      console.log('Leaving conversation group:', this.activeConversation.id);
       this.leaveConversationGroup(this.activeConversation.id);
     }
 
+    // Set new active conversation
     this.activeConversation = conversation;
-    console.log('Set active conversation:', this.activeConversation);
-    this.shouldScrollToBottom = true;
+    this.loadUserProfiles();
 
     // Join new conversation group
-    console.log('Joining conversation group:', conversation.id);
     this.joinConversationGroup(conversation.id);
 
     // Mark conversation as read
-    console.log('Marking conversation as read:', conversation.id);
     this.markConversationAsRead(conversation.id);
-    
-    // Handle mobile navigation
-    if (window.innerWidth <= 768) {
-      this.showMobileChat = true;
-    }
   }
 
   selectConversationByInbox(inboxItem: InboxDto): void {
-    console.log('Selecting conversation by inbox item:', inboxItem);
-    console.log('Available conversations:', this.conversations);
-    
-    // First try to find the conversation in the existing array
+    // Find conversation in loaded conversations
     let conversation = this.conversations.find(c => c.id === inboxItem.conversationId);
-    console.log('Found conversation in array:', conversation);
     
     if (conversation) {
-      console.log('Using existing conversation');
       this.selectConversation(conversation);
     } else {
-      // If conversation doesn't exist in the array, load it from the API
-      console.log('Loading conversation from API:', inboxItem.conversationId);
-      this.chatService.getConversationById(inboxItem.conversationId).subscribe({
-        next: (loadedConversation) => {
-          console.log('Loaded conversation from API:', loadedConversation);
-          // Add to conversations array if not already there
-          if (!this.conversations.find(c => c.id === loadedConversation.id)) {
-            this.conversations.push(loadedConversation);
+      // Load conversation from API if not in memory
+      this.chatService.getConversationById(inboxItem.conversationId)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (loadedConversation) => {
+            this.selectConversation(loadedConversation);
+          },
+          error: (error) => {
+            this.handleError('Failed to load conversation', error);
           }
-          this.selectConversation(loadedConversation);
-        },
-        error: (error) => {
-          console.error('Error loading conversation:', error);
-          this.toastService.showError('Failed to load conversation');
-        }
-      });
-    }
-    
-    // Handle mobile navigation
-    if (window.innerWidth <= 768) {
-      this.showMobileChat = true;
+        });
     }
   }
 
   selectConversationById(conversationId: string | number): void {
-    console.log('Selecting conversation by ID:', conversationId);
-    
-    // Convert to number if it's a string
     const id = typeof conversationId === 'string' ? parseInt(conversationId, 10) : conversationId;
     
-    // First try to find the conversation in the loaded conversations
+    // Find conversation in loaded conversations
     let conversation = this.conversations.find(c => c.id === id);
     
     if (conversation) {
-      console.log('Found conversation in loaded conversations:', conversation);
       this.selectConversation(conversation);
     } else {
-      // If not found, load it from API
-      console.log('Loading conversation from API:', id);
-      this.chatService.getConversationById(id).subscribe({
-        next: (conversation) => {
-          console.log('Loaded conversation from API:', conversation);
-          // Add to conversations array if not already there
-          if (!this.conversations.find(c => c.id === conversation.id)) {
-            this.conversations.push(conversation);
+      // Load conversation from API if not in memory
+      this.chatService.getConversationById(id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (conversation) => {
+            this.selectConversation(conversation);
+          },
+          error: (error) => {
+            this.handleError('Failed to load conversation', error);
           }
-          this.selectConversation(conversation);
-        },
-        error: (error) => {
-          console.error('Error loading conversation:', error);
-          this.toastService.showError('Failed to load conversation');
-        }
-      });
+        });
     }
   }
 
@@ -551,67 +496,38 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   private handleNewMessage(message: MessageDto): void {
-    console.log('Handling new message:', message);
-    console.log('Current user ID:', this.currentUserId);
-    console.log('Message sender ID:', message.senderId);
-    console.log('Is message from current user:', message.senderId === this.currentUserId);
-    
     // Update conversation messages
     const conversation = this.conversations.find(c => c.id === message.conversationId);
     if (conversation) {
-      conversation.messages = conversation.messages || [];
       conversation.messages.push(message);
-      console.log('Updated conversation messages for ID:', message.conversationId);
       
-      // If this is the active conversation, scroll to bottom
-      if (this.activeConversation?.id === conversation.id) {
+      // Update active conversation if it's the same
+      if (this.activeConversation?.id === message.conversationId) {
+        this.activeConversation = conversation;
         this.shouldScrollToBottom = true;
-        
-        // Mark message as read if it's from another user
-        if (message.senderId !== this.currentUserId) {
-          this.chatService.markMessageAsRead(message.id).subscribe();
-        }
       }
     }
 
-    // Update inbox with proper unread count
+    // Update inbox unread count
     const inboxItem = this.inbox.find(item => item.conversationId === message.conversationId);
-    console.log('Found inbox item:', inboxItem);
-    
     if (inboxItem) {
-      inboxItem.lastMessage = message.content;
-      inboxItem.lastMessageTime = message.sentAt;
+      const previousCount = inboxItem.unreadCount || 0;
       
-      // Only increment unread count if message is from another user
+      // Only increment unread count if message is not from current user
       if (message.senderId !== this.currentUserId) {
-        const previousCount = inboxItem.unreadCount || 0;
         inboxItem.unreadCount = previousCount + 1;
-        inboxItem.isUnread = true;
-        console.log('Updated unread count for conversation:', message.conversationId, 'Previous:', previousCount, 'New count:', inboxItem.unreadCount);
-      } else {
-        console.log('Message from current user, not incrementing unread count');
+        this.updateTotalUnreadCount();
       }
-    } else {
-      console.log('No inbox item found for conversation ID:', message.conversationId);
     }
-
-    // Update total unread count
-    this.updateTotalUnreadCount();
-    
-    // Force change detection
-    this.filteredInbox = [...this.inbox];
   }
 
   private updateTotalUnreadCount(): void {
     this.unreadCount = this.inbox.reduce((total, item) => total + (item.unreadCount || 0), 0);
-    console.log('Total unread count updated:', this.unreadCount);
   }
 
   private handleMessageSent(message: MessageDto): void {
-    // Update message status to 'read' if it's from current user
-    if (message.senderId === this.currentUserId) {
-      this.messageStatus.set(message.id, 'read');
-    }
+    // Update message status
+    this.messageStatus.set(message.id, 'sent');
   }
 
   private handleNewConversation(conversation: ConversationDto): void {
@@ -619,29 +535,22 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   private handleMessageMarkedAsRead(messageId: number): void {
-    // Update message read status in all conversations
-    this.conversations.forEach(conversation => {
-      const message = conversation.messages?.find(m => m.id === messageId);
+    // Update message status in active conversation
+    if (this.activeConversation) {
+      const message = this.activeConversation.messages.find(m => m.id === messageId);
       if (message) {
         message.isRead = true;
-        this.messageStatus.set(messageId, 'read');
       }
-    });
+    }
   }
 
   private handleConversationMarkedAsRead(conversationId: number): void {
-    console.log('Handling conversation marked as read:', conversationId);
-    
-    // Update conversation unread count
+    // Reset unread count for this conversation in inbox
     const inboxItem = this.inbox.find(item => item.conversationId === conversationId);
     if (inboxItem) {
       inboxItem.unreadCount = 0;
-      inboxItem.isUnread = false;
-      console.log('Reset unread count for conversation:', conversationId);
+      this.updateTotalUnreadCount();
     }
-
-    // Update total unread count
-    this.updateTotalUnreadCount();
   }
 
   onSearchChange(): void {
@@ -657,38 +566,6 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
         item.participant.toLowerCase().includes(query) ||
         item.lastMessage?.toLowerCase().includes(query)
       );
-    }
-  }
-
-  getOtherUserName(conversation: ConversationDto): string {
-    console.log('Getting other user name for conversation:', conversation);
-    console.log('Current user ID:', this.currentUserId);
-    console.log('User1 ID:', conversation.user1Id);
-    console.log('User2 ID:', conversation.user2Id);
-    console.log('User1 Name:', conversation.user1Name);
-    console.log('User2 Name:', conversation.user2Name);
-    
-    if (!this.currentUserId) {
-      console.error('Current user ID is not set');
-      return 'Unknown User';
-    }
-    
-    if (conversation.user1Id === this.currentUserId) {
-      // Current user is user1, return user2's name
-      if (conversation.user2Name && conversation.user2Name !== conversation.user2Id) {
-        return conversation.user2Name;
-      } else {
-        // Fallback to user ID if name is not available or is the same as ID
-        return `User ${conversation.user2Id.substring(0, 8)}`;
-      }
-    } else {
-      // Current user is user2, return user1's name
-      if (conversation.user1Name && conversation.user1Name !== conversation.user1Id) {
-        return conversation.user1Name;
-      } else {
-        // Fallback to user ID if name is not available or is the same as ID
-        return `User ${conversation.user1Id.substring(0, 8)}`;
-      }
     }
   }
 
@@ -792,51 +669,51 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   sendAsAdmin(): void {
-    console.log('=== SEND AS ADMIN DEBUG ===');
-    console.log('isAdmin:', this.isAdmin);
-    console.log('activeConversation:', this.activeConversation);
-    console.log('currentUserId:', this.currentUserId);
-    console.log('AuthService.isAdmin():', this.authService.isAdmin());
-    console.log('AuthService.getUserRole():', this.authService.getUserRole());
-    console.log('Token:', this.authService.getAccessToken() ? 'Present' : 'Missing');
-    
-    if (!this.isAdmin || !this.activeConversation) {
-      this.toastService.showError('Admin access required');
+    if (!this.activeConversation || !this.newMessageContent.trim() || !this.isAdmin) {
       return;
     }
 
-    const adminMessage = prompt('Enter admin message:');
-    if (!adminMessage?.trim()) return;
+    const messageContent = this.newMessageContent.trim();
+    this.newMessageContent = '';
+    this.isSendingMessage = true;
+
+    const receiverId = this.activeConversation.user1Id === this.currentUserId ? 
+        this.activeConversation.user2Id : this.activeConversation.user1Id;
 
     const createMessageDto: CreateMessageDto = {
-      senderId: this.currentUserId, // Use actual admin user ID instead of 'admin'
-      receiverId: this.activeConversation.user1Id === this.currentUserId ? this.activeConversation.user2Id : this.activeConversation.user1Id,
-      content: `[ADMIN] ${adminMessage.trim()}`,
-      conversationId: this.activeConversation.id
+      conversationId: this.activeConversation.id,
+      content: messageContent,
+      senderId: this.currentUserId,
+      receiverId: receiverId
     };
 
-    console.log('Sending admin message with DTO:', createMessageDto);
-
-    this.chatService.sendMessageAsAdmin(createMessageDto).subscribe({
-      next: (message) => {
-        console.log('Admin message sent successfully:', message);
-        if (this.activeConversation) {
-          this.activeConversation.messages.push(message);
+    try {
+      const message = this.chatService.sendMessageAsAdmin(createMessageDto);
+      message.subscribe({
+        next: (sentMessage) => {
+          // Add message to active conversation
+          this.activeConversation!.messages.push(sentMessage);
           this.shouldScrollToBottom = true;
+          
+          // Update message status
+          this.messageStatus.set(sentMessage.id, 'sent');
+          
+          // Update unread count for other participants
+          this.handleMessageSent(sentMessage);
+          
+          this.isSendingMessage = false;
+        },
+        error: (error) => {
+          this.toastService.showError('Failed to send admin message');
+          this.newMessageContent = messageContent; // Restore the message content
+          this.isSendingMessage = false;
         }
-        this.toastService.showSuccess('Admin message sent!');
-      },
-      error: (error) => {
-        console.error('Error sending admin message:', error);
-        console.error('Error details:', {
-          status: error.status,
-          statusText: error.statusText,
-          message: error.message,
-          error: error.error
-        });
-        this.toastService.showError('Failed to send admin message');
-      }
-    });
+      });
+    } catch (error) {
+      this.toastService.showError('Failed to send admin message');
+      this.newMessageContent = messageContent; // Restore the message content
+      this.isSendingMessage = false;
+    }
   }
 
   isMessageFromCurrentUser(message: MessageDto): boolean {
@@ -932,5 +809,244 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
            (this.getMessageStatus(message.id) === 'sent' || 
             this.getMessageStatus(message.id) === 'delivered' || 
             this.getMessageStatus(message.id) === 'read');
+  }
+
+  // Admin-specific methods for enhanced UI/UX
+  isAdminMessage(message: MessageDto): boolean {
+    const isFromAdminUser = message.senderId === '2dacdb51-fee9-4479-904c-cafe7dca22a6';
+    const hasAdminIndicator = message.content.includes('[ADMIN]') || message.content.includes('Admin:');
+    const isCurrentUserAdmin = this.currentUserId === '2dacdb51-fee9-4479-904c-cafe7dca22a6';
+    const isCurrentUserAdminMessage = message.senderId === this.currentUserId && isCurrentUserAdmin;
+    
+    return isFromAdminUser || hasAdminIndicator || isCurrentUserAdminMessage;
+  }
+  
+  private isUserAdminOnly(userId: string): boolean {
+    // Only check for actual admin users, not host users
+    const adminUserIds = [
+      '2dacdb51-fee9-4479-904c-cafe7dca22a6', // Admin user
+    ];
+    
+    return adminUserIds.includes(userId);
+  }
+
+  private isUserHost(userId: string): boolean {
+    // Check if the user is a host
+    const hostUserIds = [
+      '3dacdb51-fee9-4479-904c-cafe7dca22a7', // Host user
+    ];
+    
+    return hostUserIds.includes(userId);
+  }
+
+  private isUserGuest(userId: string): boolean {
+    // Check if the user is a guest
+    const guestUserIds = [
+      '4dacdb51-fee9-4479-904c-cafe7dca22a8', // Guest user
+    ];
+    
+    return guestUserIds.includes(userId);
+  }
+
+  getConversationParticipants(conversation: ConversationDto): { host: string; guest: string } {
+    // For now, we'll assume user1 is host and user2 is guest
+    // In a real implementation, you'd need to determine this based on user roles
+    return {
+      host: conversation.user1Name || `User ${conversation.user1Id.substring(0, 8)}`,
+      guest: conversation.user2Name || `User ${conversation.user2Id.substring(0, 8)}`
+    };
+  }
+
+  getUserRole(userId: string, conversation: ConversationDto): string {
+    const currentUserId = this.currentUserId;
+    
+    // Check if current user is admin
+    if (userId === currentUserId && this.isAdmin) {
+      return 'Admin';
+    }
+    
+    // Check specific user roles based on known IDs
+    if (this.isUserAdminOnly(userId)) {
+      return 'Admin';
+    } else if (this.isUserHost(userId)) {
+      return 'Host';
+    } else if (this.isUserGuest(userId)) {
+      return 'Guest';
+    }
+    
+    // Fallback: assume user1 is host and user2 is guest
+    if (userId === conversation.user1Id) {
+      return 'Host';
+    } else if (userId === conversation.user2Id) {
+      return 'Guest';
+    }
+    
+    return 'User';
+  }
+
+  getUserInitial(userId: string): string {
+    // Get user name from conversation participants
+    if (this.activeConversation) {
+      if (userId === this.activeConversation.user1Id) {
+        const userName = this.activeConversation.user1Name || '';
+        return userName ? userName.charAt(0).toUpperCase() : userId.charAt(0).toUpperCase();
+      } else if (userId === this.activeConversation.user2Id) {
+        const userName = this.activeConversation.user2Name || '';
+        return userName ? userName.charAt(0).toUpperCase() : userId.charAt(0).toUpperCase();
+      }
+    }
+    return userId.charAt(0).toUpperCase();
+  }
+
+  shouldShowProfileImage(userId: string): boolean {
+    const profile = this.userProfilesCache.get(userId);
+    const hasImage = !!(profile && profile.photo && profile.photo.photoUrl && profile.photo.photoUrl.trim() !== '');
+    return hasImage;
+  }
+
+  getUserProfileImage(userId: string): string {
+    const profile = this.userProfilesCache.get(userId);
+    const imageUrl = profile?.photo?.photoUrl || '';
+    return imageUrl;
+  }
+
+  getUserName(userId: string): string {
+    // Check if this is the current user (admin)
+    if (userId === this.currentUserId) {
+      const adminProfile = this.userProfilesCache.get(userId);
+      if (adminProfile) {
+        const fullName = `${adminProfile.firstName} ${adminProfile.lastName}`.trim();
+        if (fullName) {
+          return fullName;
+        }
+        if (adminProfile.firstName) {
+          return adminProfile.firstName;
+        }
+      }
+      return 'Admin';
+    }
+
+    // Check if this is the specific admin user ID
+    if (userId === '2dacdb51-fee9-4479-904c-cafe7dca22a6') {
+      const adminProfile = this.userProfilesCache.get(userId);
+      if (adminProfile) {
+        const fullName = `${adminProfile.firstName} ${adminProfile.lastName}`.trim();
+        if (fullName) {
+          return fullName;
+        }
+        if (adminProfile.firstName) {
+          return adminProfile.firstName;
+        }
+      }
+      return 'Admin';
+    }
+
+    // Check active conversation participants
+    if (this.activeConversation) {
+      if (this.activeConversation.user1Id === userId) {
+        const name = this.activeConversation.user1Name;
+        if (name) return name;
+      }
+      if (this.activeConversation.user2Id === userId) {
+        const name = this.activeConversation.user2Name;
+        if (name) return name;
+      }
+    }
+
+    // Check user profile cache
+    const userProfile = this.userProfilesCache.get(userId);
+    if (userProfile) {
+      const fullName = `${userProfile.firstName} ${userProfile.lastName}`.trim();
+      if (fullName) {
+        return fullName;
+      }
+      if (userProfile.firstName) {
+        return userProfile.firstName;
+      }
+    }
+
+    // Fallback
+    const fallbackName = this.getDisplayName(userId);
+    return fallbackName || 'Unknown User';
+  }
+
+  getOtherUserName(conversation: ConversationDto): string {
+    const currentUserId = this.currentUserId;
+    
+    if (conversation.user1Id === currentUserId) {
+      return conversation.user2Name || `User ${conversation.user2Id.substring(0, 8)}`;
+    } else {
+      return conversation.user1Name || `User ${conversation.user1Id.substring(0, 8)}`;
+    }
+  }
+
+  getOtherUserInitial(conversation: ConversationDto): string {
+    const currentUserId = this.currentUserId;
+    
+    if (conversation.user1Id === currentUserId) {
+      const userName = conversation.user2Name || '';
+      return userName ? userName.charAt(0).toUpperCase() : conversation.user2Id.charAt(0).toUpperCase();
+    } else {
+      const userName = conversation.user1Name || '';
+      return userName ? userName.charAt(0).toUpperCase() : conversation.user1Id.charAt(0).toUpperCase();
+    }
+  }
+
+  // Load user profiles for profile images
+  private loadUserProfiles(): void {
+    // Get unique user IDs from conversations
+    const userIds = new Set<string>();
+    
+    // Add current user
+    if (this.currentUserId) {
+      userIds.add(this.currentUserId);
+    }
+    
+    // Add users from conversations
+    this.conversations.forEach(conversation => {
+      userIds.add(conversation.user1Id);
+      userIds.add(conversation.user2Id);
+    });
+    
+    // Add users from active conversation messages
+    if (this.activeConversation && this.activeConversation.messages) {
+      this.activeConversation.messages.forEach(message => {
+        userIds.add(message.senderId);
+        userIds.add(message.receiverId);
+      });
+    }
+    
+    // Explicitly add admin user ID to ensure admin profile is loaded
+    userIds.add('2dacdb51-fee9-4479-904c-cafe7dca22a6');
+    
+    // Convert to array and filter out users already in cache
+    const usersToLoad = Array.from(userIds).filter(userId => !this.userProfilesCache.has(userId));
+    
+    if (usersToLoad.length === 0) {
+      return; // All profiles already loaded
+    }
+    
+    // Load profiles for users not in cache
+    this.userProfileService.getUserProfilesByUserIds(usersToLoad).subscribe({
+      next: (response) => {
+        if (response && response.body && response.body.items) {
+          response.body.items.forEach((profile: IUserProfile) => {
+            this.userProfilesCache.set(profile.userId, profile);
+          });
+        }
+      },
+      error: (error) => {
+        console.error('Error loading user profiles:', error);
+      }
+    });
+  }
+
+
+
+  // Enhanced error recovery method
+  retryLoadData(): void {
+    this.hasError = false;
+    this.errorMessage = '';
+    this.loadInitialData();
   }
 }
