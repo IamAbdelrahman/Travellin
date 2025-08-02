@@ -17,4 +17,16 @@ export class BookingService {
       withCredentials: true,
     });
   }
+  getBookings():Observable<any> {
+    return this.http.get(`${ApiConstant.booking.getAll}`, {
+      observe: 'response',
+      withCredentials: true,
+    });
+  }
+    getBookingsForAdmin():Observable<any> {
+    return this.http.get(`${ApiConstant.booking.adminAllBookings}`, {
+      observe: 'response',
+      withCredentials: true,
+    });
+  }
 }

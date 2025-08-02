@@ -44,7 +44,7 @@ export class ApiConstant {
     cancelEnhanced: `${ApiConstant.baseUrl}/Bookings/{id}/cancel-enhanced`,
     canCancel: `${ApiConstant.baseUrl}/Bookings/{id}/can-cancel`,
     refund: `${ApiConstant.baseUrl}/Bookings/{id}/refund`,
-
+    getAll:  `${ApiConstant.baseUrl}/Bookings/GetAllBookings`,
     // Host booking management
     hostBookings: `${ApiConstant.baseUrl}/Bookings/host/bookings`,
     hostPendingBookings: `${ApiConstant.baseUrl}/Bookings/host/pending-bookings`,
@@ -83,7 +83,8 @@ export class ApiConstant {
     Users: `${ApiConstant.baseUrl}/UserProfiles`,
     User: `${ApiConstant.baseUrl}/UserProfiles/me`,
     ChatUsers: `${ApiConstant.baseUrl}/UserProfiles/chat-users`,
-    deleteUser: `${ApiConstant.baseUrl}/UserProfiles`,
+    Delete: `${ApiConstant.baseUrl}/UserProfiles`,
+    GetUser: `${ApiConstant.baseUrl}/UserProfiles`
   };
   public static GuestType = {
     GuestType: `${ApiConstant.baseUrl}/GuestTypes`,

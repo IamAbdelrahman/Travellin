@@ -191,115 +191,11 @@
        <div *ngIf="activeTab === 'properties'" class="tab-content">
         <app-property-admin></app-property-admin>
        </div>
-      <!-- <div *ngIf="activeTab === 'properties'" class="tab-content">
-        <div class="page-header">
-          <h1 class="page-title">Property Management</h1>
-          <div class="page-actions">
-            <select [(ngModel)]="selectedFilter" class="filter-select">
-              <option value="all">All Properties</option>
-              <option value="approved">Approved</option>
-              <option value="pending">Pending</option>
-              <option value="rejected">Rejected</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="data-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Property</th>
-                <th>Host</th>
-                <th>Location</th>
-                <th>Price</th>
-                <th>Rating</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let property of getFilteredProperties()">
-                <td>
-                  <div class="property-info">
-                    <img src="https://via.placeholder.com/60x40" alt="Property" class="property-image">
-                    <div class="property-title">{{ property.title }}</div>
-                  </div>
-                </td>
-                <td>{{ property.host }}</td>
-                <td>{{ property.location }}</td>
-                <td>${{ property.price }}/night</td>
-                <td>
-                  <div class="rating" *ngIf="property.rating > 0">
-                    <span class="star">★</span>
-                    {{ property.rating }}
-                  </div>
-                  <span *ngIf="property.rating === 0">-</span>
-                </td>
-                <td>
-                  <span class="status-badge" [ngClass]="getStatusColor(property.status)">
-                    {{ property.status }}
-                  </span>
-                </td>
-                <td>
-                  <div class="action-buttons">
-                    <button class="btn-secondary btn-sm">View</button>
-                    <button *ngIf="property.status === 'Pending'" 
-                            class="btn-success btn-sm" 
-                            (click)="approveProperty(property)">Approve</button>
-                    <button *ngIf="property.status === 'Pending'" 
-                            class="btn-danger btn-sm" 
-                            (click)="rejectProperty(property)">Reject</button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div> -->
-
       <!-- Bookings Tab -->
-      <!-- <div *ngIf="activeTab === 'bookings'" class="tab-content">
-        <h1 class="page-title">Booking Management</h1>
+       <div *ngIf="activeTab === 'bookings'" class="tab-content">
+        <app-booking-admin></app-booking-admin>
+       </div>
 
-        <div class="data-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Booking ID</th>
-                <th>Guest</th>
-                <th>Host</th>
-                <th>Property</th>
-                <th>Dates</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let booking of bookings">
-                <td>#{{ booking.id }}</td>
-                <td>{{ booking.guest }}</td>
-                <td>{{ booking.host }}</td>
-                <td>{{ booking.property }}</td>
-                <td>
-                  <div class="date-range">
-                    {{ booking.checkIn }} - {{ booking.checkOut }}
-                  </div>
-                </td>
-                <td>${{ booking.amount }}</td>
-                <td>
-                  <span class="status-badge" [ngClass]="getStatusColor(booking.status)">
-                    {{ booking.status }}
-                  </span>
-                </td>
-                <td>
-                  <button class="btn-secondary btn-sm">View Details</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div> -->
 
       <!-- Payments Tab -->
       <!-- <div *ngIf="activeTab === 'payments'" class="tab-content">
