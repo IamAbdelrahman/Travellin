@@ -20,7 +20,7 @@ export class BookingHistoryComponent implements OnInit {
   currentPage = 1;
   totalPages = 1;
   pageSize = 10;
-  
+
   // Search and filter properties
   searchQuery = '';
   selectedStatus = 'all';
@@ -30,7 +30,7 @@ export class BookingHistoryComponent implements OnInit {
     private checkOutService: CheckOutBookingService,
     private cancellationService: CancellationService,
     private toastService: ToastService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadBookings();
@@ -44,6 +44,7 @@ export class BookingHistoryComponent implements OnInit {
         this.totalPages = response.body?.metaData?.total ? Math.ceil(response.body.metaData.total / this.pageSize) : 1;
         this.filteredBookings = [...this.bookings];
         this.loading = false;
+
       },
       error: (error: any) => {
         console.error('Error loading bookings:', error);
@@ -60,7 +61,7 @@ export class BookingHistoryComponent implements OnInit {
       return;
     }
 
-    this.filteredBookings = this.bookings.filter(booking => 
+    this.filteredBookings = this.bookings.filter(booking =>
       booking.property?.title?.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
       booking.property?.location?.name?.toLowerCase().includes(this.searchQuery.toLowerCase())
     );
@@ -77,9 +78,10 @@ export class BookingHistoryComponent implements OnInit {
 
     // Apply search filter
     if (this.searchQuery.trim()) {
-      filtered = filtered.filter(booking => 
+      filtered = filtered.filter(booking =>
         booking.property?.title?.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
         booking.property?.location?.name?.toLowerCase().includes(this.searchQuery.toLowerCase())
+
       );
     }
 
@@ -91,14 +93,14 @@ export class BookingHistoryComponent implements OnInit {
     try {
       // First check if booking can be cancelled
       const canCancelResponse = await this.cancellationService.canCancelBooking(booking.id).toPromise();
-      
+
       if (!canCancelResponse?.canCancel) {
         this.toastService.showWarning('This booking cannot be cancelled at this time.');
         return;
       }
 
       // Show refund information
-      const refundInfo = canCancelResponse.refundAmount > 0 
+      const refundInfo = canCancelResponse.refundAmount > 0
         ? `You will receive a refund of $${canCancelResponse.refundAmount.toFixed(2)}.`
         : 'No refund will be issued.';
 
@@ -153,7 +155,7 @@ export class BookingHistoryComponent implements OnInit {
   // New method to show cancellation options
   showCancellationOptions(booking: Bookings) {
     const status = booking.status.toLowerCase();
-    
+
     if (status === 'pending') {
       // Use legacy cancellation for pending bookings
       this.cancelBooking(booking);
@@ -203,4 +205,5 @@ export class BookingHistoryComponent implements OnInit {
         return 'text-gray-600 bg-gray-100';
     }
   }
+
 }
