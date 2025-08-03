@@ -60,9 +60,9 @@ namespace Travellin.Infrastructure.Repositories
         {
             var query = _dbContext.Bookings
                 .Include(x => x.Property)
-                .ThenInclude(x => x.Owner)
+                .ThenInclude(x => x.Owner).ThenInclude(x => x.UserProfile)
                 .Include(x => x.User)
-                .ThenInclude(x => x.UserName)
+                .ThenInclude(x => x.UserProfile)
                 .Include(x => x.BookingGuests);
 
             return await GetPaginatedBookingsAsync(query, queryDto);
@@ -210,8 +210,9 @@ namespace Travellin.Infrastructure.Repositories
         {
             var query = _dbContext.Bookings
                        .AsNoTracking()
-                       .Include(b => b.User) 
-                       .Include(b => b.Property)
+                       .Include(b => b.User)
+                       .ThenInclude(b => b.UserProfile)
+                       .Include(b => b.Property).ThenInclude(b => b.Owner).ThenInclude(b => b.UserProfile)
                        .Include(b => b.BookingGuests)
                          .ThenInclude(bg => bg.GuestType)
                        .AsQueryable();
