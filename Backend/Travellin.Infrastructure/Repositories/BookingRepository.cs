@@ -17,11 +17,12 @@ namespace Travellin.Infrastructure.Repositories
         public async Task<PaginatedResult<BookingDto>> GetByUserIdAsync(string userId, GetAllBookingsQueryParamsDto queryDto)
         {
             var query = _dbContext.Bookings
-                .Include(x => x.Property)
-                   .ThenInclude(p=> p.PropertyPhotos)
-                     .ThenInclude(p => p.FileUpload)
-                .Include(x => x.User)
+                 .Include(x => x.Property)
+                 .ThenInclude(p=> p.PropertyPhotos)
+                 .ThenInclude(p => p.FileUpload)
+                .Include(x => x.User).ThenInclude(x => x.UserProfile)
                 .Include(x => x.BookingGuests)
+                .Include(x => x.Property).ThenInclude(x => x.Owner).ThenInclude(x => x.UserProfile)
                 .Where(x => x.UserId == userId);
 
             return await GetPaginatedBookingsAsync(query, queryDto);
@@ -32,8 +33,8 @@ namespace Travellin.Infrastructure.Repositories
         {
             var query = _dbContext.Bookings
                 .Include(x => x.Property)
-                .ThenInclude(x => x.Owner)
-                .Include(x => x.User)
+                .ThenInclude(x => x.Owner).ThenInclude(x => x.UserProfile)
+                .Include(x => x.User).ThenInclude(x => x.UserProfile)
                 .Include(x => x.BookingGuests)
                 .Where(x => x.Property != null && 
                            x.Property.OwnerId != null && 
@@ -46,9 +47,8 @@ namespace Travellin.Infrastructure.Repositories
         public async Task<PaginatedResult<BookingDto>> GetByPropertyIdAsync(string propertyId, GetAllBookingsQueryParamsDto queryDto)
         {
             var query = _dbContext.Bookings
-                .Include(x => x.Property)
-                .ThenInclude(x => x.Owner)
-                .Include(x => x.User)
+                .Include(x => x.Property).ThenInclude(x => x.Owner).ThenInclude(x => x.UserProfile)
+                .Include(x => x.User).ThenInclude(x => x.UserProfile)
                 .Include(x => x.BookingGuests)
                 .Where(x => x.PropertyId == propertyId);
 
@@ -85,8 +85,8 @@ namespace Travellin.Infrastructure.Repositories
 
                 var query = _dbContext.Bookings
                     .Include(x => x.Property)
-                    .ThenInclude(x => x.Owner)
-                    .Include(x => x.User)
+                    .ThenInclude(x => x.Owner).ThenInclude(x => x.UserProfile)
+                    .Include(x => x.User).ThenInclude(x => x.UserProfile)
                     .Include(x => x.BookingGuests)
                     .Where(x => x.Property != null && 
                                x.Property.OwnerId != null && 
@@ -109,8 +109,8 @@ namespace Travellin.Infrastructure.Repositories
         {
             var query = _dbContext.Bookings
                 .Include(x => x.Property)
-                .ThenInclude(x => x.Owner)
-                .Include(x => x.User)
+                    .ThenInclude(x => x.Owner).ThenInclude(x => x.UserProfile)
+                    .Include(x => x.User).ThenInclude(x => x.UserProfile)
                 .Include(x => x.BookingGuests)
                 .Where(x => x.Status == BookingStatus.Pending);
 
@@ -192,11 +192,12 @@ namespace Travellin.Infrastructure.Repositories
                 .ThenInclude(x => x.PropertyPhotos)
                 .ThenInclude(x => x.FileUpload)
                 .Include(x => x.Property)
-                .ThenInclude(x => x.Owner)
+                .ThenInclude(x => x.Owner).ThenInclude(x => x.UserProfile)
                 .Include(x => x.Property)
                 .ThenInclude(x => x.Location)
                 .Include(x => x.Property)
                 .ThenInclude(x => x.PropertyType)
+                .Include(x => x.User).ThenInclude(x => x.UserProfile)
                .Where(x => x.Id == bookingId)
                .AsQueryable();
 
