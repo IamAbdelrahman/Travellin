@@ -14,7 +14,7 @@ import { ICheckoutBookingRequest } from '../models/api/request/ICheckoutBookingR
   providedIn: 'root',
 })
 export class CheckOutBookingService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllBookings(): Observable<HttpResponse<any>> {
     return this.http.get<any>(ApiConstant.booking.getAllBookings, {
@@ -42,14 +42,14 @@ export class CheckOutBookingService {
     );
   }
 
-checkOut(data: ICheckoutBookingRequest): Observable<{ sessionUrl: string }> {
-  return this.http.post<{ sessionUrl: string }>(
-    `${ApiConstant.payment.createCheckoutSession}`, data,
-    {
-      withCredentials: true,
-    }
-  );
-}
+  checkOut(data: ICheckoutBookingRequest): Observable<{ sessionUrl: string }> {
+    return this.http.post<{ sessionUrl: string }>(
+      `${ApiConstant.payment.createCheckoutSession}`, data,
+      {
+        withCredentials: true,
+      }
+    );
+  }
 
 
   getUserRole(): Observable<HttpResponse<any>> {
@@ -61,5 +61,9 @@ checkOut(data: ICheckoutBookingRequest): Observable<{ sessionUrl: string }> {
   cancelBookings(id: string): Observable<any> {
     const url2 = ApiConstant.booking.cancelBooking.replace('{id}', id);
     return this.http.post<any>(url2, {}, { withCredentials: true });
+  }
+  checkinBooking(bookingId: string): Observable<any> {
+    const url = ApiConstant.booking.checkin.replace('{id}', bookingId);
+    return this.http.post<any>(url, {}, { withCredentials: true });
   }
 }
