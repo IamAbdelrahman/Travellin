@@ -71,12 +71,19 @@
         </div>
       </div>
     </div>
-    @if (bookings[0].status.toLowerCase() === 'pending') {
+    @if (
+    bookings[0].status.toLowerCase() === 'pending' ||
+    bookings[0].status.toLowerCase() === 'confirmed'
+    )
+    {
     <button type="button" class="confirm-btn" (click)="onCheckOut()" [disabled]="isCheckingOut">
-      <span *ngIf="isCheckingOut" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+      <span *ngIf="!isCheckingOut">
+        {{ bookings[0].status.toLowerCase() === 'pending' ? 'Pay to Request' : 'Pay to Confirm' }}
+      </span>
       <span *ngIf="isCheckingOut">Processing...</span>
       <span *ngIf="!isCheckingOut">Pay</span>
     </button>
     }
+
   </div>
 </div>
