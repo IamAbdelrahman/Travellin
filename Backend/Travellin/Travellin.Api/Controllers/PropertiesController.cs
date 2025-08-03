@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Travellin.Api.Controllers;
 using Travellin.Core.Dtos;
 using Travellin.Core.Dtos.Properties;
@@ -9,10 +10,10 @@ using Travellin.Core.Dtos.PropertyAvailabilities;
 using Travellin.Core.Dtos.PropertyFees;
 using Travellin.Core.Dtos.PropertyGuests;
 using Travellin.Core.Dtos.Reviews;
-using Travellin.Core.Interfaces;
 using Travellin.Core.Entities;
-using Travellin.Travellin.Core.Shared;
+using Travellin.Core.Interfaces;
 using Travellin.Core.Mappings;
+using Travellin.Travellin.Core.Shared;
 namespace Travellin.Travellin.Api.Controllers
 {
     [Route("api/v1/[controller]")]
@@ -20,6 +21,9 @@ namespace Travellin.Travellin.Api.Controllers
     public class PropertiesController : BaseController
     {
         private readonly IServiceFactory _serviceFactory;
+        private string GetCurrentUserId() =>
+        User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+
         public PropertiesController(IUnitOfWork unitOfWork, IServiceFactory serviceFactory) : base(unitOfWork)
         {
             _serviceFactory = serviceFactory;
@@ -238,5 +242,17 @@ namespace Travellin.Travellin.Api.Controllers
 
             return Ok(property.ToDto());
         }
+
+        [Authorize(Roles = "Host")]
+        [HttpGet("Host")]
+        public async Task<IActionResult> GetHostProperties([FromQuery] FilterPropertyQueryParamsDto queryDto)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == null)
+                return Unauthorized();
+            var result = await _unitOfWork.PropertyRepository.GetPropertiesByOwnerIdAsync(queryDto, userId);
+            return Ok(result);
+        }
+
     }
 }
