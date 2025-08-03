@@ -18,7 +18,7 @@ namespace Travellin.Infrastructure.Services
             _unitOfWork = unitOfWork;
         }
 
-        //////////////////////////////////Create Booking////////////////////////////////////
+        //////////////////////////////////Create Booking (of instant type or request type)////////////////////////////////////
         public async Task<Booking> CreateBookingAsync(string userId, CreateBookingDto dto)
         {
            
@@ -48,6 +48,12 @@ namespace Travellin.Infrastructure.Services
             //Update:those nights block them as they are booked now so any coming guest cannot book them
             await UpdateAvailabilityRecordsAsync(property, dto.CheckIn, dto.Checkout);
 
+
+            //////////////////////////////////Instant Booking Or Request Booking
+            var isInstant = property.IsInstantBook;
+            var bookingStatus = isInstant ? BookingStatus.Confirmed : BookingStatus.Pending;
+
+
             //Create booking
             var booking = new Booking
             {
@@ -57,7 +63,7 @@ namespace Travellin.Infrastructure.Services
                 CheckOut = dto.Checkout,
                 PricePerNight = property.PricePerNight,
                 TotalFees = totalFees,
-                Status = BookingStatus.Pending,
+                Status = bookingStatus,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
                 BookingGuests = dto.Guests.Select(g => new BookingGuest
