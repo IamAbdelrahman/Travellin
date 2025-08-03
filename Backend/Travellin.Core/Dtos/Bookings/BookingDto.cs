@@ -19,6 +19,5 @@ namespace Travellin.Core.Dtos.Bookings
         public List<BookingGuestDto> BookingGuests { get; set; }
         public PropertyListItemDto Property { get; set; }
         public UserProfileDto User { get; set; }
-
     }
 }
