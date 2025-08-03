@@ -461,7 +461,7 @@ namespace Travellin.Infrastructure.Services
                 throw new NotFoundException($"Booking {bookingId} not found.");
 
             if (booking.Status != BookingStatus.Pending)
-                throw new ConflictException("Only pending bookings can be declined.");
+                throw new ConflictException("Only pending or confirmed bookings can be declined.");
 
             booking.Status = BookingStatus.Declined;
             booking.UpdatedAt = DateTime.UtcNow;
