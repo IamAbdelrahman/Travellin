@@ -11,6 +11,8 @@ namespace Travellin.Core.Mappings
             {
                 Id = booking.Id,
                 UserId = booking.UserId,
+                GuestName = booking.User.UserProfile.FirstName + " " + booking.User.UserProfile.LastName,
+                HostName = booking.Property.Owner.UserProfile.FirstName + " " + booking.Property.Owner.UserProfile.LastName,
                 CheckIn = booking.CheckIn,
                 CheckOut = booking.CheckOut,
                 PricePerNight = booking.PricePerNight,
