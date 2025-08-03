@@ -37,6 +37,8 @@
           </li>
 
           @if (isAuthenticated) {
+            @if(isGuest()) {
+              <!-- Favourits -->
             <li class="nav-item">
               <a
                 class="nav-link d-flex align-items-center gap-1"
@@ -49,6 +51,28 @@
                 <span>Favorites</span>
               </a>
             </li>
+            <!-- Chats -->
+            <li class="nav-item">
+              <a
+                class="nav-link d-flex align-items-center gap-1 position-relative"
+                routerLink="/chat"
+                routerLinkActive="active">
+                <lucide-icon
+                  [img]="icons.chat"
+                  class="my-icon"
+                  size="18"></lucide-icon>
+                <span>Chat</span>
+                <!-- Unread Count Badge -->
+                <span 
+                  *ngIf="unreadCount > 0" 
+                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                  style="font-size: 0.6rem; transform: translate(-50%, -50%);">
+                  {{ unreadCount > 99 ? '99+' : unreadCount }}
+                </span>
+              </a>
+            </li>
+            }
+
             
             <!-- Host Dashboard Link -->
             @if (isHost()) {
@@ -95,26 +119,6 @@
                 </a>
               </li>
             }
-            
-            <li class="nav-item">
-              <a
-                class="nav-link d-flex align-items-center gap-1 position-relative"
-                routerLink="/chat"
-                routerLinkActive="active">
-                <lucide-icon
-                  [img]="icons.chat"
-                  class="my-icon"
-                  size="18"></lucide-icon>
-                <span>Chat</span>
-                <!-- Unread Count Badge -->
-                <span 
-                  *ngIf="unreadCount > 0" 
-                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                  style="font-size: 0.6rem; transform: translate(-50%, -50%);">
-                  {{ unreadCount > 99 ? '99+' : unreadCount }}
-                </span>
-              </a>
-            </li>
             <li class="nav-item">
               <a
                 class="nav-link d-flex align-items-center gap-1"

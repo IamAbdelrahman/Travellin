@@ -4,7 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { ProfilePromptComponent } from '../../../components/Profile/profile-prompt/profile-prompt.component';
 import { ProfileUpdateModalComponent } from '../../../components/Profile/profile-update-modal/profile-update-modal.component';
 import { CommonModule } from '@angular/common';
-
+import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-profile',
   imports: [
@@ -18,5 +18,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './profile.component.css',
 })
 export class ProfileComponent {
-  constructor(private router: Router) { }
+  constructor(private router: Router, private authService: AuthService) { }
+  isGuest():boolean {
+    return this.authService.isGuest();
+  }
 }

@@ -57,4 +57,8 @@ export class AuthService {
     const role = this.getUserRole();
     return role == 'Host';
   }
+  public isGuest(): boolean {
+    const role = this.getUserRole();
+    return role == 'Guest';
+  }
 }
