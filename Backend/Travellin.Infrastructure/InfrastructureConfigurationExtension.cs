@@ -107,6 +107,7 @@ namespace Travellin.Infrastructure
             services.AddScoped<ICheckoutManagementService, StripeCheckoutService>();
             services.AddScoped<ICancellationService, CancellationService>();
             services.AddScoped<IPaymentRefundService, StripeRefundService>();
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IBookingManagementService, BookingManagementService>();
             services.AddScoped<IStripeTransferService, StripeTransferService>();
             services.AddScoped<IPropertyFilterExtractorService, PropertyFilterExtractorService>();

@@ -1,246 +1,129 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NotificationService, NotificationData } from '../../services/notification.service';
+import { BookingManagementService } from '../../services/booking-management.service';
 import { Subscription } from 'rxjs';
-import { LucideAngularModule, Bell } from 'lucide-angular';
+
+export interface Notification {
+  id: string;
+  type: 'booking_request' | 'booking_response' | 'booking_cancellation' | 'payment_success' | 'payment_refund';
+  bookingId: string;
+  propertyTitle: string;
+  message: string;
+  timestamp: Date;
+  isRead: boolean;
+}
 
 @Component({
   selector: 'app-notification-bell',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
-  template: `
-    <div class="notification-bell position-relative">
-      <button 
-        class="btn btn-link position-relative p-0" 
-        (click)="toggleDropdown()"
-        title="Notifications">
-        <lucide-icon [name]="bellIcon" size="20"></lucide-icon>
-        
-        <!-- Notification Badge -->
-        <span 
-          *ngIf="unreadCount > 0" 
-          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-          style="font-size: 0.6rem; transform: translate(-50%, -50%);">
-          {{ unreadCount > 99 ? '99+' : unreadCount }}
-        </span>
-      </button>
-
-      <!-- Notification Dropdown -->
-      <div 
-        *ngIf="showDropdown" 
-        class="notification-dropdown position-absolute top-100 end-0 mt-2 bg-white border rounded shadow-lg"
-        style="width: 350px; max-height: 400px; z-index: 1050;">
-        
-        <!-- Header -->
-        <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-          <h6 class="mb-0 fw-bold">Notifications</h6>
-          <div class="d-flex gap-2">
-            <button 
-              *ngIf="unreadCount > 0"
-              class="btn btn-sm btn-outline-primary" 
-              (click)="markAllAsRead()">
-              Mark all read
-            </button>
-            <button 
-              class="btn btn-sm btn-outline-secondary" 
-              (click)="clearAll()">
-              Clear all
-            </button>
-          </div>
-        </div>
-
-        <!-- Notification List -->
-        <div class="notification-list" style="max-height: 300px; overflow-y: auto;">
-          <div 
-            *ngFor="let notification of notifications; trackBy: trackByNotificationId" 
-            class="notification-item p-3 border-bottom"
-            [class.unread]="!notification.isRead"
-            (click)="handleNotificationClick(notification)">
-            
-            <div class="d-flex align-items-start">
-              <div class="notification-icon me-3" style="font-size: 1.2rem;">
-                {{ notification.icon }}
-              </div>
-              
-              <div class="flex-grow-1">
-                <div class="d-flex justify-content-between align-items-start">
-                  <h6 class="mb-1 fw-semibold" [class.text-primary]="!notification.isRead">
-                    {{ notification.title }}
-                  </h6>
-                  <small class="text-muted">
-                    {{ formatTime(notification.timestamp) }}
-                  </small>
-                </div>
-                <p class="mb-1 small text-muted">{{ notification.message }}</p>
-                <div class="d-flex align-items-center gap-2">
-                  <span 
-                    class="badge badge-sm"
-                    [class]="getPriorityClass(notification.priority)">
-                    {{ notification.priority }}
-                  </span>
-                  <span class="badge badge-sm bg-secondary">{{ notification.type }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Empty State -->
-          <div 
-            *ngIf="notifications.length === 0" 
-            class="text-center p-4 text-muted">
-            <div class="mb-2">🔔</div>
-            <p class="mb-0 small">No notifications yet</p>
-          </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="p-2 border-top text-center">
-          <button 
-            class="btn btn-sm btn-link text-decoration-none"
-            (click)="viewAllNotifications()">
-            View all notifications
-          </button>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .notification-bell {
-      display: inline-block;
-    }
-
-    .notification-dropdown {
-      min-width: 350px;
-    }
-
-    .notification-item {
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    .notification-item:hover {
-      background-color: #f8f9fa;
-    }
-
-    .notification-item.unread {
-      background-color: #e3f2fd;
-    }
-
-    .notification-item.unread:hover {
-      background-color: #bbdefb;
-    }
-
-    .notification-icon {
-      flex-shrink: 0;
-    }
-
-    .badge-sm {
-      font-size: 0.6rem;
-    }
-
-    .priority-high {
-      background-color: #dc3545;
-      color: white;
-    }
-
-    .priority-medium {
-      background-color: #fd7e14;
-      color: white;
-    }
-
-    .priority-low {
-      background-color: #6c757d;
-      color: white;
-    }
-  `]
+  imports: [CommonModule],
+  templateUrl: './notification-bell.component.html',
+  styleUrls: ['./notification-bell.component.scss']
 })
 export class NotificationBellComponent implements OnInit, OnDestroy {
-  bellIcon = Bell;
-  notifications: NotificationData[] = [];
-  unreadCount: number = 0;
-  showDropdown: boolean = false;
-  private subscription = new Subscription();
+  notifications: Notification[] = [];
+  unreadCount = 0;
+  showNotifications = false;
+  private subscription: Subscription = new Subscription();
 
-  constructor(private notificationService: NotificationService) {}
+  constructor(private bookingService: BookingManagementService) {}
 
   ngOnInit(): void {
-    // Subscribe to new notifications
+    // Subscribe to booking status changes
     this.subscription.add(
-      this.notificationService.notifications$.subscribe(notification => {
-        this.updateNotifications();
+      this.bookingService.bookingStatus$.subscribe((status: any) => {
+        if (status) {
+          this.handleBookingStatusChange(status);
+        }
       })
     );
 
-    this.updateNotifications();
+    // Subscribe to notifications
+    this.subscription.add(
+      this.bookingService.notifications$.subscribe((notifications: any) => {
+        this.notifications = notifications;
+        this.updateUnreadCount();
+      })
+    );
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  private updateNotifications(): void {
-    this.notifications = this.notificationService.getNotifications();
-    this.unreadCount = this.notificationService.getUnreadCount();
+  toggleNotifications(): void {
+    this.showNotifications = !this.showNotifications;
   }
 
-  toggleDropdown(): void {
-    this.showDropdown = !this.showDropdown;
-  }
-
-  handleNotificationClick(notification: NotificationData): void {
-    // Mark as read
-    this.notificationService.markAsRead(notification.id);
-    this.updateNotifications();
-
-    // Execute action if available
-    if (notification.action) {
-      notification.action();
-    }
-
-    // Close dropdown
-    this.showDropdown = false;
+  markAsRead(notificationId: string): void {
+    this.bookingService.markNotificationAsRead(notificationId);
   }
 
   markAllAsRead(): void {
-    this.notificationService.markAllAsRead();
-    this.updateNotifications();
+    this.notifications.forEach(notification => {
+      if (!notification.isRead) {
+        this.bookingService.markNotificationAsRead(notification.id);
+      }
+    });
   }
 
-  clearAll(): void {
-    this.notificationService.clearNotifications();
-    this.updateNotifications();
+  clearAllNotifications(): void {
+    this.bookingService.clearNotifications();
   }
 
-  viewAllNotifications(): void {
-    // Navigate to notifications page or show full list
-    console.log('Navigate to notifications page');
-    this.showDropdown = false;
+  getNotificationIcon(type: string): string {
+    switch (type) {
+      case 'booking_request': return '📋';
+      case 'booking_response': return '✅';
+      case 'booking_cancellation': return '❌';
+      case 'payment_success': return '💰';
+      case 'payment_refund': return '💸';
+      default: return '🔔';
+    }
   }
 
-  formatTime(timestamp: Date): string {
+  getNotificationClass(type: string): string {
+    switch (type) {
+      case 'booking_request': return 'badge-info';
+      case 'booking_response': return 'badge-success';
+      case 'booking_cancellation': return 'badge-warning';
+      case 'payment_success': return 'badge-success';
+      case 'payment_refund': return 'badge-info';
+      default: return 'badge-default';
+    }
+  }
+
+  formatTimestamp(timestamp: Date): string {
     const now = new Date();
-    const diff = now.getTime() - timestamp.getTime();
-    const minutes = Math.floor(diff / (1000 * 60));
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const diff = now.getTime() - new Date(timestamp).getTime();
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
 
     if (minutes < 1) return 'Just now';
     if (minutes < 60) return `${minutes}m ago`;
     if (hours < 24) return `${hours}h ago`;
-    if (days < 7) return `${days}d ago`;
-    return timestamp.toLocaleDateString();
+    return `${days}d ago`;
   }
 
-  getPriorityClass(priority: string): string {
-    switch (priority) {
-      case 'high': return 'priority-high';
-      case 'medium': return 'priority-medium';
-      case 'low': return 'priority-low';
-      default: return 'priority-medium';
+  private handleBookingStatusChange(status: any): void {
+    // Handle booking status changes and create notifications
+    console.log('Booking status changed:', status);
+  }
+
+  private updateUnreadCount(): void {
+    this.unreadCount = this.notifications.filter(n => !n.isRead).length;
+  }
+
+  onNotificationClick(notification: Notification): void {
+    if (!notification.isRead) {
+      this.markAsRead(notification.id);
     }
+    // Handle notification click - could navigate to booking details
+    console.log('Notification clicked:', notification);
   }
 
-  trackByNotificationId(index: number, notification: NotificationData): string {
+  trackByNotificationId(index: number, notification: Notification): string {
     return notification.id;
   }
 } 

@@ -1,5 +1,6 @@
 ﻿using Travellin.Core.Dtos.BookingGuests;
 using Travellin.Core.Dtos.Bookings;
+using Travellin.Core.Dtos.Notifications;
 using Travellin.Core.Entities;
 using Travellin.Core.Interfaces;
 using Travellin.Travellin.Core.Shared;
@@ -7,15 +8,27 @@ using Travellin.Travellin.Core.Enums;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace Travellin.Infrastructure.Services
 {
     class BookingManagementService : IBookingManagementService
     {
         private IUnitOfWork _unitOfWork;
-        public BookingManagementService(IUnitOfWork unitOfWork)
+        private readonly INotificationService _notificationService;
+        private readonly ICancellationService _cancellationService;
+        private readonly ILogger<BookingManagementService> _logger;
+
+        public BookingManagementService(
+            IUnitOfWork unitOfWork, 
+            INotificationService notificationService,
+            ICancellationService cancellationService,
+            ILogger<BookingManagementService> logger)
         {
             _unitOfWork = unitOfWork;
+            _notificationService = notificationService;
+            _cancellationService = cancellationService;
+            _logger = logger;
         }
 
         //////////////////////////////////Create Booking (of instant type or request type)////////////////////////////////////
@@ -23,22 +36,21 @@ namespace Travellin.Infrastructure.Services
         {
            
             //Fetch Property user select
-            var property = await _unitOfWork.PropertyRepository.GetByIdAsync(dto.PropertyId);
+            var property = await _unitOfWork.PropertyRepository.GetByIdAsync(dto.PropertyId, 
+                x => x.Owner, x => x.PropertyAvailabilities, x => x.PropertyFees);
 
             if (property is null)
                 throw new NotFoundException($"Property with id [{dto.PropertyId}] not found.");
 
-
             // Validate guest counts 
             await ValidateGuestCounts(property, dto.Guests);
 
-            //Check Poroperty is available for the selected dates
+            //Check Property is available for the selected dates
             var isAvailable = await IsPropertyAvailable(property, dto.CheckIn, dto.Checkout);
             if (!isAvailable)
             {
                 throw new ConflictException("Property is not available for the selected dates.");
             }
-
 
             ////////////////////////////Calculate Total Fees////////////////////////////////////
             var propertyFees = await _unitOfWork.PropertyFeeRepository.GetAllByPropertyIdAsync(dto.PropertyId);
@@ -76,41 +88,99 @@ namespace Travellin.Infrastructure.Services
             _unitOfWork.BookingRepository.Create(booking);
             await _unitOfWork.SaveChangesAsync();
 
+            // Notify host about new booking request
+            await _notificationService.NotifyBookingRequestAsync(
+                property.OwnerId,
+                new BookingRequestNotificationDto
+                {
+                    BookingId = booking.Id,
+                    GuestName = booking.User?.UserName ?? "Guest",
+                    PropertyTitle = property.Title,
+                    CheckIn = booking.CheckIn,
+                    CheckOut = booking.CheckOut,
+                    TotalAmount = booking.TotalAmount,
+                    GuestCount = booking.BookingGuests.Sum(g => g.GuestCount)
+                });
+
+            _logger.LogInformation("Booking {BookingId} created for property {PropertyId} by user {UserId}", 
+                booking.Id, property.Id, userId);
+
             return booking;
         }
 
-
-        //Cancel Booking
+        //Cancel Booking - Enhanced with better authorization and refund logic
         public async Task CancelBookingAsync(string bookingId, string userId, bool isAdmin)
         {
-            var booking = await _unitOfWork.BookingRepository.GetByIdAsync(bookingId, x => x.Property);
+            var booking = await _unitOfWork.BookingRepository.GetByIdAsync(bookingId, 
+                x => x.Property, x => x.User, x => x.Payments);
 
             if (booking == null)
             {
                 throw new NotFoundException($"Booking with id [{bookingId}] not found");
             }
 
-            // Authorization check
-            if (!isAdmin && booking.UserId != userId)
+            // Enhanced authorization check - allow guests to cancel their bookings and hosts to cancel bookings for their properties
+            if (!isAdmin && booking.UserId != userId && booking.Property.OwnerId != userId)
             {
-                throw new UnauthorizedException("You can only cancel your own bookings");
+                throw new UnauthorizedException("You can only cancel your own bookings or bookings for your properties");
             }
 
-            // Status validation
-            if (booking.Status != BookingStatus.Pending)
+            // Enhanced status validation - allow cancellation of pending and confirmed bookings
+            if (booking.Status != BookingStatus.Pending && booking.Status != BookingStatus.Confirmed)
             {
-                throw new ConflictException("Only pending bookings can be canceled");
+                throw new ConflictException($"Cannot cancel booking with status: {booking.Status}");
             }
+
+            // Check if within cancellation window
+            var isWithinCancellationWindow = await _cancellationService.IsWithinCancellationWindowAsync(bookingId, DateTime.UtcNow);
+            
+            if (!isWithinCancellationWindow)
+            {
+                throw new ConflictException("Cancellation window has expired");
+            }
+
+            // Calculate refund amount
+            var refundAmount = await _cancellationService.CalculateRefundAmountAsync(bookingId, DateTime.UtcNow);
 
             // Update booking status
             booking.Status = BookingStatus.Cancelled;
             booking.UpdatedAt = DateTime.UtcNow;
             _unitOfWork.BookingRepository.Update(booking);
 
+            // Process refund if payment was made
+            if (booking.Payments.Any(p => p.Status == PaymentStatus.Successed) && refundAmount > 0)
+            {
+                await _cancellationService.ProcessRefundAsync(bookingId, refundAmount);
+            }
+
             // Restore availability
             await RestoreAvailabilityAsync(booking.Property, booking.CheckIn, booking.CheckOut);
 
             await _unitOfWork.SaveChangesAsync();
+
+            // Notify both parties about cancellation
+            var isHostCancellation = booking.Property.OwnerId == userId;
+            
+            // Only notify the other party, not the one who cancelled
+            if (isHostCancellation)
+            {
+                // Host cancelled - notify guest
+                await _notificationService.NotifyBookingCancellationAsync(
+                    booking.UserId, 
+                    booking.Id, 
+                    booking.Property.Title, 
+                    false); // false = guest notification (host cancelled)
+            }
+            else
+            {
+                // Guest cancelled - notify host
+                await _notificationService.NotifyBookingCancellationAsync(
+                    booking.Property.OwnerId, 
+                    booking.Id, 
+                    booking.Property.Title, 
+                    true); // true = host notification (guest cancelled)
+            }
+
         }
 
         //////////////////////////////////Validate Guest Count and Type////////////////////////////////////
@@ -143,16 +213,28 @@ namespace Travellin.Infrastructure.Services
                         : "none";
 
                     throw new ConflictException(
-                        $"Allowed guest types: {allowedListStr}");
+                        $"Guest type '{guestTypeName}' is not allowed for this property. Allowed types: {allowedListStr}");
                 }
 
                 if (guestDto.GuestCount > propertyGuest.GuestCount)
                 {
+                    var guestTypeName = propertyGuest.GuestType?.Name ?? $"ID [{guestDto.GuestTypeId}]";
                     throw new ConflictException(
-                        $"Maximum '{propertyGuest.GuestCount}' guests of type '{propertyGuest.GuestType?.Name}' allowed, but '{guestDto.GuestCount}' exceeded");
+                        $"Maximum {propertyGuest.GuestCount} {guestTypeName} guests allowed, but {guestDto.GuestCount} were selected.");
                 }
             }
+
+            // Check total guest count
+            var totalGuests = guests.Sum(g => g.GuestCount);
+            var maxTotalGuests = propertyGuests.Sum(pg => pg.GuestCount);
+
+            if (totalGuests > maxTotalGuests)
+            {
+                throw new ConflictException(
+                    $"Total guest count ({totalGuests}) exceeds the maximum allowed ({maxTotalGuests}) for this property.");
+            }
         }
+
         /////////////////////////////////////Check Property Availability////////////////////////////////////
         private async Task<bool> IsPropertyAvailable(Property property, DateTime checkIn, DateTime checkOut)
         {
@@ -339,7 +421,9 @@ namespace Travellin.Infrastructure.Services
         ////////////////////////////////////////Host to accept or decline booking////////////////////////////////////
         public async Task AcceptBookingAsync(string bookingId)
         {
-            var booking = await _unitOfWork.BookingRepository.GetByIdAsync(bookingId);
+            var booking = await _unitOfWork.BookingRepository.GetByIdAsync(bookingId, 
+                x => x.Property, x => x.User, x => x.Property.Owner);
+            
             if (booking == null)
                 throw new NotFoundException($"Booking {bookingId} not found.");
 
@@ -347,12 +431,32 @@ namespace Travellin.Infrastructure.Services
                 throw new ConflictException("Only pending bookings can be accepted.");
 
             booking.Status = BookingStatus.Confirmed;
+            booking.UpdatedAt = DateTime.UtcNow;
+            _unitOfWork.BookingRepository.Update(booking);
             await _unitOfWork.SaveChangesAsync();
+
+            // Notify guest about booking confirmation
+            await _notificationService.NotifyBookingResponseAsync(
+                booking.UserId,
+                new BookingResponseNotificationDto
+                {
+                    BookingId = booking.Id,
+                    HostName = booking.Property.Owner?.UserName ?? "Host",
+                    PropertyTitle = booking.Property.Title,
+                    Status = "accepted",
+                    CheckIn = booking.CheckIn,
+                    CheckOut = booking.CheckOut
+                });
+
+            _logger.LogInformation("Booking {BookingId} accepted by host {HostId}", 
+                bookingId, booking.Property.OwnerId);
         }
 
         public async Task DeclineBookingAsync(string bookingId)
         {
-            var booking = await _unitOfWork.BookingRepository.GetByIdAsync(bookingId);
+            var booking = await _unitOfWork.BookingRepository.GetByIdAsync(bookingId, 
+                x => x.Property, x => x.User, x => x.Property.Owner);
+            
             if (booking == null)
                 throw new NotFoundException($"Booking {bookingId} not found.");
 
@@ -360,7 +464,29 @@ namespace Travellin.Infrastructure.Services
                 throw new ConflictException("Only pending bookings can be declined.");
 
             booking.Status = BookingStatus.Declined;
+            booking.UpdatedAt = DateTime.UtcNow;
+            _unitOfWork.BookingRepository.Update(booking);
+
+            // Restore availability since booking was declined
+            await RestoreAvailabilityAsync(booking.Property, booking.CheckIn, booking.CheckOut);
+
             await _unitOfWork.SaveChangesAsync();
+
+            // Notify guest about booking decline
+            await _notificationService.NotifyBookingResponseAsync(
+                booking.UserId,
+                new BookingResponseNotificationDto
+                {
+                    BookingId = booking.Id,
+                    HostName = booking.Property.Owner?.UserName ?? "Host",
+                    PropertyTitle = booking.Property.Title,
+                    Status = "declined",
+                    CheckIn = booking.CheckIn,
+                    CheckOut = booking.CheckOut
+                });
+
+            _logger.LogInformation("Booking {BookingId} declined by host {HostId}", 
+                bookingId, booking.Property.OwnerId);
         }
 
     }

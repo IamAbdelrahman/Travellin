@@ -1,0 +1,138 @@
+.notification-bell {
+  display: inline-block;
+}
+
+.notification-dropdown {
+  min-width: 350px;
+  animation: slideDown 0.2s ease-out;
+}
+
+.notification-list {
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+  }
+}
+
+.notification-item {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+  
+  &:hover {
+    background-color: #f8f9fa;
+    border-left-color: #007bff;
+  }
+  
+  &.unread {
+    background-color: #e3f2fd;
+    border-left-color: #2196f3;
+    
+    &:hover {
+      background-color: #bbdefb;
+    }
+  }
+}
+
+.notification-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge-sm {
+  font-size: 0.6rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.badge-info {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.badge-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.badge-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.badge-default {
+  background-color: #6c757d;
+  color: white;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive design
+@media (max-width: 576px) {
+  .notification-dropdown {
+    width: 300px !important;
+    right: -50px;
+  }
+  
+  .notification-item {
+    padding: 0.75rem !important;
+  }
+  
+  .notification-icon {
+    font-size: 1rem !important;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .notification-dropdown {
+    background-color: #2d3748 !important;
+    border-color: #4a5568 !important;
+    color: #e2e8f0 !important;
+  }
+  
+  .notification-item {
+    &:hover {
+      background-color: #4a5568 !important;
+    }
+    
+    &.unread {
+      background-color: #2c5282 !important;
+      
+      &:hover {
+        background-color: #3182ce !important;
+      }
+    }
+  }
+  
+  .border-bottom {
+    border-color: #4a5568 !important;
+  }
+  
+  .border-top {
+    border-color: #4a5568 !important;
+  }
+} 

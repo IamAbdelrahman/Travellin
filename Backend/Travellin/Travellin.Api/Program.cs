@@ -8,6 +8,7 @@ using Stripe;
 using System.Security.Claims;
 using Travellin.Api.Filters;
 using Travellin.Api.Hubs;
+using Travellin.Infrastructure.Hubs;
 using Travellin.Api.Utils;
 using Travellin.Core.Interfaces;
 using Travellin.Core.Mappings;
@@ -46,7 +47,8 @@ namespace Travellin.Api
                     var accessToken = context.Request.Query["access_token"];
                     var path = context.HttpContext.Request.Path;
 
-                    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/chat"))
+                    if (!string.IsNullOrEmpty(accessToken) && 
+                        (path.StartsWithSegments("/hubs/chat") || path.StartsWithSegments("/hubs/notification")))
                     {
                         context.Token = accessToken;
                     }
@@ -120,7 +122,7 @@ namespace Travellin.Api
             }
 
             app.UseHttpsRedirection();
-            app.UseCors(builder.Configuration["Cors:Policy"]);
+            app.UseCors(builder.Configuration["Cors:Policy"] ?? "AllowAll");
 
             // Initialize FileUploadPathMappingExtensions with the service provider
             using (var scope = app.Services.CreateScope())
@@ -137,6 +139,7 @@ namespace Travellin.Api
 
             app.MapControllers();
             app.MapHub<ChatHub>("/hubs/chat");
+            app.MapHub<NotificationHub>("/hubs/notification");
             app.Run();
         }
     }
