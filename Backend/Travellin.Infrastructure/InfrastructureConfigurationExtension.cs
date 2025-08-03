@@ -113,6 +113,7 @@ namespace Travellin.Infrastructure
             services.AddScoped<IPropertyFilterExtractorService, PropertyFilterExtractorService>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IReviewService, ReviewsService>();
+            services.AddScoped<IBookingCompletionService, BookingCompletionService>();
 
             return services;
         }

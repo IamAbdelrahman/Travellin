@@ -126,5 +126,21 @@ export class ApiConstant {
     spaceItems: `${ApiConstant.baseUrl}/PropertySpaceItemTypes`,
   };
 
+  public static reviews = {
+    getAll: `${ApiConstant.baseUrl}/reviews`,
+    getById: `${ApiConstant.baseUrl}/reviews/{id}`,
+    getByBooking: `${ApiConstant.baseUrl}/reviews/booking/{bookingId}`,
+    getPropertyReviews: `${ApiConstant.baseUrl}/reviews/property/{propertyId}`,
+    getPropertyRating: `${ApiConstant.baseUrl}/reviews/property/{propertyId}/rating`,
+    getUserReviews: `${ApiConstant.baseUrl}/reviews/user/{userId}`,
+    getReviewPeriod: `${ApiConstant.baseUrl}/reviews/period/{bookingId}`,
+    canReview: `${ApiConstant.baseUrl}/reviews/can-review/{bookingId}`,
+    create: `${ApiConstant.baseUrl}/reviews`,
+    update: `${ApiConstant.baseUrl}/reviews/{id}`,
+    delete: `${ApiConstant.baseUrl}/reviews/{id}`,
+    publish: `${ApiConstant.baseUrl}/reviews/{id}/publish`,
+    hide: `${ApiConstant.baseUrl}/reviews/{id}/hide`,
+  };
+
   // Add other grouped APIs here
 }

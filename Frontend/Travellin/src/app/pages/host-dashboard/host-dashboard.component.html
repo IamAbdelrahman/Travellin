@@ -139,6 +139,117 @@
         </div>
       </div>
 
+      <!-- Reviews Tab -->
+      <div *ngIf="activeTab === 'reviews'" class="tab-content">
+        <h1 class="page-title">Property Reviews</h1>
+        
+        <!-- Review Statistics -->
+        <div class="review-stats">
+          <div class="stat-card">
+            <h3>Average Rating</h3>
+            <div class="stat-value">{{ averageRating | number:'1.1-1' }}</div>
+            <div class="stars">
+              <span *ngFor="let star of [1,2,3,4,5]" 
+                    class="star" 
+                    [class.filled]="star <= averageRating">★</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <h3>Total Reviews</h3>
+            <div class="stat-value">{{ totalReviews }}</div>
+          </div>
+          <div class="stat-card">
+            <h3>Pending Reviews</h3>
+            <div class="stat-value">{{ pendingReviews }}</div>
+          </div>
+        </div>
+
+        <!-- Review Filters -->
+        <div class="review-filters">
+          <select [(ngModel)]="selectedReviewFilter" (change)="filterReviews()">
+            <option value="all">All Reviews</option>
+            <option value="published">Published</option>
+            <option value="pending">Pending</option>
+            <option value="hidden">Hidden</option>
+          </select>
+          <input type="text" placeholder="Search reviews..." [(ngModel)]="reviewSearchTerm" (input)="searchReviews()">
+        </div>
+
+        <!-- Reviews List -->
+        <div class="reviews-list">
+          <div *ngFor="let review of filteredReviews" class="review-item">
+            <div class="review-header">
+              <div class="reviewer-info">
+                <img [src]="review.reviewer?.photoUrl || 'assets/default-avatar.png'" alt="Reviewer" class="reviewer-avatar">
+                <div>
+                  <div class="reviewer-name">{{ review.reviewer?.firstName }} {{ review.reviewer?.lastName }}</div>
+                  <div class="review-date">{{ review.createdAt | date:'mediumDate' }}</div>
+                </div>
+              </div>
+              <div class="review-rating">
+                <div class="stars">
+                  <span *ngFor="let star of [1,2,3,4,5]" 
+                        class="star" 
+                        [class.filled]="star <= (review.avg || 0)">★</span>
+                </div>
+                <div class="rating-value">{{ review.avg || 0 | number:'1.1-1' }}</div>
+              </div>
+            </div>
+            
+            <div class="review-content">
+              <div class="review-property">{{ getPropertyTitle(review.bookingId) }}</div>
+              <p class="review-comment">{{ review.comment }}</p>
+              
+              <!-- Review Categories -->
+              <div class="review-categories">
+                <div class="category">
+                  <span class="category-label">Cleanliness:</span>
+                  <span class="category-rating">{{ review.cleanliness }}/5</span>
+                </div>
+                <div class="category">
+                  <span class="category-label">Accuracy:</span>
+                  <span class="category-rating">{{ review.accuracy }}/5</span>
+                </div>
+                <div class="category">
+                  <span class="category-label">Check-in:</span>
+                  <span class="category-rating">{{ review.checkIn }}/5</span>
+                </div>
+                <div class="category">
+                  <span class="category-label">Communication:</span>
+                  <span class="category-rating">{{ review.communication }}/5</span>
+                </div>
+                <div class="category">
+                  <span class="category-label">Location:</span>
+                  <span class="category-rating">{{ review.location }}/5</span>
+                </div>
+                <div class="category">
+                  <span class="category-label">Value:</span>
+                  <span class="category-rating">{{ review.value }}/5</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="review-status">
+              <span class="status-badge" [ngClass]="getReviewStatusClass(review.status)">
+                {{ review.status }}
+              </span>
+            </div>
+            
+            <div class="review-actions" *ngIf="review.status === 'Submitted'">
+              <button class="btn-success btn-sm" (click)="approveReview(review.id)">Approve</button>
+              <button class="btn-warning btn-sm" (click)="hideReview(review.id)">Hide</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" *ngIf="totalPages > 1">
+          <button [disabled]="currentPage === 1" (click)="previousPage()">Previous</button>
+          <span>Page {{ currentPage }} of {{ totalPages }}</span>
+          <button [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
+        </div>
+      </div>
+
     </main>
   </div>
 </div>

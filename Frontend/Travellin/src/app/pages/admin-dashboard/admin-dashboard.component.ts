@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { RouterModule } from '@angular/router';
-import { BookingManagementService } from '../../services/booking-management.service';
-import { CancellationService } from '../../services/cancellation.service';
-import { ToastService } from '../../services/toast.service';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { UsersAdminComponent } from '../../components/users-admin/users-admin.component';
 import { AdminChatComponent } from '../../components/admin-chat/admin-chat.component';
-import { PropertyAdminComponent } from './../../components/property-admin/property-admin.component';
+import { PropertyAdminComponent } from '../../components/property-admin/property-admin.component';
 import { BookingAdminComponet } from '../../components/booking-admin/booking-admin.component';
 import { RequestsAdmin } from '../../components/requests-admin/requests-admin';
+import { ReviewService } from '../../services/review.service';
+import { Review, ReviewType, ReviewStatus } from '../../models/api/request/review.model';
+import { ToastService } from '../../services/toast.service';
+import { BookingManagementService } from '../../services/booking-management.service';
+import { CancellationService } from '../../services/cancellation.service';
+
 export interface AnalyticsCard {
   title: string;
   value: string;
@@ -33,6 +35,21 @@ export class AdminDashboardComponent implements OnInit {
   searchTerm = '';
   selectedFilter = 'all';
   showNotifications = false;
+  
+  // Review properties
+  reviews: Review[] = [];
+  filteredReviews: Review[] = [];
+  selectedReviewFilter = 'all';
+  reviewSearchTerm = '';
+  totalReviews = 0;
+  pendingReviews = 0;
+  publishedReviews = 0;
+  hiddenReviews = 0;
+  loading = false;
+  currentPage = 1;
+  totalPages = 1;
+  pageSize = 10;
+
   analyticsCards: AnalyticsCard[] = [
     {
       title: 'Total Bookings',
@@ -63,7 +80,7 @@ export class AdminDashboardComponent implements OnInit {
       icon: 'credit-card'
     }
   ];
-    monthlyData = [
+  monthlyData = [
     { month: 'Jan', bookings: 245, revenue: 48500 },
     { month: 'Feb', bookings: 312, revenue: 62400 },
     { month: 'Mar', bookings: 389, revenue: 77800 },
@@ -72,16 +89,146 @@ export class AdminDashboardComponent implements OnInit {
     { month: 'Jun', bookings: 612, revenue: 122400 }
   ];
   bookings: any[] = [];
-  loading = false;
-  currentPage = 1;
-  totalPages = 1;
-  pageSize = 10;
   selectedBooking: any = null; // For modal display
+
+  constructor(
+    private router: Router,
+    private reviewService: ReviewService,
+    private toastService: ToastService,
+    private bookingManagementService: BookingManagementService,
+    private cancellationService: CancellationService
+  ) { }
+
+  ngOnInit(): void {
+    this.loadReviews();
+    this.loadBookings();
+  }
+
+  setActiveTab(tab: string) {
+    this.activeTab = tab;
+    if (tab === 'reviews') {
+      this.loadReviews();
+    }
+  }
+
+  async loadReviews() {
+    try {
+      this.loading = true;
+      // Load all reviews for admin
+      const reviews = await this.reviewService.getAllReviews().toPromise();
+      this.reviews = reviews || [];
+      this.filteredReviews = [...this.reviews];
+      
+      this.calculateReviewStats();
+    } catch (error) {
+      console.error('Error loading reviews:', error);
+      this.toastService.showError('Failed to load reviews');
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  calculateReviewStats() {
+    this.totalReviews = this.reviews.length;
+    this.pendingReviews = this.reviews.filter(r => r.status === ReviewStatus.Submitted).length;
+    this.publishedReviews = this.reviews.filter(r => r.status === ReviewStatus.Published).length;
+    this.hiddenReviews = this.reviews.filter(r => r.status === ReviewStatus.Hidden).length;
+  }
+
+  filterReviews() {
+    let filtered = [...this.reviews];
+    
+    if (this.selectedReviewFilter !== 'all') {
+      filtered = filtered.filter(review => review.status.toLowerCase() === this.selectedReviewFilter);
+    }
+    
+    if (this.reviewSearchTerm) {
+      const searchTerm = this.reviewSearchTerm.toLowerCase();
+      filtered = filtered.filter(review => 
+        review.comment.toLowerCase().includes(searchTerm) ||
+        review.reviewer?.firstName?.toLowerCase().includes(searchTerm) ||
+        review.reviewer?.lastName?.toLowerCase().includes(searchTerm)
+      );
+    }
+    
+    this.filteredReviews = filtered;
+  }
+
+  searchReviews() {
+    this.filterReviews();
+  }
+
+  async approveReview(reviewId: string) {
+    try {
+      await this.reviewService.publishReview(reviewId).toPromise();
+      this.toastService.showSuccess('Review approved successfully');
+      this.loadReviews();
+    } catch (error) {
+      console.error('Error approving review:', error);
+      this.toastService.showError('Failed to approve review');
+    }
+  }
+
+  async hideReview(reviewId: string) {
+    try {
+      await this.reviewService.hideReview(reviewId).toPromise();
+      this.toastService.showSuccess('Review hidden successfully');
+      this.loadReviews();
+    } catch (error) {
+      console.error('Error hiding review:', error);
+      this.toastService.showError('Failed to hide review');
+    }
+  }
+
+  async publishReview(reviewId: string) {
+    try {
+      await this.reviewService.publishReview(reviewId).toPromise();
+      this.toastService.showSuccess('Review published successfully');
+      this.loadReviews();
+    } catch (error) {
+      console.error('Error publishing review:', error);
+      this.toastService.showError('Failed to publish review');
+    }
+  }
+
+  async deleteReview(reviewId: string) {
+    try {
+      await this.reviewService.deleteReview(reviewId).toPromise();
+      this.toastService.showSuccess('Review deleted successfully');
+      this.loadReviews();
+    } catch (error) {
+      console.error('Error deleting review:', error);
+      this.toastService.showError('Failed to delete review');
+    }
+  }
+
+  getPropertyTitle(bookingId: string): string {
+    // This would need to be implemented to get property title from booking
+    return 'Property Title'; // Placeholder
+  }
+
+  getReviewStatusClass(status: ReviewStatus): string {
+    switch (status) {
+      case ReviewStatus.Published:
+        return 'status-published';
+      case ReviewStatus.Submitted:
+        return 'status-pending';
+      case ReviewStatus.Hidden:
+        return 'status-hidden';
+      default:
+        return 'status-default';
+    }
+  }
 
   receiveAdminPhoto(photoUrl: string) {
     this.adminPhoto = photoUrl;
     console.log('Admin Photo URL received from child:', photoUrl);
   }
+
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+  
   // Computed properties for template
   get pendingBookingsCount(): number {
     return this.bookings?.filter(b => b.status === 'Pending').length || 0;
@@ -124,28 +271,17 @@ Booking Details:
     console.log('Viewing booking:', booking);
   }
 
-  constructor(
-    private bookingManagementService: BookingManagementService,
-    private cancellationService: CancellationService,
-    private toastService: ToastService,
-    private router: Router
-  ) {}
-
-  ngOnInit(): void {
-    this.loadBookings();
-  }
-
   loadBookings(): void {
     this.loading = true;
     
     if (this.selectedFilter === 'pending') {
       this.bookingManagementService.getAdminPendingBookings(this.currentPage, this.pageSize).subscribe({
-        next: (response) => {
+        next: (response: any) => {
           this.bookings = response.items;
           this.totalPages = Math.ceil(response.metaData.total / this.pageSize);
           this.loading = false;
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error loading pending bookings:', error);
           this.toastService.showError('Failed to load bookings');
           this.loading = false;
@@ -153,12 +289,12 @@ Booking Details:
       });
     } else {
       this.bookingManagementService.getAllBookingsForAdmin(this.currentPage, this.pageSize, this.selectedFilter).subscribe({
-        next: (response) => {
+        next: (response: any) => {
           this.bookings = response.items;
           this.totalPages = Math.ceil(response.metaData.total / this.pageSize);
           this.loading = false;
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error loading bookings:', error);
           this.toastService.showError('Failed to load bookings');
           this.loading = false;
@@ -178,7 +314,7 @@ Booking Details:
         this.toastService.showSuccess('Booking accepted successfully!');
         this.loadBookings();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error accepting booking:', error);
         this.toastService.showError('Failed to accept booking');
       },
@@ -192,7 +328,7 @@ Booking Details:
           this.toastService.showSuccess('Booking declined successfully!');
           this.loadBookings();
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error declining booking:', error);
           this.toastService.showError('Failed to decline booking');
         },
@@ -210,7 +346,7 @@ Booking Details:
       };
 
       this.cancellationService.cancelBookingEnhanced(cancellationRequest).subscribe({
-        next: (result) => {
+        next: (result: any) => {
           if (result.isSuccessful) {
             this.toastService.showSuccess(result.message);
             this.loadBookings();
@@ -218,7 +354,7 @@ Booking Details:
             this.toastService.showError(result.message);
           }
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Cancellation failed:', error);
           this.toastService.showError('Failed to cancel booking');
         },
@@ -228,7 +364,6 @@ Booking Details:
       this.toastService.showError('Failed to cancel booking');
     }
   }
-
 
   calculateNumberOfNights(checkIn: string, checkOut: string): number {
     const checkInDate = new Date(checkIn);
@@ -247,54 +382,16 @@ Booking Details:
   previousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
-      this.loadBookings();
     }
   }
 
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
-      this.loadBookings();
     }
-  }
-    toggleSidebar(): void {
-    this.sidebarOpen = !this.sidebarOpen;
-  }
-
-  setActiveTab(tab: string): void {
-    this.activeTab = tab;
   }
 
   toggleNotifications(): void {
     this.showNotifications = !this.showNotifications;
   }
-
-  // approveProperty(property: Property): void {
-  //   property.status = 'Approved';
-  // }
-
-  // rejectProperty(property: Property): void {
-  //   property.status = 'Rejected';
-  // }
-
-  // approveReview(review: Review): void {
-  //   review.status = 'Approved';
-  // }
-
-  // hideReview(review: Review): void {
-  //   review.status = 'Hidden';
-  // }
-
-  // deleteReview(reviewId: number): void {
-  //   this.reviews = this.reviews.filter(review => review.id !== reviewId);
-  // }
-
-  // markNotificationAsRead(notification: Notification): void {
-  //   notification.read = true;
-  // }
-
-  // getUnreadNotificationsCount(): number {
-  //   return this.notifications.filter(n => !n.read).length;
-  // }
-
 } 

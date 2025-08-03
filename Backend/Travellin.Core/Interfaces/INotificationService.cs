@@ -18,6 +18,7 @@ namespace Travellin.Core.Interfaces
         Task NotifyBookingResponseAsync(string guestId, BookingResponseNotificationDto bookingResponse);
         Task NotifyBookingCancellationAsync(string userId, string bookingId, string propertyTitle, bool isHost);
         Task NotifyBookingReminderAsync(string userId, BookingReminderNotificationDto reminder);
+        Task NotifyBookingCompletionAsync(string userId, BookingCompletionNotificationDto completion);
 
         // Payment notifications
         Task NotifyPaymentSuccessAsync(string userId, PaymentNotificationDto payment);
@@ -32,6 +33,8 @@ namespace Travellin.Core.Interfaces
         // Review notifications
         Task NotifyReviewReceivedAsync(string hostId, ReviewNotificationDto review);
         Task NotifyReviewResponseAsync(string guestId, string reviewId, string hostName);
+        Task NotifyReviewPeriodStartAsync(string userId, ReviewPeriodNotificationDto reviewPeriod);
+        Task NotifyReviewPeriodEndAsync(string userId, ReviewPeriodEndNotificationDto reviewPeriodEnd);
 
         // Host notifications
         Task NotifyHostUpgradeRequestAsync(string adminId, HostUpgradeNotificationDto upgradeRequest);

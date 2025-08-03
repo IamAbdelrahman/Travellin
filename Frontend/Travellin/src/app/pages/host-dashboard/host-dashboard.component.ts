@@ -5,11 +5,14 @@ import { Router, RouterModule } from '@angular/router';
 import { BookingManagementService } from '../../services/booking-management.service';
 import { CancellationService } from '../../services/cancellation.service';
 import { ToastService } from '../../services/toast.service';
+import { ReviewService } from '../../services/review.service';
+import { Review, ReviewType, ReviewStatus } from '../../models/api/request/review.model';
 import { AnalyticsCard } from '../admin-dashboard/admin-dashboard.component';
 import { AddPropertyComponent } from '../add-property/add-property.component';
 import { HostBookingComponent } from '../host-booking/host-booking.component';
 import { HostPropertyComponent } from "../host-property/host-property.component";
 import { ChatPageComponent } from '../chat-page/chat-page.component';
+
 @Component({
   selector: 'app-host-dashboard',
   imports: [CommonModule, FormsModule, RouterModule, HostBookingComponent, HostPropertyComponent, 
@@ -30,6 +33,20 @@ export class HostDashboardComponent implements OnInit {
   searchTerm = '';
   selectedFilter = 'all';
   showNotifications = false;
+  
+  // Review properties
+  reviews: Review[] = [];
+  filteredReviews: Review[] = [];
+  selectedReviewFilter = 'all';
+  reviewSearchTerm = '';
+  averageRating = 0;
+  totalReviews = 0;
+  pendingReviews = 0;
+  loading = false;
+  currentPage = 1;
+  totalPages = 1;
+  pageSize = 10;
+
   analyticsCards: AnalyticsCard[] = [
     {
       title: 'Total Bookings',
@@ -69,22 +86,121 @@ export class HostDashboardComponent implements OnInit {
     { month: 'Jun', bookings: 612, revenue: 122400 }
   ];
   bookings: any[] = [];
-  loading = false;
-  currentPage = 1;
-  totalPages = 1;
-  pageSize = 10;
   selectedBooking: any = null; // For modal display
 
-  // Computed properties for template
-
-
   constructor(
-    private router: Router
+    private router: Router,
+    private reviewService: ReviewService,
+    private toastService: ToastService
   ) { }
 
   ngOnInit(): void {
+    this.loadReviews();
   }
 
+  setActiveTab(tab: string) {
+    this.activeTab = tab;
+    if (tab === 'reviews') {
+      this.loadReviews();
+    }
+  }
+
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  async loadReviews() {
+    try {
+      this.loading = true;
+      // Get current user ID from localStorage or service
+      const userId = localStorage.getItem('userId') || '';
+      
+      // Load reviews for the current host
+      const reviews = await this.reviewService.getUserReviews(userId, ReviewType.Host).toPromise();
+      this.reviews = reviews || [];
+      this.filteredReviews = [...this.reviews];
+      
+      this.calculateReviewStats();
+    } catch (error) {
+      console.error('Error loading reviews:', error);
+      this.toastService.showError('Failed to load reviews');
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  calculateReviewStats() {
+    this.totalReviews = this.reviews.length;
+    this.pendingReviews = this.reviews.filter(r => r.status === ReviewStatus.Submitted).length;
+    
+    if (this.reviews.length > 0) {
+      const totalRating = this.reviews.reduce((sum, review) => sum + (review.avg || 0), 0);
+      this.averageRating = totalRating / this.reviews.length;
+    }
+  }
+
+  filterReviews() {
+    let filtered = [...this.reviews];
+    
+    if (this.selectedReviewFilter !== 'all') {
+      filtered = filtered.filter(review => review.status.toLowerCase() === this.selectedReviewFilter);
+    }
+    
+    if (this.reviewSearchTerm) {
+      const searchTerm = this.reviewSearchTerm.toLowerCase();
+      filtered = filtered.filter(review => 
+        review.comment.toLowerCase().includes(searchTerm) ||
+        review.reviewer?.firstName?.toLowerCase().includes(searchTerm) ||
+        review.reviewer?.lastName?.toLowerCase().includes(searchTerm)
+      );
+    }
+    
+    this.filteredReviews = filtered;
+  }
+
+  searchReviews() {
+    this.filterReviews();
+  }
+
+  async approveReview(reviewId: string) {
+    try {
+      await this.reviewService.publishReview(reviewId).toPromise();
+      this.toastService.showSuccess('Review approved successfully');
+      this.loadReviews();
+    } catch (error) {
+      console.error('Error approving review:', error);
+      this.toastService.showError('Failed to approve review');
+    }
+  }
+
+  async hideReview(reviewId: string) {
+    try {
+      await this.reviewService.hideReview(reviewId).toPromise();
+      this.toastService.showSuccess('Review hidden successfully');
+      this.loadReviews();
+    } catch (error) {
+      console.error('Error hiding review:', error);
+      this.toastService.showError('Failed to hide review');
+    }
+  }
+
+  getPropertyTitle(bookingId: string): string {
+    // This would need to be implemented to get property title from booking
+    return 'Property Title'; // Placeholder
+  }
+
+  getReviewStatusClass(status: ReviewStatus): string {
+    switch (status) {
+      case ReviewStatus.Published:
+        return 'status-published';
+      case ReviewStatus.Submitted:
+        return 'status-pending';
+      case ReviewStatus.Hidden:
+        return 'status-hidden';
+      default:
+        return 'status-default';
+    }
+  }
 
   previousPage(): void {
     if (this.currentPage > 1) {
@@ -97,83 +213,4 @@ export class HostDashboardComponent implements OnInit {
       this.currentPage++;
     }
   }
-  toggleSidebar(): void {
-    this.sidebarOpen = !this.sidebarOpen;
-  }
-
-  setActiveTab(tab: string): void {
-    this.activeTab = tab;
-  }
-
-  toggleNotifications(): void {
-    this.showNotifications = !this.showNotifications;
-  }
-
-
-
-  // approveProperty(property: Property): void {
-  //   property.status = 'Approved';
-  // }
-
-  // rejectProperty(property: Property): void {
-  //   property.status = 'Rejected';
-  // }
-
-  // approveReview(review: Review): void {
-  //   review.status = 'Approved';
-  // }
-
-  // hideReview(review: Review): void {
-  //   review.status = 'Hidden';
-  // }
-
-  // deleteReview(reviewId: number): void {
-  //   this.reviews = this.reviews.filter(review => review.id !== reviewId);
-  // }
-
-  // markNotificationAsRead(notification: Notification): void {
-  //   notification.read = true;
-  // }
-
-  // getUnreadNotificationsCount(): number {
-  //   return this.notifications.filter(n => !n.read).length;
-  // }
-
-  // getStatusColor(status: string): string {
-  //   switch (status.toLowerCase()) {
-  //     case 'active':
-  //     case 'approved':
-  //     case 'confirmed':
-  //     case 'completed':
-  //       return 'text-green-600 bg-green-100';
-  //     case 'pending':
-  //       return 'text-yellow-600 bg-yellow-100';
-  //     case 'blocked':
-  //     case 'rejected':
-  //     case 'cancelled':
-  //     case 'failed':
-  //       return 'text-red-600 bg-red-100';
-  //     default:
-  //       return 'text-gray-600 bg-gray-100';
-  //   }
-  // }
-
-
-
-  // getFilteredProperties(): Property[] {
-  //   let filtered = this.properties;
-
-  //   if (this.selectedFilter !== 'all') {
-  //     filtered = filtered.filter(property => property.status.toLowerCase() === this.selectedFilter);
-  //   }
-
-  //   if (this.searchTerm) {
-  //     filtered = filtered.filter(property => 
-  //       property.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-  //       property.location.toLowerCase().includes(this.searchTerm.toLowerCase())
-  //     );
-  //   }
-
-  //   return filtered;
-  // }
 } 

@@ -202,48 +202,118 @@
       <div *ngIf="activeTab === 'requests'" class="tab-content">
         <app-requests-admin></app-requests-admin>
       </div>
+      
       <!-- Reviews Tab -->
-      <!-- <div *ngIf="activeTab === 'reviews'" class="tab-content">
+      <div *ngIf="activeTab === 'reviews'" class="tab-content">
         <h1 class="page-title">Review Moderation</h1>
 
+        <!-- Review Statistics -->
+        <div class="review-stats">
+          <div class="stat-card">
+            <h3>Total Reviews</h3>
+            <div class="stat-value">{{ totalReviews }}</div>
+          </div>
+          <div class="stat-card">
+            <h3>Pending Reviews</h3>
+            <div class="stat-value">{{ pendingReviews }}</div>
+          </div>
+          <div class="stat-card">
+            <h3>Published Reviews</h3>
+            <div class="stat-value">{{ publishedReviews }}</div>
+          </div>
+          <div class="stat-card">
+            <h3>Hidden Reviews</h3>
+            <div class="stat-value">{{ hiddenReviews }}</div>
+          </div>
+        </div>
+
+        <!-- Review Filters -->
+        <div class="review-filters">
+          <select [(ngModel)]="selectedReviewFilter" (change)="filterReviews()">
+            <option value="all">All Reviews</option>
+            <option value="submitted">Pending</option>
+            <option value="published">Published</option>
+            <option value="hidden">Hidden</option>
+          </select>
+          <input type="text" placeholder="Search reviews..." [(ngModel)]="reviewSearchTerm" (input)="searchReviews()">
+        </div>
+
+        <!-- Reviews Grid -->
         <div class="reviews-grid">
-          <div *ngFor="let review of reviews" class="review-card">
+          <div *ngFor="let review of filteredReviews" class="review-card">
             <div class="review-header">
               <div class="reviewer-info">
-                <img src="https://via.placeholder.com/40x40" alt="Reviewer" class="reviewer-avatar">
+                <img [src]="review.reviewer?.photoUrl || 'assets/default-avatar.png'" alt="Reviewer" class="reviewer-avatar">
                 <div>
-                  <div class="reviewer-name">{{ review.reviewer }}</div>
-                  <div class="review-date">{{ review.date }}</div>
+                  <div class="reviewer-name">{{ review.reviewer?.firstName }} {{ review.reviewer?.lastName }}</div>
+                  <div class="review-date">{{ review.createdAt | date:'mediumDate' }}</div>
                 </div>
               </div>
               <div class="review-rating">
                 <div class="stars">
                   <span *ngFor="let star of [1,2,3,4,5]" 
                         class="star" 
-                        [class.filled]="star <= review.rating">★</span>
+                        [class.filled]="star <= (review.avg || 0)">★</span>
                 </div>
+                <div class="rating-value">{{ review.avg || 0 | number:'1.1-1' }}</div>
               </div>
             </div>
             
             <div class="review-content">
-              <div class="review-property">{{ review.property }}</div>
+              <div class="review-property">{{ getPropertyTitle(review.bookingId) }}</div>
               <p class="review-comment">{{ review.comment }}</p>
+              
+              <!-- Review Categories -->
+              <div class="review-categories">
+                <div class="category">
+                  <span class="category-label">Cleanliness:</span>
+                  <span class="category-rating">{{ review.cleanliness }}/5</span>
+                </div>
+                <div class="category">
+                  <span class="category-label">Accuracy:</span>
+                  <span class="category-rating">{{ review.accuracy }}/5</span>
+                </div>
+                <div class="category">
+                  <span class="category-label">Check-in:</span>
+                  <span class="category-rating">{{ review.checkIn }}/5</span>
+                </div>
+                <div class="category">
+                  <span class="category-label">Communication:</span>
+                  <span class="category-rating">{{ review.communication }}/5</span>
+                </div>
+                <div class="category">
+                  <span class="category-label">Location:</span>
+                  <span class="category-rating">{{ review.location }}/5</span>
+                </div>
+                <div class="category">
+                  <span class="category-label">Value:</span>
+                  <span class="category-rating">{{ review.value }}/5</span>
+                </div>
+              </div>
             </div>
             
             <div class="review-status">
-              <span class="status-badge" [ngClass]="getStatusColor(review.status)">
+              <span class="status-badge" [ngClass]="getReviewStatusClass(review.status)">
                 {{ review.status }}
               </span>
             </div>
             
-            <div class="review-actions" *ngIf="review.status === 'Pending'">
-              <button class="btn-success btn-sm" (click)="approveReview(review)">Approve</button>
-              <button class="btn-warning btn-sm" (click)="hideReview(review)">Hide</button>
+            <div class="review-actions">
+              <button class="btn-success btn-sm" (click)="approveReview(review.id)" *ngIf="review.status === 'Submitted'">Approve</button>
+              <button class="btn-warning btn-sm" (click)="hideReview(review.id)" *ngIf="review.status === 'Published'">Hide</button>
+              <button class="btn-primary btn-sm" (click)="publishReview(review.id)" *ngIf="review.status === 'Hidden'">Publish</button>
               <button class="btn-danger btn-sm" (click)="deleteReview(review.id)">Delete</button>
             </div>
           </div>
         </div>
-      </div> -->
+
+        <!-- Pagination -->
+        <div class="pagination" *ngIf="totalPages > 1">
+          <button [disabled]="currentPage === 1" (click)="previousPage()">Previous</button>
+          <span>Page {{ currentPage }} of {{ totalPages }}</span>
+          <button [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
+        </div>
+      </div>
 
       <!-- Admin Chat Tab -->
       <div *ngIf="activeTab === 'chat'" class="tab-content">
