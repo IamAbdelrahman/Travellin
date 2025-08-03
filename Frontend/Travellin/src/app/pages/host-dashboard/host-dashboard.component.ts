@@ -8,15 +8,22 @@ import { ToastService } from '../../services/toast.service';
 import { AnalyticsCard } from '../admin-dashboard/admin-dashboard.component';
 import { AddPropertyComponent } from '../add-property/add-property.component';
 import { HostBookingComponent } from '../host-booking/host-booking.component';
+import { HostPropertyComponent } from "../host-property/host-property.component";
 
 @Component({
   selector: 'app-host-dashboard',
-  imports: [CommonModule, FormsModule, RouterModule, AddPropertyComponent, HostBookingComponent],
+  imports: [CommonModule, FormsModule, RouterModule, HostBookingComponent, HostPropertyComponent, AddPropertyComponent],
   templateUrl: './host-dashboard.component.html',
   styleUrl: './host-dashboard.component.scss',
 })
 export class HostDashboardComponent implements OnInit {
   activeTab = 'overview';
+  showAddProperty: boolean = false;
+
+  toggleAddProperty() {
+    this.showAddProperty = !this.showAddProperty;
+  }
+
   sidebarOpen = true;
   adminPhoto: string = '';
   searchTerm = '';

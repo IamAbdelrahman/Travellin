@@ -155,17 +155,8 @@
                                     Decline
                                 </button>
 
-                                <!-- Cancel for confirmed bookings -->
-                                <button *ngIf="booking.status === 'Confirmed'" (click)="cancelBookingAsHost(booking)"
-                                    class="text-orange-600 hover:text-orange-900 bg-orange-100 hover:bg-orange-200 px-3 py-1 rounded-md text-xs font-medium">
-                                    Cancel
-                                </button>
 
-                                <!-- View details for all bookings -->
-                                <button (click)="viewBooking(booking)"
-                                    class="text-blue-600 hover:text-blue-900 bg-blue-100 hover:bg-blue-200 px-3 py-1 rounded-md text-xs font-medium">
-                                    View
-                                </button>
+
                             </div>
                         </td>
                     </tr>

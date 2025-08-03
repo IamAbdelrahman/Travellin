@@ -10,9 +10,7 @@
     </button>
 
     <!-- upgrade button for guest -->
-    <div
-      *ngIf="showButtonForGuest() && !isInRole('Host')"
-      class="guest-button-container">
+    <div *ngIf="showButtonForGuest() && !isInRole('Host')" class="guest-button-container">
       <button class="guest-button" (click)="handleGuestAction()">
         Upgrade To Host
       </button>

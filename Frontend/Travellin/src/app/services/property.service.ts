@@ -24,7 +24,7 @@ import { IPropertyType } from '../models/domain/iproperty-type';
   providedIn: 'root',
 })
 export class PropertyService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   showPropertyType(): Observable<HttpResponse<IpropertyTypeApiResponse>> {
     return this.http.get<IpropertyTypeApiResponse>(
@@ -202,4 +202,25 @@ export class PropertyService {
     const url = `${ApiConstant.PropertiesApi.getAll}/${id}`;
     return this.http.delete(url, { withCredentials: true });
   }
+
+  ///property by host
+  getHostProperties(queryParams?: IGetAllReq): Observable<HttpResponse<any>> {
+    let params = new HttpParams();
+
+    if (queryParams) {
+      Object.keys(queryParams).forEach(key => {
+        const value = queryParams[key as keyof IGetAllReq];
+        if (value !== undefined && value !== null) {
+          params = params.append(key, value.toString());
+        }
+      });
+    }
+
+    return this.http.get<any>(`${ApiConstant.PropertiesApi.getByHost}`, {
+      observe: 'response',
+      withCredentials: true,
+      params,
+    });
+  }
+
 }

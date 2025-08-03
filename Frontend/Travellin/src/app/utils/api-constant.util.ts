@@ -19,6 +19,8 @@ export class ApiConstant {
     getPropertyAmenities: `${ApiConstant.baseUrl}/Properties/{id}/Amenities`,
     getPropertyAvailability: `${ApiConstant.baseUrl}/Properties/{id}/Availabilities`,
     getPropertyFees: `${ApiConstant.baseUrl}/Properties/{id}/Fees`,
+    getByHost: `${ApiConstant.baseUrl}/Properties/Host`,
+
   };
 
   public static SearchApi = {
@@ -45,8 +47,7 @@ export class ApiConstant {
     canCancel: `${ApiConstant.baseUrl}/Bookings/{id}/can-cancel`,
     refund: `${ApiConstant.baseUrl}/Bookings/{id}/refund`,
     checkin: `${ApiConstant.baseUrl}/Bookings/{id}/checkin`,
-    getAll:  `${ApiConstant.baseUrl}/Bookings/GetAllBookings`,
-
+    getAll: `${ApiConstant.baseUrl}/Bookings/GetAllBookings`,
     // Host booking management
     hostBookings: `${ApiConstant.baseUrl}/Bookings/host/bookings`,
     hostPendingBookings: `${ApiConstant.baseUrl}/Bookings/host/pending-bookings`,

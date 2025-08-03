@@ -271,7 +271,40 @@ namespace Travellin.Infrastructure.Repositories
 
             await Task.CompletedTask;
         }
-    }
-        
     
+
+        public async Task<PaginatedResult<PropertyListItemDto>> GetPropertiesByOwnerIdAsync(FilterPropertyQueryParamsDto queryDto , string ownerid)
+        {
+            var query = _dbContext.Properties
+                .Include(x => x.Owner)
+                .Include(x => x.Location).ThenInclude(x => x.Country)
+                .Include(x => x.PropertyType)
+                .Include(x => x.PropertyPhotos).ThenInclude(x => x.FileUpload)
+                .Where(x => x.OwnerId == ownerid  && !x.IsDeleted);
+
+
+            var total = await query.CountAsync();
+
+
+
+            var properties = await query
+                .OrderByDescending(b => b.Id)
+                .Skip(queryDto.CalcSkippedItems())
+                .Take(queryDto.PageSize)
+                .Select(x => x.ToPropertyListItemDto())
+                .ToListAsync();
+
+            return new PaginatedResult<PropertyListItemDto>
+            {
+                Items = properties,
+                MetaData = new PaginationMetaData
+                {
+                    Page = queryDto.Page,
+                    PageSize = queryDto.PageSize,
+                    Total = total
+                }
+            };
+        }
+    }
 }
+
