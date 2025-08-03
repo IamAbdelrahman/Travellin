@@ -1,215 +1,230 @@
 $airbnb-primary: #ff385c;
-$primary: #ef7768;
+$primary: #ff385c;
 $secondary: #7c7c7c;
 $font-family-sans-serif: 'Open Sans', sans-serif;
 
-*{
-  font-family:$font-family-sans-serif ;
+* {
+  font-family: $font-family-sans-serif ;
 }
-.confirmBtn{
-  background-color:$primary;
+
+.confirmBtn {
+  background-color: $primary;
   color: white;
 }
+
 .booking-page {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 2rem;
-    padding: 2rem;
-  }
-  
-  .left-content {
-    flex: 2;
-  }
-  /*dates div*/
-  .date-container{
-    // margin-bottom: 1.5rem;
-    background: #f9f9f9;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    margin: 40px auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  padding: 2rem;
+}
 
-  }
-  .date-section{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 4px;
-  }
-  .date-section button{
-    background: none;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  .date-section button:hover{
-    color: #dc3545;
-  }
-  .date-section h6{
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-  }
-  .date-values{
-    margin-top: 2px;
-  }
-  // .right-sidebar {
-  //   flex: 1;
-  //   position: sticky;
-  //   top: 2rem; 
-  //   align-self: flex-start;
-  //   background-color: #f9f9f9;
-  //   padding: 1.5rem;
-  //   border-radius: 12px;
-  //   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  // }
-  /*popup */
-  .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-    backdrop-filter: blur(3px);
-  }  
+.left-content {
+  flex: 2;
+}
 
-  .popup-content {
-    background: white;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    animation: fadeIn 0.3s ease-out;
+/*dates div*/
+.date-container {
+  // margin-bottom: 1.5rem;
+  background: #f9f9f9;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 40px auto;
+
+}
+
+.date-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.date-section button {
+  background: none;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.date-section button:hover {
+  color: #dc3545;
+}
+
+.date-section h6 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.date-values {
+  margin-top: 2px;
+}
+
+// .right-sidebar {
+//   flex: 1;
+//   position: sticky;
+//   top: 2rem; 
+//   align-self: flex-start;
+//   background-color: #f9f9f9;
+//   padding: 1.5rem;
+//   border-radius: 12px;
+//   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+// }
+/*popup */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(3px);
+}
+
+.popup-content {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.popup-header {
+  padding: 20px;
+  background: $primary;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.popup-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 0 10px;
+  line-height: 1;
+}
+
+.date-form {
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.date-input-container {
+  position: relative;
+}
+
+.date-input-container input {
+  width: 100%;
+  padding: 12px 15px;
+  padding-right: 40px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.date-input-container input:focus {
+  border-color: $primary;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 107, 255, 0.2);
+}
+
+.calendar-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.date-display {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.save-btn,
+.cancel-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.save-btn {
+  background: $primary;
+  color: white;
+  border: none;
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(74, 107, 255, 0.3);
+}
+
+.cancel-btn {
+  background: white;
+  border: 1px solid #ddd;
+  color: #666;
+}
+
+.cancel-btn:hover {
+  background: $secondary;
+  color: white;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-    .popup-header {
-    padding: 20px;
-    background: $primary;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  .popup-header h2 {
-    margin: 0;
-    font-size: 1.4rem;
-    font-weight: 600;
-  }
-  
-  .close-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.8rem;
-    cursor: pointer;
-    padding: 0 10px;
-    line-height: 1;
-  }
-  .date-form {
-    padding: 20px;
-  }
-  
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #333;
-  }
-  
-  .date-input-container {
-    position: relative;
-  }
-  
-  .date-input-container input {
-    width: 100%;
-    padding: 12px 15px;
-    padding-right: 40px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.3s;
-  }
-  
-  .date-input-container input:focus {
-    border-color: $primary;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(74, 107, 255, 0.2);
-  }
-  
-  .calendar-icon {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-  }
-  
-  .date-display {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
-    margin: 20px 0;
-    text-align: center;
-  }
-  
-  .buttons {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .save-btn, .cancel-btn {
-    flex: 1;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  
-  .save-btn {
-    background: $primary;
-    color: white;
-    border: none;
-  }
-  
-  .save-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(74, 107, 255, 0.3);
-  }
-  
-  .cancel-btn {
-    background: white;
-    border: 1px solid #ddd;
-    color: #666;
-  }
-  
-  .cancel-btn:hover {
-    background:$secondary;
-    color: white;
-  }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
- .guest-form {
+}
+
+.guest-form {
   padding: 20px;
 }
 
@@ -224,6 +239,7 @@ $font-family-sans-serif: 'Open Sans', sans-serif;
 .guest-type:last-child {
   border-bottom: none;
 }
+
 .guest-info {
   flex: 1;
 }
@@ -234,6 +250,7 @@ $font-family-sans-serif: 'Open Sans', sans-serif;
   color: #333;
   margin-bottom: 4px;
 }
+
 .guest-info small {
   color: #666;
   font-size: 0.8rem;
@@ -244,6 +261,7 @@ $font-family-sans-serif: 'Open Sans', sans-serif;
   align-items: center;
   gap: 10px;
 }
+
 .control-btn {
   width: 36px;
   height: 36px;
@@ -257,6 +275,7 @@ $font-family-sans-serif: 'Open Sans', sans-serif;
   cursor: pointer;
   transition: all 0.2s;
 }
+
 .control-btn:hover:not(:disabled) {
   background: #f8f9fa;
   border-color: #4a6bff;
@@ -267,6 +286,7 @@ $font-family-sans-serif: 'Open Sans', sans-serif;
   opacity: 0.5;
   cursor: not-allowed;
 }
+
 .count {
   min-width: 20px;
   text-align: center;
@@ -281,6 +301,7 @@ $font-family-sans-serif: 'Open Sans', sans-serif;
   text-align: center;
   font-size: 0.95rem;
 }
+
 .total-guests strong {
   color: #4a6bff;
 }
@@ -290,6 +311,7 @@ $font-family-sans-serif: 'Open Sans', sans-serif;
   gap: 10px;
   margin-top: 10px;
 }
+
 //edit button style 
 .edit-button {
   display: inline-flex;
@@ -305,6 +327,7 @@ $font-family-sans-serif: 'Open Sans', sans-serif;
   cursor: pointer;
   transition: all 0.2s ease;
 }
+
 .edit-button:hover {
   // background-color:#ef7768;
   // border-color:  #ef7768;
@@ -316,7 +339,7 @@ $font-family-sans-serif: 'Open Sans', sans-serif;
 .edit-button:active {
   transform: translateY(1px);
 }
- 
+
 
 
 
@@ -546,20 +569,24 @@ $font-family-sans-serif: 'Open Sans', sans-serif;
   max-width: 600px;
   margin: 40px auto;
 }
+
 .ground-rules h4 {
   font-size: 24px;
   color: #333;
   margin-bottom: 12px;
 }
+
 .ground-rules p {
   font-size: 16px;
   color: #666;
   margin-bottom: 20px;
 }
+
 .ground-rules ul {
   list-style: none;
   padding: 0;
 }
+
 .ground-rules li {
   display: flex;
   align-items: center;
@@ -571,12 +598,14 @@ $font-family-sans-serif: 'Open Sans', sans-serif;
   font-size: 16px;
   color: #444;
 }
+
 .ground-rules li::before {
   content: "✔️";
   margin-right: 10px;
   font-size: 20px;
   color: #4CAF50;
 }
+
 //------------------------------------------------date container--------------------------------
 // .date-container {
 //   background: #f9f9f9;
@@ -618,28 +647,3 @@ $font-family-sans-serif: 'Open Sans', sans-serif;
 //   color: #666;
 //   margin: 0;
 // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-  

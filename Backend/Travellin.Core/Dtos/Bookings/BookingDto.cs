@@ -8,6 +8,8 @@ namespace Travellin.Core.Dtos.Bookings
     {
         public string Id { get; set; }
         public string UserId { get; set; }
+        public string GuestName { get; set; }
+        public string HostName { get; set; }
         public DateTime CheckIn { get; set; }
         public DateTime CheckOut { get; set; }
         public decimal PricePerNight { get; set; }
@@ -18,6 +20,5 @@ namespace Travellin.Core.Dtos.Bookings
         public DateTime UpdatedAt { get; set; }
         public List<BookingGuestDto> BookingGuests { get; set; }
         public PropertyListItemDto Property { get; set; }
-        public UserProfileDto User { get; set; }
     }
 }

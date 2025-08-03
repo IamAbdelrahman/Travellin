@@ -11,13 +11,12 @@ import { CommonModule } from '@angular/common';
     ProfileHeaderComponent,
     RouterModule,
     ProfilePromptComponent,
-    ProfileUpdateModalComponent,
     CommonModule,
-    RouterModule,
+    RouterModule
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
 export class ProfileComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 }
