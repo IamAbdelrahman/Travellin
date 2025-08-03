@@ -29,11 +29,10 @@ import {
   faCity,
   faHeart,
 } from '@fortawesome/free-solid-svg-icons';
-import { IProperty } from '../../models/domain/iproperty';
+import { AuthService } from '../../core/services/auth.service';
 import { IpropertyRes } from '../../models/api/response/iproperty-res';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FavoritePropertiesService } from '../../services/favorite-properties.service';
-import { ISmartSearchReq } from '../../models/api/request/ismartSearch-req';
 import { ISmartSearchRes } from '../../models/api/response/ismartSearch-res';
 import { IFavoriteProperty } from '../../models/domain/ifaviorate-property';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -128,7 +127,8 @@ export class HomePageComponent implements OnInit {
     private route: Router,
     private favouriteService: FavoritePropertiesService,
     private toastService: ToastService,
-    private activeroute: ActivatedRoute
+    private activeroute: ActivatedRoute,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -138,6 +138,9 @@ export class HomePageComponent implements OnInit {
     this.checkPaymentStatus();
   }
 
+  isGuest(): boolean {
+    return this.authService.isGuest();
+  }
   setSearchMode(mode: 'ai' | 'simple'): void {
     this.searchMode = mode;
   }
