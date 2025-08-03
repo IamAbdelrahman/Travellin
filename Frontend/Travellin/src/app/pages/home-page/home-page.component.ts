@@ -5,7 +5,6 @@ import { PropertyService } from '../../services/property.service';
 import { IPropertyTypeRes } from '../../models/api/response/i-property-type-res';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { IpropertyTypeApiResponse } from '../../models/api/response/iproperty-type-api-res';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HostListener } from '@angular/core';
 import { IPropertyWithDistance } from '../../models/domain/iproperty-with-distance';
 import { Heart, LucideAngularModule } from 'lucide-angular';
@@ -37,7 +36,7 @@ import { FavoritePropertiesService } from '../../services/favorite-properties.se
 import { ISmartSearchReq } from '../../models/api/request/ismartSearch-req';
 import { ISmartSearchRes } from '../../models/api/response/ismartSearch-res';
 import { IFavoriteProperty } from '../../models/domain/ifaviorate-property';
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 @Component({
   selector: 'app-home-page',
   standalone: true,
@@ -57,8 +56,7 @@ export class HomePageComponent implements OnInit {
   icon = {
     heart: Heart,
   };
-
-  searchMode: 'simple' | 'advanced' = 'simple';
+  searchMode: 'ai' | 'simple' = 'ai';
   guestMenuVisible: boolean = false;
   showFilters: boolean = false;
   selectedPropertyType: number | null = null;
@@ -140,7 +138,7 @@ export class HomePageComponent implements OnInit {
     this.checkPaymentStatus();
   }
 
-  setSearchMode(mode: 'simple' | 'advanced'): void {
+  setSearchMode(mode: 'ai' | 'simple'): void {
     this.searchMode = mode;
   }
 
@@ -297,9 +295,9 @@ export class HomePageComponent implements OnInit {
   }
 
   getMarginTop() {
-    if (this.searchMode === 'advanced' && this.showFilters) {
+    if (this.searchMode === 'simple' && this.showFilters) {
       return 250; // 250px if Advanced and showFilters is visible
-    } else if (this.searchMode === 'advanced') {
+    } else if (this.searchMode === 'simple') {
       return 200; // 200px if Advanced and showFilters is not visible
     } else {
       return 100; // 100px if Simple search mode
