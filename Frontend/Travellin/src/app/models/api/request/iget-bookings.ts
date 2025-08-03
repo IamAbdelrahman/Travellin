@@ -39,6 +39,8 @@ export interface BookingGuest {
 export interface Bookings {
   id: string;
   userId: string;
+  guestName: string;
+  hostName:string;
   checkIn: string;
   checkOut: string;
   pricePerNight: number;

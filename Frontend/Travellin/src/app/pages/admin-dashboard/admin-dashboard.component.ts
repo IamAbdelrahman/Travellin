@@ -6,18 +6,11 @@ import { BookingManagementService } from '../../services/booking-management.serv
 import { CancellationService } from '../../services/cancellation.service';
 import { ToastService } from '../../services/toast.service';
 import { FormsModule } from '@angular/forms';
-import { PropertyService } from '../../services/property.service';
-import { UsersService } from '../../services/users.service';
-import { IPropertyWithDistance } from '../../models/domain/iproperty-with-distance';
-import { IpropertyRes } from '../../models/api/response/iproperty-res';
-import { UserProfiles, User } from '../../models/api/response/iget-users';
-import { IReview } from '../../models/domain/ireview';
-import { Bookings } from '../../models/api/request/iget-bookings';
-import { IPayment } from '../../models/domain/ipayment';
 import { UsersAdminComponent } from '../../components/users-admin/users-admin.component';
 import { AdminChatComponent } from '../../components/admin-chat/admin-chat.component';
 import { PropertyAdminComponent } from './../../components/property-admin/property-admin.component';
 import { BookingAdminComponet } from '../../components/booking-admin/booking-admin.component';
+
 export interface AnalyticsCard {
   title: string;
   value: string;
