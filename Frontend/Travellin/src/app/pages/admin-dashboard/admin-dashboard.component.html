@@ -48,6 +48,7 @@
         <span *ngIf="sidebarOpen">Bookings</span>
       </a>
 
+
       <a class="nav-item"  [class.active]="activeTab === 'requests'" (click)="setActiveTab('requests')">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
@@ -56,7 +57,7 @@
         <span *ngIf="sidebarOpen">Requests</span>
       </a>
 
-      <a class="nav-item"  [class.active]="activeTab === 'reviews'" (click)="setActiveTab('reviews')">
+      <a class="nav-item" [class.active]="activeTab === 'reviews'" (click)="setActiveTab('reviews')">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
         </svg>
@@ -66,7 +67,8 @@
       <a class="nav-item" [class.active]="activeTab === 'chat'" (click)="setActiveTab('chat')">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-          <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c-1.5 0-2.5-1-2.5-2.5S19 7 21 7s2.5 1 2.5 2.5S22.5 12 21 12z"></path>
+          <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c-1.5 0-2.5-1-2.5-2.5S19 7 21 7s2.5 1 2.5 2.5S22.5 12 21 12z">
+          </path>
         </svg>
         <span *ngIf="sidebarOpen">Admin Chat</span>
       </a>
@@ -85,7 +87,7 @@
             <line x1="3" y1="18" x2="21" y2="18"></line>
           </svg>
         </button>
-        
+
         <div class="search-bar">
           <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8"></circle>
@@ -138,7 +140,7 @@
       <!-- Overview Tab -->
       <div *ngIf="activeTab === 'overview'" class="tab-content">
         <h1 class="page-title">Dashboard Overview</h1>
-        
+
         <!-- Analytics Cards -->
         <div class="analytics-grid">
           <div *ngFor="let card of analyticsCards" class="analytics-card">
@@ -172,8 +174,8 @@
             <div class="chart-placeholder">
               <div class="revenue-line">
                 <div *ngFor="let data of monthlyData; let i = index" class="revenue-point"
-                     [style.left.%]="(i / (monthlyData.length - 1)) * 100"
-                     [style.bottom.%]="(data.revenue / 150000) * 100">
+                  [style.left.%]="(i / (monthlyData.length - 1)) * 100"
+                  [style.bottom.%]="(data.revenue / 150000) * 100">
                 </div>
               </div>
             </div>
@@ -183,18 +185,18 @@
 
 
       <!-- Users Tab -->
-       <div *ngIf="activeTab === 'users'" class="tab-content">
+      <div *ngIf="activeTab === 'users'" class="tab-content">
         <app-users-admin (adminPhotoEvent)="receiveAdminPhoto($event)"></app-users-admin>
-       </div>
+      </div>
 
       <!-- Properties Tab -->
-       <div *ngIf="activeTab === 'properties'" class="tab-content">
+      <div *ngIf="activeTab === 'properties'" class="tab-content">
         <app-property-admin></app-property-admin>
-       </div>
+      </div>
       <!-- Bookings Tab -->
-       <div *ngIf="activeTab === 'bookings'" class="tab-content">
+      <div *ngIf="activeTab === 'bookings'" class="tab-content">
         <app-booking-admin></app-booking-admin>
-       </div>
+      </div>
 
       <!-- Reviews Tab -->
       <!-- <div *ngIf="activeTab === 'reviews'" class="tab-content">
