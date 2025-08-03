@@ -49,7 +49,6 @@
       </a>
 
       <a class="nav-item" [class.active]="activeTab === 'requests'" (click)="setActiveTab('requests')">
-
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
           <line x1="1" y1="10" x2="23" y2="10"></line>
@@ -193,11 +192,16 @@
       <div *ngIf="activeTab === 'properties'" class="tab-content">
         <app-property-admin></app-property-admin>
       </div>
+
       <!-- Bookings Tab -->
       <div *ngIf="activeTab === 'bookings'" class="tab-content">
         <app-booking-admin></app-booking-admin>
       </div>
 
+      <!-- Request Tab -->
+      <div *ngIf="activeTab === 'requests'" class="tab-content">
+        <app-requests-admin></app-requests-admin>
+      </div>
       <!-- Reviews Tab -->
       <!-- <div *ngIf="activeTab === 'reviews'" class="tab-content">
         <h1 class="page-title">Review Moderation</h1>

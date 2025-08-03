@@ -24,7 +24,7 @@ export class ApiConstant {
   };
 
   public static SearchApi = {
-    smartSearch: `${ApiConstant.baseUrl}/search/search`,
+    smartSearch: `${ApiConstant.baseUrl}/search/smartSearch`,
     // recommendations
   }
 

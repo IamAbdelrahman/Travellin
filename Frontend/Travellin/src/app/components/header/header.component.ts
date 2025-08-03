@@ -178,6 +178,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return this.authService.isAdmin();
   }
 
+  isGuest(): boolean {
+    return this.authService.isGuest();
+  }
   // Load pending bookings count for hosts
   private loadPendingBookingsCount(): void {
     if (this.isHost()) {

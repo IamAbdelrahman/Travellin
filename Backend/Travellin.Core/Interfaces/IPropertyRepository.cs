@@ -9,6 +9,7 @@ namespace Travellin.Core.Interfaces
     {
         public Task<PaginatedResult<PropertyListItemDto>> GetFilteredPropertiesAsync(FilterPropertyQueryParamsDto queryDto, LoggedInUser? currUser = null);
         public Task<PropertyDetailsDto?> GetPropertyDetailsAsync(string id, LoggedInUser? currUser = null);
+        public Task<PaginatedResult<PropertyListItemDto>> GetPropertiesByOwnerIdAsync(FilterPropertyQueryParamsDto queryDto, string userId);
     }
 
 }

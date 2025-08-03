@@ -11,6 +11,8 @@
                 <th>Host</th>
                 <th>Property</th>
                 <th>Dates</th>
+                <th>Nights</th>
+                <th>Price</th>
                 <th>Amount</th>
                 <th>Status</th>
             </tr>
@@ -26,7 +28,9 @@
                         {{ booking.checkIn }} - {{ booking.checkOut }}
                     </div>
                 </td>
-                <td>${{ booking.totalAmount }}</td>
+                <td>{{calculateNumberOfNights(booking.checkIn, booking.checkOut)}}</td>
+                <td>${{booking.pricePerNight}}</td>
+                <td>${{ booking.totalAmount.toFixed(2) }}</td>
                 <td>
                     <span class="status-badge" [ngClass]="getStatusColor(booking.status)">
                         {{ booking.status }}

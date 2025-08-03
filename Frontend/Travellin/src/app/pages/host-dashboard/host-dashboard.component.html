@@ -36,13 +36,19 @@
         </svg>
         <span *ngIf="sidebarOpen">Bookings</span>
       </a>
-
-      <!-- <a class="nav-item" [class.active]="activeTab === 'reviews'" (click)="setActiveTab('reviews')">
+      <a class="nav-item" [class.active]="activeTab === 'chat'" (click)="setActiveTab('chat')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c-1.5 0-2.5-1-2.5-2.5S19 7 21 7s2.5 1 2.5 2.5S22.5 12 21 12z"></path>
+        </svg>
+        <span *ngIf="sidebarOpen">Host Chat</span>
+      </a>
+      <a class="nav-item" [class.active]="activeTab === 'reviews'" (click)="setActiveTab('reviews')">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
         </svg>
         <span *ngIf="sidebarOpen">Reviews</span>
-      </a> -->
+      </a>
     </nav>
   </div>
 
@@ -66,7 +72,50 @@
     </header>
     <!-- Content Area -->
     <main class="content-area">
+            <div *ngIf="activeTab === 'overview'" class="tab-content">
+        <h1 class="page-title">Dashboard Overview</h1>
+        
+        <!-- Analytics Cards -->
+        <div class="analytics-grid">
+          <div *ngFor="let card of analyticsCards" class="analytics-card">
+            <div class="card-header">
+              <h3>{{ card.title }}</h3>
+              <div class="card-icon" [ngClass]="'icon-' + card.icon"></div>
+            </div>
+            <div class="card-value">{{ card.value }}</div>
+            <div class="card-change" [ngClass]="card.changeType">
+              {{ card.change }} from last month
+            </div>
+          </div>
+        </div>
 
+        <!-- Charts Section -->
+        <div class="charts-section">
+          <div class="chart-card">
+            <h3>Monthly Bookings Trend</h3>
+            <div class="chart-placeholder">
+              <div class="chart-bars">
+                <div *ngFor="let data of monthlyData" class="chart-bar">
+                  <div class="bar" [style.height.px]="data.bookings / 2"></div>
+                  <span class="bar-label">{{ data.month }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h3>Revenue Trend</h3>
+            <div class="chart-placeholder">
+              <div class="revenue-line">
+                <div *ngFor="let data of monthlyData; let i = index" class="revenue-point"
+                     [style.left.%]="(i / (monthlyData.length - 1)) * 100"
+                     [style.bottom.%]="(data.revenue / 150000) * 100">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div *ngIf="activeTab === 'bookings'" class="tab-content">
         <app-host-booking></app-host-booking>
       </div>
@@ -83,7 +132,12 @@
         <!-- Show Property List if flag is false -->
         <app-host-property *ngIf="!showAddProperty"></app-host-property>
       </div>
-
+        <div *ngIf="activeTab === 'chat'" class="tab-content">
+        <h1 class="page-title">Host Chat</h1>
+        <div class="chat-container">
+          <app-chat-page></app-chat-page>
+        </div>
+      </div>
 
     </main>
   </div>

@@ -10,7 +10,7 @@ import { UsersAdminComponent } from '../../components/users-admin/users-admin.co
 import { AdminChatComponent } from '../../components/admin-chat/admin-chat.component';
 import { PropertyAdminComponent } from './../../components/property-admin/property-admin.component';
 import { BookingAdminComponet } from '../../components/booking-admin/booking-admin.component';
-
+import { RequestsAdmin } from '../../components/requests-admin/requests-admin';
 export interface AnalyticsCard {
   title: string;
   value: string;
@@ -22,7 +22,7 @@ export interface AnalyticsCard {
 @Component({
   selector: 'app-admin-dashboard',
   imports: [CommonModule, FormsModule, RouterModule, UsersAdminComponent, 
-    AdminChatComponent, PropertyAdminComponent, BookingAdminComponet],
+    AdminChatComponent, PropertyAdminComponent, BookingAdminComponet, RequestsAdmin],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
 })
@@ -229,22 +229,6 @@ Booking Details:
     }
   }
 
-  // getStatusColor(status: string): string {
-  //   switch (status.toLowerCase()) {
-  //     case 'pending':
-  //       return 'text-yellow-600 bg-yellow-100';
-  //     case 'confirmed':
-  //       return 'text-green-600 bg-green-100';
-  //     case 'cancelled':
-  //       return 'text-red-600 bg-red-100';
-  //     case 'declined':
-  //       return 'text-red-600 bg-red-100';
-  //     case 'completed':
-  //       return 'text-blue-600 bg-blue-100';
-  //     default:
-  //       return 'text-gray-600 bg-gray-100';
-  //   }
-  // }
 
   calculateNumberOfNights(checkIn: string, checkOut: string): number {
     const checkInDate = new Date(checkIn);
@@ -285,8 +269,6 @@ Booking Details:
     this.showNotifications = !this.showNotifications;
   }
 
-
-
   // approveProperty(property: Property): void {
   //   property.status = 'Approved';
   // }
@@ -315,41 +297,4 @@ Booking Details:
   //   return this.notifications.filter(n => !n.read).length;
   // }
 
-  // getStatusColor(status: string): string {
-  //   switch (status.toLowerCase()) {
-  //     case 'active':
-  //     case 'approved':
-  //     case 'confirmed':
-  //     case 'completed':
-  //       return 'text-green-600 bg-green-100';
-  //     case 'pending':
-  //       return 'text-yellow-600 bg-yellow-100';
-  //     case 'blocked':
-  //     case 'rejected':
-  //     case 'cancelled':
-  //     case 'failed':
-  //       return 'text-red-600 bg-red-100';
-  //     default:
-  //       return 'text-gray-600 bg-gray-100';
-  //   }
-  // }
-
-
-
-  // getFilteredProperties(): Property[] {
-  //   let filtered = this.properties;
-    
-  //   if (this.selectedFilter !== 'all') {
-  //     filtered = filtered.filter(property => property.status.toLowerCase() === this.selectedFilter);
-  //   }
-    
-  //   if (this.searchTerm) {
-  //     filtered = filtered.filter(property => 
-  //       property.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-  //       property.location.toLowerCase().includes(this.searchTerm.toLowerCase())
-  //     );
-  //   }
-    
-  //   return filtered;
-  // }
 } 

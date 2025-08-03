@@ -152,7 +152,7 @@ namespace Travellin.Travellin.Api.Controllers
 
         }
 
-        [Authorize]
+        [Authorize(Roles ="Guest")]
         [HttpGet("HistoryBookingOfUser")]
         public async Task<ActionResult<PaginatedResult<BookingDto>>> GetMyBookings([FromQuery] GetAllBookingsQueryParamsDto queryDto)
         {
