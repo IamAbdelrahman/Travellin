@@ -66,10 +66,10 @@
         [ngClass]="{ active: selectedStatus == 'Pending' }">
         Pending
       </button>
-      <button (click)="selectedStatus = 'Canceled'; applyFilters()"
+      <button (click)="selectedStatus = 'Cancelled'; applyFilters()"
         class="px-4 py-2 font-medium btn btn-outline-primary rounded-pill"
-        [ngClass]="{ active: selectedStatus == 'Canceled' }">
-        Canceled
+        [ngClass]="{ active: selectedStatus == 'Cancelled' }">
+        Cancelled
       </button>
       <button (click)="selectedStatus = 'Completed'; applyFilters()"
         class="px-4 py-2 font-medium btn btn-outline-primary rounded-pill"

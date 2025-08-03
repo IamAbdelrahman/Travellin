@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { ApiConstant } from '../utils/api-constant.util';
 
 export interface BookingManagementResponse {
@@ -12,10 +12,32 @@ export interface BookingManagementResponse {
   };
 }
 
+export interface BookingStatus {
+  bookingId: string;
+  status: string;
+  timestamp: Date;
+}
+
+export interface BookingNotification {
+  id: string;
+  type: 'booking_request' | 'booking_response' | 'booking_cancellation' | 'payment_success' | 'payment_refund';
+  bookingId: string;
+  propertyTitle: string;
+  message: string;
+  timestamp: Date;
+  isRead: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class BookingManagementService {
+  private bookingStatusSubject = new BehaviorSubject<BookingStatus | null>(null);
+  private notificationsSubject = new BehaviorSubject<BookingNotification[]>([]);
+
+  public bookingStatus$ = this.bookingStatusSubject.asObservable();
+  public notifications$ = this.notificationsSubject.asObservable();
+
   constructor(private http: HttpClient) {}
 
   // Host booking management
@@ -113,5 +135,46 @@ export class BookingManagementService {
     return this.http.delete(`${ApiConstant.booking.cancelBooking.replace('{id}', bookingId)}`, { 
       withCredentials: true 
     });
+  }
+
+  // Get unread notifications count
+  getUnreadNotificationsCount(): Observable<number> {
+    return new Observable(observer => {
+      this.notifications$.subscribe(notifications => {
+        const unreadCount = notifications.filter(n => !n.isRead).length;
+        observer.next(unreadCount);
+      });
+    });
+  }
+
+  // Mark notification as read
+  markNotificationAsRead(notificationId: string): void {
+    const currentNotifications = this.notificationsSubject.value;
+    const updatedNotifications = currentNotifications.map(notification => 
+      notification.bookingId === notificationId 
+        ? { ...notification, isRead: true }
+        : notification
+    );
+    this.notificationsSubject.next(updatedNotifications);
+  }
+
+  // Clear all notifications
+  clearNotifications(): void {
+    this.notificationsSubject.next([]);
+  }
+
+  // Update booking status (internal method)
+  private updateBookingStatus(bookingId: string, status: string): void {
+    this.bookingStatusSubject.next({
+      bookingId,
+      status,
+      timestamp: new Date()
+    });
+  }
+
+  // Add notification (internal method)
+  private addNotification(notification: BookingNotification): void {
+    const currentNotifications = this.notificationsSubject.value;
+    this.notificationsSubject.next([notification, ...currentNotifications]);
   }
 } 

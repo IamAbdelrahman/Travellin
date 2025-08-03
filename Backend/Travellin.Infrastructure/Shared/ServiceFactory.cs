@@ -41,7 +41,11 @@ namespace Travellin.Infrastructure.Shared
         //public IReviewService ReviewService => _reviewService ??= new ReviewsService(_provider.GetRequiredService<IReviewRepository>());
         public IFileUploadManagementService FileUploadManagementService => _fileUploadManagementService ??= new FileUploadManagementService(_provider.GetRequiredService<IUnitOfWork>(), _provider.GetRequiredService<IFileStorageService>());
         public IBookingManagementService BookingManagementService =>
-            _bookingManagementService ??= new BookingManagementService(_provider.GetRequiredService<IUnitOfWork>());
+            _bookingManagementService ??= new BookingManagementService(
+                _provider.GetRequiredService<IUnitOfWork>(),
+                _provider.GetRequiredService<INotificationService>(),
+                _provider.GetRequiredService<ICancellationService>(),
+                _provider.GetRequiredService<ILogger<BookingManagementService>>());
         public ICheckoutManagementService CheckoutManagementService =>
             _checkoutManagementService ??= new StripeCheckoutService(
                 _provider.GetRequiredService<StripeClient>(),
@@ -65,6 +69,7 @@ namespace Travellin.Infrastructure.Shared
         public ICancellationService CancellationService => _provider.GetRequiredService<ICancellationService>();
         public IPaymentRefundService PaymentRefundService => _provider.GetRequiredService<IPaymentRefundService>();
         public IStripeTransferService StripeTransferService => _provider.GetRequiredService<IStripeTransferService>();
+        public INotificationService NotificationService => _provider.GetRequiredService<INotificationService>();
         //public IReviewService ReviewsService => _provider.GetRequiredService<IReviewService>();
     }
 }
