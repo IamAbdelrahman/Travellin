@@ -20,6 +20,5 @@ namespace Travellin.Core.Dtos.Bookings
         public DateTime UpdatedAt { get; set; }
         public List<BookingGuestDto> BookingGuests { get; set; }
         public PropertyListItemDto Property { get; set; }
-
     }
 }
