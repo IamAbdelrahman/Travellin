@@ -1,10 +1,6 @@
 // Variables
-$search-container-max-width: 800px;
-$search-bar-height: 48px;
-$focus-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
-$breakpoint-xl: 1200px;
-$breakpoint-lg: 992px;
-$breakpoint-sm: 576px;
+
+
 .transition-all {
   transition: all 0.5s ease;
 }
@@ -148,13 +144,37 @@ $carousel-control-margin: 6px;
   background-color: var(--bs-light);
 }
 
+
+.searchBtn {
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+/* الحالة النشطة (AI-active) */
+.ai-active {
+  background: linear-gradient(135deg, #3DB2FF, #FF577F);
+  color: white !important;
+  border: none;
+  box-shadow: 0 0 12px rgba(61, 178, 255, 0.6);
+  transform: scale(1.05);
+}
+
+/* Hover تأثير */
 .searchBtn:hover {
-  background-color: #d50027;
-  color: var(--bs-light);
+  transform: scale(1.05);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
 }
-.searchBtn:active {
-  color: #ff385c;
+
+/* Hover للحالة النشطة */
+.ai-active:hover {
+  box-shadow: 0 0 16px rgba(61, 178, 255, 0.9);
 }
+
 // Favorite Heart
 .favorite-btn {
   z-index: 2;
