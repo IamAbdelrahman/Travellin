@@ -68,6 +68,22 @@ namespace Travellin.Travellin.Api.Controllers
             return Ok(new { Message = "Booking cancelled and availability restored." });
         }
 
+        // POST endpoint for cancellation (for frontend compatibility)
+        [Authorize]
+        [HttpPost("{id}/cancel")]
+        public async Task<IActionResult> CancelBookingPostAsync(string id)
+        {
+            var userId = GetCurrentUserId();
+            var isAdmin = User.IsInRole("Admin");
+
+            if (userId == null)
+                return Unauthorized();
+
+            await ServiceFactory.BookingManagementService.CancelBookingAsync(id, userId, isAdmin);
+
+            return Ok(new { Message = "Booking cancelled and availability restored." });
+        }
+
 
         [HttpGet("GetAllBookings")]
         public async Task<IActionResult> GetAllBookings([FromQuery] GetAllBookingsQueryParamsDto queryDto)
