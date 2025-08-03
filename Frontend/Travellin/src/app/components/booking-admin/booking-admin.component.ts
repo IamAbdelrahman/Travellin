@@ -82,4 +82,10 @@ export class BookingAdminComponet {
     
     return this.filteredBookings;
   }
+  calculateNumberOfNights(checkIn: string, checkOut: string): number {
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+    const timeDiff = checkOutDate.getTime() - checkInDate.getTime();
+    return Math.ceil(timeDiff / (1000 * 3600 * 24));
+  }
 }

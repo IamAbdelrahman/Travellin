@@ -191,11 +191,16 @@
        <div *ngIf="activeTab === 'properties'" class="tab-content">
         <app-property-admin></app-property-admin>
        </div>
+      
       <!-- Bookings Tab -->
        <div *ngIf="activeTab === 'bookings'" class="tab-content">
         <app-booking-admin></app-booking-admin>
        </div>
-
+      
+      <!-- Request Tab -->
+       <div *ngIf="activeTab === 'requests'" class="tab-content">
+        <app-requests-admin></app-requests-admin>
+       </div>
       <!-- Reviews Tab -->
       <!-- <div *ngIf="activeTab === 'reviews'" class="tab-content">
         <h1 class="page-title">Review Moderation</h1>
