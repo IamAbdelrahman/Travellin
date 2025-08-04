@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input, OnDestroy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { StickyNavDirective } from '../../directive/sticky-nav.directive';
 import { AuthService } from '../../core/services/auth.service';
@@ -40,7 +40,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     menu: Menu,
     chat: MessageCircle,
   };
+  @Input() showSearchButtons = false;
 
+@Output() onSimpleClick = new EventEmitter<void>();
+@Output() onAiClick = new EventEmitter<void>();
   unreadCount: number = 0;
   pendingBookingsCount: number = 0;
   adminPendingBookingsCount: number = 0;
