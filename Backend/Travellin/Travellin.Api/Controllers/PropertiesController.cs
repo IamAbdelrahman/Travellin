@@ -172,29 +172,22 @@ namespace Travellin.Travellin.Api.Controllers
             return new ObjectResult(property.ToDto()) { StatusCode = 201 };
         }
 
-        [Authorize(Roles = "Host,Admin")]
+
+        ////////////////////////////Update
         [HttpPatch("{id}")]
-        [EndpointSummary("Update existing property.")]
-        [Consumes("application/json")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(PropertyDto), StatusCodes.Status200OK)]
-        [ProducesErrorResponseType(typeof(List<string>))]
-        public async Task<IActionResult> Update([FromRoute] string id, [FromBody] PropertyUpdateDto dto)
+        public async Task<IActionResult> Update(string id, [FromBody] PropertyUpdateDto dto)
         {
             var userId = CurrentUser.Id;
             var property = await _unitOfWork.PropertyRepository.GetByIdAsync(id);
 
             if (property == null || (CurrentUser.IsInRole("Host") && property.OwnerId != userId))
-            {
                 return NotFoundResponse();
-            }
 
-            // Update only non-null properties from DTO
-            property.MapUpdateFromDto(dto);
+            var success = await _unitOfWork.PropertyRepository.UpdateAsync(id, dto);
+            if (!success) return BadRequest("Update failed");
 
-            _unitOfWork.PropertyRepository.Update(property);
             await _unitOfWork.SaveChangesAsync();
-            return Ok(property.ToDto());
+            return Ok(new { message = "Property updated successfully" });
         }
 
         [Authorize(Roles = "Host,Admin")]
