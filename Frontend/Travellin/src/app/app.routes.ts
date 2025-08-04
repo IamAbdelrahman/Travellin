@@ -1,9 +1,10 @@
 import { Routes } from '@angular/router';
-import { HomePageComponent } from './pages/home-page/home-page.component';
+import { HomePageComponent } from './pages/home-page/home-page.component'
 import { PropertyInfoComponent } from './pages/property-info-page/property-info.component';
 import { BlankLayoutComponent } from './layouts/blank-layout/blank-layout.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { AuthGuard } from './core/guards/auth.guard'
+import {RoleGuard} from './core/guards/role.guard'
 import { BookingHistoryComponent } from './pages/booking-history/booking-history.component';
 import { BookingPageComponent } from './pages/booking-page/booking-page.component';
 import { ProfileComponent } from './pages/profile-page/profile/profile.component';
@@ -21,8 +22,8 @@ export const routes: Routes = [
     component: MainLayoutComponent,
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: HomePageComponent },
-      { path: 'property/:id', component: PropertyInfoComponent },
+      { path: 'home', component: HomePageComponent,},
+      { path: 'property/:id', component: PropertyInfoComponent,},
       {
         path: 'auth',
         loadComponent: () =>
