@@ -49,7 +49,91 @@
   </div>
 
   <div *ngIf="searchMode === 'simple'" class="container-fluid w-75">
-    <app-advanced-search (searchEvent)="handleAdvancedSearch($event)"></app-advanced-search>
+    <div class="d-flex justify-content-center">
+      <div
+        class="search-bar d-flex flex-wrap justify-content-between align-items-center p-3 rounded-pill shadow bg-white w-100 transition-all"
+        [class.d-none]="scrollY > 50"
+        style="max-width: 1000px">
+        <!-- Location -->
+        <div class="px-3 border-end flex-grow-1 search-section">
+          <label
+            class="form-label mb-0 text-muted small transition-all"
+            [class.d-none]="scrollY > 50"
+            >Where</label
+          >
+          <div class="position-relative w-100">
+            <input
+              type="text"
+              class="form-control border-0 p-0 bg-transparent transition-all"
+              [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'"
+              placeholder="Search destination"
+              [(ngModel)]="LocationName" />
+          </div>
+        </div>
+
+        <!-- Check in -->
+        <div class="px-3 border-end search-section disapear">
+          <label
+            class="form-label mb-1 text-muted small transition-all"
+            [class.d-none]="scrollY > 50"
+            >Check in</label
+          >
+          <input
+            type="date"
+            class="form-control border-0 p-0 bg-transparent transition-all"
+            [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'"
+            [(ngModel)]="checkInDate" />
+        </div>
+
+        <!-- Check out -->
+        <div class="px-3 border-end search-section disapear">
+          <label
+            class="form-label mb-1 text-muted small transition-all"
+            [class.d-none]="scrollY > 50"
+            >Check out</label
+          >
+          <input
+            type="date"
+            class="form-control border-0 p-0 bg-transparent transition-all"
+            [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'"
+            [(ngModel)]="checkOutDate" />
+        </div>
+
+        <!-- Guests -->
+        <div class="position-relative px-3 flex-grow-1 search-section disapear">
+          <div class="d-flex align-items-center justify-between w-100 h-100">
+            <button
+              type="button"
+              class="btn p-0 border-0 bg-transparent text-start w-100"
+              (click)="toggleGuestMenu()">
+              <label
+                class="form-label mb-0 text-muted small transition-all"
+                [class.d-none]="scrollY > 50"></label>
+              <h6
+                class="mb-0 fw-semibold transition-all"
+                [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'">
+                <input
+                  type="text"
+                  class="form-control border-0 p-0 bg-transparent transition-all"
+                  [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'"
+                  placeholder="Guest Numbers"
+                  [(ngModel)]="guestsCount" />
+              </h6>
+            </button>
+
+            <!-- Search button -->
+            <button
+              type="button"
+              class="btn btn-primary rounded-pill ms-2 d-flex align-items-center justify-content-center px-4 fw-semibold transition-all"
+              [class.d-none]="scrollY > 50"
+              (click)="searchProperties()">
+              <fa-icon [icon]="icons['search']" class="me-2"></fa-icon>
+              <span [class.d-none]="scrollY > 50">Search</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>

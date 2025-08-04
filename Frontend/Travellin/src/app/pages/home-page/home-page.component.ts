@@ -11,7 +11,6 @@ import { BellElectric, Heart, LucideAngularModule, LucideBellElectric } from 'lu
 import { ToastContainerComponent } from '../../components/toast-container/toast-container.component';
 import { ToastService } from '../../services/toast.service'; // Adjust the path as needed
 import {LoadSpinnerComponent} from '../../components/load-spinner/load-spinner';
-import { AdvancedSearchComponent } from '../../components/advanced-search/advanced-search';
 import {
   faHouse,
   faBed,
@@ -47,7 +46,6 @@ import { HeaderComponent } from '../../components/header/header.component';
     LucideAngularModule,
     RouterModule,
     LoadSpinnerComponent,
-    AdvancedSearchComponent,
     HeaderComponent
   ],
   templateUrl: './home-page.component.html',
@@ -152,6 +150,7 @@ onScroll = () => {
 }
 
 onHeaderSimpleClick() {
+          this.scrollY = 0;
   this.setSearchMode('simple');
 }
 
