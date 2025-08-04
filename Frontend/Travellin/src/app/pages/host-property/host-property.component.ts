@@ -17,10 +17,11 @@ import {
   faTimes,
   faCheckCircle,
 } from '@fortawesome/free-solid-svg-icons';
+import { UpdatePropertyComponent } from '../update-property-component/update-property-component';
 
 @Component({
   selector: 'app-host-property',
-  imports: [CommonModule, FormsModule, RouterModule, FontAwesomeModule],
+  imports: [CommonModule, FormsModule, RouterModule, FontAwesomeModule, UpdatePropertyComponent],
   templateUrl: './host-property.component.html',
   styleUrl: './host-property.component.scss',
 })
@@ -37,6 +38,8 @@ export class HostPropertyComponent implements OnInit {
   totalItems: number = this.property?.length || 0;
   Math = Math;
   isLoadingProperties: boolean = true;
+  editPropertyId: string | null = null;
+
 
   icons: { [key: string]: any } = {
     'chevron-left': faChevronLeft,

@@ -1,161 +1,104 @@
 <header class="mb-7">
-  <nav
-    appStickyNav
-    class="navbar navbar-expand-lg fixed-top fw-semibold bg-white">
+  <nav class="navbar navbar-expand-lg fixed-top fw-semibold bg-white ">
     <div class="container-fluid">
       <a class="navbar-brand" routerLink="/">
-        <img
-          src="logo.png"
-          alt="Logo"
-          width="120"
-          class="d-inline-block align-text-top" />
+        <img src="logo2.png" alt="Logo" width="200" class="d-inline-block align-text-top" />
       </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <lucide-icon [img]="icons.menu" class="my-icon" size="18"></lucide-icon>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul
-          class="navbar-nav d-flex ms-auto gap-4 align-items-center px-5 py-3">
+        <ul class="navbar-nav d-flex ms-auto gap-4 align-items-center px-5 py-3">
+          <li *ngIf="showSearchButtons" class="nav-item">
+            <button class="btn searchBtn" (click)="onSimpleClick.emit()">Simple Search</button>
+            <button class="btn searchBtn" (click)="onAiClick.emit()">AI Search</button>
+          </li>
           <li class="nav-item">
-            <a
-              class="nav-link d-flex align-items-center gap-1"
-              routerLink="/home"
-              routerLinkActive="active">
-              <lucide-icon
-                [img]="icons.home"
-                class="my-icon"
-                size="18"></lucide-icon>
+            <a class="nav-link d-flex align-items-center gap-1" routerLink="/home" routerLinkActive="active">
+              <lucide-icon [img]="icons.home" class="my-icon" size="18"></lucide-icon>
               <span>Home</span>
             </a>
           </li>
 
           @if (isAuthenticated) {
-            @if(isGuest()) {
-              <!-- Favourits -->
-            <li class="nav-item">
-              <a
-                class="nav-link d-flex align-items-center gap-1"
-                routerLink="/favorites"
-                routerLinkActive="active">
-                <lucide-icon
-                  [img]="icons.heart"
-                  class="my-icon"
-                  size="18"></lucide-icon>
-                <span>Favorites</span>
-              </a>
-            </li>
-            <!-- Chats -->
-            <li class="nav-item">
-              <a
-                class="nav-link d-flex align-items-center gap-1 position-relative"
-                routerLink="/chat"
-                routerLinkActive="active">
-                <lucide-icon
-                  [img]="icons.chat"
-                  class="my-icon"
-                  size="18"></lucide-icon>
-                <span>Chat</span>
-                <!-- Unread Count Badge -->
-                <span 
-                  *ngIf="unreadCount > 0" 
-                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                  style="font-size: 0.6rem; transform: translate(-50%, -50%);">
-                  {{ unreadCount > 99 ? '99+' : unreadCount }}
-                </span>
-              </a>
-            </li>
-            }
+          @if(isGuest()) {
+          <!-- Favourits -->
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-1" routerLink="/favorites" routerLinkActive="active">
+              <lucide-icon [img]="icons.heart" class="my-icon" size="18"></lucide-icon>
+              <span>Favorites</span>
+            </a>
+          </li>
+          <!-- Chats -->
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-1 position-relative" routerLink="/chat"
+              routerLinkActive="active">
+              <lucide-icon [img]="icons.chat" class="my-icon" size="18"></lucide-icon>
+              <span>Chat</span>
+              <!-- Unread Count Badge -->
+              <span *ngIf="unreadCount > 0"
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                style="font-size: 0.6rem; transform: translate(-50%, -50%);">
+                {{ unreadCount > 99 ? '99+' : unreadCount }}
+              </span>
+            </a>
+          </li>
+          }
 
-            
-            <!-- Host Dashboard Link -->
-            @if (isHost()) {
-              <li class="nav-item">
-                <a
-                  class="nav-link d-flex align-items-center gap-1 position-relative"
-                  routerLink="/host-dashboard"
-                  routerLinkActive="active">
-                  <lucide-icon
-                    [img]="icons.home"
-                    class="my-icon"
-                    size="18"></lucide-icon>
-                  <span>Host Dashboard</span>
-                  <!-- Pending Bookings Badge -->
-                  <span 
-                    *ngIf="pendingBookingsCount > 0" 
-                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning"
-                    style="font-size: 0.6rem; transform: translate(-50%, -50%);">
-                    {{ pendingBookingsCount > 99 ? '99+' : pendingBookingsCount }}
-                  </span>
-                </a>
-              </li>
-            }
-            
-            <!-- Admin Dashboard Link -->
-            @if (isAdmin()) {
-              <li class="nav-item">
-                <a
-                  class="nav-link d-flex align-items-center gap-1 position-relative"
-                  routerLink="/admin-dashboard"
-                  routerLinkActive="active">
-                  <lucide-icon
-                    [img]="icons.user"
-                    class="my-icon"
-                    size="18"></lucide-icon>
-                  <span>Admin Dashboard</span>
-                  <!-- Pending Bookings Badge -->
-                  <span 
-                    *ngIf="adminPendingBookingsCount > 0" 
-                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                    style="font-size: 0.6rem; transform: translate(-50%, -50%);">
-                    {{ adminPendingBookingsCount > 99 ? '99+' : adminPendingBookingsCount }}
-                  </span>
-                </a>
-              </li>
-            }
-            <li class="nav-item">
-              <a
-                class="nav-link d-flex align-items-center gap-1"
-                routerLink="/profile"
-                routerLinkActive="active">
-                <lucide-icon
-                  [img]="icons.user"
-                  class="my-icon"
-                  size="18"></lucide-icon>
-                <span>Profile</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a
-                class="nav-link d-flex align-items-center gap-1"
-                (click)="logout()"
-                style="cursor: pointer">
-                <lucide-icon
-                  [img]="icons.logout"
-                  class="my-icon"
-                  size="18"></lucide-icon>
-                <span>Logout</span>
-              </a>
-            </li>
+
+          <!-- Host Dashboard Link -->
+          @if (isHost()) {
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-1 position-relative" routerLink="/host-dashboard"
+              routerLinkActive="active">
+              <lucide-icon [img]="icons.home" class="my-icon" size="18"></lucide-icon>
+              <span>Host Dashboard</span>
+              <!-- Pending Bookings Badge -->
+              <span *ngIf="pendingBookingsCount > 0"
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning"
+                style="font-size: 0.6rem; transform: translate(-50%, -50%);">
+                {{ pendingBookingsCount > 99 ? '99+' : pendingBookingsCount }}
+              </span>
+            </a>
+          </li>
+          }
+
+          <!-- Admin Dashboard Link -->
+          @if (isAdmin()) {
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-1 position-relative" routerLink="/admin-dashboard"
+              routerLinkActive="active">
+              <lucide-icon [img]="icons.user" class="my-icon" size="18"></lucide-icon>
+              <span>Admin Dashboard</span>
+              <!-- Pending Bookings Badge -->
+              <span *ngIf="adminPendingBookingsCount > 0"
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                style="font-size: 0.6rem; transform: translate(-50%, -50%);">
+                {{ adminPendingBookingsCount > 99 ? '99+' : adminPendingBookingsCount }}
+              </span>
+            </a>
+          </li>
+          }
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-1" routerLink="/profile" routerLinkActive="active">
+              <lucide-icon [img]="icons.user" class="my-icon" size="18"></lucide-icon>
+              <span>Profile</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-1" (click)="logout()" style="cursor: pointer">
+              <lucide-icon [img]="icons.logout" class="my-icon" size="18"></lucide-icon>
+              <span>Logout</span>
+            </a>
+          </li>
           } @else {
-            <li class="nav-item">
-              <a
-                class="nav-link d-flex align-items-center gap-1"
-                routerLink="/auth"
-                routerLinkActive="active">
-                <lucide-icon
-                  [img]="icons.login"
-                  class="my-icon"
-                  size="18"></lucide-icon>
-                <span>Login</span>
-              </a>
-            </li>
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-1" routerLink="/auth" routerLinkActive="active">
+              <lucide-icon [img]="icons.login" class="my-icon" size="18"></lucide-icon>
+              <span>Login</span>
+            </a>
+          </li>
           }
         </ul>
       </div>

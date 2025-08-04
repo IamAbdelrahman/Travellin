@@ -39,5 +39,7 @@ namespace Travellin.Core.Dtos.Properties
 
         public List<PropertyGuestDto>? Guests { get; set; }
 
+        public bool IsInstant { get; set; }
+
     }
 }

@@ -13,10 +13,11 @@ $breakpoint-sm: 576px;
     --bs-dark: #222222;
 }
 
-.travellin-font {
-    font-family: 'Bodoni MT', 'Didot', 'Bodoni', 'Garamond', serif;
+body{
+    font-family: 'Poppins', sans-serif;
     font-weight: bold;
     text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 * {

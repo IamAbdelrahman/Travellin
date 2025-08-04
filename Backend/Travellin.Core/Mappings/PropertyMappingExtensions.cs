@@ -26,6 +26,7 @@ namespace Travellin.Core.Mappings
                 CancellationPolicy = entity.CancellationPolicy,
                 IsActive = entity.IsActive,
                 IsDeleted = entity.IsDeleted,
+                IsInstant = entity.IsInstantBook,
                 Photos = entity.PropertyPhotos?
                         .Where(photo => photo != null)
                         .OrderBy(x => x.TouchedAt)
@@ -52,7 +53,8 @@ namespace Travellin.Core.Mappings
                 HouseRules = dto.HouseRules,
                 CancellationPolicy = dto.CancellationPolicy,
                 IsActive = dto.IsActive,
-                IsDeleted = dto.IsDeleted
+                IsDeleted = dto.IsDeleted,
+                IsInstantBook = dto.IsInstant
             };
         }
         public static Property ToEntity(this PropertyCreateDto dto, string userId)
@@ -71,7 +73,8 @@ namespace Travellin.Core.Mappings
                 HouseRules = dto.HouseRules,
                 CancellationPolicy = dto.CancellationPolicy,
                 IsActive = false,
-                IsDeleted = false
+                IsDeleted = false,
+
             };
         }
 
@@ -94,7 +97,8 @@ namespace Travellin.Core.Mappings
                 AverageRating = averageRating,
                 ReviewCount = reviewCount,
                 IsActive = property.IsActive,
-                IsDeleted = property.IsDeleted
+                IsDeleted = property.IsDeleted,
+                IsInstant = property.IsInstantBook
             };
         }
 
@@ -123,7 +127,9 @@ namespace Travellin.Core.Mappings
                 SpaceSummaries = MapSpaceSummaries(property),
                 SpaceItemSummaries = MapSpaceItemSummaries(property),
                 IsActive = property.IsActive,
-                IsDeleted = property.IsDeleted
+                IsDeleted = property.IsDeleted,
+                IsInstant = property.IsInstantBook
+
             };
         }
 
@@ -200,6 +206,7 @@ namespace Travellin.Core.Mappings
             property.HouseRules = dto.HouseRules ?? property.HouseRules;
             property.CancellationPolicy = dto.CancellationPolicy ?? property.CancellationPolicy;
             property.IsActive = dto.IsActive.HasValue ? dto.IsActive.Value : property.IsActive;
+            property.IsInstantBook =dto.IsInstant;
         }
     }
 }
