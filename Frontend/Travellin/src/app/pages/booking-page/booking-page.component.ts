@@ -259,7 +259,7 @@ onCheckOut(): void {
       id: booking.property.id,
       title: booking.property.title,
       description:  '',
-      mainPhotoUrl: booking.property.photos?.[0]?.photoUrl || '',
+      mainPhotoUrl: '',
       locationName: booking.property.location?.name || '',
     },
     bookingPeriod: {

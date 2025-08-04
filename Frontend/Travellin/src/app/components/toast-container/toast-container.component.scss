@@ -8,6 +8,7 @@ $info: #17a2b8;
   border-left: 4px solid darken($success, 15%);
   color: white !important;
   box-shadow: 0 4px 15px rgba($success, 0.3);
+  z-index: 200000;
 }
 
 .toast-danger {
@@ -15,6 +16,7 @@ $info: #17a2b8;
   border-left: 4px solid darken($danger, 15%);
   color: white !important;
   box-shadow: 0 4px 15px rgba($danger, 0.3);
+    z-index: 200000;
 }
 
 .toast-warning {

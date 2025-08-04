@@ -63,6 +63,7 @@ export class PropertyService {
       params,
     });
   }
+
   searchProperty(params: any): Observable<HttpResponse<any>> {
     return this.http.get<any>(`${ApiConstant.PropertiesApi.getAll}`, {
       params: params,
@@ -131,6 +132,15 @@ export class PropertyService {
         withCredentials: true,
       }
     );
+  }
+  getRecommendations(): Observable<HttpResponse<any>> {
+    return this.http.get<any>(
+      `${ApiConstant.SearchApi.recommendations}`,
+      {
+        observe: 'response',
+        withCredentials: true,
+      }
+    )
   }
   getAllGuestTypes(): Observable<HttpResponse<IGuestTypeResponse>> {
     return this.http.get<IGuestTypeResponse>(

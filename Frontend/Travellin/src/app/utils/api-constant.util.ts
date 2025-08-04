@@ -26,7 +26,7 @@ export class ApiConstant {
 
   public static SearchApi = {
     smartSearch: `${ApiConstant.baseUrl}/search/smartSearch`,
-    // recommendations
+    recommendations: `${ApiConstant.baseUrl}/search/recommendations`
   }
 
   public static AmenitiesApi = {
