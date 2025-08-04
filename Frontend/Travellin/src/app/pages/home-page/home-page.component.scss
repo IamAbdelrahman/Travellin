@@ -92,10 +92,12 @@ $carousel-control-margin: 6px;
   font-weight: 500;
   transition: all 0.3s ease;
 }
-.fa-bolt{
-  color: rgb(247, 247, 5);
+
+.fa-bolt {
+  color: #ff0231;
 
 }
+
 /* Active State for AI Search Button */
 .ai-active {
   background: linear-gradient(135deg, #3DB2FF, #FF577F);
@@ -117,9 +119,17 @@ $carousel-control-margin: 6px;
 }
 
 @keyframes gradientAnimation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Hook Text */
