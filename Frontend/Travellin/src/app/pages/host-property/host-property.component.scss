@@ -48,3 +48,23 @@
 .activeBtn:hover {
     opacity: 1;
 }
+
+:host ::ng-deep button.btn.btn-outline-primary {
+    color: #ff385c;
+    border-color: #ff385c;
+    padding-left: auto;
+    margin-left: 140px;
+
+    i {
+        color: #ff385c;
+    }
+
+    &:hover {
+        background-color: #ff385c;
+        color: white;
+
+        i {
+            color: white;
+        }
+    }
+}

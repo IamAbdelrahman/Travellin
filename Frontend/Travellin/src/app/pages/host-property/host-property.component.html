@@ -1,6 +1,5 @@
 <!-------------------------------------new card---------------------------->
 <div class="container-fluid p-0 " id="cards" [ngStyle]="{ 'margin-top': 10 + 'px' }">
-
     <!-- Loading Spinner -->
     @if (isLoadingProperties) {
     <div class="d-flex justify-content-center align-items-center" style="height: 300px">
@@ -82,9 +81,22 @@
                         <div class="d-flex align-items-end mb-4">
                             <span class="fw-semibold h5">${{ prop.pricePerNight | number }}</span>
                             <span class="h6 text-muted ms-1"> per night</span>
-                            <!-- is edit button -->
+                            <!-- Edit Button -->
+                            <button class="btn btn-sm btn-outline-primary" (click)="editPropertyId = prop.id">
+                                <i class="fas fa-edit"></i>
+                            </button>
 
+                            <!-- is edit button -->
                         </div>
+                    </div>
+                </div>
+                <div *ngIf="editPropertyId === prop.id" class="modal-backdrop">
+                    <div class="modal-centered-card">
+                        <app-update-property-component [propertyId]="prop.id" [currentTitle]="prop.title"
+                            [currentLongitude]="prop.longitude" [currentPricePerNight]="prop.pricePerNight"
+                            [currentLatitude]="prop.latitude" (closed)="editPropertyId = null">
+                        </app-update-property-component>
+
                     </div>
                 </div>
             </div>

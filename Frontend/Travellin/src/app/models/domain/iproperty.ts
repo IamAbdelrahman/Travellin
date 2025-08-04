@@ -1,7 +1,11 @@
 export interface IProperty {
   id: string;
   title: string;
+  description: string;
+  safteyInfo: string;
+  houseRules: string;
   pricePerNight: number;
+  isactive: boolean;
   latitude: number;
   longitude: number;
   owner: {
@@ -24,4 +28,5 @@ export interface IProperty {
   }[];
   averageRating: number;
   reviewCount: number;
+  cancellationpolicy: string
 }
