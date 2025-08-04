@@ -92,12 +92,15 @@ $carousel-control-margin: 6px;
   font-weight: 500;
   transition: all 0.3s ease;
 }
-.fa-bolt{
-  color: rgb(247, 247, 5);
+
+.fa-bolt {
+  color: #ff0231;
 
 }
+
 .recommended-card {
-  border: 5px solid #f00a34; /* أو أي Style تاني */
+  border: 5px solid #f00a34;
+  /* أو أي Style تاني */
   box-shadow: 0 0 10px rgba(209, 24, 58, 0.4);
 
 }
@@ -123,9 +126,17 @@ $carousel-control-margin: 6px;
 }
 
 @keyframes gradientAnimation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Hook Text */
