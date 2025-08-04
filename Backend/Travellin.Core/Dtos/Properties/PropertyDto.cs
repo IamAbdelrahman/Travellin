@@ -18,6 +18,7 @@ namespace Travellin.Core.Dtos.Properties
         public string? CancellationPolicy { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
+        public bool IsInstant { get; set; }
         public List<PropertyPhotoDto> Photos { get; set; }  = new List<PropertyPhotoDto>();
     }
 }

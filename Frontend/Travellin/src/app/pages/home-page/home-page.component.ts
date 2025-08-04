@@ -7,7 +7,7 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { IpropertyTypeApiResponse } from '../../models/api/response/iproperty-type-api-res';
 import { HostListener } from '@angular/core';
 import { IPropertyWithDistance } from '../../models/domain/iproperty-with-distance';
-import { Heart, LucideAngularModule } from 'lucide-angular';
+import { BellElectric, Heart, LucideAngularModule, LucideBellElectric } from 'lucide-angular';
 import { ToastContainerComponent } from '../../components/toast-container/toast-container.component';
 import { ToastService } from '../../services/toast.service'; // Adjust the path as needed
 import {LoadSpinnerComponent} from '../../components/load-spinner/load-spinner';
@@ -56,6 +56,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 export class HomePageComponent implements OnInit {
   icon = {
     heart: Heart,
+    instant: LucideBellElectric
   };
   searchMode: 'ai' | 'simple' = 'ai';
   guestMenuVisible: boolean = false;
@@ -277,6 +278,8 @@ onHeaderSimpleClick() {
             }));
             this.totalItems = response.body.metaData.total;
             this.currentPage = response.body.metaData.page;
+            for (let i = 0; i < this.property.length; i++)
+              console.log("instant:", this.property[i].isInstant);
           } else {
             this.handlePropertyerror('Invalid Loading Property');
           }
