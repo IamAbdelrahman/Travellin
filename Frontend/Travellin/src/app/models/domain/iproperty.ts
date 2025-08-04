@@ -24,4 +24,5 @@ export interface IProperty {
   }[];
   averageRating: number;
   reviewCount: number;
+  isInstant: boolean;
 }

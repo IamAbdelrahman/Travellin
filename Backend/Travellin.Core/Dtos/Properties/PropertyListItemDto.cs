@@ -19,5 +19,6 @@ namespace Travellin.Core.Dtos.Properties
         public int ReviewCount { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
+        public bool IsInstant { get; set; } 
     }
 }

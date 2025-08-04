@@ -1,3 +1,8 @@
+<app-header
+  [showSearchButtons]="showHeaderSearchButtons()"
+  (onSimpleClick)="onHeaderSimpleClick()"
+  (onAiClick)="onHeaderAiClick()"
+></app-header>
 <div class="container-fluid search-bars-container fixed-top p-3 transition-all .travellin-font" [class.minimized]="scrollY > 50"
   tabindex="0" (focus)="onFocus()" (blur)="onBlur()">
 
@@ -5,7 +10,7 @@
   <div class="d-flex justify-content-center mb-3" [class.d-none]="scrollY > 50">
     <div class="btn-group" role="group">
       <button type="button" class="btn searchBtn" (click)="setSearchMode('ai')" [class.ai-active]="searchMode === 'ai'">
-        GPT Search
+        AI Search
       </button>
 
       <button type="button" class="btn searchBtn" (click)="setSearchMode('simple')"
@@ -17,17 +22,16 @@
   </div>
 
   <!-- AI Search Bar (Simple Mode) -->
-  <div *ngIf="searchMode === 'ai'" class="container-fluid w-75">
-    <div class="text-center mb-3" [class.d-none]="scrollY > 50">
-      <h3>Find your dream getaway with just a few clicks!</h3>
-      <p class="text-muted">
-        Describe what you're looking for in natural language
-      </p>
-    </div>
+<div *ngIf="searchMode === 'ai'" class="container-fluid w-75" [class.d-none]="scrollY > 50">
+  <div class="text-center mb-3">
+    <h3 class="gradient-text">Find your dream getaway with just a few clicks!</h3>
+    <p class="text-muted hook-text">
+      Describe what you're looking for in natural language
+    </p>
+  </div>
 
     <div class="ai-search-container w-100">
-      <div class="ai-search-bar d-flex align-items-center p-1 rounded-pill shadow bg-white transition-all"
-        [style.min-height]="scrollY > 50 ? '50px' : '60px'">
+      <div class="ai-search-bar d-flex align-items-center p-1 rounded-pill bg-white transition-all">
         <div class="flex-grow-1 position-relative">
           <input type="text" class="form-control border-0 bg-transparent py-1 ps-3 pe-2 w-100 transition-all"
             [style.font-size]="scrollY > 50 ? '0.8rem' : '1rem'"
@@ -35,8 +39,8 @@
             (keyup.enter)="SmartSearch()" [(ngModel)]="stringAiSearch" />
         </div>
         <button
-          class="btn btn-primary ms-2 rounded-pill d-flex align-items-center fw-semibold justify-content-center px-4 flex-shrink-0 transition-all"
-          [style.height]="scrollY > 50 ? '40px' : '48px'" (click)="SmartSearch()">
+          class="btn find-btn ms-2 rounded-pill d-flex align-items-center fw-semibold justify-content-center px-4 flex-shrink-0 transition-all"
+           (click)="SmartSearch()">
           <fa-icon [icon]="icons['search']" class="me-2"></fa-icon>
           <span [class.d-none]="scrollY > 50">Find Stays</span>
         </button>
@@ -76,8 +80,12 @@
             <div class="carousel-inner h-100">
               <div *ngFor="let photo of prop.photos.slice(0, 3); let i = index" class="carousel-item h-100"
                 [class.active]="i === 0">
-                <img [src]="photo.photoUrl" class="d-block w-100 h-100 object-fit-cover"
-                  [alt]="'Property ' + prop.id + ' photo ' + (i + 1)" />
+                <i class="fa-solid fa-bolt"></i>
+                <img [src]="photo.photoUrl"
+                class="d-block w-100 h-100 object-fit-cover"
+                [alt]="'Property ' + prop.id + ' photo ' + (i + 1)"
+                [ngClass]="[prop.isInstant ? 'fa-solid fa-bolt' : '']">
+
               </div>
             </div>
 

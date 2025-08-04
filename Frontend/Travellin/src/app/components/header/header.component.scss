@@ -1,3 +1,11 @@
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 9999;
+  background: white; /* عشان مايبقاش شفاف */
+}
+
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -57,5 +65,12 @@
 // Ensure the chat nav link has proper positioning
 .nav-link[routerLink="/chat"] {
   position: relative;
+}
+
+.searchBtn {
+  background: linear-gradient(135deg, #3DB2FF, #FF577F);
+  color: white !important;
+  border: none;
+  transform: scale(1.05);
 }
 

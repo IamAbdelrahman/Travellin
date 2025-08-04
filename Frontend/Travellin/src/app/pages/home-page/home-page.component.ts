@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PropertyService } from '../../services/property.service';
@@ -36,6 +36,7 @@ import { FavoritePropertiesService } from '../../services/favorite-properties.se
 import { ISmartSearchRes } from '../../models/api/response/ismartSearch-res';
 import { IFavoriteProperty } from '../../models/domain/ifaviorate-property';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { HeaderComponent } from '../../components/header/header.component';
 @Component({
   selector: 'app-home-page',
   standalone: true,
@@ -46,7 +47,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     LucideAngularModule,
     RouterModule,
     LoadSpinnerComponent,
-    AdvancedSearchComponent
+    AdvancedSearchComponent,
+    HeaderComponent
   ],
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.scss'],
@@ -121,7 +123,7 @@ export class HomePageComponent implements OnInit {
   private favoritePropertyIds: string[] = [];
   private isFetchingFavorites = false;
   isLoadingProperties: boolean = true;
-
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   constructor(
     private propertyService: PropertyService,
     private route: Router,
@@ -131,20 +133,43 @@ export class HomePageComponent implements OnInit {
     private authService: AuthService
   ) {}
 
+onScroll = () => {
+  this.scrollY = window.scrollY || 0;
+};
   ngOnInit(): void {
     this.getPropertyTypes();
     this.getAllProperty();
     this.loadFavorites();
     this.checkPaymentStatus();
+    window.addEventListener('scroll', this.onScroll, true);
   }
+  ngOnDestroy() {
+  window.removeEventListener('scroll', this.onScroll, true);
+  }
+  showHeaderSearchButtons(): boolean {
+  return this.scrollY > 50;
+}
 
+onHeaderSimpleClick() {
+  this.setSearchMode('simple');
+}
+
+  onHeaderAiClick() {
+      this.scrollY = 0;
+  this.setSearchMode('ai');
+
+}
   isGuest(): boolean {
-    return this.authService.isGuest();
+    return this.authService.isGuest()
   }
   setSearchMode(mode: 'ai' | 'simple'): void {
     this.searchMode = mode;
   }
-
+  scrollUP(): void{
+    if (this.searchMode === 'ai') {
+      this.scrollY = 0;
+    }
+  }
   toggleGuestMenu(): void {
     this.guestMenuVisible = !this.guestMenuVisible;
   }
@@ -299,9 +324,9 @@ export class HomePageComponent implements OnInit {
 
   getMarginTop() {
     if (this.searchMode === 'simple' && this.showFilters) {
-      return 250; // 250px if Advanced and showFilters is visible
+      return 200; // 250px if Advanced and showFilters is visible
     } else if (this.searchMode === 'simple') {
-      return 200; // 200px if Advanced and showFilters is not visible
+      return 100; // 200px if Advanced and showFilters is not visible
     } else {
       return 100; // 100px if Simple search mode
     }
