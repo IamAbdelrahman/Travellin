@@ -271,16 +271,16 @@ namespace Travellin.Infrastructure.Repositories
 
             await Task.CompletedTask;
         }
-    
 
-        public async Task<PaginatedResult<PropertyListItemDto>> GetPropertiesByOwnerIdAsync(FilterPropertyQueryParamsDto queryDto , string ownerid)
+
+        public async Task<PaginatedResult<PropertyListItemDto>> GetPropertiesByOwnerIdAsync(FilterPropertyQueryParamsDto queryDto, string ownerid)
         {
             var query = _dbContext.Properties
                 .Include(x => x.Owner)
                 .Include(x => x.Location).ThenInclude(x => x.Country)
                 .Include(x => x.PropertyType)
                 .Include(x => x.PropertyPhotos).ThenInclude(x => x.FileUpload)
-                .Where(x => x.OwnerId == ownerid  && !x.IsDeleted);
+                .Where(x => x.OwnerId == ownerid && !x.IsDeleted);
 
 
             var total = await query.CountAsync();
@@ -305,6 +305,38 @@ namespace Travellin.Infrastructure.Repositories
                 }
             };
         }
+
+        //update property
+        public async Task<bool> UpdateAsync(string propertyId, PropertyUpdateDto dto)
+        {
+            var property = await _dbContext.Properties.FindAsync(propertyId);
+            if (property == null) return false;
+
+
+            if (!string.IsNullOrWhiteSpace(dto.Title)) property.Title = dto.Title;
+            if (!string.IsNullOrWhiteSpace(dto.Description)) property.Description = dto.Description;
+            if (dto.PropertyTypeId.HasValue) property.PropertyTypeId = dto.PropertyTypeId.Value;
+
+            if (dto.LocationId.HasValue)
+            {
+                var locationExists = await _dbContext.Locations.AnyAsync(l => l.Id == dto.LocationId.Value);
+                if (!locationExists)
+                    throw new Exception("Invalid LocationId: No such location exists.");
+
+                property.LocationId = dto.LocationId.Value;
+            }
+            if (dto.PricePerNight.HasValue) property.PricePerNight = dto.PricePerNight.Value;
+            if (dto.Latitude.HasValue) property.Latitude = dto.Latitude.Value;
+            if (dto.Longitude.HasValue) property.Longitude = dto.Longitude.Value;
+            if (!string.IsNullOrWhiteSpace(dto.SafteyInfo)) property.SafteyInfo = dto.SafteyInfo;
+            if (!string.IsNullOrWhiteSpace(dto.HouseRules)) property.HouseRules = dto.HouseRules;
+            if (!string.IsNullOrWhiteSpace(dto.CancellationPolicy)) property.CancellationPolicy = dto.CancellationPolicy;
+            if (dto.IsActive.HasValue) property.IsActive = dto.IsActive.Value;
+
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
     }
 }
 
