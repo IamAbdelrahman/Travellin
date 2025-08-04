@@ -1,4 +1,4 @@
-/* admin-dashboard.component.css */
+/* host-dashboard.component.css */
 
 .host-dashboard {
   display: flex;
@@ -80,6 +80,37 @@
   width: 20px;
   height: 20px;
   flex-shrink: 0;
+}
+
+////////////////btn
+.btn-primary {
+  background-color: #FF385C !important;
+  border-color: #FF385C !important;
+  color: white !important;
+  border-radius: 6px !important;
+  padding: 8px 16px !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-primary:hover {
+  background-color: #FF234C !important;
+  border-color: #FF234C !important;
+  color: white !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-primary:active,
+.btn-primary:focus {
+  background-color: #FF7A92 !important;
+  border-color: #FF7A92 !important;
+  color: white !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 56, 92, 0.25) !important;
+}
+
+.btn-primary:visited {
+  color: white !important;
 }
 
 /* Main Content */

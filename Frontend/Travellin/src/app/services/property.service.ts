@@ -202,6 +202,16 @@ export class PropertyService {
     const url = `${ApiConstant.PropertiesApi.getAll}/${id}`;
     return this.http.delete(url, { withCredentials: true });
   }
+  ///Update property
+  updateProperty(id: string, dto: any): Observable<any> {
+    const url = ApiConstant.PropertiesApi.update.replace('{id}', id);
+    return this.http.patch(url, dto, {
+      withCredentials: true,
+      responseType: 'text'  // 👈 important
+
+    });
+  }
+
 
   ///property by host
   getHostProperties(queryParams?: IGetAllReq): Observable<HttpResponse<any>> {

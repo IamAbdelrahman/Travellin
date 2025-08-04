@@ -20,6 +20,7 @@ export class ApiConstant {
     getPropertyAvailability: `${ApiConstant.baseUrl}/Properties/{id}/Availabilities`,
     getPropertyFees: `${ApiConstant.baseUrl}/Properties/{id}/Fees`,
     getByHost: `${ApiConstant.baseUrl}/Properties/Host`,
+    update: `${ApiConstant.baseUrl}/Properties/{id}`,
 
   };
 

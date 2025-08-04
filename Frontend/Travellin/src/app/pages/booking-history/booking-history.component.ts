@@ -136,7 +136,7 @@ export class BookingHistoryComponent implements OnInit {
 
   // Legacy cancellation (existing functionality)
   cancelBooking(booking: Bookings) {
-    if (booking.status.toLowerCase() === 'pending') {
+    if (booking.status.toLowerCase() === 'pending' || booking.status.toLowerCase() === 'confirmed') {
       this.checkOutService.cancelBookings(booking.id).subscribe({
         next: () => {
           this.toastService.showSuccess('Booking cancelled successfully!');
@@ -147,7 +147,7 @@ export class BookingHistoryComponent implements OnInit {
         },
       });
     } else {
-      this.toastService.showWarning('Only pending bookings can be cancelled.');
+      this.toastService.showWarning('Only pending or confirmed bookings can be cancelled.');
     }
   }
 

@@ -72,16 +72,12 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Guest
-                        </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Property</th>
+                            Property Name</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dates
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Actions</th>
                     </tr>
@@ -96,24 +92,7 @@
                     </tr>
 
                     <tr *ngFor="let booking of bookings" class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-                                        <span class="text-sm font-medium text-gray-700">
-                                            {{ booking.user?.firstName?.charAt(0) }}{{ booking.user?.lastName?.charAt(0)
-                                            }}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">
-                                        {{ booking.user?.firstName }} {{ booking.user?.lastName }}
-                                    </div>
-                                    <div class="text-sm text-gray-500">{{ booking.user?.email }}</div>
-                                </div>
-                            </div>
-                        </td>
+
 
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ booking.property?.title }}</div>
@@ -135,30 +114,30 @@
                             </div>
                         </td>
 
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span
-                                class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ getStatusColor(booking.status) }}">
-                                {{ booking.status }}
-                            </span>
-                        </td>
-
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex space-x-2">
-                                <!-- Accept/Decline for pending bookings -->
-                                <button *ngIf="booking.status === 'Pending'" (click)="acceptBooking(booking)"
-                                    class="text-green-600 hover:text-green-900 bg-green-100 hover:bg-green-200 px-3 py-1 rounded-md text-xs font-medium">
-                                    Accept
-                                </button>
+                                <!-- Show Accept/Decline buttons if Pending -->
+                                <ng-container *ngIf="booking.status === 'Pending'; else statusText">
+                                    <button (click)="acceptBooking(booking)"
+                                        class="text-green-600 hover:text-green-900 bg-green-100 hover:bg-green-200 px-3 py-1 rounded-md text-xs font-medium">
+                                        Accept
+                                    </button>
+                                    <button (click)="declineBooking(booking)"
+                                        class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-3 py-1 rounded-md text-xs font-medium">
+                                        Decline
+                                    </button>
+                                </ng-container>
 
-                                <button *ngIf="booking.status === 'Pending'" (click)="declineBooking(booking)"
-                                    class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-3 py-1 rounded-md text-xs font-medium">
-                                    Decline
-                                </button>
-
-
-
+                                <!-- Show status as badge when not pending -->
+                                <ng-template #statusText>
+                                    <span
+                                        class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ getStatusColor(booking.status) }}">
+                                        {{ booking.status }}
+                                    </span>
+                                </ng-template>
                             </div>
                         </td>
+
                     </tr>
 
                     <tr *ngIf="!loading && bookings.length === 0">
