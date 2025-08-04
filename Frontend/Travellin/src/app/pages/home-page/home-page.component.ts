@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PropertyService } from '../../services/property.service';
 import { IPropertyTypeRes } from '../../models/api/response/i-property-type-res';
+import { PropertyDetails } from '../../models/api/request/iget-propertiesDetails';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { IpropertyTypeApiResponse } from '../../models/api/response/iproperty-type-api-res';
 import { HostListener } from '@angular/core';
@@ -57,6 +58,7 @@ export class HomePageComponent implements OnInit {
     instant: LucideBellElectric
   };
   searchMode: 'ai' | 'simple' = 'ai';
+  loadRecommendations:boolean = false;
   guestMenuVisible: boolean = false;
   showFilters: boolean = false;
   selectedPropertyType: number | null = null;
@@ -65,6 +67,8 @@ export class HomePageComponent implements OnInit {
   propertyTypes: IPropertyTypeRes[] = [];
   property: IPropertyWithDistance[] = [];
   allProperties: IPropertyWithDistance[] = [];
+ recommendations: PropertyDetails[] = [];
+recommendationIds: string[] = [];
   errorMessage: string = '';
   userLat: number = 30.033333;
   userLon: number = 31.233334;
@@ -140,6 +144,7 @@ onScroll = () => {
     this.getAllProperty();
     this.loadFavorites();
     this.checkPaymentStatus();
+    this.getAllRecommendations();
     window.addEventListener('scroll', this.onScroll, true);
   }
   ngOnDestroy() {
@@ -291,9 +296,72 @@ onHeaderSimpleClick() {
       });
   }
 
+  getAllRecommendations(): void {
+  this.propertyService.getRecommendations()
+    .subscribe({
+      next: (response: HttpResponse<PropertyDetails[]>) => {
+        // Check for a successful HTTP status code (200 OK)
+        if (response.status === 200) {
+          // Check if the response body exists and is not empty
+          if (response.body && response.body.length > 0) {
+            // Map the response data as intended
+            this.recommendations = response.body.map(prop => ({
+              ...prop,
+              distanceFromMe: this.getDistanceFromLatLonInKm(
+                this.userLat,
+                this.userLon,
+                prop.latitude,
+                prop.longitude
+              ).toFixed(1),
+            }));
+            this.recommendationIds = this.recommendations.map(r => r.id);
+            this.loadRecommendations = true;
+          } else {
+            // Handle cases where the response is 200 OK but the body is empty
+            console.warn('API returned a 200 OK status, but no recommendations were found.');
+            this.recommendations = []; // Clear old recommendations
+            this.handlePropertyerror('No recommendations available at this time.');
+          }
+        } else {
+          // This block might not be hit if HttpClient is configured to throw errors
+          // for non-2xx status codes, but it's good practice for robust handling.
+          console.error(`Received an unexpected HTTP status: ${response.status}`);
+          this.handlePropertyerror(`An unexpected error occurred: Status ${response.status}`);
+        }
+      },
+      error: error => {
+        // The error callback handles all non-2xx HTTP responses and network errors
+        console.error('Error fetching property recommendations:', error);
+
+        let errorMessage = 'An unknown error occurred.';
+
+        // Check for specific HttpErrorResponse from the backend
+        if (error.status) {
+          if (error.status === 404) {
+            errorMessage = 'The recommendation data could not be found.';
+          } else if (error.status === 401 || error.status === 403) {
+            errorMessage = 'You are not authorized to view this content.';
+          } else if (error.status >= 500) {
+            errorMessage = 'Server error. Please try again later.';
+          } else {
+            errorMessage = `Failed to load recommendations. Status: ${error.status}`;
+          }
+        } else {
+          // This handles network errors, CORS issues, etc.
+          errorMessage = 'Network error: Please check your internet connection.';
+        }
+
+        // Pass the more specific error message to your handler
+        this.handlePropertyerror(errorMessage);
+      },
+    });
+ }
+
+
   handlePropertyerror(message: string): void {
     this.errorMessage = message;
   }
+
 
   // Helper method to get icon for property type
   getPropertyIcon(iconName: string): any {
@@ -487,6 +555,7 @@ onHeaderSimpleClick() {
             }));
             this.totalItems = response.body.metaData.total;
             this.currentPage = response.body.metaData.page;
+            // this.getAllRecommendations();
           } else {
             this.handlePropertyerror('Invalid Smart Search result');
           }
@@ -500,6 +569,9 @@ onHeaderSimpleClick() {
     }
   }
 
+isRecommended(propertyId: string): boolean {
+  return this.recommendationIds.includes(propertyId);
+}
   private loadFavorites(
     page = 1,
     accumulatedFavorites: IFavoriteProperty[] = []

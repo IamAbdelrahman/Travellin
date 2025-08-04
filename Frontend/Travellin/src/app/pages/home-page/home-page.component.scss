@@ -96,6 +96,12 @@ $carousel-control-margin: 6px;
   color: rgb(247, 247, 5);
 
 }
+.recommended-card {
+  border: 5px solid #f00a34; /* أو أي Style تاني */
+  box-shadow: 0 0 10px rgba(209, 24, 58, 0.4);
+
+}
+
 /* Active State for AI Search Button */
 .ai-active {
   background: linear-gradient(135deg, #3DB2FF, #FF577F);
