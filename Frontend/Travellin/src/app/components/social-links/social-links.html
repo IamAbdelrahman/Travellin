@@ -1,9 +1,5 @@
 <div class="divider"><span style="font-size: 20px; font-weight: bold; color:black;">OR</span></div>
 <div class="social-buttons">
-    <button class="social-btn" (click)="signInGoogle()">
-        <div class="social-icon google-icon"></div>
-        Continue with Google
-    </button>
 
     <button *ngIf="phoneOption" class="social-btn" (click)="continueWithEmail()">
         <div class="social-icon email-icon"></div>
@@ -13,8 +9,5 @@
         <div class="social-icon phone-icon"></div>
         Continue with Phone Number
     </button>
-    <button class="social-btn" (click)="continueWithFacebook()">
-        <div class="social-icon facebook-icon"></div>
-        Continue with Facebook
-    </button>
+
 </div>
