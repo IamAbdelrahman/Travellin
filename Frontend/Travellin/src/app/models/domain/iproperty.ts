@@ -29,4 +29,5 @@ export interface IProperty {
   averageRating: number;
   reviewCount: number;
   cancellationpolicy: string
+  isInstant: boolean;
 }

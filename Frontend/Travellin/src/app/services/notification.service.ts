@@ -1,485 +1,352 @@
 // src/app/services/notification.service.ts
-import { Injectable, OnDestroy } from '@angular/core';
-import { ChatService } from './chat.service';
-import { ToastService } from './toast.service';
-import { MessageDto } from '../models/chat/message.model';
-import { takeWhile, filter } from 'rxjs/operators';
-import { Subject, Subscription } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import * as signalR from '@microsoft/signalr';
+import { environment } from '../../environments/environment';
+import { TokenStorageService } from './token-storage.service';
 
 export interface NotificationData {
-  id: string;
-  type: 'message' | 'payment' | 'booking' | 'system' | 'review' | 'host' | 'guest';
+  type: string;
   title: string;
   message: string;
-  icon?: string;
-  action?: () => void;
-  priority: 'low' | 'medium' | 'high';
+  bookingId?: string;
+  propertyTitle?: string;
+  isHostNotification?: boolean;
   timestamp: Date;
-  isRead: boolean;
-  metadata?: any;
-}
-
-// Booking Notifications
-export interface BookingRequestNotification {
-  bookingId: string;
-  guestName: string;
-  propertyTitle: string;
-  checkIn: Date;
-  checkOut: Date;
-  totalAmount: number;
-  guestMessage?: string;
-  guestCount: number;
-}
-
-export interface BookingResponseNotification {
-  bookingId: string;
-  hostName: string;
-  propertyTitle: string;
-  status: 'accepted' | 'declined';
-  checkIn: Date;
-  checkOut: Date;
-  hostMessage?: string;
-}
-
-export interface BookingReminderNotification {
-  bookingId: string;
-  propertyTitle: string;
-  checkIn: Date;
-  checkOut: Date;
-  reminderType: 'checkin_tomorrow' | 'checkin_today' | 'checkout_tomorrow';
-}
-
-// Payment Notifications
-export interface PaymentNotification {
-  bookingId: string;
-  amount: number;
-  currency: string;
-  status: 'success' | 'failed' | 'pending' | 'cancelled';
-  propertyTitle: string;
-  checkIn: Date;
-  checkOut: Date;
-  transactionId?: string;
-}
-
-// Review Notifications
-export interface ReviewNotification {
-  reviewId: string;
-  bookingId: string;
-  propertyTitle: string;
-  reviewerName: string;
-  rating: number;
-  reviewText?: string;
-  reviewDate: Date;
-}
-
-// Host Notifications
-export interface HostUpgradeNotification {
-  requestId: string;
-  userName: string;
-  status: 'pending' | 'approved' | 'rejected';
-  requestDate: Date;
-  adminMessage?: string;
-}
-
-export interface CoHostInvitationNotification {
-  propertyId: string;
-  hostName: string;
-  propertyTitle: string;
-  invitationDate: Date;
-}
-
-// Guest Notifications
-export interface GuestArrivalNotification {
-  bookingId: string;
-  guestName: string;
-  propertyTitle: string;
-  checkIn: Date;
-  guestMessage?: string;
-}
-
-// System Notifications
-export interface SystemNotification {
-  title: string;
-  message: string;
-  type: 'promotion' | 'maintenance' | 'security';
-  expiresAt: Date;
-  actionUrl?: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class NotificationService implements OnDestroy {
-  private isActive = true;
-  private notificationPermission: NotificationPermission = 'default';
-  private notifications: NotificationData[] = [];
-  private notificationsSubject = new Subject<NotificationData>();
-  private subscriptions = new Subscription();
+export class NotificationService {
+  private hubConnection: signalR.HubConnection | null = null;
+  private notificationsSubject = new BehaviorSubject<NotificationData[]>([]);
+  private isConnectedSubject = new BehaviorSubject<boolean>(false);
 
   public notifications$ = this.notificationsSubject.asObservable();
+  public isConnected$ = this.isConnectedSubject.asObservable();
 
-  constructor(
-    private chatService: ChatService,
-    private toastService: ToastService
-  ) {
-    this.initializeNotifications();
+  constructor(private tokenStorage: TokenStorageService) {
+    this.startConnection();
   }
 
-  private async initializeNotifications(): Promise<void> {
-    await this.requestNotificationPermission();
-    this.setupMessageNotifications();
-    this.setupPaymentNotifications();
-    this.setupBookingNotifications();
-    this.setupReviewNotifications();
-    this.setupHostNotifications();
-    this.setupGuestNotifications();
-    this.setupSystemNotifications();
-  }
+  private async startConnection(): Promise<void> {
+    try {
+      // Prevent multiple connections
+      if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
+        return;
+      }
 
-  private async requestNotificationPermission(): Promise<void> {
-    if ('Notification' in window) {
-      this.notificationPermission = await Notification.requestPermission();
+      const token = this.tokenStorage.getAccessToken();
+      if (!token) {
+        return;
+      }
+
+      this.hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl(`${environment.apiUrl}/hubs/notification`, {
+          accessTokenFactory: () => token,
+          transport: signalR.HttpTransportType.WebSockets
+        })
+        .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+
+      this.setupSignalRHandlers();
+
+      await this.hubConnection.start();
+      this.isConnectedSubject.next(true);
+      
+      // Test the connection
+      try {
+        await this.hubConnection.invoke('TestConnection');
+      } catch (testError) {
+        // Connection test failed, but don't break the flow
+      }
+    } catch (error) {
+      this.isConnectedSubject.next(false);
     }
   }
 
-  // Message Notifications
-  private setupMessageNotifications(): void {
-    const messageSubscription = this.chatService.messageReceived$
-      .pipe(
-        takeWhile(() => this.isActive),
-        filter(message => this.shouldShowMessageNotification(message))
-      )
-      .subscribe(message => {
-        this.handleNewMessage(message);
-      });
+  private setupSignalRHandlers(): void {
+    if (!this.hubConnection) return;
 
-    this.subscriptions.add(messageSubscription);
-  }
-
-  private shouldShowMessageNotification(message: MessageDto): boolean {
-    // Don't show notification if page is visible and user is in the active conversation
-    if (!document.hidden) {
-      const activeConversation = this.chatService.getActiveConversation();
-      if (activeConversation && activeConversation.id === message.conversationId) {
-        return false;
+    this.hubConnection.on('ReceiveNotification', (notification: NotificationData) => {
+      // Check if we already have this notification to prevent duplicates
+      const currentNotifications = this.notificationsSubject.value;
+      const isDuplicate = currentNotifications.some(n => 
+        n.bookingId === notification.bookingId && 
+        n.type === notification.type && 
+        n.timestamp === notification.timestamp
+      );
+      
+      if (isDuplicate) {
+        return;
       }
-    }
-    return true;
-  }
+      
+      this.addNotification(notification);
+      this.showToastNotification(notification);
+    });
 
-  private handleNewMessage(message: MessageDto): void {
-    const notification: NotificationData = {
-      id: `message-${message.id}`,
-      type: 'message',
-      title: 'New Message',
-      message: `You have a new message: ${message.content.substring(0, 50)}${message.content.length > 50 ? '...' : ''}`,
-      icon: '💬',
-      priority: 'medium',
-      timestamp: new Date(),
-      isRead: false,
-      action: () => {
-        // Navigate to chat or specific conversation
-      }
-    };
+    this.hubConnection.on('TestResponse', (message: string) => {
+      // Test response received
+    });
 
-    this.addNotification(notification);
-    this.showBrowserNotification(notification);
-    this.showToastNotification(notification);
-  }
+    this.hubConnection.on('ReceiveError', (error: string) => {
+      // Handle error silently
+    });
 
-  // Payment Notifications
-  public handlePaymentNotification(paymentData: PaymentNotification): void {
-    const statusMessages = {
-      success: 'Payment successful',
-      failed: 'Payment failed',
-      pending: 'Payment pending',
-      cancelled: 'Payment cancelled'
-    };
+    this.hubConnection.onreconnecting(() => {
+      this.isConnectedSubject.next(false);
+    });
 
-    const notification: NotificationData = {
-      id: `payment-${paymentData.bookingId}`,
-      type: 'payment',
-      title: statusMessages[paymentData.status],
-      message: `${paymentData.status === 'success' ? 'Your payment of' : 'Payment for'} ${paymentData.currency} ${paymentData.amount} for ${paymentData.propertyTitle} has been ${paymentData.status}`,
-      icon: paymentData.status === 'success' ? '✅' : paymentData.status === 'failed' ? '❌' : '⏳',
-      priority: paymentData.status === 'success' ? 'high' : 'medium',
-      timestamp: new Date(),
-      isRead: false,
-      action: () => {
-        // Navigate to booking details
-      }
-    };
+    this.hubConnection.onreconnected(() => {
+      this.isConnectedSubject.next(true);
+    });
 
-    this.addNotification(notification);
-    this.showBrowserNotification(notification);
-    this.showToastNotification(notification);
-  }
-
-  private setupPaymentNotifications(): void {
-    // Listen for payment status changes from the backend
-    // This would typically be through SignalR or WebSocket
-    // For now, we'll rely on the service being called directly
-  }
-
-  // Booking Notifications
-  public handleBookingRequestNotification(bookingData: BookingRequestNotification): void {
-    const notification: NotificationData = {
-      id: `booking-request-${bookingData.bookingId}`,
-      type: 'booking',
-      title: 'New Booking Request',
-      message: `${bookingData.guestName} wants to book ${bookingData.propertyTitle} for ${bookingData.checkIn.toLocaleDateString()} - ${bookingData.checkOut.toLocaleDateString()}`,
-      icon: '📅',
-      priority: 'high',
-      timestamp: new Date(),
-      isRead: false,
-      action: () => {
-      }
-    };
-
-    this.addNotification(notification);
-    this.showBrowserNotification(notification);
-    this.showToastNotification(notification);
-  }
-
-  public handleBookingResponseNotification(bookingData: BookingResponseNotification): void {
-    const notification: NotificationData = {
-      id: `booking-response-${bookingData.bookingId}`,
-      type: 'booking',
-      title: `Booking ${bookingData.status}`,
-      message: `${bookingData.hostName} has ${bookingData.status} your booking for ${bookingData.propertyTitle}`,
-      icon: bookingData.status === 'accepted' ? '✅' : '❌',
-      priority: 'high',
-      timestamp: new Date(),
-      isRead: false,
-      action: () => {
-      }
-    };
-
-    this.addNotification(notification);
-    this.showBrowserNotification(notification);
-    this.showToastNotification(notification);
-  }
-
-  private setupBookingNotifications(): void {
-    // Listen for booking status changes from the backend
-    // This would typically be through SignalR or WebSocket
-  }
-
-  // Review Notifications
-  public handleReviewNotification(reviewData: ReviewNotification): void {
-    const notification: NotificationData = {
-      id: `review-${reviewData.reviewId}`,
-      type: 'review',
-      title: 'New Review',
-      message: `${reviewData.reviewerName} left a ${reviewData.rating}-star review for ${reviewData.propertyTitle}`,
-      icon: '⭐',
-      priority: 'medium',
-      timestamp: new Date(),
-      isRead: false,
-      action: () => {
-      }
-    };
-
-    this.addNotification(notification);
-    this.showBrowserNotification(notification);
-    this.showToastNotification(notification);
-  }
-
-  private setupReviewNotifications(): void {
-    // Listen for review notifications from the backend
-  }
-
-  // Host Notifications
-  public handleHostUpgradeNotification(upgradeData: HostUpgradeNotification): void {
-    const notification: NotificationData = {
-      id: `host-upgrade-${upgradeData.requestId}`,
-      type: 'host',
-      title: 'Host Upgrade Request',
-      message: `Your host upgrade request has been ${upgradeData.status}`,
-      icon: '🏠',
-      priority: 'medium',
-      timestamp: new Date(),
-      isRead: false,
-      action: () => {
-      }
-    };
-
-    this.addNotification(notification);
-    this.showBrowserNotification(notification);
-    this.showToastNotification(notification);
-  }
-
-  private setupHostNotifications(): void {
-    // Listen for host-related notifications
-  }
-
-  // Guest Notifications
-  public handleGuestArrivalNotification(arrivalData: GuestArrivalNotification): void {
-    const notification: NotificationData = {
-      id: `guest-arrival-${arrivalData.bookingId}`,
-      type: 'guest',
-      title: 'Guest Arrival',
-      message: `${arrivalData.guestName} has arrived at ${arrivalData.propertyTitle}`,
-      icon: '👋',
-      priority: 'medium',
-      timestamp: new Date(),
-      isRead: false,
-      action: () => {
-      }
-    };
-
-    this.addNotification(notification);
-    this.showBrowserNotification(notification);
-    this.showToastNotification(notification);
-  }
-
-  private setupGuestNotifications(): void {
-    // Listen for guest-related notifications
-  }
-
-  // System Notifications
-  public handleSystemNotification(systemData: SystemNotification): void {
-    const notification: NotificationData = {
-      id: `system-${Date.now()}`,
-      type: 'system',
-      title: systemData.title,
-      message: systemData.message,
-      icon: '🔔',
-      priority: 'low',
-      timestamp: new Date(),
-      isRead: false,
-      action: () => {
-        if (systemData.actionUrl) {
-        }
-      }
-    };
-
-    this.addNotification(notification);
-    this.showBrowserNotification(notification);
-    this.showToastNotification(notification);
-  }
-
-  private setupSystemNotifications(): void {
-    // Listen for system notifications
-  }
-
-  // System Notifications
-  public showSystemNotification(title: string, message: string, priority: 'low' | 'medium' | 'high' = 'medium'): void {
-    const notification: NotificationData = {
-      id: `system-${Date.now()}`,
-      type: 'system',
-      title,
-      message,
-      icon: '🔔',
-      priority,
-      timestamp: new Date(),
-      isRead: false
-    };
-
-    this.addNotification(notification);
-    this.showBrowserNotification(notification);
-    this.showToastNotification(notification);
+    this.hubConnection.onclose(() => {
+      this.isConnectedSubject.next(false);
+    });
   }
 
   private addNotification(notification: NotificationData): void {
-    this.notifications.unshift(notification);
-    this.notificationsSubject.next(notification);
-    
-    // Keep only last 100 notifications
-    if (this.notifications.length > 100) {
-      this.notifications = this.notifications.slice(0, 100);
-    }
-  }
-
-  private showBrowserNotification(notification: NotificationData): void {
-    if (this.notificationPermission === 'granted' && document.hidden) {
-      new Notification(notification.title, {
-        body: notification.message,
-        icon: '/assets/logo.png',
-        tag: notification.id
-      });
-    }
+    const currentNotifications = this.notificationsSubject.value;
+    this.notificationsSubject.next([notification, ...currentNotifications]);
   }
 
   private showToastNotification(notification: NotificationData): void {
-    if (notification.priority === 'high') {
-      this.toastService.showError(notification.message);
-    } else if (notification.priority === 'medium') {
-      this.toastService.showWarning(notification.message);
-    } else {
-      this.toastService.showInfo(notification.message);
+    // Count existing notifications to position this one
+    const existingNotifications = document.querySelectorAll('.notification-toast');
+    const notificationIndex = existingNotifications.length;
+    const topOffset = 20 + (notificationIndex * 120); // Stack notifications with 120px spacing
+
+    // Create a toast notification
+    const toast = document.createElement('div');
+    toast.className = 'notification-toast';
+    
+    // Determine notification type and styling
+    const isCancellation = notification.type === 'booking_cancellation';
+    const isHostNotification = notification.isHostNotification;
+    
+    // Choose colors based on notification type (matching existing toast styles)
+    let toastClass = 'toast-info';
+    let icon = '🔔';
+    
+    if (isCancellation) {
+      if (isHostNotification) {
+        // Guest cancelled - warning theme for host
+        toastClass = 'toast-warning';
+        icon = '❌';
+      } else {
+        // Host cancelled - danger theme for guest
+        toastClass = 'toast-danger';
+        icon = '⚠️';
+      }
+    } else if (notification.type === 'booking_request') {
+      // Booking request - success theme
+      toastClass = 'toast-success';
+      icon = '📋';
+    } else if (notification.type === 'booking_response') {
+      // Booking response - info theme
+      toastClass = 'toast-info';
+      icon = '✅';
     }
-  }
 
-  public getNotifications(): NotificationData[] {
-    return this.notifications;
-  }
+    toast.innerHTML = `
+      <div class="toast-header">
+        <div class="toast-icon">${icon}</div>
+        <div class="toast-title">
+          <strong>${notification.title}</strong>
+        </div>
+        <button onclick="this.parentElement.parentElement.remove()" class="btn-close btn-close-white">&times;</button>
+      </div>
+      <div class="toast-body">
+        ${notification.message}
+      </div>
+      <div class="toast-footer">
+        <small>${new Date(notification.timestamp).toLocaleTimeString()}</small>
+      </div>
+    `;
 
-  public getUnreadCount(): number {
-    return this.notifications.filter(n => !n.isRead).length;
-  }
+    // Add styles matching existing toast container
+    toast.style.cssText = `
+      position: fixed;
+      top: ${topOffset}px;
+      right: 20px;
+      min-width: 350px;
+      max-width: 450px;
+      z-index: 9999;
+      animation: fadeIn 0.3s ease-out;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      border: none;
+      opacity: 98%;
+      font-weight: 500;
+    `;
 
-  public markAsRead(notificationId: string): void {
-    const notification = this.notifications.find(n => n.id === notificationId);
-    if (notification) {
-      notification.isRead = true;
+    // Add animation styles matching existing toast
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+      }
+      
+      .notification-toast {
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        padding: 16px;
+        margin-bottom: 8px;
+      }
+      
+      .notification-toast.toast-success {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        border-left: 4px solid #155724;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+      }
+      
+      .notification-toast.toast-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        border-left: 4px solid #721c24;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+      }
+      
+      .notification-toast.toast-warning {
+        background: linear-gradient(135deg, #fd7e14 0%, #e55a00 100%);
+        border-left: 4px solid #856404;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(253, 126, 20, 0.3);
+      }
+      
+      .notification-toast.toast-info {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        border-left: 4px solid #0c5460;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
+      }
+      
+      .toast-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        gap: 12px;
+      }
+      
+      .toast-icon {
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+      
+      .toast-title {
+        flex: 1;
+        font-size: 14px;
+        font-weight: 600;
+        color: white;
+      }
+      
+      .btn-close {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: rgba(255,255,255,0.8);
+        padding: 4px;
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+      }
+      
+      .btn-close:hover {
+        background: rgba(255,255,255,0.2);
+        color: white;
+      }
+      
+      .toast-body {
+        color: white;
+        line-height: 1.5;
+        font-size: 13px;
+        margin-bottom: 8px;
+      }
+      
+      .toast-footer {
+        text-align: right;
+        font-size: 11px;
+        color: rgba(255,255,255,0.8);
+        border-top: 1px solid rgba(255,255,255,0.2);
+        padding-top: 8px;
+        margin-top: 8px;
+      }
+      
+      .notification-toast {
+        transition: all 0.3s ease;
+      }
+      
+      .notification-toast:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      }
+    `;
+    
+    // Remove existing style if it exists
+    const existingStyle = document.getElementById('notification-styles');
+    if (existingStyle) {
+      existingStyle.remove();
     }
+    style.id = 'notification-styles';
+    document.head.appendChild(style);
+
+    // Add the appropriate toast class
+    toast.classList.add(toastClass);
+
+    // Add to page
+    document.body.appendChild(toast);
+
+    // Auto-remove after 6 seconds with smooth animation
+    setTimeout(() => {
+      if (toast.parentElement) {
+        toast.style.animation = 'fadeOut 0.3s ease forwards';
+        setTimeout(() => {
+          if (toast.parentElement) {
+            toast.remove();
+          }
+        }, 300);
+      }
+    }, 6000);
   }
 
-  public markAllAsRead(): void {
-    this.notifications.forEach(n => n.isRead = true);
+  public getNotifications(): Observable<NotificationData[]> {
+    return this.notifications$;
   }
 
   public clearNotifications(): void {
-    this.notifications = [];
+    this.notificationsSubject.next([]);
   }
 
-  public removeNotification(notificationId: string): void {
-    this.notifications = this.notifications.filter(n => n.id !== notificationId);
-  }
-
-  // Test methods
-  public testMessageNotification(): void {
-    const testMessage: MessageDto = {
-      id: 1,
-      senderId: 'test-sender',
-      receiverId: 'test-receiver',
-      content: 'This is a test message notification',
-      sentAt: new Date(),
-      isRead: false,
-      conversationId: 1
-    };
-    this.handleNewMessage(testMessage);
-  }
-
-  public testPaymentNotification(): void {
-    const testPayment: PaymentNotification = {
-      bookingId: 'test-booking-123',
-      amount: 150.00,
-      currency: 'USD',
-      status: 'success',
-      propertyTitle: 'Beautiful Beach House',
-      checkIn: new Date('2025-08-01'),
-      checkOut: new Date('2025-08-05')
-    };
-    this.handlePaymentNotification(testPayment);
-  }
-
-  public testBookingNotification(): void {
-    const testBooking: BookingRequestNotification = {
-      bookingId: 'test-booking-456',
-      guestName: 'John Doe',
-      propertyTitle: 'Cozy Mountain Cabin',
-      checkIn: new Date('2025-08-10'),
-      checkOut: new Date('2025-08-15'),
-      totalAmount: 500.00,
-      guestCount: 2
-    };
-    this.handleBookingRequestNotification(testBooking);
-  }
-
-  ngOnDestroy(): void {
-    this.isActive = false;
-    this.subscriptions.unsubscribe();
+  public async testConnection(): Promise<void> {
+    if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
+      await this.hubConnection.invoke('TestConnection');
+    }
   }
 } 

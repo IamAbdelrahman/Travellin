@@ -9,6 +9,7 @@
         IConversationService ConversationService { get; }
         IMessageService MessageService { get; }
         public IPropertyFilterExtractorService PropertyFilterExtractorService { get; }
+        public INotificationService NotificationService { get; }
         //public IReviewService ReviewService { get; }
     }
 }

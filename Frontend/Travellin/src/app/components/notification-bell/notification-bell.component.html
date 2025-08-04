@@ -1,0 +1,93 @@
+<div class="notification-bell position-relative">
+  <button 
+    class="btn btn-link position-relative p-0" 
+    (click)="toggleNotifications()"
+    title="Notifications">
+    <i class="fas fa-bell" style="font-size: 1.2rem;"></i>
+    
+    <!-- Notification Badge -->
+    <span 
+      *ngIf="unreadCount > 0" 
+      class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+      style="font-size: 0.6rem; transform: translate(-50%, -50%);">
+      {{ unreadCount > 99 ? '99+' : unreadCount }}
+    </span>
+  </button>
+
+  <!-- Notification Dropdown -->
+  <div 
+    *ngIf="showNotifications" 
+    class="notification-dropdown position-absolute top-100 end-0 mt-2 bg-white border rounded shadow-lg"
+    style="width: 350px; max-height: 400px; z-index: 1050;">
+    
+    <!-- Header -->
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+      <h6 class="mb-0 fw-bold">Notifications</h6>
+      <div class="d-flex gap-2">
+        <button 
+          *ngIf="unreadCount > 0"
+          class="btn btn-sm btn-outline-primary" 
+          (click)="markAllAsRead()">
+          Mark all read
+        </button>
+        <button 
+          class="btn btn-sm btn-outline-secondary" 
+          (click)="clearAllNotifications()">
+          Clear all
+        </button>
+      </div>
+    </div>
+
+    <!-- Notification List -->
+    <div class="notification-list" style="max-height: 300px; overflow-y: auto;">
+      <div 
+        *ngFor="let notification of notifications; trackBy: trackByNotificationId" 
+        class="notification-item p-3 border-bottom"
+        [class.unread]="!notification.isRead"
+        (click)="onNotificationClick(notification)">
+        
+        <div class="d-flex align-items-start">
+          <div class="notification-icon me-3" style="font-size: 1.2rem;">
+            {{ getNotificationIcon(notification.type) }}
+          </div>
+          
+          <div class="flex-grow-1">
+            <div class="d-flex justify-content-between align-items-start">
+              <h6 class="mb-1 fw-semibold" [class.text-primary]="!notification.isRead">
+                {{ notification.propertyTitle }}
+              </h6>
+              <small class="text-muted">
+                {{ formatTimestamp(notification.timestamp) }}
+              </small>
+            </div>
+            <p class="mb-1 small text-muted">{{ notification.message }}</p>
+            <div class="d-flex align-items-center gap-2">
+              <span 
+                class="badge badge-sm"
+                [class]="getNotificationClass(notification.type)">
+                {{ notification.type.replace('_', ' ') }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div 
+        *ngIf="notifications.length === 0" 
+        class="text-center p-4 text-muted">
+        <div class="mb-2">🔔</div>
+        <p class="mb-0 small">No notifications yet</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="p-2 border-top text-center">
+      <button 
+        class="btn btn-sm btn-link text-decoration-none"
+        (click)="showNotifications = false">
+        Close
+      </button>
+    </div>
+  </div>
+</div> 

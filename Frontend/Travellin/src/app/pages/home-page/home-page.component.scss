@@ -1,23 +1,19 @@
-// Variables
-$search-container-max-width: 800px;
-$search-bar-height: 48px;
-$focus-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
-$breakpoint-xl: 1200px;
-$breakpoint-lg: 992px;
-$breakpoint-sm: 576px;
+/* Variables (keeping only those used) */
+$carousel-control-margin: 6px;
+
+/* General Transitions */
 .transition-all {
   transition: all 0.5s ease;
 }
 
+/* Search Container */
 .search-bars-container {
   top: 10vh;
   background: linear-gradient(180deg, #f8f8f8 0%, #fff 100%);
 }
 
-
 .search-bars-container.minimized {
   background: transparent !important;
-  box-shadow: none;
   top: 0 !important;
   left: 50%;
   transform: translateX(-50%);
@@ -26,51 +22,134 @@ $breakpoint-sm: 576px;
   padding: 0.5rem 1rem !important;
   border-radius: 2rem;
 }
-.search-bars-container.minimized input {
-  background-color: rgba(255, 255, 255, 0.9);
-  border-radius: 2rem;
+
+/* AI Search Container */
+.ai-search-container {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   padding: 0.5rem 1rem;
+  background: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-
-.btn-outline-primary {
-  &.active,
-  &:hover {
-    font-weight: 600;
-  }
+.ai-search-bar {
+  display: flex;
+  align-items: center;
+  border-radius: 40px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  padding: 0.25rem 0.5rem;
+  transition: all 0.3s ease;
 }
 
-.frosted-glass {
-  backdrop-filter: blur(10px);
-  transition: background-color 0.3s ease;
-  background-color: rgba(255, 255, 255, 1); // default full opacity
+/* Input Styling */
+.ai-search-bar .form-control {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 40px;
+  background: transparent;
 }
 
-.scrolled {
-  background-color: rgba(255, 255, 255, 0.5);
+/* Search Button */
+.find-btn {
+  background-color: var(--bs-primary);
+  color: white;
 }
 
-/* Carousel Base */
-.carousel,
+.ai-search-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 40px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: white;
+  background: linear-gradient(90deg, #FF385C, #FF7E82);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ai-search-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(255, 56, 92, 0.4);
+}
+
+/* Search Toggle Buttons */
+.searchBtn {
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+.fa-bolt{
+  color: rgb(247, 247, 5);
+
+}
+/* Active State for AI Search Button */
+.ai-active {
+  background: linear-gradient(135deg, #3DB2FF, #FF577F);
+  color: white !important;
+  border: none;
+  box-shadow: 0 0 12px rgba(61, 178, 255, 0.6);
+  transform: scale(1.05);
+}
+
+/* Gradient Text */
+.gradient-text {
+  font-weight: 700;
+  font-size: 2rem;
+  background: linear-gradient(270deg, #FF385C, #FF5A5F, #667eea, #f093fb);
+  background-size: 600% 600%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientAnimation 6s ease infinite;
+}
+
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Hook Text */
+.hook-text {
+  font-weight: 700;
+  font-size: 1rem;
+  background: linear-gradient(90deg, #ff0231, #720205);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Carousel Styling */
+.carousel {
+  height: 250px;
+  overflow: hidden;
+}
+
 .carousel-inner,
 .carousel-item {
-  height: 300px; /* or your preferred fixed height */
+  height: 100%;
 }
 
 .carousel-item img {
   object-fit: cover;
   height: 100%;
   width: 100%;
-  border-radius: 1rem; /* Smooth rounding */
+  border-radius: 1rem;
 }
 
-/* Arrows visibility on hover */
-.carousel:hover .carousel-control-prev,
-.carousel:hover .carousel-control-next {
-  opacity: 1 !important;
-}
-
-/* Arrows - Better Styling */
+/* Carousel Arrows */
 .carousel-control-next,
 .carousel-control-prev {
   position: absolute;
@@ -78,20 +157,16 @@ $breakpoint-sm: 576px;
   transform: translateY(-50%);
   width: 35px;
   height: 35px;
-  background: var(--bs-light); /* semi-transparent dark background */
+  background: var(--bs-light);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition:
-    opacity 0.3s ease,
-    background 0.3s ease;
+  transition: opacity 0.3s ease;
   z-index: 2;
-  border: 2px solid #ffffff; /* bold white border */
+  border: 2px solid #ffffff;
 }
-
-$carousel-control-margin: 6px;
 
 .carousel-control-next {
   margin-right: $carousel-control-margin;
@@ -101,27 +176,13 @@ $carousel-control-margin: 6px;
   margin-left: $carousel-control-margin;
 }
 
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  background-color: transparent; /* transparent since we already have a button bg */
-  background-size: 60% 60%;
-  filter: invert(100%) brightness(200%); /* pure white arrows */
-  width: 20px;
-  height: 20px;
+/* Arrows Visibility on Hover */
+.carousel:hover .carousel-control-prev,
+.carousel:hover .carousel-control-next {
+  opacity: 1 !important;
 }
 
-/* Hover effect on buttons */
-.carousel-control-prev:hover,
-.carousel-control-next:hover {
-  background: var(--bs-light); /* lighter background on hover */
-}
-
-.carousel-control-prev:hover .carousel-control-prev-icon,
-.carousel-control-next:hover .carousel-control-next-icon {
-  filter: invert(0%) brightness(0%); /* black arrows on hover */
-}
-
-/* Indicators (dots) */
+/* Carousel Indicators */
 .carousel-indicators {
   position: absolute;
   bottom: -20px;
@@ -148,33 +209,24 @@ $carousel-control-margin: 6px;
   background-color: var(--bs-light);
 }
 
-.searchBtn:hover {
-  background-color: #d50027;
-  color: var(--bs-light);
-}
-.searchBtn:active {
-  color: #ff385c;
-}
-// Favorite Heart
+/* Favorite Button */
 .favorite-btn {
   z-index: 2;
-
   color: var(--bs-light);
-
-  ::ng-deep svg {
-    fill: var(--bs-gray-600);
-  }
-
-  &.active {
-    ::ng-deep svg {
-      fill: #d50027;
-    }
-  }
-
-  transition: all 0.2s ease;
-
-  &:hover {
-    transform: scale(1.25);
-  }
 }
 
+.favorite-btn ::ng-deep svg {
+  fill: var(--bs-gray-600);
+}
+
+.favorite-btn.active ::ng-deep svg {
+  fill: #d50027;
+}
+
+.favorite-btn {
+  transition: all 0.2s ease;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.25);
+}

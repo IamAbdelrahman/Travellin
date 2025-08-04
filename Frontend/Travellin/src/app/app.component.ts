@@ -3,6 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { UpperCasePipe } from '@angular/common';
 import { ChatService } from './services/chat.service';
+import { NotificationService } from './services/notification.service';
 import { TokenStorageService } from './services/token-storage.service';
 
 @Component({
@@ -16,6 +17,7 @@ export class App implements OnInit, OnDestroy {
 
   constructor(
     private chatService: ChatService,
+    private notificationService: NotificationService,
     private tokenStorage: TokenStorageService
   ) {}
 
@@ -24,9 +26,10 @@ export class App implements OnInit, OnDestroy {
     if (token && this.tokenStorage.isTokenValid()) {
       try {
         await this.chatService.startConnection();
-        console.log('Chat service initialized successfully');
+        
+        // Initialize notification service (it auto-connects)
       } catch (error) {
-        console.error('Failed to start chat connection:', error);
+        // Handle connection errors silently
       }
     }
   }

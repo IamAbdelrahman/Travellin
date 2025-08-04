@@ -1,0 +1,27 @@
+$primary: #FF385C;
+$secondary: #FF7A92;
+$dark: #222222;
+$search-container-max-width: 800px;
+$search-bar-height: 30px;
+$focus-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+$breakpoint-xl: 1200px;
+$breakpoint-lg: 992px;
+$breakpoint-sm: 576px;
+:root {
+    --bs-primary: #FF385C;
+    --bs-secondary: #FF7A92;
+    --bs-dark: #222222;
+}
+
+body{
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
