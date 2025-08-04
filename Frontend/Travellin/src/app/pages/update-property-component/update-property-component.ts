@@ -11,7 +11,7 @@ import { Property } from './../../models/api/request/iget-bookings';
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './update-property-component.html',
-  styleUrl: './update-property-component.sass'
+  styleUrl: './update-property-component.scss'
 })
 export class UpdatePropertyComponent implements OnInit {
   @Input() propertyId!: string;
