@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Travellin.Core.Dtos.PropertyGuests;
 
 namespace Travellin.Core.Dtos.Properties
 {
@@ -35,5 +36,8 @@ namespace Travellin.Core.Dtos.Properties
         public string? CancellationPolicy { get; set; }
 
         public bool? IsActive { get; set; }
+
+        public List<PropertyGuestDto>? Guests { get; set; }
+
     }
 }
