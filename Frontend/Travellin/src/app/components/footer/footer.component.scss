@@ -9,3 +9,7 @@ a {
 a:hover {
   color: var(--bs-primary);
 }
+
+#footer {
+  z-index: 1000;
+}
