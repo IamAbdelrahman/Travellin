@@ -1,9 +1,0 @@
-# Use the final ASP.NET runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
-WORKDIR /app
-
-# Copy the published files from your publish folder
-COPY publish/ .
-
-# Set the entry point to run your application
-ENTRYPOINT ["dotnet", "Travellin.Api.dll"]
