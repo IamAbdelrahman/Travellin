@@ -131,9 +131,13 @@ namespace Travellin.Api
                 FileUploadPathMappingExtensions.Init(app.Configuration, httpContextAccessor);
             }
             ;
-
+            // To serve the static files from the wwwroot folder
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseCustomStaticFiles();
 
+            // To handle routing for the Angular single-page application
+            app.MapFallbackToFile("index.html");
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -144,3 +148,4 @@ namespace Travellin.Api
         }
     }
 }
+
