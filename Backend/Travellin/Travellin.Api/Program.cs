@@ -1,8 +1,7 @@
-using AspNetCoreRateLimit;
+﻿using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using OpenAI.Chat;
 using Stripe;
 using System.Security.Claims;
@@ -16,6 +15,7 @@ using Travellin.Core.Services;
 using Travellin.Infrastructure;
 using Travellin.Infrastructure.Repositories;
 using Travellin.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Travellin.Api
 {
@@ -34,12 +34,17 @@ namespace Travellin.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // ===== Add services =====
             builder.Services.ConfigureInfrastructure(builder.Configuration);
+
+            // 🔹 هنا مش مستخدم InMemory
+            // إنت بقى تزبط ال ConnectionString في appsettings.json
+            //builder.Services.AddDbContext<AppDbContext>(options =>
+            //    options.UseInMemoryDatabase("TravellinDb"));
+
             builder.Services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                 options.Events ??= new JwtBearerEvents();
-
                 var originalOnMessageReceived = options.Events.OnMessageReceived;
 
                 options.Events.OnMessageReceived = async context =>
@@ -47,7 +52,7 @@ namespace Travellin.Api
                     var accessToken = context.Request.Query["access_token"];
                     var path = context.HttpContext.Request.Path;
 
-                    if (!string.IsNullOrEmpty(accessToken) && 
+                    if (!string.IsNullOrEmpty(accessToken) &&
                         (path.StartsWithSegments("/hubs/chat") || path.StartsWithSegments("/hubs/notification")))
                     {
                         context.Token = accessToken;
@@ -59,7 +64,6 @@ namespace Travellin.Api
                 };
             });
 
-
             builder.Services.AddControllers(options =>
             {
                 options.Filters.Add<ErrorHandlingFilter>();
@@ -70,12 +74,17 @@ namespace Travellin.Api
                 options.SuppressModelStateInvalidFilter = true;
             });
 
-            // Configure Ratelimiting
+            // Rate limiting
             builder.Services.ConfigureRateLimiting(builder.Configuration);
+
+            // Stripe
             builder.Services.Configure<StripeOptions>(builder.Configuration.GetSection("Stripe"));
             StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretApiKey"];
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+            // Swagger/OpenAPI
             builder.Services.AddOpenApi();
+
+            // CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -89,16 +98,12 @@ namespace Travellin.Api
                 options.AddPolicy("AllowTrusted", policy =>
                 {
                     var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
-
-                    policy.WithOrigins(allowedOrigins)
+                    policy.WithOrigins(allowedOrigins ?? Array.Empty<string>())
                           .AllowAnyMethod()
                           .AllowAnyHeader()
-                          .AllowCredentials() // For cookies
-                          .WithHeaders("Authorization", "Content-Type", "X-Requested-With", "x-signalr-user-agent", "x-negotiateversion");
+                          .AllowCredentials();
                 });
-
             });
-
 
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSignalR(options =>
@@ -106,47 +111,47 @@ namespace Travellin.Api
                 options.EnableDetailedErrors = true;
             });
 
-            // Add custom user provider for SignalR
+            // Custom user provider
             builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
             var app = builder.Build();
 
-
+            // ===== Middleware pipeline =====
             app.UseIpRateLimiting();
 
+            // Swagger
             app.MapOpenApi();
             app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/openapi/v1.json", "Travellin API v1");
-                options.RoutePrefix = "swagger"; 
+                options.RoutePrefix = "swagger";
             });
 
+            // NOTE: خلي HTTPS redirect مقفول عشان Render
+            // app.UseHttpsRedirection();
 
-            app.UseHttpsRedirection();
             app.UseCors(builder.Configuration["Cors:Policy"] ?? "AllowAll");
 
-            // Initialize FileUploadPathMappingExtensions with the service provider
-            using (var scope = app.Services.CreateScope())
-            {
-                var httpContextAccessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
-                FileUploadPathMappingExtensions.Init(app.Configuration, httpContextAccessor);
-            }
-            ;
-            // To serve the static files from the wwwroot folder
+            // Static files
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCustomStaticFiles();
 
-            // To handle routing for the Angular single-page application
-            app.MapFallbackToFile("index.html");
+            app.UseRouting();
+
+            // Auth
             app.UseAuthentication();
             app.UseAuthorization();
 
+            // Controllers & Hubs
             app.MapControllers();
             app.MapHub<ChatHub>("/hubs/chat");
             app.MapHub<NotificationHub>("/hubs/notification");
+
+            // Angular fallback
+            app.MapFallbackToFile("index.html");
+
             app.Run();
         }
     }
 }
-
