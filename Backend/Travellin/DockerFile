@@ -1,15 +1,9 @@
-
-# Use the SDK image to build the app
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-WORKDIR /src
-COPY ["Travellin.Api.csproj", "."]
-RUN dotnet restore "Travellin.Api.csproj"
-COPY . .
-RUN dotnet build "Travellin.Api.csproj" -c Release -o /app/build
-
-
-# Final stage
-FROM base AS final
+# Use the final ASP.NET runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
-COPY --from=publish ./publish .
+
+# Copy the published files from your publish folder
+COPY publish/ .
+
+# Set the entry point to run your application
 ENTRYPOINT ["dotnet", "Travellin.Api.dll"]
