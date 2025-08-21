@@ -114,8 +114,13 @@ namespace Travellin.Api
 
             app.UseIpRateLimiting();
 
-                app.MapOpenApi();
-                app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "v1"));
+            app.MapOpenApi();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/openapi/v1.json", "Travellin API v1");
+                options.RoutePrefix = "swagger"; 
+            });
+
 
             app.UseHttpsRedirection();
             app.UseCors(builder.Configuration["Cors:Policy"] ?? "AllowAll");
