@@ -114,12 +114,8 @@ namespace Travellin.Api
 
             app.UseIpRateLimiting();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
                 app.MapOpenApi();
                 app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "v1"));
-            }
 
             app.UseHttpsRedirection();
             app.UseCors(builder.Configuration["Cors:Policy"] ?? "AllowAll");
