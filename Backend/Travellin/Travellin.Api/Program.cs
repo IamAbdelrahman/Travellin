@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using OpenAI.Chat;
 using Stripe;
 using System.Security.Claims;
 using Travellin.Api.Filters;
@@ -15,7 +14,6 @@ using Travellin.Core.Services;
 using Travellin.Infrastructure;
 using Travellin.Infrastructure.Repositories;
 using Travellin.Infrastructure.Services;
-using Microsoft.EntityFrameworkCore;
 
 namespace Travellin.Api
 {
@@ -34,13 +32,8 @@ namespace Travellin.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // ===== Add services =====
+            // Add services to the container.
             builder.Services.ConfigureInfrastructure(builder.Configuration);
-
-            // 🔹 هنا مش مستخدم InMemory
-            // إنت بقى تزبط ال ConnectionString في appsettings.json
-            //builder.Services.AddDbContext<AppDbContext>(options =>
-            //    options.UseInMemoryDatabase("TravellinDb"));
 
             builder.Services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
             {
@@ -81,8 +74,9 @@ namespace Travellin.Api
             builder.Services.Configure<StripeOptions>(builder.Configuration.GetSection("Stripe"));
             StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretApiKey"];
 
-            // Swagger/OpenAPI
-            builder.Services.AddOpenApi();
+            // Swagger / OpenAPI
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
 
             // CORS
             builder.Services.AddCors(options =>
@@ -94,15 +88,6 @@ namespace Travellin.Api
                         .AllowAnyMethod()
                         .AllowAnyHeader();
                 });
-
-                options.AddPolicy("AllowTrusted", policy =>
-                {
-                    var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
-                    policy.WithOrigins(allowedOrigins ?? Array.Empty<string>())
-                          .AllowAnyMethod()
-                          .AllowAnyHeader()
-                          .AllowCredentials();
-                });
             });
 
             builder.Services.AddHttpContextAccessor();
@@ -111,44 +96,45 @@ namespace Travellin.Api
                 options.EnableDetailedErrors = true;
             });
 
-            // Custom user provider
             builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
             var app = builder.Build();
 
-            // ===== Middleware pipeline =====
+            // Middlewares
             app.UseIpRateLimiting();
 
-            // Swagger
-            app.MapOpenApi();
-            app.UseSwaggerUI(options =>
+            // Swagger UI setup
+            if (app.Environment.IsDevelopment() || true) // force enable swagger
             {
-                options.SwaggerEndpoint("/openapi/v1.json", "Travellin API v1");
-                options.RoutePrefix = "swagger";
-            });
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Travellin API v1");
+                    options.RoutePrefix = "swagger"; // Swagger available at /swagger
+                });
+            }
 
-            // NOTE: خلي HTTPS redirect مقفول عشان Render
-            // app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
+            app.UseCors("AllowAll");
 
-            app.UseCors(builder.Configuration["Cors:Policy"] ?? "AllowAll");
+            using (var scope = app.Services.CreateScope())
+            {
+                var httpContextAccessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
+                FileUploadPathMappingExtensions.Init(app.Configuration, httpContextAccessor);
+            }
 
-            // Static files
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCustomStaticFiles();
 
-            app.UseRouting();
-
-            // Auth
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // Controllers & Hubs
             app.MapControllers();
             app.MapHub<ChatHub>("/hubs/chat");
             app.MapHub<NotificationHub>("/hubs/notification");
 
-            // Angular fallback
+            // Angular SPA fallback
             app.MapFallbackToFile("index.html");
 
             app.Run();
