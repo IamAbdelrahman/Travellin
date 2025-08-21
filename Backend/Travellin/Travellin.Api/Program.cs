@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using OpenAI.Chat;
 using Stripe;
 using System.Security.Claims;
 using Travellin.Api.Filters;
@@ -34,10 +36,10 @@ namespace Travellin.Api
 
             // Add services to the container.
             builder.Services.ConfigureInfrastructure(builder.Configuration);
-
             builder.Services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                 options.Events ??= new JwtBearerEvents();
+
                 var originalOnMessageReceived = options.Events.OnMessageReceived;
 
                 options.Events.OnMessageReceived = async context =>
@@ -45,7 +47,7 @@ namespace Travellin.Api
                     var accessToken = context.Request.Query["access_token"];
                     var path = context.HttpContext.Request.Path;
 
-                    if (!string.IsNullOrEmpty(accessToken) &&
+                    if (!string.IsNullOrEmpty(accessToken) && 
                         (path.StartsWithSegments("/hubs/chat") || path.StartsWithSegments("/hubs/notification")))
                     {
                         context.Token = accessToken;
@@ -57,6 +59,7 @@ namespace Travellin.Api
                 };
             });
 
+
             builder.Services.AddControllers(options =>
             {
                 options.Filters.Add<ErrorHandlingFilter>();
@@ -67,18 +70,12 @@ namespace Travellin.Api
                 options.SuppressModelStateInvalidFilter = true;
             });
 
-            // Rate limiting
+            // Configure Ratelimiting
             builder.Services.ConfigureRateLimiting(builder.Configuration);
-
-            // Stripe
             builder.Services.Configure<StripeOptions>(builder.Configuration.GetSection("Stripe"));
             StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretApiKey"];
-
-            // Swagger / OpenAPI
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            // CORS
+            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+            builder.Services.AddOpenApi();
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -88,7 +85,20 @@ namespace Travellin.Api
                         .AllowAnyMethod()
                         .AllowAnyHeader();
                 });
+
+                options.AddPolicy("AllowTrusted", policy =>
+                {
+                    var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+
+                    policy.WithOrigins(allowedOrigins)
+                          .AllowAnyMethod()
+                          .AllowAnyHeader()
+                          .AllowCredentials() // For cookies
+                          .WithHeaders("Authorization", "Content-Type", "X-Requested-With", "x-signalr-user-agent", "x-negotiateversion");
+                });
+
             });
+
 
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSignalR(options =>
@@ -96,33 +106,32 @@ namespace Travellin.Api
                 options.EnableDetailedErrors = true;
             });
 
+            // Add custom user provider for SignalR
             builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
             var app = builder.Build();
 
-            // Middlewares
+
             app.UseIpRateLimiting();
 
-            // Swagger UI setup
-            if (app.Environment.IsDevelopment() || true) // force enable swagger
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment() || true)
             {
-                app.UseSwagger();
-                app.UseSwaggerUI(options =>
-                {
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Travellin API v1");
-                    options.RoutePrefix = "swagger"; // Swagger available at /swagger
-                });
+                app.MapOpenApi();
+                app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "v1"));
+
             }
 
             app.UseHttpsRedirection();
-            app.UseCors("AllowAll");
+            app.UseCors(builder.Configuration["Cors:Policy"] ?? "AllowAll");
 
+            // Initialize FileUploadPathMappingExtensions with the service provider
             using (var scope = app.Services.CreateScope())
             {
                 var httpContextAccessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
                 FileUploadPathMappingExtensions.Init(app.Configuration, httpContextAccessor);
             }
-
+            ;
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCustomStaticFiles();
