@@ -122,7 +122,7 @@ namespace Travellin.Api
 
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseCors(builder.Configuration["Cors:Policy"] ?? "AllowAll");
 
             // Initialize FileUploadPathMappingExtensions with the service provider
