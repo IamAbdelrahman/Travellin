@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://localhost:7242', // Your API URL (port 7242)
-  signalRUrl: 'https://localhost:7242/hubs/chat', // Your SignalR hub URL
+  apiUrl: 'http://travellin.runasp.net', // Your API URL (port 7242)
+  signalRUrl: 'http://travellin.runasp.net/chat', // Your SignalR hub URL
   firebaseConfig : {
   apiKey: "AIzaSyDxIIBX92rTd_FQRjm9JuJYhdrKsxoziDc",
   authDomain: "travellin-1a744.firebaseapp.com",
