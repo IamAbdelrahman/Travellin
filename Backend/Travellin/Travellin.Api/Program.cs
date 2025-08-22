@@ -1,4 +1,4 @@
-using AspNetCoreRateLimit;
+﻿using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -115,13 +115,14 @@ namespace Travellin.Api
             app.UseIpRateLimiting();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment() || true)
             {
                 app.MapOpenApi();
                 app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "v1"));
+
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseCors(builder.Configuration["Cors:Policy"] ?? "AllowAll");
 
             // Initialize FileUploadPathMappingExtensions with the service provider
@@ -131,7 +132,8 @@ namespace Travellin.Api
                 FileUploadPathMappingExtensions.Init(app.Configuration, httpContextAccessor);
             }
             ;
-
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseCustomStaticFiles();
 
             app.UseAuthentication();
@@ -140,6 +142,10 @@ namespace Travellin.Api
             app.MapControllers();
             app.MapHub<ChatHub>("/hubs/chat");
             app.MapHub<NotificationHub>("/hubs/notification");
+
+            // Angular SPA fallback
+            app.MapFallbackToFile("index.html");
+
             app.Run();
         }
     }
