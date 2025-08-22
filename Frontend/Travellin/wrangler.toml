@@ -1,6 +1,6 @@
 name = "travellin-app"
 compatibility_date = "2025-08-21"
-site = { bucket = "./dist/angularapi/browser" }
+site = { bucket = "./dist/Travellin/browser" }
 [[redirects]]
   from = "/*"
   to = "/index.html"
